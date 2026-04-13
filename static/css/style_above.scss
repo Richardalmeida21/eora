@@ -1695,21 +1695,21 @@ body:not(.template-home) header.js-head {
 
 
 
+
 /* Custom Coach Layout overrides */
-/* Increasing specificity to override Bootstrap utilities like d-xl-block */
 div.coach-style-layout.coach-style-layout {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: flex-start !important;
-    gap: 30px !important;
+    gap: 40px !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
 
     @media (min-width: 768px) {
         .custom-thumbnails-container {
-            width: 110px !important;
+            width: 140px !important; /* Enlarged carousel container */
             flex-shrink: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -1718,17 +1718,17 @@ div.coach-style-layout.coach-style-layout {
         }
 
         .custom-thumbnails-strip {
-            width: 90px !important;
+            width: 120px !important; /* Enlarged thumbnails */
             display: flex !important;
             flex-direction: column !important;
-            gap: 15px !important;
-            max-height: 550px !important;
+            gap: 20px !important; /* More spacing for elegance */
+            max-height: 650px !important;
             overflow: hidden !important; 
         }
         
         .thumb-nav-arrow {
-            width: 40px !important;
-            height: 30px !important;
+            width: 50px !important;
+            height: 40px !important;
             background: none !important;
             border: none !important;
             cursor: pointer !important;
@@ -1740,15 +1740,15 @@ div.coach-style-layout.coach-style-layout {
         .custom-thumb {
             width: 100% !important;
             border: 1px solid #eee !important;
-            padding: 2px !important;
+            padding: 3px !important;
             cursor: pointer;
-            img { width: 100%; height: auto; display: block; }
-            &.active, &:hover { border-color: #000 !important; }
+            img { width: 100% !important; height: auto !important; display: block !important; }
+            &.active, &:hover { border-color: #000 !important; border-width: 1px !important; }
         }
         
         .product-detail-slider {
-            width: 750px !important; 
-            max-width: calc(100% - 140px) !important;
+            width: 850px !important; /* BIGGER Main Image as requested */
+            max-width: calc(100% - 180px) !important;
             flex-shrink: 0 !important;
             visibility: visible !important;
             height: auto !important;
@@ -1787,7 +1787,6 @@ div.coach-style-layout.coach-style-layout {
     }
 }
 
-/* Override parent column restriction */
 #single-product .product-image-column {
     padding-top: 0 !important;
     flex: 0 0 auto !important;
