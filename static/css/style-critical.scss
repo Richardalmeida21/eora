@@ -6437,9 +6437,23 @@ input[type=number] {
   user-select: none;
 }
 
-/* Oculta o botão nativo no grid — o .eora-grid-tryon (EORA JS) já cobre essa função */
+/* Posiciona o botão de provador virtual no grid (mesmo estilo do .eora-grid-tryon) */
 .js-item-product .btn-provador-virtual {
-  display: none !important;
+  position: absolute !important;
+  top: 5% !important;
+  left: 3% !important;
+  z-index: 100 !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 /* // Selo Novo */
