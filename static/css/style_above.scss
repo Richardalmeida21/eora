@@ -1694,21 +1694,22 @@ body:not(.template-home) header.js-head {
 
 
 
+
 /* Custom Coach Layout overrides */
-.coach-style-layout {
+/* Increasing specificity to override Bootstrap utilities like d-xl-block */
+div.coach-style-layout.coach-style-layout {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: flex-start !important;
-    gap: 20px !important;
+    gap: 30px !important;
     margin: 0 !important;
     padding: 0 !important;
-    width: auto !important;
-    max-width: 100% !important;
+    width: 100% !important;
 
     @media (min-width: 768px) {
         .custom-thumbnails-container {
-            width: 100px !important;
+            width: 110px !important;
             flex-shrink: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -1717,7 +1718,7 @@ body:not(.template-home) header.js-head {
         }
 
         .custom-thumbnails-strip {
-            width: 80px !important;
+            width: 90px !important;
             display: flex !important;
             flex-direction: column !important;
             gap: 15px !important;
@@ -1746,57 +1747,65 @@ body:not(.template-home) header.js-head {
         }
         
         .product-detail-slider {
-            width: 750px !important; /* BIGGER as requested */
+            width: 750px !important; 
+            max-width: calc(100% - 140px) !important;
             flex-shrink: 0 !important;
             visibility: visible !important;
             height: auto !important;
             margin: 0 !important;
             padding: 0 !important;
             display: block !important;
+            position: relative !important;
             
             .swiper-wrapper {
                 display: block !important;
                 height: auto !important;
                 transform: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
             .js-product-slide {
                 display: none !important;
                 width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                
                 &.coach-slide-active {
                     display: block !important;
-                    animation: fadeInCoach 0.3s ease;
+                    animation: fadeInCoach 0.4s ease;
                 }
                 
                 .js-product-slide-link {
-                    padding-bottom: 125% !important; /* High end portrait ratio */
-                    background: #f4f4f4;
+                    padding-bottom: 125% !important;
+                    background: #fdfdfd;
+                    display: block !important;
                 }
             }
         }
     }
 }
 
-/* Ensure the Bootstrap column doesn't restrict us too much */
-.product-image-column {
+/* Override parent column restriction */
+#single-product .product-image-column {
     padding-top: 0 !important;
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: none !important;
+    display: block !important;
 }
 
 .js-coach-variant-square {
     width: 60px !important;
     height: 60px !important;
     display: flex !important;
-    img { width: 100%; height: 100%; object-fit: cover; }
 }
 .coach-layout-swatch {
     border: 1px solid #ddd !important;
     margin: 0 8px 8px 0 !important;
     height: 64px !important;
     width: 64px !important;
-    display: inline-flex !important;
     &.selected { border-color: #000 !important; border-width: 2px !important; }
 }
 
