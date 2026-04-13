@@ -1,0 +1,28 @@
+name: Captura Inicial Eora
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Baixar arquivos via LFTP
+        env:
+          FTP_HOST: "ftp.nuvemshop.com.br"
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -c "set ftp:ssl-allow yes; set ssl:verify-certificate no; open -u $FTP_USER,$FTP_PASS $FTP_HOST; mirror --verbose / ."
+
+      - name: Commit
+        run: |
+          git config --global user.name "Richard Almeida"
+          git config --global user.email "richard.almeida@exemplo.com"
+          git add .
+          git commit -m "Captura inicial Eora" || echo "Sem mudanças"
+          git push
