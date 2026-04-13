@@ -44,8 +44,8 @@ body.template-product:not(.eora-native-layout) #single-product .product-info-col
 /* Grid Tryon Icon (Home) */
 .eora-grid-tryon { 
     position: absolute !important; 
-    top: 10px !important; 
-    left: 10px !important; 
+    top: 5% !important; 
+    left: 3% !important; 
     z-index: 100 !important; 
     background: #fff !important; 
     border-radius: 50% !important; 
