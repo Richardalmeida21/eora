@@ -27,26 +27,44 @@
 
                 if (strip && slider) {
                     var thumbs = strip.querySelectorAll('.custom-thumb');
+                    var slides = slider.querySelectorAll('.js-product-slide');
                     
-                    thumbs.forEach(function(thumb, index) {
-                        thumb.addEventListener('click', function() {
-                            if (slider.swiper) {
-                                slider.swiper.slideToLoop(index);
-                            }
+                    // Native Desktop Gallery mode (no swiper)
+                    if (window.innerWidth >= 768 && (!slider.swiper || !slider.classList.contains('swiper-container'))) {
+                        slides.forEach(function(slide, idx) {
+                            if (idx === 0) slide.classList.add('coach-slide-active');
+                            else slide.classList.remove('coach-slide-active');
                         });
-                    });
-
-                    // Wait for Swiper to initialize
-                    var checkSwiper = setInterval(function() {
-                        if (slider.swiper && slider.swiper.initialized) {
-                            clearInterval(checkSwiper);
-                            slider.swiper.on('slideChange', function() {
-                                var realIndex = slider.swiper.realIndex;
+                        thumbs.forEach(function(thumb, index) {
+                            if(index===0) thumb.classList.add('active');
+                            thumb.addEventListener('click', function() {
                                 thumbs.forEach(function(t) { t.classList.remove('active'); });
-                                if (thumbs[realIndex]) thumbs[realIndex].classList.add('active');
+                                thumb.classList.add('active');
+                                slides.forEach(function(slide, idx) {
+                                    if(idx === index) slide.classList.add('coach-slide-active');
+                                    else slide.classList.remove('coach-slide-active');
+                                });
                             });
-                        }
-                    }, 200);
+                        });
+                    } 
+                    // Swiper mode (mobile)
+                    else {
+                        thumbs.forEach(function(thumb, index) {
+                            thumb.addEventListener('click', function() {
+                                if (slider.swiper) slider.swiper.slideToLoop(index);
+                            });
+                        });
+                        var checkSwiper = setInterval(function() {
+                            if (slider.swiper && slider.swiper.initialized) {
+                                clearInterval(checkSwiper);
+                                slider.swiper.on('slideChange', function() {
+                                    var realIndex = slider.swiper.realIndex;
+                                    thumbs.forEach(function(t) { t.classList.remove('active'); });
+                                    if (thumbs[realIndex]) thumbs[realIndex].classList.add('active');
+                                });
+                            }
+                        }, 200);
+                    }
                 }
             });
             </script>

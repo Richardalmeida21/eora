@@ -1781,3 +1781,19 @@ body:not(.template-home) header.js-head {
     
     &.selected, &:hover { border-color: #000 !important; }
 }
+
+.coach-style-layout .product-detail-slider .js-product-slide {
+    @media (min-width: 768px) {
+        display: none !important;
+    }
+}
+.coach-style-layout .product-detail-slider .js-product-slide.coach-slide-active {
+    @media (min-width: 768px) {
+        display: block !important;
+        animation: fadeInCoach 0.3s ease;
+    }
+}
+@keyframes fadeInCoach {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
