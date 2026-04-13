@@ -7,7 +7,7 @@
 {% set product_img_height =  settings.product_img_height | default(100) %}
 {% set product_img_width =  settings.product_img_width | default(100) %}
 
-{% set is_coach_layout = 'mini-vertice' in product.handle %}
+{% set is_coach_layout = product.handle == 'mini-vertice-nova' %}
 <div class="{% if mobile %}d-xl-none{% else %}d-none d-xl-block{% endif %} {% if is_coach_layout and not mobile %}coach-style-layout{% endif %}" data-store="product-image-{{ product.id }}">
 
     {% if product.images_count > 0 %}

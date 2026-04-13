@@ -166,7 +166,7 @@
                 } %}
                     {% block select_options %}
                         {% for option in variation.options %}
-                        {% set is_coach_layout = 'mini-vertice' in product.handle %}
+                        {% set is_coach_layout = product.handle == 'mini-vertice-nova' %}
                             <option value="{{ option.id }}" {% if product.default_options[variation.id] is same as(option.id) %}selected="selected"{% endif %}>{{ option.name }}</option>
                         {% endfor %}
                     {% endblock select_options %}
