@@ -6418,24 +6418,7 @@ input[type=number] {
 
 }
 
-/* // Selo Novo */
 
-.badge-novo {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 10;
-  padding: 4px 9px;
-  background-color: #000;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  line-height: 1.4;
-  pointer-events: none;
-  user-select: none;
-}
 
 /* Posiciona o botão de provador virtual no grid (mesmo estilo do .eora-grid-tryon) */
 .js-item-product .btn-provador-virtual {
@@ -6447,21 +6430,21 @@ input[type=number] {
   border-radius: 50% !important;
   width: 32px !important;
   height: 32px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
   border: none !important;
   padding: 0 !important;
 }
 
-/* // Selo Novo */
+/* // Selo Novo — posicionado ao lado do coração (Selly: top:5% right:3%) */
 
 .badge-novo {
   position: absolute;
-  top: calc(5% + 5px);
-  left: 3%;
+  top: 5%;
+  right: calc(3% + 36px);
   z-index: 10;
   padding: 4px 9px;
   background-color: #000;
@@ -6475,11 +6458,6 @@ input[type=number] {
   user-select: none;
   display: flex;
   align-items: center;
-}
-
-/* Quando há ícone de provador virtual (.eora-grid-tryon = 32px + gap 8px = 40px) */
-.badge-novo--com-provador {
-  left: calc(3% + 40px);
 }
 
 .label {

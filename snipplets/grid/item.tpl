@@ -91,12 +91,12 @@
                 {% set desktop_image_viewport_space = '50' %}
             {% endif %}
 
-            {# --- Selo NOVO: exibe se o produto foi criado há até 45 dias --- #}
-            {% set days_since_creation = ("now" | date("U") - product.created_at | date("U")) / 86400 %}
-            {% set is_new_product = days_since_creation <= 45 %}
+            {# --- Selo NOVO: exibe se produto foi criado há até 45 dias --- #}
+            {# Compara datas como string Y-m-d (mais confiável que timestamp arithmetic) #}
+            {% set cutoff_date = "now - 45 days" | date("Y-m-d") %}
+            {% set product_date = product.created_at | date("Y-m-d") %}
+            {% set is_new_product = product_date >= cutoff_date %}
 
-            {# Qualquer produto com SKU tem o btn-provador-virtual renderizado #}
-            {% set has_tryon = product.sku is not empty %}
 
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
                 {% set brand_product = product.brand %}
@@ -113,7 +113,7 @@
                         {% endif %}
                     </a>
                     {% if is_new_product and not reduced_item %}
-                        <div class="badge-novo{% if has_tryon %} badge-novo--com-provador{% endif %}" aria-label="Produto novo">NOVO</div>
+                        <div class="badge-novo" aria-label="Produto novo">NOVO</div>
                     {% endif %}
                     {% if product.sku and not reduced_item %}
                     <button
