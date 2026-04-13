@@ -6430,9 +6430,9 @@ input[type=number] {
   border-radius: 50% !important;
   width: 32px !important;
   height: 32px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   cursor: pointer !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
   border: none !important;
@@ -6443,7 +6443,7 @@ input[type=number] {
 
 .badge-novo {
   position: absolute;
-  top: 5%;
+  top: calc(5% + 6px);
   right: calc(3% + 36px);
   z-index: 10;
   padding: 4px 9px;
