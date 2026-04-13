@@ -1691,7 +1691,7 @@ body:not(.template-home) header.js-head {
 .coach-style-layout {
     @media (min-width: 768px) {
         display: flex !important;
-        flex-direction: row !important;
+        flex-direction: row !important; flex-wrap: nowrap !important;
         align-items: flex-start !important;
         gap: 20px !important;
         
@@ -1726,7 +1726,7 @@ body:not(.template-home) header.js-head {
         }
         
         .product-detail-slider {
-            flex: 1 !important;
+            flex: 1 !important; max-width: calc(100% - 100px) !important; width: 100%;
             min-width: 0 !important;
             visibility: visible !important;
             height: auto !important;
