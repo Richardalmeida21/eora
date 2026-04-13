@@ -21,50 +21,37 @@
             </div>
             <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var strip = document.querySelector('.custom-thumbnails-strip');
-                var slider = document.querySelector('.js-swiper-product');
-                if (!slider) slider = document.querySelector('.product-detail-slider');
+                // Ensure we interact with the specific desktop wrapper
+                var wrapper = document.querySelector('.coach-style-layout');
+                if (!wrapper) return;
+                
+                var strip = wrapper.querySelector('.custom-thumbnails-strip');
+                var slider = wrapper.querySelector('.product-detail-slider');
 
                 if (strip && slider) {
                     var thumbs = strip.querySelectorAll('.custom-thumb');
                     var slides = slider.querySelectorAll('.js-product-slide');
                     
-                    // Native Desktop Gallery mode (no swiper)
-                    if (window.innerWidth >= 768 && (!slider.swiper || !slider.classList.contains('swiper-container'))) {
-                        slides.forEach(function(slide, idx) {
-                            if (idx === 0) slide.classList.add('coach-slide-active');
-                            else slide.classList.remove('coach-slide-active');
-                        });
-                        thumbs.forEach(function(thumb, index) {
-                            if(index===0) thumb.classList.add('active');
-                            thumb.addEventListener('click', function() {
-                                thumbs.forEach(function(t) { t.classList.remove('active'); });
-                                thumb.classList.add('active');
-                                slides.forEach(function(slide, idx) {
-                                    if(idx === index) slide.classList.add('coach-slide-active');
-                                    else slide.classList.remove('coach-slide-active');
-                                });
+                    // Native Desktop Gallery mode
+                    slides.forEach(function(slide, idx) {
+                        if (idx === 0) slide.classList.add('coach-slide-active');
+                        else slide.classList.remove('coach-slide-active');
+                    });
+                    
+                    thumbs.forEach(function(thumb, index) {
+                        if(index===0) thumb.classList.add('active');
+                        thumb.addEventListener('click', function() {
+                            // Update thumbs
+                            thumbs.forEach(function(t) { t.classList.remove('active'); });
+                            thumb.classList.add('active');
+                            
+                            // Update slides
+                            slides.forEach(function(slide, idx) {
+                                if(idx === index) slide.classList.add('coach-slide-active');
+                                else slide.classList.remove('coach-slide-active');
                             });
                         });
-                    } 
-                    // Swiper mode (mobile)
-                    else {
-                        thumbs.forEach(function(thumb, index) {
-                            thumb.addEventListener('click', function() {
-                                if (slider.swiper) slider.swiper.slideToLoop(index);
-                            });
-                        });
-                        var checkSwiper = setInterval(function() {
-                            if (slider.swiper && slider.swiper.initialized) {
-                                clearInterval(checkSwiper);
-                                slider.swiper.on('slideChange', function() {
-                                    var realIndex = slider.swiper.realIndex;
-                                    thumbs.forEach(function(t) { t.classList.remove('active'); });
-                                    if (thumbs[realIndex]) thumbs[realIndex].classList.add('active');
-                                });
-                            }
-                        }, 200);
-                    }
+                    });
                 }
             });
             </script>
