@@ -12,46 +12,58 @@
 
     {% if product.images_count > 0 %}
         {% if is_coach_layout and not mobile and product.images_count > 1 %}
-            <div class="custom-thumbnails-strip">
-                {% for image in product.images %}
-                    <button class="custom-thumb {% if loop.first %}active{% endif %}" >
-                        <img src="{{ image | product_image_url('tiny') }}" />
-                    </button>
-                {% endfor %}
+            <div class="custom-thumbnails-container">
+                <button class="thumb-nav-arrow up js-thumb-nav-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"></path></svg>
+                </button>
+                <div class="custom-thumbnails-strip">
+                    {% for image in product.images %}
+                        <button class="custom-thumb {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                            <img src="{{ image | product_image_url('tiny') }}" />
+                        </button>
+                    {% endfor %}
+                </div>
+                <button class="thumb-nav-arrow down js-thumb-nav-down">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+                </button>
             </div>
             <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Ensure we interact with the specific desktop wrapper
                 var wrapper = document.querySelector('.coach-style-layout');
                 if (!wrapper) return;
                 
+                var container = wrapper.querySelector('.custom-thumbnails-container');
                 var strip = wrapper.querySelector('.custom-thumbnails-strip');
                 var slider = wrapper.querySelector('.product-detail-slider');
 
                 if (strip && slider) {
                     var thumbs = strip.querySelectorAll('.custom-thumb');
                     var slides = slider.querySelectorAll('.js-product-slide');
+                    var btnUp = container.querySelector('.js-thumb-nav-up');
+                    var btnDown = container.querySelector('.js-thumb-nav-down');
                     
-                    // Native Desktop Gallery mode
+                    // Sync Slide visibility
                     slides.forEach(function(slide, idx) {
                         if (idx === 0) slide.classList.add('coach-slide-active');
                         else slide.classList.remove('coach-slide-active');
                     });
                     
                     thumbs.forEach(function(thumb, index) {
-                        if(index===0) thumb.classList.add('active');
                         thumb.addEventListener('click', function() {
-                            // Update thumbs
                             thumbs.forEach(function(t) { t.classList.remove('active'); });
                             thumb.classList.add('active');
-                            
-                            // Update slides
                             slides.forEach(function(slide, idx) {
                                 if(idx === index) slide.classList.add('coach-slide-active');
                                 else slide.classList.remove('coach-slide-active');
                             });
                         });
                     });
+
+                    // Scroll logic for arrows
+                    if (btnUp && btnDown) {
+                        btnUp.addEventListener('click', function() { strip.scrollBy({ top: -100, behavior: 'smooth' }); });
+                        btnDown.addEventListener('click', function() { strip.scrollBy({ top: 100, behavior: 'smooth' }); });
+                    }
                 }
             });
             </script>
