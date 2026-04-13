@@ -1697,20 +1697,21 @@ body:not(.template-home) header.js-head {
 
 
 
+
 /* Custom Coach Layout overrides */
 div.coach-style-layout.coach-style-layout {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    align-items: center !important; /* VERTICAL CENTERING */
-    gap: 50px !important; /* Extra spacing for ultra boutique feel */
+    align-items: center !important;
+    gap: 40px !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
 
     @media (min-width: 768px) {
         .custom-thumbnails-container {
-            width: 180px !important; /* Ultra-scale thumbnails container */
+            width: 150px !important;
             flex-shrink: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -1718,7 +1719,7 @@ div.coach-style-layout.coach-style-layout {
         }
 
         .custom-thumbnails-strip {
-            width: 160px !important; /* Enlarged thumbnails */
+            width: 130px !important; 
             display: flex !important;
             flex-direction: column !important;
             gap: 25px !important;
@@ -1744,24 +1745,16 @@ div.coach-style-layout.coach-style-layout {
             cursor: pointer;
             transition: all 0.3s;
             background: #fff;
-            
-            img { 
-                width: 100% !important; 
-                height: auto !important; 
-                display: block !important; 
-            }
-            
-            /* FORCING PORTRAIT RATIO ON THUMBS TOO */
             aspect-ratio: 4 / 5;
             object-fit: cover;
-
+            img { width: 100% !important; height: auto !important; display: block !important; }
             &.active, &:hover { border-color: #000 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         }
         
         .product-detail-slider {
-            width: 1000px !important; /* ULTRA SCALE Main Image */
-            max-width: calc(100% - 250px) !important;
-            flex-shrink: 0 !important;
+            flex: 1 !important; /* FILL THE SPACE */
+            width: 100% !important;
+            min-width: 0 !important;
             visibility: visible !important;
             height: auto !important;
             margin: 0 !important;
@@ -1790,7 +1783,7 @@ div.coach-style-layout.coach-style-layout {
                 }
                 
                 .js-product-slide-link {
-                    padding-bottom: 125% !important; /* 4:5 Aspect Ratio */
+                    padding-bottom: 125% !important;
                     background: #fdfdfd;
                     display: block !important;
                 }
@@ -1801,10 +1794,7 @@ div.coach-style-layout.coach-style-layout {
 
 #single-product .product-image-column {
     padding-top: 0 !important;
-    flex: 0 0 auto !important;
-    width: auto !important;
-    max-width: none !important;
-    display: block !important;
+    /* Removed width: auto to allow col-md-8 to take effect */
 }
 
 .js-coach-variant-square {
@@ -1821,6 +1811,6 @@ div.coach-style-layout.coach-style-layout {
 }
 
 @keyframes fadeInCoach {
-    from { opacity: 0; transform: scale(0.99); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
