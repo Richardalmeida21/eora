@@ -1684,3 +1684,100 @@ body:not(.template-home) header.js-head {
 .category-body .item-product {
   margin-bottom: 24px;
 }
+
+
+/* Custom Coach Layout overrides */
+.coach-style-layout {
+    .product-detail-slider .swiper-wrapper {
+        @media (min-width: 768px) {
+            display: flex !important;
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+            gap: 20px !important;
+            box-sizing: border-box;
+        }
+    }
+    .product-detail-slider .swiper-slide {
+        @media (min-width: 768px) {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+            padding: 0 !important;
+            opacity: 1 !important;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+        
+        .custom-thumbnails-strip {
+            position: sticky;
+            top: 100px;
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            z-index: 10;
+            scrollbar-width: none;
+            flex-shrink: 0;
+            
+            &::-webkit-scrollbar { display: none; }
+        }
+        
+        .custom-thumb {
+            width: 100%;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: border 0.2s;
+            background: none;
+            padding: 2px;
+            
+            img { width: 100%; height: auto; display: block; border-radius: 4px; }
+            &.active, &:hover { border-color: #000; }
+        }
+        
+        .product-detail-slider {
+            flex: 1;
+            min-width: 0;
+            visibility: visible !important;
+            height: auto !important;
+            transform: none !important;
+        }
+    }
+}
+
+.js-coach-variant-square {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0 !important;
+    }
+}
+.coach-layout-swatch {
+    border: 2px solid transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 5px 5px 0 !important;
+    transition: border-color .2s !important;
+    background: none !important;
+    overflow: hidden;
+    height: 68px !important;
+    width: 68px !important;
+    
+    &.selected, &:hover { border-color: #000 !important; }
+}

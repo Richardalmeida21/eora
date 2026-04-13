@@ -166,6 +166,7 @@
                 } %}
                     {% block select_options %}
                         {% for option in variation.options %}
+                        {% set is_coach_layout = 'mini-vertice' in product.handle %}
                             <option value="{{ option.id }}" {% if product.default_options[variation.id] is same as(option.id) %}selected="selected"{% endif %}>{{ option.name }}</option>
                         {% endfor %}
                     {% endblock select_options %}
@@ -203,13 +204,15 @@
                                 {% if product.default_options[variation.id] is same as(option.id) %} selected{% endif %}
                                 {% if variation.name in ['Color', 'Cor'] %}
                                     {% if option.custom_data or settings.image_color_variants %}btn-variant-color{% endif %} p-0
+                                    {% if is_coach_layout %} coach-layout-swatch{% endif %}
                                 {% endif %}"
                            title="{{ option.name }}"
                            data-option="{{ option.id }}"
                            data-variation-id="{{ variation.id }}">
                             <span class="btn-variant-content
-                                {% if settings.image_color_variants and variation.name in ['Color', 'Cor'] %} btn-variant-content-square{% endif %}"
-                                {% if option.custom_data and variation.name in ['Color', 'Cor'] and (settings.bullet_variants and not settings.image_color_variants) %}
+                                {% if (settings.image_color_variants or is_coach_layout) and variation.name in ['Color', 'Cor'] %} btn-variant-content-square{% endif %}
+                                {% if is_coach_layout and variation.name in ['Color', 'Cor'] %} js-coach-variant-square{% endif %}"
+                                {% if option.custom_data and variation.name in ['Color', 'Cor'] and (settings.bullet_variants and not settings.image_color_variants) and not is_coach_layout %}
                                     style="background: {{ option.custom_data }}; border: 1px solid #eee"
                                 {% endif %}
                                 data-name="{{ option.name }}">
@@ -231,7 +234,7 @@
                                         {% endfor %}
                                     {% endif %}
                                 {% endif %}
-                                {% if not(variation.name in ['Color', 'Cor']) or ((variation.name in ['Color', 'Cor']) and not option.custom_data and not settings.image_color_variants) %}
+                                {% if not(variation.name in ['Color', 'Cor']) or ((variation.name in ['Color', 'Cor']) and not option.custom_data and not settings.image_color_variants and not is_coach_layout) %}
                                     {{ option.name }}
                                 {% endif %}
                             </span>

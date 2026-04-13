@@ -7,8 +7,42 @@
 {% set product_img_height =  settings.product_img_height | default(100) %}
 {% set product_img_width =  settings.product_img_width | default(100) %}
 
-<div class="{% if mobile %}d-xl-none{% else %}d-none d-xl-block{% endif %}" data-store="product-image-{{ product.id }}">
-	{% if product.images_count > 0 %}
+{% set is_coach_layout = 'mini-vertice' in product.handle %}
+<div class="{% if mobile %}d-xl-none{% else %}d-none d-xl-block{% endif %} {% if is_coach_layout and not mobile %}coach-style-layout{% endif %}" data-store="product-image-{{ product.id }}">
+
+    {% if product.images_count > 0 %}
+        {% if is_coach_layout and not mobile and product.images_count > 1 %}
+            <div class="custom-thumbnails-strip">
+                {% for image in product.images %}
+                    <button class="custom-thumb {% if loop.first %}active{% endif %}" onclick="document.querySelectorAll('.product-detail-slider .swiper-slide')[{{ loop.index0 }}].scrollIntoView({behavior: 'smooth', block: 'start'})">
+                        <img src="{{ image | product_image_url('tiny') }}" />
+                    </button>
+                {% endfor %}
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var strip = document.querySelector('.custom-thumbnails-strip');
+                var slider = document.querySelector('.product-detail-slider');
+                if (strip && slider) {
+                    var slides = slider.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)');
+                    var observer = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                var idx = Array.from(slides).indexOf(entry.target);
+                                if(idx === -1) return;
+                                var thumbs = strip.querySelectorAll('.custom-thumb');
+                                thumbs.forEach(function(t) { t.classList.remove('active'); });
+                                if(thumbs[idx]) thumbs[idx].classList.add('active');
+                            }
+                        });
+                    }, { threshold: 0.5 });
+                    slides.forEach(function(s){ observer.observe(s); });
+                    setTimeout(function(){ if(slider.swiper) slider.swiper.destroy(true,true); }, 500);
+                }
+            });
+            </script>
+        {% endif %}
+
 		<div class="{% if product_grid_detail and mobile == false %} product-detail-slider {% endif %} {% if mobile %} js-swiper-product swiper-container px-3 {% endif %}" style="visibility:hidden; height:0;" data-product-images-amount="{{ product.images_count }}">
 				{% include 'snipplets/labels.tpl' with {product_detail: true, label_custom_class: product_grid_detail_md_class} %}
 			<div class="swiper-wrapper">
