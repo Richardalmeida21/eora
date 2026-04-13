@@ -26,8 +26,7 @@ jobs:
                    mirror --reverse \
                           --verbose \
                           --ignore-time \
-                          --no-chmod \
-                          --no-perms \
+                          -p \
                           --parallel=10 \
                           --exclude .git/ \
                           --exclude .github/ \
