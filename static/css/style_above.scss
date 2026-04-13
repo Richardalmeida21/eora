@@ -1686,67 +1686,76 @@ body:not(.template-home) header.js-head {
 }
 
 
+
 /* Custom Coach Layout overrides */
 .coach-style-layout {
-    .product-detail-slider .swiper-wrapper {
-        @media (min-width: 768px) {
-            display: flex !important;
-            flex-direction: column !important;
-            flex-wrap: nowrap !important;
-            gap: 20px !important;
-            box-sizing: border-box;
-        }
-    }
-    .product-detail-slider .swiper-slide {
-        @media (min-width: 768px) {
-            width: 100% !important;
-            max-width: 100% !important;
-            flex: 0 0 100% !important;
-            padding: 0 !important;
-            opacity: 1 !important;
-        }
-    }
-    
     @media (min-width: 768px) {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 20px;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
         
         .custom-thumbnails-strip {
-            position: sticky;
-            top: 100px;
-            width: 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-            z-index: 10;
-            scrollbar-width: none;
-            flex-shrink: 0;
+            position: sticky !important;
+            top: 100px !important;
+            width: 80px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            max-height: calc(100vh - 120px) !important;
+            overflow-y: auto !important;
+            z-index: 10 !important;
+            scrollbar-width: none !important;
+            flex-shrink: 0 !important;
+            margin-top: 0 !important;
             
-            &::-webkit-scrollbar { display: none; }
+            &::-webkit-scrollbar { display: none !important; }
         }
         
         .custom-thumb {
-            width: 100%;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: border 0.2s;
-            background: none;
-            padding: 2px;
+            width: 100% !important;
+            cursor: pointer !important;
+            border: 1px solid transparent !important;
+            transition: border 0.2s !important;
+            background: none !important;
+            padding: 2px !important;
+            margin: 0 !important;
             
-            img { width: 100%; height: auto; display: block; border-radius: 4px; }
-            &.active, &:hover { border-color: #000; }
+            img { width: 100% !important; height: auto !important; display: block !important; border-radius: 4px !important; }
+            &.active, &:hover { border-color: #000 !important; }
         }
         
         .product-detail-slider {
-            flex: 1;
-            min-width: 0;
+            flex: 1 !important;
+            min-width: 0 !important;
             visibility: visible !important;
             height: auto !important;
             transform: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .product-detail-slider .swiper-wrapper {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: none !important;
+            height: auto !important;
+        }
+
+        .product-detail-slider .js-product-slide {
+            display: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            float: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            opacity: 1 !important;
+        }
+
+        .product-detail-slider .js-product-slide.coach-slide-active {
+            display: block !important;
+            animation: fadeInCoach 0.3s ease;
         }
     }
 }
@@ -1782,46 +1791,7 @@ body:not(.template-home) header.js-head {
     &.selected, &:hover { border-color: #000 !important; }
 }
 
-.coach-style-layout .product-detail-slider .js-product-slide {
-    @media (min-width: 768px) {
-        display: none !important;
-    }
-}
-.coach-style-layout .product-detail-slider .js-product-slide.coach-slide-active {
-    @media (min-width: 768px) {
-        display: block !important;
-        animation: fadeInCoach 0.3s ease;
-    }
-}
 @keyframes fadeInCoach {
     from { opacity: 0; }
     to { opacity: 1; }
-}
-
-
-/* Ensure wrapper doesn't have huge native margins and flexes cleanly */
-.coach-style-layout .product-detail-slider .swiper-wrapper {
-    @media (min-width: 768px) {
-        display: block !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-}
-
-.coach-style-layout .product-detail-slider .js-product-slide {
-    @media (min-width: 768px) {
-        display: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        float: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-}
-
-/* Make sure the active slide displays normally */
-.coach-style-layout .product-detail-slider .js-product-slide.coach-slide-active {
-    @media (min-width: 768px) {
-        display: block !important;
-    }
 }
