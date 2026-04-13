@@ -1691,27 +1691,27 @@ body:not(.template-home) header.js-head {
 
 
 
+
 /* Custom Coach Layout overrides */
 .coach-style-layout {
-    padding-top: 0 !important;
-    margin-top: -15px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
+    padding: 0 !important;
+    margin: 0 !important; /* Resetting all margins to kill the huge gap */
 
     @media (min-width: 768px) {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: flex-start !important;
-        gap: 30px !important;
-        
         .custom-thumbnails-container {
-            position: sticky !important;
-            top: 20px !important; /* Adjusted for better visibility */
+            position: relative !important; /* Not sticky! Stays with the image */
             width: 80px !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
             flex-shrink: 0 !important;
             z-index: 10 !important;
+            margin-top: 0 !important;
         }
 
         .custom-thumbnails-strip {
@@ -1719,10 +1719,11 @@ body:not(.template-home) header.js-head {
             display: flex !important;
             flex-direction: column !important;
             gap: 12px !important;
-            max-height: 400px !important; /* Shows ~3.5 thumbnails */
+            max-height: 500px !important;
             overflow-y: hidden !important; 
             scrollbar-width: none !important;
             scroll-behavior: smooth;
+            background: transparent !important;
             &::-webkit-scrollbar { display: none !important; }
         }
         
@@ -1732,10 +1733,10 @@ body:not(.template-home) header.js-head {
             background: none !important;
             border: none !important;
             cursor: pointer !important;
-            color: #ccc !important;
+            color: #bbb !important;
             padding: 5px !important;
-            transition: color 0.2s, transform 0.2s;
-            &:hover { color: #000 !important; transform: scale(1.1); }
+            transition: color 0.2s;
+            &:hover { color: #000 !important; }
             svg { width: 100% !important; height: 100% !important; }
         }
 
@@ -1743,84 +1744,88 @@ body:not(.template-home) header.js-head {
             width: 100% !important;
             cursor: pointer !important;
             border: 1px solid #eee !important;
-            transition: all 0.3s !important;
+            transition: border 0.3s !important;
             background: #fff !important;
             padding: 2px !important;
             border-radius: 0 !important;
             
             img { width: 100% !important; height: auto !important; display: block !important; border-radius: 0 !important; }
-            &.active, &:hover { border-color: #000 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+            &.active, &:hover { border-color: #000 !important; }
         }
         
         .product-detail-slider {
             flex: 1 !important;
             min-width: 0 !important;
-            width: calc(100% - 110px) !important;
             visibility: visible !important;
             height: auto !important;
             transform: none !important;
             margin: 0 !important;
             padding: 0 !important;
-        }
-
-        .product-detail-slider .swiper-wrapper {
             display: block !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            transform: none !important;
-            height: auto !important;
-        }
+            
+            .swiper-wrapper {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                transform: none !important;
+                height: auto !important;
+            }
 
-        .product-detail-slider .js-product-slide {
-            display: none !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            float: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            opacity: 1 !important;
-        }
-
-        .product-detail-slider .js-product-slide.coach-slide-active {
-            display: block !important;
-            animation: fadeInCoach 0.5s ease;
+            .js-product-slide {
+                display: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                float: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                opacity: 1 !important;
+                
+                &.coach-slide-active {
+                    display: block !important;
+                    animation: fadeInCoach 0.4s ease;
+                }
+            }
         }
     }
 }
 
-/* Polishing Variants for Coach Products */
-.coach-style-layout + .product-info-column,
-.product-info-column[data-store*="product-info"] {
-     .coach-layout-swatch {
-        border: 1px solid #ddd !important;
+/* Forcing common parent to have zero top padding for Coach layout */
+.product-image-column {
+    padding-top: 0 !important;
+}
+
+.js-coach-variant-square {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         border-radius: 0 !important;
-        padding: 0 !important;
-        margin: 0 8px 8px 0 !important;
-        transition: all .3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        background: #fff !important;
-        overflow: hidden;
-        height: 60px !important;
-        width: 60px !important;
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        
-        .js-coach-variant-square {
-            width: 100% !important;
-            height: 100% !important;
-            img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
-        }
-        
-        &.selected { 
-            border-color: #000 !important; 
-            border-width: 2px !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
-        &:hover { border-color: #000 !important; }
     }
+}
+.coach-layout-swatch {
+    border: 1px solid #ddd !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 5px 5px 0 !important;
+    transition: all .2s !important;
+    background: #fff !important;
+    overflow: hidden;
+    height: 68px !important;
+    width: 68px !important;
+    
+    &.selected, &:hover { border-color: #000 !important; border-width: 2px; }
 }
 
 @keyframes fadeInCoach {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
