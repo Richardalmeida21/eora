@@ -92,10 +92,12 @@
             {% endif %}
 
             {# --- Selo NOVO: exibe se produto foi criado há até 45 dias --- #}
-            {# Compara datas como string Y-m-d (mais confiável que timestamp arithmetic) #}
-            {% set cutoff_date = "now - 45 days" | date("Y-m-d") %}
-            {% set product_date = product.created_at | date("Y-m-d") %}
-            {% set is_new_product = product_date >= cutoff_date %}
+            {# DEBUG: inspecione o código-fonte da página para ver os valores reais #}
+            <!-- EORA_DEBUG product_id={{ product.id }} created_at_raw={{ product.created_at }} cutoff={{ "now - 45 days" | date("Y-m-d") }} product_date={{ product.created_at | date("Y-m-d") }} -->
+            {% set now_ts = "now" | date("U") %}
+            {% set prod_ts = product.created_at %}
+            {% set secs_old = now_ts - prod_ts %}
+            {% set is_new_product = prod_ts is not empty and secs_old > 0 and secs_old <= 3888000 %}
 
 
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
