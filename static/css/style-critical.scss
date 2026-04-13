@@ -6437,8 +6437,9 @@ input[type=number] {
   user-select: none;
 }
 
+/* Quando há ícone de provador virtual (32px largura + 10px left + 8px gap = left:50px) */
 .badge-novo--com-provador {
-  left: 40px;
+  left: 50px;
 }
 
 .label {

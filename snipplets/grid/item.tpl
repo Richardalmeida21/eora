@@ -95,14 +95,14 @@
             {% set days_since_creation = ("now" | date("U") - product.created_at | date("U")) / 86400 %}
             {% set is_new_product = days_since_creation <= 45 %}
 
+            {# Detecta se é produto da linha LUAR com provador virtual (whitelist do JS EORA) #}
+            {% set sku_upper = product.sku | upper %}
+            {% set has_tryon = product.sku and ("LUAPC" in sku_upper or "LUAPREP" in sku_upper or "LUADM" in sku_upper) %}
+
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
                 {% set brand_product = product.brand %}
                 {% if brand_product %}
                     {% include 'snipplets/selo-brand.tpl' with {'product_brand': brand_product} %}
-                {% endif %}
-
-                {% if is_new_product and not reduced_item %}
-                    <div class="badge-novo{% if product.sku %} badge-novo--com-provador{% endif %}" aria-label="Produto novo">NOVO</div>
                 {% endif %}
 
                 <div style="padding-bottom: {{ item_img_spacing }}%;" class="js-item-image-padding position-relative" data-store="product-item-image-{{ product.id }}">
@@ -113,6 +113,9 @@
                             <img alt="{{ item_img_alt }}" data-sizes="auto" src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ product.other_images | first | product_image_url('small')}} 240w, {{ product.other_images | first | product_image_url('medium')}} 320w, {{ product.other_images | first | product_image_url('large')}} 480w, {{ product.other_images | first | product_image_url('huge')}} 640w, {{ product.other_images | first | product_image_url('original')}} 1024w" class="js-item-image js-item-image-secondary lazyautosizes lazyload img-absolute img-absolute-centered fade-in item-image-secondary" sizes="(min-width: 768px) {{ desktop_image_viewport_space }}vw, {{ mobile_image_viewport_space }}vw" style="display:none;" />
                         {% endif %}
                     </a>
+                    {% if is_new_product and not reduced_item %}
+                        <div class="badge-novo{% if has_tryon %} badge-novo--com-provador{% endif %}" aria-label="Produto novo">NOVO</div>
+                    {% endif %}
                     {% if product.sku and not reduced_item %}
                     <button
                         class="js-btn-provador-virtual btn-provador-virtual"
