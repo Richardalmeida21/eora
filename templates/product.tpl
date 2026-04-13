@@ -2,11 +2,11 @@
 <div id="single-product" class="js-has-new-shipping js-product-detail js-product-container js-shipping-calculator-container pb-4 pt-md-4 pb-md-3" data-variants="{{product.variants_object | json_encode }}" data-store="product-detail">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 {% if is_coach_layout %}col-md-8{% else %}col-md-auto{% endif %} product-image-column ">
+            <div class="col-12 {% if is_coach_layout %}col-md-9{% else %}col-md-auto{% endif %} product-image-column ">
                 {% include 'snipplets/product/product-image.tpl' with {mobile: false} %}
                 {% include 'snipplets/product/product-image.tpl' with {mobile: true} %}
             </div>
-            <div class="{% if is_coach_layout %}col-md-4{% else %}col-md-auto{% endif %} product-info-column py-3" data-store="product-info-{{ product.id }}">
+            <div class="{% if is_coach_layout %}col-md-3{% else %}col-md-auto{% endif %} product-info-column py-3" data-store="product-info-{{ product.id }}">
                 {% include 'snipplets/product/product-form.tpl' %}
                 {% if not settings.full_width_description %}
                     {% include 'snipplets/product/product-description.tpl' %}
