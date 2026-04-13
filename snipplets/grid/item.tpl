@@ -91,11 +91,20 @@
                 {% set desktop_image_viewport_space = '50' %}
             {% endif %}
 
+            {# --- Selo NOVO: exibe se o produto foi criado há até 45 dias --- #}
+            {% set days_since_creation = ("now" | date("U") - product.created_at | date("U")) / 86400 %}
+            {% set is_new_product = days_since_creation <= 45 %}
+
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
                 {% set brand_product = product.brand %}
                 {% if brand_product %}
                     {% include 'snipplets/selo-brand.tpl' with {'product_brand': brand_product} %}
                 {% endif %}
+
+                {% if is_new_product and not reduced_item %}
+                    <div class="badge-novo" aria-label="Produto novo">NOVO</div>
+                {% endif %}
+
                 <div style="padding-bottom: {{ item_img_spacing }}%;" class="js-item-image-padding position-relative" data-store="product-item-image-{{ product.id }}">
                     <a class="" href="{{ product_url_with_selected_variant }}" title="{{ product.name }}" aria-label="{{ product.name }}" >
                         <img alt="{{ item_img_alt }}" data-expand="-10" src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ item_img_srcset | product_image_url('small')}} 240w, {{ item_img_srcset | product_image_url('medium')}} 320w, {{ item_img_srcset | product_image_url('large')}} 480w, {{ item_img_srcset | product_image_url('huge')}} 640w, {{ item_img_srcset | product_image_url('original')}} 1024w" class="js-item-image lazyautosizes lazyload img-absolute img-absolute-centered fade-in {% if show_secondary_image %}item-image-primary{% endif %}" width="{{ item_img_width }}" height="{{ item_img_height }}" sizes="(max-width: 768px) {{ mobile_image_viewport_space }}vw, (min-width: 769px) {{ desktop_image_viewport_space }}vw"/> 
