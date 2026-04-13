@@ -102,7 +102,7 @@
                 {% endif %}
 
                 {% if is_new_product and not reduced_item %}
-                    <div class="badge-novo" aria-label="Produto novo">NOVO</div>
+                    <div class="badge-novo{% if product.sku %} badge-novo--com-provador{% endif %}" aria-label="Produto novo">NOVO</div>
                 {% endif %}
 
                 <div style="padding-bottom: {{ item_img_spacing }}%;" class="js-item-image-padding position-relative" data-store="product-item-image-{{ product.id }}">
