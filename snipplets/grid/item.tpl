@@ -91,14 +91,15 @@
                 {% set desktop_image_viewport_space = '50' %}
             {% endif %}
 
-            {# --- Selo NOVO: exibe se produto foi criado há até 45 dias --- #}
-            {# DEBUG: inspecione o código-fonte da página para ver os valores reais #}
-            <!-- EORA_DEBUG product_id={{ product.id }} created_at_raw={{ product.created_at }} cutoff={{ "now - 45 days" | date("Y-m-d") }} product_date={{ product.created_at | date("Y-m-d") }} -->
-            {% set now_ts = "now" | date("U") %}
-            {% set prod_ts = product.created_at %}
-            {% set secs_old = now_ts - prod_ts %}
-            {% set is_new_product = prod_ts is not empty and secs_old > 0 and secs_old <= 3888000 %}
-
+            {# --- Selo NOVO: produtos marcados com a tag "novo" no painel Nuvemshop --- #}
+            {# Para exibir o selo: adicione a tag "novo" ao produto no painel             #}
+            {# Para remover o selo: remova a tag "novo" do produto                        #}
+            {% set is_new_product = false %}
+            {% for _tag in product.tags %}
+                {% if _tag.tag == 'novo' or _tag == 'novo' %}
+                    {% set is_new_product = true %}
+                {% endif %}
+            {% endfor %}
 
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
                 {% set brand_product = product.brand %}
