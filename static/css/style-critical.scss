@@ -6460,7 +6460,7 @@ input[type=number] {
 
 .badge-novo {
   position: absolute;
-  top: 5%;
+  top: calc(5% + 5px);
   left: 3%;
   z-index: 10;
   padding: 4px 9px;

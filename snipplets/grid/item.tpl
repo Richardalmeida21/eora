@@ -95,9 +95,8 @@
             {% set days_since_creation = ("now" | date("U") - product.created_at | date("U")) / 86400 %}
             {% set is_new_product = days_since_creation <= 45 %}
 
-            {# Detecta se é produto da linha LUAR com provador virtual (whitelist do JS EORA) #}
-            {% set sku_upper = product.sku | upper %}
-            {% set has_tryon = product.sku and ("LUAPC" in sku_upper or "LUAPREP" in sku_upper or "LUADM" in sku_upper) %}
+            {# Qualquer produto com SKU tem o btn-provador-virtual renderizado #}
+            {% set has_tryon = product.sku is not empty %}
 
             <div class="{% if show_secondary_image %}js-item-with-secondary-image{% endif %} item-image{% if columns == 1 %} item-image-big{% endif %}">
                 {% set brand_product = product.brand %}
