@@ -1,0 +1,37 @@
+/* Enhanced Payment Logos Styles */
+
+.payment-logo-enhanced {
+    transition: all 0.3s ease;
+    filter: brightness(1.1) contrast(1.05);
+}
+
+.payment-logo-enhanced:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2) contrast(1.1);
+}
+
+/* Ensure consistent sizing for enhanced logos */
+.footer-payments-shipping-logos .payment-logo-enhanced {
+    max-height: 32px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* High quality rendering */
+.payment-logo-enhanced {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+/* Loading state for enhanced logos */
+.payment-logo-enhanced[data-loading="true"] {
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+/* Success state after loading */
+.payment-logo-enhanced[data-enhanced="true"] {
+    opacity: 1;
+    filter: none;
+}

@@ -1,0 +1,147 @@
+best_sellers
+	name = Best Sellers
+	description = Os produtos mais vendidos (máximo de 40 produtos).
+favorites
+	name = Favoritos
+	description = Os produtos favoritos (máximo de 40 produtos).
+showcase
+	name = Primeira Vitrine de produtos
+	description = Carrossel de produtos (máximo de 40 produtos).
+showcase_02
+	name = Segunda Vitrine de produtos
+	description = Carrossel de produtos (máximo de 40 produtos).
+showcase_03
+	name = Terceira Vitrine de produtos
+	description = Carrossel de produtos (máximo de 40 produtos).
+picks_kings
+	name = Escolha da Loja
+	description = Os produtos escolhidos pela Loja (máximo de 40 produtos).
+look_01
+	name = Look 1
+	description = Os produtos do look 1 que aparece na página inicial (máximo de 10 produtos).
+look_02
+	name = Look 2
+	description = Os produtos do look 2 que aparece na página inicial (máximo de 10 produtos).
+look_03
+	name = Look 3
+	description = Os produtos do look 3 que aparece na página inicial (máximo de 10 produtos).
+campaign_page_01_fpc
+	name = Página de campanha 1, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 1, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_01_spc
+	name = Página de campanha 1, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 1, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_01_tpc
+	name = Página de campanha 1, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 1, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_01_qpc
+	name = Página de campanha 1, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 1, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_02_fpc
+	name = Página de campanha 2, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 2, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_02_spc
+	name = Página de campanha 2, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 2, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_02_tpc
+	name = Página de campanha 2, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 2, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_02_qpc
+	name = Página de campanha 2, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 2, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_03_fpc
+	name = Página de campanha 3, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 3, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_03_spc
+	name = Página de campanha 3, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 3, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_03_tpc
+	name = Página de campanha 3, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 3, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_03_qpc
+	name = Página de campanha 3, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 3, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_04_fpc
+	name = Página de campanha 4, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 4, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_04_spc
+	name = Página de campanha 4, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 4, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_04_tpc
+	name = Página de campanha 4, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 4, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_04_qpc
+	name = Página de campanha 4, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 4, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_05_fpc
+	name = Página de campanha 5, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 5, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_05_spc
+	name = Página de campanha 5, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 5, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_05_tpc
+	name = Página de campanha 5, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 5, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_05_qpc
+	name = Página de campanha 5, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 5, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_06_fpc
+	name = Página de campanha 6, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 6, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_06_spc
+	name = Página de campanha 6, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 6, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_06_tpc
+	name = Página de campanha 6, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 6, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_06_qpc
+	name = Página de campanha 6, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 6, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_07_fpc
+	name = Página de campanha 7, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 7, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_07_spc
+	name = Página de campanha 7, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 7, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_07_tpc
+	name = Página de campanha 7, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 7, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_07_qpc
+	name = Página de campanha 7, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 7, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_08_fpc
+	name = Página de campanha 8, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 8, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_08_spc
+	name = Página de campanha 8, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 8, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_08_tpc
+	name = Página de campanha 8, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 8, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_08_qpc
+	name = Página de campanha 8, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 8, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_09_fpc
+	name = Página de campanha 9, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 9, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_09_spc
+	name = Página de campanha 9, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 9, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_09_tpc
+	name = Página de campanha 9, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 9, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_09_qpc
+	name = Página de campanha 9, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 9, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_10_fpc
+	name = Página de campanha 10, primeiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_10_spc
+	name = Página de campanha 10, segundo carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_10_tpc
+	name = Página de campanha 10, terceiro carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).
+campaign_page_10_qpc
+	name = Página de campanha 10, quarto carrossel de produtos
+	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).

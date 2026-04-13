@@ -1,0 +1,51 @@
+
+Presenteaveis Eora
+	i18n_input
+		name = gift_guide_page_url
+		description = Página associada
+	collapse
+		title = Configuração dos Banners
+	
+	title
+		title = Slider Principal (Hero)
+	gallery
+		name = gift_guide_hero_slider
+		gallery_image = Adicionar Imagem Desktop
+		gallery_link = Link do Banner
+		gallery_width = 1920
+		gallery_height = 600
+		gallery_more_info = true
+	
+	checkbox
+		name = gift_guide_hero_mobile_active
+		description = Usar imagens diferentes para mobile
+	gallery
+		name = gift_guide_hero_slider_mobile
+		gallery_image = Adicionar Imagem Mobile
+		gallery_link = Link do Banner Mobile
+		gallery_width = 600
+		gallery_height = 800
+		gallery_more_info = true
+
+	title
+		title = Grade de Banners (Ilimitado)
+	description
+		description = IMPORTANTE: A "Descrição" de cada banner será usada como mensagem institucional antes dos produtos quando o cliente clicar naquela categoria.
+	gallery
+		name = gift_guide_banners
+		gallery_image = Adicionar Banner Desktop
+		gallery_link = Link do Banner
+		gallery_width = 800
+		gallery_height = 800
+		gallery_more_info = true
+
+	checkbox
+		name = gift_guide_banners_mobile_active
+		description = Usar imagens diferentes para mobile na grade
+	gallery
+		name = gift_guide_banners_mobile
+		gallery_image = Adicionar Banner Mobile
+		gallery_link = Link do Banner
+		gallery_width = 400
+		gallery_height = 400
+		gallery_more_info = true
