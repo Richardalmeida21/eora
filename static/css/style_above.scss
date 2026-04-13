@@ -1692,26 +1692,26 @@ body:not(.template-home) header.js-head {
 
 
 
+
 /* Custom Coach Layout overrides */
 .coach-style-layout {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: flex-start !important;
-    gap: 20px !important;
+    gap: 30px !important;
     padding: 0 !important;
-    margin: 0 !important; /* Resetting all margins to kill the huge gap */
+    margin: 0 !important;
+    width: 100% !important;
 
     @media (min-width: 768px) {
         .custom-thumbnails-container {
-            position: relative !important; /* Not sticky! Stays with the image */
             width: 80px !important;
+            flex-shrink: 0 !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            flex-shrink: 0 !important;
-            z-index: 10 !important;
-            margin-top: 0 !important;
+            z-index: 5 !important;
         }
 
         .custom-thumbnails-strip {
@@ -1723,20 +1723,16 @@ body:not(.template-home) header.js-head {
             overflow-y: hidden !important; 
             scrollbar-width: none !important;
             scroll-behavior: smooth;
-            background: transparent !important;
-            &::-webkit-scrollbar { display: none !important; }
         }
         
         .thumb-nav-arrow {
-            width: 40px !important;
+            width: 30px !important;
             height: 30px !important;
             background: none !important;
             border: none !important;
             cursor: pointer !important;
-            color: #bbb !important;
+            color: #999 !important;
             padding: 5px !important;
-            transition: color 0.2s;
-            &:hover { color: #000 !important; }
             svg { width: 100% !important; height: 100% !important; }
         }
 
@@ -1744,24 +1740,22 @@ body:not(.template-home) header.js-head {
             width: 100% !important;
             cursor: pointer !important;
             border: 1px solid #eee !important;
-            transition: border 0.3s !important;
             background: #fff !important;
             padding: 2px !important;
-            border-radius: 0 !important;
-            
-            img { width: 100% !important; height: auto !important; display: block !important; border-radius: 0 !important; }
+            img { width: 100% !important; height: auto !important; display: block !important; }
             &.active, &:hover { border-color: #000 !important; }
         }
         
         .product-detail-slider {
-            flex: 1 !important;
-            min-width: 0 !important;
+            flex: 0 0 calc(100% - 130px) !important; /* Forces it to NOT overlap */
+            max-width: 500px !important; /* Shrink the image significantly as requested */
             visibility: visible !important;
             height: auto !important;
             transform: none !important;
             margin: 0 !important;
             padding: 0 !important;
-            display: block !important;
+            position: relative !important;
+            left: 0 !important;
             
             .swiper-wrapper {
                 display: block !important;
@@ -1782,50 +1776,30 @@ body:not(.template-home) header.js-head {
                 
                 &.coach-slide-active {
                     display: block !important;
-                    animation: fadeInCoach 0.4s ease;
                 }
             }
         }
     }
 }
 
-/* Forcing common parent to have zero top padding for Coach layout */
 .product-image-column {
     padding-top: 0 !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    max-width: 100% !important;
 }
 
 .js-coach-variant-square {
     width: 64px !important;
     height: 64px !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
     display: flex !important;
-    align-items: center;
-    justify-content: center;
-    border: none !important;
-    
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 0 !important;
-    }
+    img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
 }
 .coach-layout-swatch {
     border: 1px solid #ddd !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
     margin: 0 5px 5px 0 !important;
-    transition: all .2s !important;
     background: #fff !important;
-    overflow: hidden;
     height: 68px !important;
     width: 68px !important;
-    
     &.selected, &:hover { border-color: #000 !important; border-width: 2px; }
-}
-
-@keyframes fadeInCoach {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
