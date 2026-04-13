@@ -14,7 +14,7 @@
         {% if is_coach_layout and not mobile and product.images_count > 1 %}
             <div class="custom-thumbnails-strip">
                 {% for image in product.images %}
-                    <button class="custom-thumb {% if loop.first %}active{% endif %}" onclick="document.querySelectorAll('.product-detail-slider .swiper-slide')[{{ loop.index0 }}].scrollIntoView({behavior: 'smooth', block: 'start'})">
+                    <button class="custom-thumb {% if loop.first %}active{% endif %}" >
                         <img src="{{ image | product_image_url('tiny') }}" />
                     </button>
                 {% endfor %}
@@ -22,22 +22,31 @@
             <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var strip = document.querySelector('.custom-thumbnails-strip');
-                var slider = document.querySelector('.product-detail-slider');
+                var slider = document.querySelector('.js-swiper-product');
+                if (!slider) slider = document.querySelector('.product-detail-slider');
+
                 if (strip && slider) {
-                    var slides = slider.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)');
-                    var observer = new IntersectionObserver(function(entries) {
-                        entries.forEach(function(entry) {
-                            if (entry.isIntersecting) {
-                                var idx = Array.from(slides).indexOf(entry.target);
-                                if(idx === -1) return;
-                                var thumbs = strip.querySelectorAll('.custom-thumb');
-                                thumbs.forEach(function(t) { t.classList.remove('active'); });
-                                if(thumbs[idx]) thumbs[idx].classList.add('active');
+                    var thumbs = strip.querySelectorAll('.custom-thumb');
+                    
+                    thumbs.forEach(function(thumb, index) {
+                        thumb.addEventListener('click', function() {
+                            if (slider.swiper) {
+                                slider.swiper.slideToLoop(index);
                             }
                         });
-                    }, { threshold: 0.5 });
-                    slides.forEach(function(s){ observer.observe(s); });
-                    setTimeout(function(){ if(slider.swiper) slider.swiper.destroy(true,true); }, 500);
+                    });
+
+                    // Wait for Swiper to initialize
+                    var checkSwiper = setInterval(function() {
+                        if (slider.swiper && slider.swiper.initialized) {
+                            clearInterval(checkSwiper);
+                            slider.swiper.on('slideChange', function() {
+                                var realIndex = slider.swiper.realIndex;
+                                thumbs.forEach(function(t) { t.classList.remove('active'); });
+                                if (thumbs[realIndex]) thumbs[realIndex].classList.add('active');
+                            });
+                        }
+                    }, 200);
                 }
             });
             </script>
