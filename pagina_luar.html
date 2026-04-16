@@ -134,9 +134,12 @@
                  '.eora-tip-card-close{position:absolute!important;top:50%!important;right:15px!important;transform:translateY(-50%)!important;cursor:pointer!important;opacity:0.3!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;width:20px!important;height:20px!important;visibility:visible!important}',
                  '.eora-tip-card-close:hover{opacity:1!important}'
             ].join('');
-            var st = document.createElement('style');
-            st.textContent = css;
-            document.head.appendChild(st);
+            // Só injeta CSS na página real do produto Luar (não em grids/home)
+            if (/\/produtos\/luar\/?(\?|$)/.test(window.location.pathname + window.location.search) || document.querySelector('#single-product') || document.body.classList.contains('template-product')) {
+                var st = document.createElement('style');
+                st.textContent = css;
+                document.head.appendChild(st);
+            }
             function init() {
 
                 function getSrc(img) {
@@ -1714,8 +1717,8 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 <td style="padding: 6px; font-size: 11px;">&nbsp;</td>
 <td style="padding: 6px; font-size: 11px;">&nbsp;</td>
 <td style="padding: 6px; font-size: 11px;">&nbsp;</td>
-<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
-<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">https://vimeo.com/1183836954</td>
+<td style="padding: 6px; font-size: 11px;">https://vimeo.com/1183836954</td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #555; font-weight: bold; vertical-align: top;">descricao_video</td>
@@ -1729,8 +1732,12 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 <div style="text-align: center; font-size: 14px; line-height: 1.8; color: #000;">Texto da variante 3</div>
 </td>
 <td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
-<td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
-<td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">
+<div style="text-align: center; font-size: 16px; line-height: 1.8; color: #000;"><strong>Lentes fotocrom&aacute;ticas</strong><br /><br />As lentes foto-espelhadas EORA unem a tecnologia fotocrom&aacute;tica ao acabamento espelhado, acompanhando diferentes momentos do dia com praticidade, prote&ccedil;&atilde;o e presen&ccedil;a. Em ambientes internos, mant&ecirc;m um leve tom espelhado. Sob a luz natural, ativam um espelhamento mais intenso, revelando um visual marcante e fashion.<br /><br /><strong>Prote&ccedil;&atilde;o e vers&otilde;es</strong><br /><br />Bloqueio 100% contra raios UVA e UVB. Dispon&iacute;veis nas vers&otilde;es Prata e Rosa.</div>
+</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">
+<div style="text-align: center; font-size: 16px; line-height: 1.8; color: #000;"><strong>Lentes fotocrom&aacute;ticas</strong><br /><br />As lentes foto-espelhadas EORA unem a tecnologia fotocrom&aacute;tica ao acabamento espelhado, acompanhando diferentes momentos do dia com praticidade, prote&ccedil;&atilde;o e presen&ccedil;a. Em ambientes internos, mant&ecirc;m um leve tom espelhado. Sob a luz natural, ativam um espelhamento mais intenso, revelando um visual marcante e fashion.<br /><br /><strong>Prote&ccedil;&atilde;o e vers&otilde;es</strong><br /><br />Bloqueio 100% contra raios UVA e UVB. Dispon&iacute;veis nas vers&otilde;es Prata e Rosa.</div>
+</td>
 </tr>
 </tbody>
 </table>

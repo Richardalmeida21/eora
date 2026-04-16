@@ -340,7 +340,36 @@
                 }
                 return '';
             }
+            // Mapa: slug do fake product → SKU real da variante Luar
+            var LUAR_SKU_MAP = {
+                'luar-copia': 'LUADC',   // Dourado/Preto
+                'luar3':      'LUAPRF',  // Prata/Rosa Fotocromática
+                'luar2':      'LUAPCF'   // Prata/Prata Fotocromática
+            };
+
+            // Corrige o data-mkfashion-identifier dos botões provador nos cards fake
+            function fixLuarProvadorIdentifiers() {
+                document.querySelectorAll('.js-item-product, .item-product').forEach(function(item) {
+                    var link = item.querySelector('a[href]');
+                    if (!link) return;
+                    try {
+                        var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
+                        var realSku = LUAR_SKU_MAP[slug];
+                        if (!realSku) return;
+                        var btn = item.querySelector('.js-btn-provador-virtual');
+                        if (btn) btn.setAttribute('data-mkfashion-identifier', realSku);
+                    } catch(e) {}
+                });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fixLuarProvadorIdentifiers);
+            } else {
+                fixLuarProvadorIdentifiers();
+            }
+
             document.addEventListener('click', function(e) {
+                // Não intercepta cliques no botão do provador virtual
+                if (e.target.closest('.js-btn-provador-virtual')) return;
                 var item = e.target.closest('.js-item-product, .item-product');
                 if (!item) return;
                 var link = item.querySelector('a[href]');
