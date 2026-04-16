@@ -323,6 +323,15 @@
 
             // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?v=
             var URL_LUAR = 'https://www.eoraeyewear.com/produtos/luar/';
+            var CORES_LUAR = ['prata', 'preto', 'dourado', 'cinza', 'rose', 'rosé', 'azul', 'verde', 'branco'];
+            function extrairCorDeTexto(txt) {
+                if (!txt) return '';
+                var t = txt.toLowerCase();
+                for (var i = 0; i < CORES_LUAR.length; i++) {
+                    if (t.indexOf(CORES_LUAR[i]) !== -1) return CORES_LUAR[i];
+                }
+                return '';
+            }
             document.addEventListener('click', function(e) {
                 var item = e.target.closest('.js-item-product, .item-product');
                 if (!item) return;
@@ -333,20 +342,20 @@
                     if (caminho.startsWith('/produtos/luar') && caminho !== '/produtos/luar' && caminho !== '/produtos/luar/') {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-                        // Lê o nome do produto no card para extrair a cor
-                        var nomeEl = item.querySelector('.item-name, .js-item-name, h3, h2, [class*="name"]');
-                        var nome = nomeEl ? nomeEl.textContent.toLowerCase() : '';
                         var cor = '';
-                        var cores = ['prata', 'preto', 'dourado', 'cinza', 'rosé', 'rose', 'azul', 'verde', 'branco'];
-                        for (var ci = 0; ci < cores.length; ci++) {
-                            if (nome.indexOf(cores[ci]) !== -1) { cor = cores[ci]; break; }
-                        }
-                        // Normaliza sufixo de gênero (preta→preto)
+                        // 1. Tenta pelo nome do produto
+                        var nomeEl = item.querySelector('.js-item-name, .item-name');
+                        cor = extrairCorDeTexto(nomeEl ? nomeEl.textContent : '');
+                        // 2. Tenta pelo src da imagem do card
                         if (!cor) {
-                            var coresNorm = ['prat', 'pret', 'dour', 'cinz'];
-                            for (var cni = 0; cni < coresNorm.length; cni++) {
-                                if (nome.indexOf(coresNorm[cni]) !== -1) { cor = coresNorm[cni]; break; }
-                            }
+                            var img = item.querySelector('img[src], img[data-src]');
+                            var imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
+                            cor = extrairCorDeTexto(imgSrc);
+                        }
+                        // 3. Tenta pelo alt da imagem
+                        if (!cor) {
+                            var imgAlt = img ? img.getAttribute('alt') || '' : '';
+                            cor = extrairCorDeTexto(imgAlt);
                         }
                         window.location.href = URL_LUAR + (cor ? '?v=' + encodeURIComponent(cor) : '');
                     }

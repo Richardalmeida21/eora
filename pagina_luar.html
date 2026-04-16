@@ -902,37 +902,47 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                         var params = new URLSearchParams(window.location.search);
                         var vParam = (params.get('v') || '').toLowerCase().trim();
                         if (!vParam || !cards.length) return;
-                        // Normaliza sufixos de gênero em português (preto/preta → pret, prata → prat)
-                        function norm(str) { return str.toLowerCase().replace(/[ao]$/, ''); }
+                        function norm(str) { return str.replace(/[ao]$/, '').toLowerCase(); }
                         var vNorm = norm(vParam);
                         function tentarSelecionar() {
+                            // Estratégia 1: lê o src da imagem do card (mais confiável)
+                            for (var ci = 0; ci < cards.length; ci++) {
+                                var img = cards[ci].querySelector('img:not(.eora-img-hover)');
+                                if (!img) continue;
+                                var srcNorm = norm((img.src || img.getAttribute('src') || '').toLowerCase());
+                                if (srcNorm.indexOf(vNorm) !== -1) {
+                                    if (parseInt(cards[ci].getAttribute('data-idx')) !== activeIdx) {
+                                        cards[ci].click();
+                                    }
+                                    return true;
+                                }
+                            }
+                            // Estratégia 2: fallback por LS.variants (índice pode não coincidir)
                             if (typeof LS === 'undefined' || !LS.variants) return false;
                             for (var vi = 0; vi < LS.variants.length; vi++) {
                                 var vv = LS.variants[vi];
                                 var optsArr = [(vv.option0||''),(vv.option1||''),(vv.option2||'')];
-                                var match = false;
+                                var matched = false;
                                 for (var oi = 0; oi < optsArr.length; oi++) {
                                     var optNorm = norm(optsArr[oi]);
                                     if (!optNorm) continue;
-                                    // Exact normalized match ou substring
                                     if (optNorm === vNorm || optNorm.indexOf(vNorm) !== -1 || vNorm.indexOf(optNorm) !== -1) {
-                                        match = true; break;
+                                        matched = true; break;
                                     }
                                 }
-                                if (match) {
+                                if (matched) {
                                     var alvo = el.querySelector('.eora-pp-variante-item[data-idx="' + vi + '"]');
-                                    if (alvo) { alvo.click(); return true; }
+                                    if (alvo && vi !== activeIdx) { alvo.click(); return true; }
                                 }
                             }
                             return false;
                         }
-                        if (!tentarSelecionar()) {
-                            var tentativas = 0;
-                            var poll = setInterval(function() {
-                                tentativas++;
-                                if (tentarSelecionar() || tentativas > 20) clearInterval(poll);
-                            }, 300);
-                        }
+                        // Aguarda os cards estarem visíveis antes de tentar
+                        var tentativas = 0;
+                        var poll = setInterval(function() {
+                            tentativas++;
+                            if (tentarSelecionar() || tentativas > 30) clearInterval(poll);
+                        }, 200);
                     })();
                 }
                 if (dados['texto_campanha']) {
