@@ -323,6 +323,11 @@
 
             // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?v=
             var URL_LUAR = 'https://www.eoraeyewear.com/produtos/luar/';
+            // Mapa fixo: slug do produto fictício → cor da variante no Luar
+            var LUAR_SLUG_MAP = {
+                'luar-1rh88': 'prata',
+                'luar1':      'preto'
+            };
             var CORES_LUAR = ['prata', 'preto', 'dourado', 'cinza', 'rose', 'rosé', 'azul', 'verde', 'branco'];
             function extrairCorDeTexto(txt) {
                 if (!txt) return '';
@@ -338,24 +343,22 @@
                 var link = item.querySelector('a[href]');
                 if (!link) return;
                 try {
-                    var caminho = new URL(link.href, window.location.origin).pathname.toLowerCase();
-                    if (caminho.startsWith('/produtos/luar') && caminho !== '/produtos/luar' && caminho !== '/produtos/luar/') {
+                    var caminho = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '');
+                    if (caminho.startsWith('/produtos/luar') && caminho !== '/produtos/luar') {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-                        var cor = '';
-                        // 1. Tenta pelo nome do produto
-                        var nomeEl = item.querySelector('.js-item-name, .item-name');
-                        cor = extrairCorDeTexto(nomeEl ? nomeEl.textContent : '');
-                        // 2. Tenta pelo src da imagem do card
+                        var slug = caminho.replace('/produtos/', '');
+                        var cor = LUAR_SLUG_MAP[slug] || '';
+                        // Fallback: nome do produto
+                        if (!cor) {
+                            var nomeEl = item.querySelector('.js-item-name, .item-name');
+                            cor = extrairCorDeTexto(nomeEl ? nomeEl.textContent : '');
+                        }
+                        // Fallback: imagem
                         if (!cor) {
                             var img = item.querySelector('img[src], img[data-src]');
                             var imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
                             cor = extrairCorDeTexto(imgSrc);
-                        }
-                        // 3. Tenta pelo alt da imagem
-                        if (!cor) {
-                            var imgAlt = img ? img.getAttribute('alt') || '' : '';
-                            cor = extrairCorDeTexto(imgAlt);
                         }
                         window.location.href = URL_LUAR + (cor ? '?v=' + encodeURIComponent(cor) : '');
                     }
