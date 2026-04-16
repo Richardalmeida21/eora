@@ -321,12 +321,23 @@
 
             });
 
-            // Intercepta clique no "Comprar Agora" dos cards LUAR fake → redireciona pra página LUAR
+            // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?v=
             var URL_LUAR = 'https://www.eoraeyewear.com/produtos/luar/';
+            function luarSlugParaVariante(caminho) {
+                var base = '/produtos/luar';
+                var c = caminho.replace(/\/$/, '').toLowerCase();
+                if (c.startsWith(base) && c !== base) {
+                    // Remove o prefixo base e qualquer separador inicial
+                    var slug = c.slice(base.length).replace(/^[-_]/, '');
+                    // Remove sufixo de ID numérico/alfanumérico (ex: -1rh88 no final)
+                    slug = slug.replace(/-[a-z0-9]{4,}$/i, '');
+                    return slug.trim();
+                }
+                return '';
+            }
             document.addEventListener('click', function(e) {
-                var buyBtn = e.target.closest('.js-addtocart, .btn-add-to-cart, [data-component="product.add-to-cart"]');
-                if (!buyBtn) return;
-                var item = buyBtn.closest('.js-item-product, .item-product');
+                // Clique em qualquer elemento dentro do card (imagem, botão, link)
+                var item = e.target.closest('.js-item-product, .item-product');
                 if (!item) return;
                 var link = item.querySelector('a[href]');
                 if (!link) return;
@@ -335,7 +346,8 @@
                     if (caminho.startsWith('/produtos/luar') && caminho !== '/produtos/luar' && caminho !== '/produtos/luar/') {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-                        window.location.href = URL_LUAR;
+                        var slug = luarSlugParaVariante(caminho);
+                        window.location.href = URL_LUAR + (slug ? '?v=' + encodeURIComponent(slug) : '');
                     }
                 } catch(err) {}
             }, true);

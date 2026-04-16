@@ -1,0 +1,2273 @@
+<!-- ============================================================
+     TEMPLATE PERSONALIZÃVEL - PÃGINA DE PRODUTO EORA (Ã“CULOS)
+     Cole este cÃ³digo no campo "CÃ³digo-Fonte" da descriÃ§Ã£o
+     do produto na Nuvemshop.
+     ============================================================ -->
+<p><!-- mKFashion SDK -->
+<script src="https://unpkg.com/mkfashion-sdk/src/mkfashion.js"></script>
+<script>
+        (function () {
+            var css = [
+                '.js-product-description-base{display:none!important}',
+                '.js-banner-produto,.js-variantes-produto,.js-sequencia-fotos-produto,.js-texto-campanha-produto{display:none!important}',
+                '.js-add-to-wishlist,.js-wishlist-button,.product-wishlist,.wishlist-btn,.js-product-wishlist,[data-js="wishlist"],[class*="wishlist"],[class*="favorite"]{display:none!important}',
+                '[data-store="home-institutional-message"]:not(#eora-injected-campanha){display:none!important}',
+                'html,body{overflow-x:hidden!important}',
+                '#single-product .container-fluid{padding:0!important;max-width:100%!important}',
+                '#single-product .product-image-column{display:none!important}',
+                '#single-product .product-info-column{height:0!important;min-height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;border:none!important}',
+                '#eora-hero{position:relative!important;width:100vw!important;max-width:100vw!important;overflow:hidden!important;background:#f5f5f3!important;height:78vh!important;margin-left:0!important;transition:height 0.4s cubic-bezier(0.25, 1, 0.5, 1)!important}',
+                '#eora-hero img.eora-hero-img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;display:block!important;image-rendering:-webkit-optimize-contrast!important;image-rendering:crisp-edges!important;-ms-interpolation-mode:bicubic!important;backface-visibility:hidden!important;transform:translateZ(0)!important}',
+                '#single-product .product-info-column h1{font-size:26px!important;letter-spacing:5px!important;font-weight:700!important;text-transform:uppercase!important;color:#111!important;margin:4px 0!important;text-align:center!important}',
+                '#single-product .product-info-column .product-price{font-size:13px!important;letter-spacing:2px!important;color:#333!important;margin:8px 0 0!important},',
+                '.eora-pp-variantes{box-sizing:border-box!important;padding:0!important;background:#fff!important}',
+                '.eora-pp-variantes-titulo{font-size:11px!important;letter-spacing:8px!important;text-transform:uppercase!important;color:#555!important;text-align:center!important;margin:0!important;padding:40px 0 24px!important;font-weight:700!important}',
+                '.eora-pp-variantes-grid{display:grid!important;width:100%!important;gap:4px!important;grid-template-columns:repeat(3,1fr)!important;background:#fff!important}',
+                '.eora-pp-variante-item{overflow:hidden!important;background:transparent!important;display:none!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;opacity:0!important;transition:opacity 0.35s ease!important}',
+                '.eora-pp-variante-item.eora-var-visible{display:flex!important;opacity:0!important}',
+                '.eora-pp-variante-item.eora-var-visible.eora-var-shown{opacity:1!important}',
+                '.eora-pp-variante-item.eora-ativa{border-bottom:3px solid #111!important}',
+                '.eora-pp-variante-img{width:100%!important;line-height:0!important;padding:32px 20px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;overflow:hidden!important}',
+                '.eora-pp-variante-img img{width:100%!important;height:auto!important;display:block!important;border:none!important;transition:opacity .4s ease-important}',
+                '.eora-pp-variante-img img.eora-img-hover{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;padding:32px 20px!important;object-fit:contain!important;box-sizing:border-box!important;transform:none!important;opacity:0!important}',
+                '.eora-pp-variante-item:hover .eora-pp-variante-img img:not(.eora-img-hover){opacity:0!important}',
+                '.eora-pp-variante-item:hover .eora-pp-variante-img img.eora-img-hover{opacity:1!important}',
+                '.eora-pp-variante-fotos{width:100%!important;margin-top:40px!important;overflow-x:hidden!important;padding:0!important;box-sizing:border-box!important}',
+                '.eora-pp-vf-grid{display:grid!important;width:100%!important;grid-template-columns:1fr 1fr!important;gap:4px!important}',
+                '.eora-pp-vf-item{overflow:hidden!important;min-height:320px!important}',
+                '.eora-pp-vf-wrapper{position:relative!important;width:100%!important}',
+                '.eora-vf-arrow{touch-action:manipulation!important;display:none!important;position:absolute!important;top:50%!important;transform:translateY(-50%)!important;background:rgba(255,255,255,0.85)!important;border:none!important;border-radius:50%!important;width:44px!important;height:44px!important;cursor:pointer!important;z-index:90!important;align-items:center!important;justify-content:center!important;box-shadow:0 1px 4px rgba(0,0,0,0.15)!important;padding:0!important}',
+                '.eora-vf-prev{left:10px!important}',
+                '.eora-vf-next{right:10px!important}',
+                '.eora-vf-arrow svg{width:18px!important;height:18px!important;fill:#111!important;display:block!important;pointer-events:none!important}',
+                '.eora-pp-vf-item.eora-pp-vf-large{width:100%!important;grid-column:1/-1!important;margin-top:4px!important}',
+                '@media(max-width:1024px){.eora-pp-variante-fotos{margin-top:0!important;padding:0!important}.eora-pp-vf-wrapper{position:relative!important;width:100%!important;max-width:100%!important;overflow:hidden!important;box-sizing:border-box!important;padding:0!important;margin-left:0!important;margin-right:0!important}.eora-pp-vf-grid{display:block!important;width:100%!important;padding:0!important;margin:0!important;box-sizing:border-box!important}.eora-pp-vf-item{display:none!important;width:100%!important;max-width:100%!important;min-height:75vw!important;padding:0!important;margin:0!important;box-sizing:border-box!important}.eora-pp-vf-item.eora-carousel-active{display:block!important}.eora-vf-arrow{display:flex!important}.eora-pp-vf-item.eora-pp-vf-large{display:block!important;width:100%!important;height:85vw!important;min-height:85vw!important;margin-top:4px!important}}',  
+                '#eora-zoom-overlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);z-index:9999999;align-items:center;justify-content:center;touch-action:none}',
+                '#eora-zoom-overlay.eora-zoom-open{display:flex}',
+                '#eora-zoom-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform 0.25s ease;user-select:none;pointer-events:none}',
+                '#eora-zoom-close{position:absolute;top:16px;right:16px;width:36px;height:36px;background:rgba(255,255,255,0.15);border:none;border-radius:50%;color:#fff;font-size:20px;line-height:36px;text-align:center;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center}',
+                '.eora-pp-vf-item img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;cursor:pointer!important}',
+                '.eora-pp-campanha{padding:64px 20px!important;max-width:780px!important;margin:0 auto!important;box-sizing:border-box!important}',
+                '.eora-pp-campanha-texto{font-size:14px!important;line-height:1.9!important;color:#333!important;margin:0 0 16px!important;font-weight:400!important}',
+                '.eora-pp-campanha-assinatura{font-size:12px!important;color:#999!important;font-style:italic!important;letter-spacing:1px!important;margin:0!important}',
+                '.eora-pp-label{font-size:13px!important;letter-spacing:8px!important;text-transform:uppercase!important;color:#555!important;margin:0 0 16px!important;font-weight:700!important;display:block!important}',
+                '.eora-pp-detalhe{font-size:12px!important;letter-spacing:3px!important;color:#333!important;margin:5px 0!important;font-weight:400!important;display:block!important}',
+                '.eora-pp-btn{display:inline-block!important;margin-top:28px!important;padding:0!important;background:transparent!important;color:#111!important;font-size:10px!important;letter-spacing:4px!important;text-transform:uppercase!important;text-decoration:underline!important;text-underline-offset:5px!important;font-weight:400!important;cursor:pointer!important;border:none!important}',
+                '.eora-pp-btn:hover{color:#555!important}',
+                '#eora-hero, #eora-hero *, .eora-pp-variantes, .eora-pp-variantes *, .eora-pp-campanha, .eora-pp-campanha *, .eora-pp-alternados, .eora-pp-alternados *, .eora-pp-video-secao, .eora-pp-video-secao *, .eora-floating-bar, .eora-floating-bar *, #eora-purchase-overlay, #eora-purchase-overlay *{font-family:var(--body-font, "Hanken Grotesk", sans-serif)!important}',
+                '#eora-buy-form-container .js-shipping-calculator, #eora-buy-form-container #shipping-calculator, #eora-buy-form-container [id*="shipping"], #eora-buy-form-container .js-product-variants, #eora-buy-form-container .product-variants{display:none!important}',
+                '.js-addtocart, .js-prod-submit-form, input.js-addtocart, button.js-addtocart, .js-restock-notification, .js-restock-notification-form{display:none!important}',
+                '#eora-hero-actions{display:flex!important;width:100%!important;flex-direction:column!important;align-items:center!important;gap:10px!important}',
+                '#eora-fake-buy-btn{display:block!important;width:100%!important;max-width:300px!important;z-index:20!important}',
+                '#eora-hero-desc-content, #eora-hero-desc-content *{background-color:transparent!important;color:#111!important;font-weight:700!important}',
+                '.js-product-description-base iframe[src*="vimeo"], .js-product-description-base iframe[src*="youtube"], .product-video-container, .js-video, .js-product-video, [data-store="product-video"]{display:none!important}',
+                '.eora-pp-alternados{width:100%!important;max-width:1200px!important;margin:60px auto 100px!important;display:flex!important;flex-direction:column!important;gap:70px!important}',
+                '.eora-pp-alt-row{display:flex!important;width:100%!important;align-items:center!important;gap:60px!important}',
+                '.eora-pp-alt-row:nth-child(even){flex-direction:row-reverse!important}',
+                '.eora-pp-alt-text{flex:1!important;padding:20px 40px!important;box-sizing:border-box!important;text-align:center!important}',
+                '.eora-pp-alt-img{flex:1!important;line-height:0!important}',
+                '.eora-pp-alt-img img{width:100%!important;height:100%!important;max-height:550px!important;display:block!important;object-fit:cover!important}',
+                '.eora-pp-alt-text h2{font-size:16px!important;letter-spacing:4px!important;text-transform:uppercase!important;margin:0 0 24px!important;font-weight:700!important;color:#111!important}',
+                '.eora-pp-alt-text p, .eora-pp-alt-text span{font-size:14px!important;line-height:1.8!important;color:#444!important;margin:0!important;font-weight:400!important}',
+                '.eora-experiencia-titulo{width:100%!important;text-align:center!important;font-size:24px!important;letter-spacing:10px!important;text-transform:uppercase!important;font-weight:700!important;color:#111!important;margin:80px 0 40px!important;padding-top:60px!important}',
+                '.eora-pp-video-secao{display:flex!important;width:100%!important;align-items:stretch!important;min-height:520px!important;overflow:hidden!important;margin:60px 0 0!important}',
+                '.eora-var-video-secao{margin-bottom:60px!important}',
+                '.eora-pp-video-texto{flex:1!important;padding:60px 70px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;text-align:center!important;background:#fff!important}',
+                '.eora-pp-video-embed{flex:1!important;position:relative!important;min-height:520px!important;line-height:0!important;overflow:hidden!important;background:transparent!important}',
+                '.eora-pp-video-embed iframe{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;border:none!important;display:block!important;object-fit:cover!important}',
+                '@media(max-width:767px){#eora-hero{height:75vh!important}#eora-banner-overlay{padding:0 20px 40px!important}#eora-banner-overlay h2{font-size:22px!important;letter-spacing:3px!important;margin:6px 0!important}.eora-pp-label{font-size:10px!important;letter-spacing:6px!important}.eora-pp-detalhe{font-size:11px!important;letter-spacing:2px!important}.eora-pp-variantes-grid{grid-template-columns:repeat(3,1fr)!important}.eora-pp-vf-grid{grid-template-columns:1fr!important}.eora-pp-vf-item{min-height:60vw!important}.eora-pp-vf-item:nth-child(3){grid-column:1!important;min-height:60vw!important}.eora-pp-campanha{padding:40px 16px!important}.eora-pp-alt-row,.eora-pp-alt-row:nth-child(even){flex-direction:column-reverse!important;gap:24px!important}.eora-pp-alt-text{padding:0 20px!important}.eora-pp-alternados{gap:80px!important}.eora-pp-video-secao{flex-direction:column-reverse!important;min-height:auto!important}.eora-pp-video-texto{padding:32px 20px!important}.eora-pp-video-embed{width:100%!important;min-height:56vw!important}.eora-pp-variante-item{background:transparent!important}.eora-pp-variante-img{padding:0!important}.eora-pp-variante-img img.eora-img-hover{padding:0!important}}',
+                '.eora-var-carousel-wrap{position:relative!important;width:100%!important}',
+                '.eora-var-arrow{display:flex!important;position:absolute!important;top:50%!important;transform:translateY(-50%)!important;z-index:10!important;background:rgba(255,255,255,0.9)!important;border:1px solid #ddd!important;border-radius:50%!important;width:32px!important;height:32px!important;cursor:pointer!important;align-items:center!important;justify-content:center!important;padding:0!important;line-height:0!important}',
+                '.eora-var-arrow svg{width:14px!important;height:14px!important;fill:none!important;stroke:#111!important;stroke-width:2.5px!important;stroke-linecap:round!important;stroke-linejoin:round!important}',
+                '.eora-var-prev{left:4px!important}.eora-var-next{right:4px!important}',
+                '@media(max-width:767px){.eora-var-arrow{display:flex!important}}',
+                '.eora-floating-bar{position:fixed!important;bottom:20px!important;left:50%!important;transform:translateX(-50%)!important;background:#fff!important;border-radius:3px!important;box-shadow:0 2px 12px rgba(0,0,0,0.12)!important;padding:4px!important;display:flex!important;align-items:center!important;gap:4px!important;z-index:900!important;transition:transform 0.3s ease,opacity 0.3s ease!important}',
+                '#modal-cart, .modal-right, .js-ajax-cart-container, .js-modal, .modal, .modal-backdrop{z-index:999999!important}',
+                '.eora-floating-bar.eora-hidden, body.modal-open .eora-floating-bar, body.ajax-cart-open .eora-floating-bar, body.side-cart-open .eora-floating-bar{transform:translate(-50%,150%)!important;opacity:0!important;pointer-events:none!important;visibility:hidden!important}',
+                '.eora-float-icon{width:32px!important;height:32px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#f5f5f5!important;border-radius:3px!important;cursor:pointer!important;transition:background 0.2s!important}',
+                '.eora-float-icon:hover{background:#ebebeb!important}',
+                '.eora-grid-tryon svg{width:18px!important;height:18px!important;fill:none!important;stroke:#000!important;stroke-width:2.2!important;display:block!important}',
+                '.eora-popup-backdrop{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.55)!important;z-index:999990!important}',
+                '@media(max-width:767px){#related-products-notification.modal-show{position:fixed!important;top:60px!important;left:12px!important;right:12px!important;bottom:auto!important;width:auto!important;max-width:calc(100% - 24px)!important;border-radius:8px!important;transform:none!important;margin:0!important;z-index:1000000!important;transition:none!important;max-height:80vh!important;overflow-y:auto!important;box-shadow:0 4px 24px rgba(0,0,0,0.22)!important}}',
+                '.eora-float-buy{background:#000!important;color:#fff!important;border:none!important;height:32px!important;padding:0 18px!important;font-size:10px!important;font-weight:600!important;letter-spacing:2px!important;text-transform:uppercase!important;border-radius:3px!important;cursor:pointer!important;display:flex!important;align-items:center!important;white-space:nowrap!important}',
+                '.eora-float-buy:hover{background:#333!important}',
+                '.js-product-share, .product-share, [class*="share"], .social-share, .product-social, [data-store="product-share"]{display:none!important}',
+                '@media(max-width:767px){.eora-floating-bar{width:auto!important;max-width:90vw!important;bottom:64px!important}.eora-float-buy{flex:initial!important;padding:0 16px!important}}',
+                '.eora-pu-layer{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.5)!important;z-index:999999!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:0!important;pointer-events:none!important;transition:opacity 0.3s ease!important}',
+                '.eora-pu-layer.eora-pu-open{opacity:1!important;pointer-events:all!important}',
+                '.eora-pu-box{background:#fff!important;width:92%!important;max-width:450px!important;border-radius:12px!important;padding:24px!important;box-sizing:border-box!important;position:relative!important;transform:scale(0.85)!important;transition:transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)!important}',
+                '.eora-pu-layer.eora-pu-open .eora-pu-box{transform:scale(1)!important}',
+                '.eora-pu-close{position:absolute!important;top:16px!important;right:16px!important;width:32px!important;height:32px!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important}',
+                '.eora-pu-title{text-align:center!important;font-size:14px!important;font-weight:700!important;letter-spacing:2px!important;text-transform:uppercase!important;margin:0 0 24px!important;color:#000!important}',
+                '.eora-pu-card{display:flex!important;align-items:center!important;padding:16px 0!important;border-bottom:1px solid #efefef!important}',
+                '.eora-pu-card:last-child{border-bottom:none!important}',
+                '.eora-pu-card img{width:64px!important;height:auto!important;margin-right:16px!important;background:#efefef!important}',
+                '.eora-pu-info{flex:1!important;display:flex!important;flex-direction:column!important;padding-right:12px!important}',
+                '.eora-pu-info strong{font-size:14px!important;font-weight:500!important;color:#000!important;margin:0!important}',
+                '.eora-pu-info span{font-size:13px!important;color:#555!important;margin:4px 0 0!important}',
+                '.eora-pu-select{background:#000!important;color:#fff!important;border:none!important;padding:10px 16px!important;font-size:10px!important;font-weight:600!important;letter-spacing:1px!important;text-transform:uppercase!important;cursor:pointer!important;border-radius:3px!important;white-space:nowrap!important}',
+                '@media(min-width:768px){.eora-pu-layer{align-items:center!important}.eora-pu-box{border-radius:12px!important;transform:translateY(30px)!important}}',
+                'body, p, span, a, h1, h2, h3, h4, h5, h6, input, select, button{font-family:"Hanken Grotesk", sans-serif!important}',
+                '.eora-spec-container{margin-top:28px!important;text-align:left!important;width:100%!important}',
+                '.eora-blocking-title{font-size:12px!important;font-weight:400!important;margin-bottom:12px!important;display:block!important;text-align:left!important;color:#000!important}',
+                '.eora-blocking-bar-ui{display:flex!important;height:3px!important;background:#efefef!important;margin-bottom:12px!important;position:relative!important;width:100%!important}',
+                '.eora-blocking-segment{flex:1!important;height:100%!important;background:none!important;transition:background 0.3s ease!important}',
+                '.eora-blocking-segment.eora-active{background:#000!important;opacity:1!important}',
+                '.eora-blocking-labels{display:flex!important;justify-content:space-between!important;font-size:8px!important;color:#aaa!important;letter-spacing:1px!important;text-transform:uppercase!important;padding:0 5px!important;align-items:center!important}',
+                '.eora-blocking-labels span{padding:4px 8px!important;border-radius:2px!important;transition:all 0.3s ease!important}',
+                '.eora-blocking-labels span.eora-active-label{background:#000!important;color:#fff!important;opacity:1!important;font-weight:600!important}',
+                '.eora-active-label{border-radius: 4px; box-shadow: 0 0 0 1px #000; }',
+                '.eora-toggle-btn{width:100%!important;padding:12px 0!important;border-top:1px solid #efefef!important;border-bottom:none!important;background:transparent!important;display:flex!important;justify-content:space-between!important;align-items:center!important;cursor:pointer!important;margin-top:24px!important;border-left:none!important;border-right:none!important;pointer-events:auto!important}',
+                '.eora-toggle-btn span{font-size:12px!important;color:#000!important;font-weight:400!important}',
+                '.eora-toggle-btn svg{width:14px!important;height:14px!important;transition:transform 0.3s ease!important;fill:none!important;stroke:#000!important;stroke-width:2px!important;stroke-linecap:round!important;stroke-linejoin:round!important}',
+                '.eora-toggle-btn.eora-open svg{transform:rotate(180deg)!important}',
+                '.eora-toggle-content{display:none;padding:15px 0 25px!important;font-size:12px!important;line-height:1.6!important;color:#000!important;text-align:left!important;border-bottom:1px solid #efefef!important;pointer-events:auto!important}',
+                '.eora-toggle-content ul{list-style:none!important;padding:0!important;margin:0!important;display:flex!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important}',
+                '.eora-toggle-content li{margin-bottom:0!important;font-size:11px!important;color:#666!important;flex:1!important;text-align:center!important;min-width:80px!important}',
+                '.eora-provador-btn{display:flex!important;background:#fff!important;border:1px solid #000!important;border-radius:3px!important;padding:0 16px!important;margin:10px auto!important;position:relative!important;cursor:pointer!important;align-items:center!important;justify-content:center!important;transition:background 0.2s ease!important;width:100%!important;max-width:250px!important;box-sizing:border-box!important;height:42px!important;text-decoration:none!important;overflow:visible!important;opacity:1!important;visibility:visible!important;flex-direction:row!important;flex-wrap:nowrap!important;user-select:none!important}',
+                '.eora-provador-btn:hover{background:#E0E0E0!important}',
+                '.eora-tip-card{display:none!important;background:#EBEBEB!important;border-radius:50px!important;padding:0 24px 0 8px!important;margin:15px auto 0!important;position:relative!important;cursor:pointer!important;align-items:center!important;justify-content:center!important;border:none!important;transition:background 0.2s ease!important;width:100%!important;max-width:310px!important;box-sizing:border-box!important;height:56px!important;opacity:1!important;visibility:visible!important;flex-direction:row!important;flex-wrap:nowrap!important;user-select:none!important}',
+                '.eora-tip-card:hover{background:#E0E0E0!important}',
+                '.eora-tip-card-icon, .eora-provador-icon{margin-right:8px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:transparent!important;width:24px!important;height:24px!important;color:#000!important;flex-shrink:0!important;padding:0!important;margin-top:0!important;margin-bottom:0!important;vertical-align:middle!important;box-shadow:none!important;opacity:1!important;visibility:visible!important;flex-grow:0!important}',
+                '.eora-tip-card-icon svg, .eora-provador-icon svg{width:20px!important;height:20px!important;display:block!important;margin:0!important;padding:0!important;opacity:1!important;visibility:visible!important;filter:none!important;position:static!important;background:none!important;border:none!important}',
+                '.eora-tip-card-text, .eora-provador-text{font-size:12px!important;font-weight:600!important;color:#000!important;text-transform:uppercase!important;letter-spacing:1px!important;font-family:sans-serif!important;white-space:nowrap!important;margin:0!important;padding:0!important;display:inline-block!important;line-height:42px!important;vertical-align:middle!important;height:42px!important;border:none!important;background:none!important;text-indent:0!important;opacity:1!important;visibility:visible!important;flex-grow:0!important;width:auto!important;max-width:none!important}',
+                 '.eora-tip-card-close{position:absolute!important;top:50%!important;right:15px!important;transform:translateY(-50%)!important;cursor:pointer!important;opacity:0.3!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;width:20px!important;height:20px!important;visibility:visible!important}',
+                 '.eora-tip-card-close:hover{opacity:1!important}'
+            ].join('');
+            var st = document.createElement('style');
+            st.textContent = css;
+            document.head.appendChild(st);
+            function init() {
+
+                function getSrc(img) {
+                    return img.getAttribute('data-src') ||
+                        img.getAttribute('data-lazy-src') ||
+                        img.getAttribute('data-original') ||
+                        img.getAttribute('src') ||
+                        img.src || '';
+                }
+                function getDados() {
+                    var d = {};
+                    var ts = document.querySelectorAll('.js-product-description-base table');
+                    ts.forEach(function (t) {
+                        var td = t.querySelector('tbody > tr:first-child td:first-child');
+                        if (td) d[td.textContent.trim().toLowerCase()] = t;
+                    });
+                    return d;
+                }
+                var dados = getDados();
+                var ancora = document.querySelector('#single-product');
+                if (!ancora) return;
+                function injectHero() {
+                    if (document.getElementById('eora-hero')) return;
+                    var d = getDados();
+                    var txtCampanha = d['texto_campanha'];
+                    function isLikelyImageUrl(value) {
+                        if (!value) return false;
+                        var v = value.trim();
+                        if (!v) return false;
+                        if (v.indexOf('data:image/') === 0) return true;
+                        var hasProtocol = /^https?:\/\//i.test(v) || v.indexOf('//') === 0;
+                        var hasImageExt = /\.(avif|webp|png|jpe?g|gif|svg)(\?.*)?$/i.test(v);
+                        return hasProtocol && hasImageExt;
+                    }
+                    function getImageFromCell(cell) {
+                        if (!cell) return '';
+                        var cellImg = cell.querySelector('img');
+                        if (cellImg) return getSrc(cellImg);
+                        var raw = (cell.textContent || '').trim();
+                        if (raw && raw.indexOf('[') !== 0 && isLikelyImageUrl(raw)) return raw;
+                        return '';
+                    }
+                    function normalizeCloudfront(url) {
+                        if (!url) return '';
+                        if (url.indexOf('cloudfront.net') !== -1) {
+                            return url
+                                .replace('/thumbnail/', '/original/')
+                                .replace('/small/', '/original/')
+                                .replace('/medium/', '/original/')
+                                .replace('/large/', '/original/')
+                                .replace('/huge/', '/original/');
+                        }
+                        return url;
+                    }
+                    var tdsB = [];
+                    var bpRows = null;
+                    if (d['banner_produto']) {
+                        bpRows = d['banner_produto'].rows;
+                        for (var i = 0; i < bpRows.length; i++) {
+                            for (var j = 0; j < bpRows[i].cells.length; j++) {
+                                tdsB.push(bpRows[i].cells[j]);
+                            }
+                        }
+                    }
+                    function getBannerCellFromRowKey(keys) {
+                        if (!bpRows) return null;
+                        for (var r = 0; r < bpRows.length; r++) {
+                            var firstCell = bpRows[r].cells && bpRows[r].cells[0];
+                            if (!firstCell) continue;
+                            var rowKey = (firstCell.textContent || '').trim().toLowerCase();
+                            if (keys.indexOf(rowKey) !== -1) {
+                                for (var c = 1; c < bpRows[r].cells.length; c++) {
+                                    var candidate = bpRows[r].cells[c];
+                                    if (!candidate) continue;
+                                    if ((candidate.textContent || '').trim() || candidate.querySelector('img')) return candidate;
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                    var label = tdsB[1] ? tdsB[1].textContent.trim() : '';
+                    var det1 = tdsB[2] ? tdsB[2].textContent.trim() : '';
+                    var det2 = tdsB[3] ? tdsB[3].textContent.trim() : '';
+                    var btnTx = tdsB[4] ? tdsB[4].textContent.trim() : '';
+                    var btnDesc = tdsB[5] ? tdsB[5].innerHTML.trim() : '';
+                    var imgDesktop = getImageFromCell(tdsB[6]);
+                    var imgMobile = getImageFromCell(tdsB[7]);
+                    if (!imgMobile) {
+                        var mobileCellInBannerTable = getBannerCellFromRowKey([
+                            'banner_mobile',
+                            'imagem_mobile',
+                            'imagem_banner_mobile'
+                        ]);
+                        imgMobile = getImageFromCell(mobileCellInBannerTable);
+                    }
+                    // Optional support: dedicated table "banner_produto_mobile"
+                    if (!imgMobile && d['banner_produto_mobile']) {
+                        var bpMobileCell = d['banner_produto_mobile'].querySelector('tbody > tr:first-child td:nth-child(2), tbody > tr:first-child td img');
+                        if (bpMobileCell) {
+                            if (bpMobileCell.tagName && bpMobileCell.tagName.toLowerCase() === 'img') {
+                                imgMobile = getSrc(bpMobileCell);
+                            } else {
+                                imgMobile = getImageFromCell(bpMobileCell);
+                            }
+                        }
+                    }
+                    if (!imgDesktop || imgDesktop.indexOf('[') === 0) {
+                        var ogImg = document.querySelector('meta[property="og:image"]');
+                        if (ogImg) imgDesktop = ogImg.getAttribute('content') || '';
+                    }
+                    imgDesktop = normalizeCloudfront(imgDesktop);
+                    imgMobile = normalizeCloudfront(imgMobile);
+                    var infoCol = ancora.querySelector('.product-info-column');
+                    var tituloEl = infoCol ? infoCol.querySelector('h1, h2.js-product-name, h2') : null;
+                    var titulo = tituloEl ? tituloEl.textContent.trim() : '';
+                    var hero = document.createElement('div');
+                    hero.id = 'eora-hero';
+                    if (imgDesktop || imgMobile) {
+                        var heroImg = document.createElement('img');
+                        heroImg.className = 'eora-hero-img';
+                        function pickHeroImgByViewport() {
+                            var useMobile = window.matchMedia('(max-width: 1024px)').matches;
+                            var chosen = useMobile ? (imgMobile || imgDesktop) : (imgDesktop || imgMobile);
+                            if (chosen && heroImg.src !== chosen) {
+                                heroImg.src = chosen;
+                            }
+                        }
+                        pickHeroImgByViewport();
+                        window.addEventListener('resize', pickHeroImgByViewport);
+                        heroImg.alt = titulo || 'EORA';
+                        hero.appendChild(heroImg);
+                    }
+                    var ov = document.createElement('div');
+                    ov.id = 'eora-banner-overlay';
+                    ov.style.cssText = 'position:absolute;left:0;right:0;bottom:0;z-index:10;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;box-sizing:border-box;padding:0 40px 40px;pointer-events:none';
+                    ov.innerHTML =
+                        '<div id="eora-hero-text-content" style="display:flex;flex-direction:column;align-items:center;transition:opacity 0.3s ease;width:100%">' +
+                        // (label ? '<span class="eora-pp-label">' + label + '</span>' : '') +
+                        (titulo ? '<h2 style="font-size:44px;letter-spacing:8px;font-weight:400;text-transform:uppercase;color:#111;margin:10px 0;text-align:center">' + titulo + '</h2>' : '') +
+                        (det1 ? '<span class="eora-pp-detalhe">' + det1 + '</span>' : '') +
+                        (det2 ? '<span class="eora-pp-detalhe">' + det2 + '</span>' : '') +
+                        '</div>' +
+                        (btnTx || btnDesc ? '<button class="eora-pp-btn" id="eora-btn-detalhes" style="pointer-events:auto;margin-top:28px;margin-bottom:12px">' + (btnTx || 'VER DETALHES') + '</button>' : '') +
+                        (btnDesc ? '<div id="eora-hero-desc-content" style="display:none;opacity:0;transition:opacity 0.4s ease;width:100%;max-width:680px;margin:0 auto;padding-bottom:15px">' +
+                        '<p style="font-size:13px;line-height:1.9;color:#444;margin:0 auto;font-weight:400">' + btnDesc + '</p>' +
+                        '<div class="eora-spec-container">' +
+                        '<span class="eora-blocking-title">Capacidade de bloqueio de luz</span>' +
+                        '<div class="eora-blocking-bar-ui">' +
+                        '<div class="eora-blocking-segment js-blocking-low"></div>' +
+                        '<div class="eora-blocking-segment js-blocking-med"></div>' +
+                        '<div class="eora-blocking-segment js-blocking-high"></div>' +
+                        '</div>' +
+                        '<div class="eora-blocking-labels">' +
+                        '<span class="js-lbl-low">Baixa</span>' +
+                        '<span class="js-lbl-med">Média</span>' +
+                        '<span class="js-lbl-high">Alta</span>' +
+                        '</div>' +
+                        '<button class="eora-toggle-btn" id="js-toggle-medidas"><span>Medidas do óculos</span>' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg></button>' +
+                        '<div class="eora-toggle-content" id="js-content-medidas"></div>' +
+                        '</div>' +
+                        '</div>' : '') +
+                        '<div id="eora-hero-actions" style="pointer-events:auto; margin-top: 15px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px;">' +
+                        '    <button type="button" id="eora-fake-buy-btn" style="background:#000;color:#fff;border:none;min-width:250px;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:16px;cursor:pointer;font-weight:600;border-radius:3px;margin:0 auto;display:none;">PREPARANDO...</button>' +
+                        '    <div id="eora-static-provador-container" style="width:100%; display:flex; justify-content:center;">' +
+                        '        <div class="eora-provador-btn js-eora-static-btn" style="display:flex;">' +
+                        '            <div class="eora-provador-icon">' +
+                        '                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="3.5"></circle><path d="M20 2v4m-2-2h4" stroke-width="2"></path></svg>' +
+                        '            </div>' +
+                        '            <span class="eora-provador-text">Experimente agora</span>' +
+                        '        </div>' +
+                        '    </div>' +
+                        '</div>';
+                    hero.appendChild(ov);
+                    setTimeout(function () {
+                        function eoraInjectActions() {
+                            try {
+                                var v = (typeof LS !== 'undefined' && LS.variants && LS.variants[0]) ? LS.variants[0] : null;
+                                var sku = window.eoraCurrentSKU || (v ? v.sku : '');
+                                if (typeof LS !== 'undefined' && LS.variants) {
+                                    for (var i = 0; i < LS.variants.length; i++) {
+                                        if (LS.variants[i].sku === sku) { v = LS.variants[i]; break; }
+                                    }
+                                }
+
+                                var inStock = (v && (v.stock === null || v.stock === undefined || v.stock > 0)) ? true : false;
+                                var baseTxt = inStock ? 'COMPRAR AGORA' : 'PR\u00C9-VENDA';
+                                
+                                var buyBtn = document.getElementById('eora-fake-buy-btn');
+                                if (buyBtn) {
+                                    buyBtn.style.display = 'block';
+                                    if (buyBtn.textContent !== baseTxt) buyBtn.textContent = baseTxt;
+                                    buyBtn.onclick = function() {
+                                        if (typeof abrirPopupChanel === 'function') abrirPopupChanel('buy');
+                                    };
+                                }
+
+                                var disponivel = true;
+                                if (typeof mkfashion !== 'undefined') {
+                                    var isAv = mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', v ? v.sku : '');
+                                    if (isAv === false) disponivel = false;
+                                }
+
+                                var provContainer = document.getElementById('eora-static-provador-container');
+                                if (provContainer) {
+                                    provContainer.style.display = disponivel ? 'flex' : 'none';
+                                    var provBtn = provContainer.querySelector('.js-eora-static-btn');
+                                    if (provBtn) provBtn.onclick = function() {
+                                        if (typeof abrirPopupChanel === 'function') abrirPopupChanel('tryon');
+                                    };
+                                }
+
+                                var floatBuyBtn = document.getElementById('eora-float-buy-btn');
+                                if (floatBuyBtn) {
+                                    var priceEl = document.querySelector('.js-price-display, .product-price');
+                                    var currentPrice = priceEl ? priceEl.textContent.trim() : '';
+                                    var floatTxt = baseTxt + (currentPrice ? ' - ' + currentPrice : '');
+                                    if (floatBuyBtn.textContent !== floatTxt) floatBuyBtn.textContent = floatTxt;
+                                }
+
+                                var floatIconBtn = document.getElementById('eora-tryon-btn');
+                                if (floatIconBtn) {
+                                    floatIconBtn.style.display = disponivel ? 'flex' : 'none';
+                                    floatIconBtn.onclick = function() {
+                                        if (typeof abrirPopupChanel === 'function') abrirPopupChanel('tryon');
+                                    };
+                                }
+                            } catch (e) {
+                                console.log('Eora error:', e);
+                            }
+                        }
+
+                        window.eoraUpdateProvadorSku = function(newSku) {
+                            window.eoraCurrentSKU = newSku;
+                            eoraInjectActions();
+                        };
+
+                        var count = 0;
+                        var interval = setInterval(function() {
+                            eoraInjectActions();
+                            count++;
+                            if (count > 100) clearInterval(interval);
+                        }, 800);
+                        eoraInjectActions();
+                    }, 500);
+                    // Remove padding/margin do body/html
+                    document.body.style.setProperty('padding', '0', 'important');
+                    document.body.style.setProperty('margin', '0', 'important');
+                    document.documentElement.style.setProperty('padding', '0', 'important');
+                    document.documentElement.style.setProperty('margin', '0', 'important');
+                    // Insere logo apÃ³s o header
+                    var header = document.querySelector('header, .header, #header');
+                    if (header && header.parentNode) {
+                        if (header.nextSibling) header.parentNode.insertBefore(hero, header.nextSibling);
+                        else header.parentNode.appendChild(hero);
+                    } else {
+                        document.body.insertBefore(hero, document.body.firstChild);
+                    }
+                    function fitHero() {
+                        var rect = hero.getBoundingClientRect();
+                        hero.style.setProperty('margin-left', (-rect.left) + 'px', 'important');
+                        hero.style.setProperty('width', '100vw', 'important');
+                        hero.style.setProperty('max-width', '100vw', 'important');
+                    }
+                    fitHero();
+                    setTimeout(fitHero, 100);
+                    window.addEventListener('resize', fitHero);
+                    setTimeout(function () {
+                        var btn = document.getElementById('eora-btn-detalhes');
+                        var descContent = document.getElementById('eora-hero-desc-content');
+                        var heroEl = document.getElementById('eora-hero');
+                        if (btn && descContent && heroEl) {
+                            var textCont = document.getElementById('eora-hero-text-content');
+                            btn.addEventListener('click', function () {
+                                if (descContent.style.display === 'none') {
+                                    var currentHeroHeight = heroEl.getBoundingClientRect().height;
+                                    descContent.style.visibility = 'hidden';
+                                    descContent.style.display = 'block';
+                                    var extraSpace = descContent.offsetHeight;
+                                    descContent.style.visibility = '';
+                                    heroEl.style.setProperty('height', (currentHeroHeight + extraSpace) + 'px', 'important');
+                                    setTimeout(function () { descContent.style.opacity = '1'; }, 50);
+                                    btn.textContent = 'FECHAR O DETALHE';
+                                    if (textCont) textCont.style.opacity = '0';
+                                    setupSpecs();
+                                } else {
+                                    descContent.style.opacity = '0';
+                                    heroEl.style.removeProperty('height');
+                                    setTimeout(function () {
+                                        descContent.style.display = 'none';
+                                    }, 400);
+                                    btn.textContent = btnTx || 'VER DETALHES';
+                                    if (textCont) textCont.style.opacity = '1';
+                                }
+                            });
+
+                            function setupSpecs() {
+                                var nivelLuz = 'alta'; 
+                                var foundBlocking = false;
+                                
+                                // Aggressive search: look in ALL tables in the description
+                                var allTables = document.querySelectorAll('.js-product-description-base table');
+                                allTables.forEach(function(t) {
+                                    if (foundBlocking) return;
+                                    var rows = Array.from(t.querySelectorAll('tr'));
+                                    rows.forEach(function(row) {
+                                        if (foundBlocking) return;
+                                        var cells = Array.from(row.querySelectorAll('td'));
+                                        var rowHasKey = false;
+                                        cells.forEach(function(td) {
+                                            var txt = td.textContent.trim().toLowerCase();
+                                            if (txt.indexOf('bloqueio') > -1 || txt === 'valor' || txt.indexOf('capacidade') > -1) rowHasKey = true;
+                                        });
+
+                                        if (rowHasKey) {
+                                            cells.forEach(function(td) {
+                                                var val = td.textContent.trim().toLowerCase();
+                                                // Support both text and numbers 1/2/3
+                                                if (val.indexOf('baixa') > -1 || val === '1') { nivelLuz = 'baixa'; foundBlocking = true; }
+                                                else if (val.indexOf('media') > -1 || val.indexOf('média') > -1 || val === '2') { nivelLuz = 'media'; foundBlocking = true; }
+                                                else if (val.indexOf('alta') > -1 || val === '3') { nivelLuz = 'alta'; foundBlocking = true; }
+                                            });
+                                        }
+                                    });
+                                });
+
+                                var d = getDados();
+                                var measuresTable = d['medidas_do_oculos'];
+                                var medidasHtml = 'Medidas não informadas.';
+                                if (measuresTable) {
+                                    var mCells = measuresTable.querySelectorAll('td');
+                                    var rawHtml = (mCells.length >= 2) ? mCells[1].innerHTML : (mCells.length === 1 ? mCells[0].innerHTML : '');
+                                    
+                                    if (rawHtml) {
+                                        var tempDiv = document.createElement('div');
+                                        tempDiv.innerHTML = rawHtml;
+                                        var items = Array.from(tempDiv.querySelectorAll('li'));
+                                        if (items.length > 0) {
+                                            var filtered = items.filter(function(li) {
+                                                var txt = li.textContent.toLowerCase();
+                                                return txt.indexOf('altura total') === -1;
+                                            }).slice(0, 3);
+                                            medidasHtml = '<ul style="display:flex!important;justify-content:space-between!important;gap:12px!important;width:100%!important;padding:0!important;margin:0!important;list-style:none!important;">' + 
+                                                filtered.map(function(li) { 
+                                                    return '<li style="flex:1!important;font-size:11px!important;color:#666!important;">' + li.innerHTML + '</li>';
+                                                }).join('') + '</ul>';
+                                        } else { medidasHtml = rawHtml; }
+                                    }
+                                }
+
+                                // Update segments
+                                var segments = document.querySelectorAll('.eora-blocking-segment');
+                                segments.forEach(function(s) { 
+                                    s.classList.remove('eora-active'); 
+                                    s.style.removeProperty('background-color');
+                                    s.style.removeProperty('opacity');
+                                });
+                                
+                                var sLow = document.querySelector('.js-blocking-low');
+                                var sMed = document.querySelector('.js-blocking-med');
+                                var sHigh = document.querySelector('.js-blocking-high');
+                                
+                                if (sLow) { sLow.classList.add('eora-active'); sLow.style.setProperty('background-color', '#000', 'important'); sLow.style.setProperty('opacity', '1', 'important'); }
+                                if (sMed && (nivelLuz === 'media' || nivelLuz === 'alta')) { sMed.classList.add('eora-active'); sMed.style.setProperty('background-color', '#000', 'important'); sMed.style.setProperty('opacity', '1', 'important'); }
+                                if (sHigh && nivelLuz === 'alta') { sHigh.classList.add('eora-active'); sHigh.style.setProperty('background-color', '#000', 'important'); sHigh.style.setProperty('opacity', '1', 'important'); }
+
+                                // Update labels
+                                var labels = document.querySelectorAll('.eora-blocking-labels span');
+                                labels.forEach(function(l) { 
+                                    l.classList.remove('eora-active-label'); 
+                                    l.style.removeProperty('background-color');
+                                    l.style.removeProperty('color');
+                                    l.style.removeProperty('opacity');
+                                    l.style.removeProperty('font-weight');
+                                });
+                                
+                                var lActive = null;
+                                if (nivelLuz === 'baixa') lActive = document.querySelector('.js-lbl-low');
+                                else if (nivelLuz === 'media') lActive = document.querySelector('.js-lbl-med');
+                                else if (nivelLuz === 'alta') lActive = document.querySelector('.js-lbl-high');
+
+                                if (lActive) {
+                                    lActive.classList.add('eora-active-label');
+                                    lActive.style.setProperty('background-color', '#000', 'important');
+                                    lActive.style.setProperty('color', '#fff', 'important');
+                                    lActive.style.setProperty('opacity', '1', 'important');
+                                    lActive.style.setProperty('font-weight', '600', 'important');
+                                }
+
+                                // Update measurements content
+                                var mContent = document.getElementById('js-content-medidas');
+                                if (mContent) {
+                                    mContent.innerHTML = medidasHtml;
+                                }
+
+                                // Toggle logic for measurements accordion
+                                var mToggle = document.getElementById('js-toggle-medidas');
+                                if (mToggle && !mToggle.hasAttribute('data-init')) {
+                                    mToggle.setAttribute('data-init', 'true');
+                                    mToggle.addEventListener('click', function(e) {
+                                        e.preventDefault(); e.stopPropagation();
+                                        var isOpen = this.classList.contains('eora-open');
+                                        if (isOpen) {
+                                            this.classList.remove('eora-open');
+                                            mContent.style.display = 'none';
+                                            heroEl.style.setProperty('height', (heroEl.offsetHeight - mContent.offsetHeight) + 'px', 'important');
+                                        } else {
+                                            this.classList.add('eora-open');
+                                            mContent.style.display = 'block';
+                                            heroEl.style.setProperty('height', (heroEl.offsetHeight + mContent.offsetHeight) + 'px', 'important');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }, 200);
+                }
+                injectHero();
+                var afterEl = ancora;
+                function inserirApos(el) {
+                    if (afterEl.nextSibling) afterEl.parentNode.insertBefore(el, afterEl.nextSibling);
+                    else afterEl.parentNode.appendChild(el);
+                    afterEl = el;
+                }
+                if (dados['variantes_produto']) {
+                    var allTrs = dados['variantes_produto'].querySelectorAll('tbody > tr');
+                    var fotoGroups = [];
+                    for (var r = 2; r < allTrs.length; r++) {
+                        var ftds = allTrs[r].querySelectorAll('td');
+                        var fotos = [];
+                        for (var c = 1; c < ftds.length; c++) {
+                            var fimg = ftds[c].querySelector('img');
+                            if (!fimg) continue;
+                            var fu = getSrc(fimg);
+                            if (fu && fu.indexOf('data:') !== 0 && fu.length > 10) fotos.push(fu);
+                        }
+                        fotoGroups.push(fotos);
+                    }
+                    var html = '<p class="eora-pp-variantes-titulo">Variantes</p><div class="eora-pp-variantes-grid">';
+                    var thumbRow = allTrs[0] ? allTrs[0].querySelectorAll('td') : [];
+                    var hoverRow = allTrs[1] ? allTrs[1].querySelectorAll('td') : [];
+                    var thumbCount = 0;
+                    var maxThumbs = Math.min(thumbRow.length, 7);
+                    for (var i = 1; i < maxThumbs; i++) {
+                        var imgs = thumbRow[i].querySelectorAll('img');
+                        var hoverImgs = hoverRow[i] ? hoverRow[i].querySelectorAll('img') : [];
+                        var url = '';
+                        for (var j = 0; j < imgs.length; j++) {
+                            var su = getSrc(imgs[j]);
+                            if (su && su.indexOf('data:') !== 0 && su.length > 10) { url = su; break; }
+                        }
+                        var urlHover = '';
+                        for (var jh = 0; jh < hoverImgs.length; jh++) {
+                            var suh = getSrc(hoverImgs[jh]);
+                            if (suh && suh.indexOf('data:') !== 0 && suh.length > 10) { urlHover = suh; break; }
+                        }
+                        if (!url) continue;
+                        html += '<div class="eora-pp-variante-item" data-idx="' + thumbCount + '">' +
+                            '<div class="eora-pp-variante-img">' +
+                            '<img src="' + url + '" alt="variante ' + (thumbCount + 1) + '">';
+                        if (urlHover) {
+                            html += '<img src="' + urlHover + '" class="eora-img-hover" alt="hover ' + (thumbCount + 1) + '">';
+                        }
+                        html += '</div></div>';
+                        thumbCount++;
+                    }
+                    html += '</div><div class="eora-pp-variante-fotos"></div>';
+                    var el = document.createElement('div');
+                    el.className = 'eora-pp-variantes';
+                    el.innerHTML = html;
+                    inserirApos(el);
+                    // Wrap grid in carousel wrapper and inject arrows via DOM
+                    var grid = el.querySelector('.eora-pp-variantes-grid');
+                    if (grid) {
+                        var wrap = document.createElement('div');
+                        wrap.className = 'eora-var-carousel-wrap';
+                        grid.parentNode.insertBefore(wrap, grid);
+                        wrap.appendChild(grid);
+                        var prevBtn = document.createElement('button');
+                        prevBtn.className = 'eora-var-arrow eora-var-prev';
+                        prevBtn.setAttribute('aria-label', 'Anterior');
+                        prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+                        var nextBtn = document.createElement('button');
+                        nextBtn.className = 'eora-var-arrow eora-var-next';
+                        nextBtn.setAttribute('aria-label', 'Próximo');
+                        nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+                        wrap.insertBefore(prevBtn, grid);
+                        wrap.appendChild(nextBtn);
+                    }
+                    // Carousel logic
+                    var varCards = el.querySelectorAll('.eora-pp-variante-item');
+                    var varPage = 0;
+                    var varPerPage = 3;
+                    function updateVarCarousel() {
+                        // Fade out os visíveis atuais
+                        var currentVisible = el.querySelectorAll('.eora-pp-variante-item.eora-var-visible');
+                        currentVisible.forEach(function(item) { item.classList.remove('eora-var-shown'); });
+                        setTimeout(function() {
+                            for (var vi = 0; vi < varCards.length; vi++) {
+                                if (vi >= varPage * varPerPage && vi < (varPage + 1) * varPerPage) {
+                                    varCards[vi].classList.add('eora-var-visible');
+                                } else {
+                                    varCards[vi].classList.remove('eora-var-visible');
+                                    varCards[vi].classList.remove('eora-var-shown');
+                                }
+                            }
+                            // Fade in após o display:flex ser aplicado
+                            requestAnimationFrame(function() {
+                                requestAnimationFrame(function() {
+                                    var newVisible = el.querySelectorAll('.eora-pp-variante-item.eora-var-visible');
+                                    newVisible.forEach(function(item) { item.classList.add('eora-var-shown'); });
+                                });
+                            });
+                        }, 300);
+                    }
+                    var prevCarouselBtn = el.querySelector('.eora-var-prev');
+                    var nextCarouselBtn = el.querySelector('.eora-var-next');
+                    if (prevCarouselBtn) prevCarouselBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var maxPage = Math.ceil(varCards.length / varPerPage) - 1;
+                        varPage = varPage <= 0 ? maxPage : varPage - 1;
+                        updateVarCarousel();
+                    });
+                    if (nextCarouselBtn) nextCarouselBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var maxPage = Math.ceil(varCards.length / varPerPage) - 1;
+                        varPage = varPage >= maxPage ? 0 : varPage + 1;
+                        updateVarCarousel();
+                    });
+                    window.addEventListener('resize', updateVarCarousel);
+                    // Primeira exibição: sem fade, mostra imediatamente
+                    for (var vi0 = 0; vi0 < varCards.length; vi0++) {
+                        if (vi0 < varPerPage) {
+                            varCards[vi0].classList.add('eora-var-visible');
+                            varCards[vi0].classList.add('eora-var-shown');
+                        }
+                    }
+                    var fotosPanel = el.querySelector('.eora-pp-variante-fotos');
+                    fotosPanel.style.display = 'none';
+                    // Lê video_link e descricao_video das linhas finais da tabela variantes_produto
+                    var varVideoData = [];
+                    var vvLinkRow = null, vvDescRow = null;
+                    if (dados['variantes_produto']) {
+                        var allTrsVV = dados['variantes_produto'].querySelectorAll('tbody > tr');
+                        for (var vvtr = 0; vvtr < allTrsVV.length; vvtr++) {
+                            var vvCell0 = allTrsVV[vvtr].cells && allTrsVV[vvtr].cells[0];
+                            if (!vvCell0) continue;
+                            var vvRowKey = vvCell0.textContent.trim().toLowerCase();
+                            if (vvRowKey === 'video_link') vvLinkRow = allTrsVV[vvtr];
+                            if (vvRowKey === 'descricao_video') vvDescRow = allTrsVV[vvtr];
+                        }
+                    }
+                    for (var vvi = 0; vvi < 6; vvi++) {
+                        var vvLink = vvLinkRow && vvLinkRow.cells[vvi + 1] ? vvLinkRow.cells[vvi + 1].textContent.trim() : '';
+                        var vvDesc = vvDescRow && vvDescRow.cells[vvi + 1] ? vvDescRow.cells[vvi + 1].innerHTML.trim() : '';
+                        varVideoData.push({ link: vvLink, desc: vvDesc });
+                    }
+                    var activeIdx = -1;
+                    var cards = el.querySelectorAll('.eora-pp-variante-item');
+                    for (var k = 0; k < cards.length; k++) {
+                        (function (card) {
+                            card.addEventListener('click', function () {
+                                var idx = parseInt(this.getAttribute('data-idx'));
+                                if (activeIdx === idx) {
+                                    activeIdx = -1;
+                                    fotosPanel.innerHTML = '';
+                                    fotosPanel.style.display = 'none';
+                                    for (var ci = 0; ci < cards.length; ci++) cards[ci].classList.remove('eora-ativa');
+                                    return;
+                                }
+                                activeIdx = idx;
+                                for (var ci = 0; ci < cards.length; ci++) cards[ci].classList.remove('eora-ativa');
+                                this.classList.add('eora-ativa');
+                                var loadedFromLS = false;
+                                if (typeof LS !== 'undefined' && LS.variants && LS.variants[idx]) {
+                                    var vUrl = LS.variants[idx].image_url;
+                                    if (vUrl) {
+                                        if (vUrl.indexOf('//') === 0) vUrl = 'https:' + vUrl;
+                                        window.eoraSelectedVariantImg = vUrl;
+                                        loadedFromLS = true;
+                                    }
+                                    var v = LS.variants[idx];
+                                    
+                                    // Sincroniza o SKU atual para o Provador Virtual e BotÃ£o de Compra
+                                    if (v.sku && window.eoraUpdateProvadorSku) {
+                                        window.eoraUpdateProvadorSku(v.sku);
+                                    }
+
+                                    var oList = [];
+                                    if(v.option0) oList.push(v.option0);
+                                    if(v.option1) oList.push(v.option1);
+                                    if(v.option2) oList.push(v.option2);
+                                    var pNameEl = document.querySelector('.js-product-name, .product-name');
+                                    var bName = pNameEl ? pNameEl.textContent.trim() : '';
+                                    window.eoraSelectedVariantName = (bName ? bName + ' (' : '') + oList.join(' ') + (bName ? ')' : '');
+                                }
+                                if (!loadedFromLS) {
+                                    var vimg = this.querySelector('img:not(.eora-img-hover)');
+                                    if (vimg) window.eoraSelectedVariantImg = vimg.src;
+                                }
+                                var fotos = fotoGroups[idx] || [];
+                                if (!fotos.length) { fotosPanel.innerHTML = ''; fotosPanel.style.display = 'none'; return; }
+var c1 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
+                                var c2 = '<div class="eora-pp-vf-wrapper" style="margin-top:4px!important"><div class="eora-pp-vf-grid">';
+                                var fhLarge = '';
+                                var count1 = 0, count2 = 0;
+                                for (var f = 0; f < fotos.length; f++) {
+                                    if (f < 2) {
+                                        c1 += '<div class="eora-pp-vf-item"><img src="' + fotos[f] + '" alt="foto ' + (f + 1) + '"></div>';
+                                        count1++;
+                                    } else if (f < 4) {
+                                        c2 += '<div class="eora-pp-vf-item"><img src="' + fotos[f] + '" alt="foto ' + (f + 1) + '"></div>';
+                                        count2++;
+                                    } else if (f === 4) {
+                                        fhLarge = '<div class="eora-pp-vf-item eora-pp-vf-large"><img src="' + fotos[f] + '" alt="foto ' + (f + 1) + '"></div>';
+                                    }
+                                }
+                                var arrowSvgPrev = '<svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>';
+                                var arrowSvgNext = '<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+                                
+                                c1 += '</div>' + 
+                                      '<button type="button" class="eora-vf-arrow eora-vf-prev" onclick="eoraCarouselScroll(this,-1)">' + arrowSvgPrev + '</button>' +
+                                      '<button type="button" class="eora-vf-arrow eora-vf-next" onclick="eoraCarouselScroll(this,1)">' + arrowSvgNext + '</button>' +
+                                      '</div>';
+                                      
+                                c2 += '</div>' + 
+                                      '<button type="button" class="eora-vf-arrow eora-vf-prev" onclick="eoraCarouselScroll(this,-1)">' + arrowSvgPrev + '</button>' +
+                                      '<button type="button" class="eora-vf-arrow eora-vf-next" onclick="eoraCarouselScroll(this,1)">' + arrowSvgNext + '</button>' +
+                                      '</div>';
+                                      
+                                // Seção de vídeo da variante (abaixo das fotos)
+                                var varVid = varVideoData[idx] || {};
+                                var varVidHtml = '';
+                                if (varVid.link) {
+                                    var vvMatch = varVid.link.match(/vimeo\.com\/(\d+)/);
+                                    if (vvMatch) {
+                                        var vvEmbed = 'https://player.vimeo.com/video/' + vvMatch[1] + '?background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0';
+                                        varVidHtml = '<div class="eora-pp-video-secao eora-var-video-secao" style="margin-top:4px;margin-bottom:60px">' +
+                                            '<div class="eora-pp-video-texto">' + (varVid.desc || '') + '</div>' +
+                                            '<div class="eora-pp-video-embed"><iframe src="' + vvEmbed + '" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>' +
+                                            '</div>';
+                                    }
+                                }
+                                var fh = varVidHtml + c1 + (count2 > 0 ? c2 : '') + fhLarge;
+                                fotosPanel.innerHTML = fh;
+                                var vfSecao = fotosPanel.querySelector('.eora-var-video-secao');
+                                if (vfSecao) {
+                                    (function(vfe) {
+                                        function fitVf() {
+                                            var r = vfe.getBoundingClientRect();
+                                            vfe.style.setProperty('margin-left', (-r.left) + 'px', 'important');
+                                            vfe.style.setProperty('width', window.innerWidth + 'px', 'important');
+                                        }
+                                        setTimeout(fitVf, 0);
+                                        window.addEventListener('resize', fitVf);
+                                    })(vfSecao);
+                                }
+                                fotosPanel.querySelectorAll('.eora-pp-vf-wrapper').forEach(function(w){
+                                    var it = w.querySelector('.eora-pp-vf-item:not(.eora-pp-vf-large)');
+                                    if(it) it.classList.add('eora-carousel-active');
+                                });
+                                fotosPanel.style.display = 'block';
+                                setTimeout(function() {
+                                    if (window.innerWidth >= 1025) {
+                                        var items = fotosPanel.querySelectorAll('.eora-pp-vf-item');
+                                        var lg = fotosPanel.querySelector('.eora-pp-vf-large');
+                                        if (items[0] && lg) {
+                                            var h = items[0].getBoundingClientRect().height;
+                                            if (h > 100) lg.style.setProperty('height', h + 'px', 'important');
+                                        }
+                                    }
+                                }, 200);
+                            });
+                        })(cards[k]);
+                    }
+                    (function (e) {
+                        function fitFull() {
+                            var rect = e.getBoundingClientRect();
+                            e.style.setProperty('margin-left', (-rect.left) + 'px', 'important');
+                            e.style.setProperty('width', window.innerWidth + 'px', 'important');
+                        }
+                        setTimeout(fitFull, 0);
+                        window.addEventListener('resize', fitFull);
+                    })(el);
+                    if (cards.length > 0) {
+                        activeIdx = 0;
+                        cards[0].classList.add('eora-ativa');
+                        var loadedFromLS0 = false;
+                        if (typeof LS !== 'undefined' && LS.variants && LS.variants[0]) {
+                            var vUrl0 = LS.variants[0].image_url;
+                            if (vUrl0) {
+                                if (vUrl0.indexOf('//') === 0) vUrl0 = 'https:' + vUrl0;
+                                window.eoraSelectedVariantImg = vUrl0;
+                                loadedFromLS0 = true;
+                            }
+                            var v0 = LS.variants[0];
+                            if (v0.sku && window.eoraUpdateProvadorSku) {
+                                window.eoraUpdateProvadorSku(v0.sku);
+                            }
+                            var oList0 = [];
+                            if(v0.option0) oList0.push(v0.option0);
+                            if(v0.option1) oList0.push(v0.option1);
+                            if(v0.option2) oList0.push(v0.option2);
+                            var pNameEl0 = document.querySelector('.js-product-name, .product-name');
+                            var bName0 = pNameEl0 ? pNameEl0.textContent.trim() : '';
+                            window.eoraSelectedVariantName = (bName0 ? bName0 + ' (' : '') + oList0.join(' ') + (bName0 ? ')' : '');
+                        }
+                        if (!loadedFromLS0) {
+                            var f0img = cards[0].querySelector('img:not(.eora-img-hover)');
+                            if (f0img) window.eoraSelectedVariantImg = f0img.src;
+                        }
+                        var fg0 = fotoGroups[0] || [];
+                        if (fg0.length) {
+var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
+                            var c20 = '<div class="eora-pp-vf-wrapper" style="margin-top:4px!important"><div class="eora-pp-vf-grid">';
+                            var fhLarge0 = '';
+                            var count10 = 0, count20 = 0;
+                            for (var f0 = 0; f0 < fg0.length; f0++) {
+                                if (f0 < 2) {
+                                    c10 += '<div class="eora-pp-vf-item"><img src="' + fg0[f0] + '" alt="foto ' + (f0 + 1) + '"></div>';
+                                    count10++;
+                                } else if (f0 < 4) {
+                                    c20 += '<div class="eora-pp-vf-item"><img src="' + fg0[f0] + '" alt="foto ' + (f0 + 1) + '"></div>';
+                                    count20++;
+                                } else if (f0 === 4) {
+                                    fhLarge0 = '<div class="eora-pp-vf-item eora-pp-vf-large"><img src="' + fg0[f0] + '" alt="foto ' + (f0 + 1) + '"></div>';
+                                }
+                            }
+                            var arrowSvgPrev0 = '<svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>';
+                            var arrowSvgNext0 = '<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>';
+                            
+                            c10 += '</div>' + 
+                                   '<button type="button" class="eora-vf-arrow eora-vf-prev" onclick="eoraCarouselScroll(this,-1)">' + arrowSvgPrev0 + '</button>' +
+                                   '<button type="button" class="eora-vf-arrow eora-vf-next" onclick="eoraCarouselScroll(this,1)">' + arrowSvgNext0 + '</button>' +
+                                   '</div>';
+                                   
+                            c20 += '</div>' + 
+                                   '<button type="button" class="eora-vf-arrow eora-vf-prev" onclick="eoraCarouselScroll(this,-1)">' + arrowSvgPrev0 + '</button>' +
+                                   '<button type="button" class="eora-vf-arrow eora-vf-next" onclick="eoraCarouselScroll(this,1)">' + arrowSvgNext0 + '</button>' +
+                                   '</div>';
+                                   
+                            var fh0 = c10 + (count20 > 0 ? c20 : '') + fhLarge0;
+                            fotosPanel.innerHTML = fh0;
+                            fotosPanel.querySelectorAll('.eora-pp-vf-wrapper').forEach(function(w){
+                                var it = w.querySelector('.eora-pp-vf-item:not(.eora-pp-vf-large)');
+                                if(it) it.classList.add('eora-carousel-active');
+                            });
+                            fotosPanel.style.display = 'block';
+                            setTimeout(function() {
+                                if (window.innerWidth >= 1025) {
+                                    var items0 = fotosPanel.querySelectorAll('.eora-pp-vf-item');
+                                    var lg0 = fotosPanel.querySelector('.eora-pp-vf-large');
+                                    if (items0[0] && lg0) {
+                                        var h0 = items0[0].getBoundingClientRect().height;
+                                        if (h0 > 100) lg0.style.setProperty('height', h0 + 'px', 'important');
+                                    }
+                                }
+                            }, 200);
+                        }
+                    }
+                    // Pré-seleciona variante via parâmetro ?v= na URL (ex: ?v=preto, ?v=prata)
+                    (function() {
+                        var params = new URLSearchParams(window.location.search);
+                        var vParam = (params.get('v') || '').toLowerCase().trim();
+                        if (!vParam || !cards.length) return;
+                        // Normaliza sufixos de gênero em português (preto/preta → pret, prata → prat)
+                        function norm(str) { return str.toLowerCase().replace(/[ao]$/, ''); }
+                        var vNorm = norm(vParam);
+                        function tentarSelecionar() {
+                            if (typeof LS === 'undefined' || !LS.variants) return false;
+                            for (var vi = 0; vi < LS.variants.length; vi++) {
+                                var vv = LS.variants[vi];
+                                var optsArr = [(vv.option0||''),(vv.option1||''),(vv.option2||'')];
+                                var match = false;
+                                for (var oi = 0; oi < optsArr.length; oi++) {
+                                    var optNorm = norm(optsArr[oi]);
+                                    if (!optNorm) continue;
+                                    // Exact normalized match ou substring
+                                    if (optNorm === vNorm || optNorm.indexOf(vNorm) !== -1 || vNorm.indexOf(optNorm) !== -1) {
+                                        match = true; break;
+                                    }
+                                }
+                                if (match) {
+                                    var alvo = el.querySelector('.eora-pp-variante-item[data-idx="' + vi + '"]');
+                                    if (alvo) { alvo.click(); return true; }
+                                }
+                            }
+                            return false;
+                        }
+                        if (!tentarSelecionar()) {
+                            var tentativas = 0;
+                            var poll = setInterval(function() {
+                                tentativas++;
+                                if (tentarSelecionar() || tentativas > 20) clearInterval(poll);
+                            }, 300);
+                        }
+                    })();
+                }
+                if (dados['texto_campanha']) {
+                    var tcRows2 = dados['texto_campanha'].querySelectorAll('tbody > tr');
+                    var tcTexto2 = '';
+                    var tcAss2 = '';
+                    var tcLink2 = '';
+                    for (var ti = 0; ti < tcRows2.length; ti++) {
+                        var tc2 = tcRows2[ti].querySelectorAll('td');
+                        if (tc2.length >= 2) {
+                            var tck2 = tc2[0].textContent.trim().toLowerCase();
+                            if (tck2 === 'texto_campanha') {
+                                // Remove tags <p> extras se vierem da tabela para nÃ£o quebrar o <h3>
+                                var tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = tc2[1].innerHTML;
+                                tcTexto2 = tempDiv.textContent.trim();
+                            }
+                            if (tck2 === 'assinatura') tcAss2 = tc2[1].textContent.trim();
+                            if (tck2 === 'link_sobre') tcLink2 = tc2[1].textContent.trim();
+                        }
+                    }
+                    if (tcTexto2) {
+                        var campNativo = document.createElement('section');
+                        campNativo.id = 'eora-injected-campanha';
+                        campNativo.className = 'section-home overflow-none my-5';
+                        campNativo.setAttribute('data-store', 'home-institutional-message');
+                        var rightCol = tcLink2
+                            ? '<div class="institutional-right">' +
+                            '<a href="' + tcLink2 + '" class="institutional-link" aria-label="Sobre a EORA">' +
+                            'Sobre a EORA' +
+                            '<svg class="institutional-link-icon icon-inline icon-md"><use xlink:href="#chevron"></use></svg>' +
+                            '</a>' +
+                            '</div>'
+                            : '';
+                        campNativo.innerHTML =
+                            '<div class="institutional-container container-fluid">' +
+                            '<div class="institutional-left d-flex flex-column">' +
+                            '<h3 class="institutional-title mb-0">' + tcTexto2 + '</h3>' +
+                            (tcAss2 ? '<p class="institutional-text mb-0">' + tcAss2 + '</p>' : '') +
+                            '</div>' +
+                            rightCol +
+                            '</div>';
+                        inserirApos(campNativo);
+                    }
+                }
+                if (dados['video_produto']) {
+                    var vRows = dados['video_produto'].querySelectorAll('tbody > tr');
+                    var videoLink = '';
+                    var videoDesc = '';
+                    for (var vr = 0; vr < vRows.length; vr++) {
+                        var vcells = vRows[vr].querySelectorAll('td');
+                        if (vcells.length >= 2) {
+                            var vkey = vcells[0].textContent.trim().toLowerCase();
+                            if (vkey === 'video_link') videoLink = vcells[1].textContent.trim();
+                            if (vkey === 'descricao_video') videoDesc = vcells[1].innerHTML.trim();
+                        }
+                    }
+                    if (videoLink) {
+                        var vidMatch = videoLink.match(/vimeo\.com\/(\d+)/);
+                        if (vidMatch) {
+                            var embedUrl = 'https://player.vimeo.com/video/' + vidMatch[1] + '?background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0';
+                            var videoEl = document.createElement('div');
+                            videoEl.className = 'eora-pp-video-secao';
+                            videoEl.innerHTML =
+                                '<div class="eora-pp-video-texto">' + (videoDesc || '') + '</div>' +
+                                '<div class="eora-pp-video-embed">' +
+                                '<iframe src="' + embedUrl + '" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>' +
+                                '</div>';
+                            inserirApos(videoEl);
+                            (function (e) {
+                                function fitVid() {
+                                    var rect = e.getBoundingClientRect();
+                                    e.style.setProperty('margin-left', (-rect.left) + 'px', 'important');
+                                    e.style.setProperty('width', window.innerWidth + 'px', 'important');
+                                }
+                                setTimeout(fitVid, 0);
+                                window.addEventListener('resize', fitVid);
+                            })(videoEl);
+                        }
+                    }
+                }
+                var buyContainer = document.getElementById('eora-buy-form-container') || document.getElementById('product_form');
+                var priceEl = document.getElementById('price_display') || ancora.querySelector('.js-price-display, .product-price');
+                var priceText = priceEl ? priceEl.textContent.trim() : '';
+                var floatBar = document.createElement('div');
+                floatBar.className = 'eora-floating-bar eora-hidden';
+                floatBar.innerHTML =
+                    '<div class="eora-float-icon" id="eora-tryon-btn" title="Provador Virtual">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="3.5"></circle><path d="M20 2v4m-2-2h4" stroke-width="2"></path></svg>' +
+                    '</div>' +
+                    '<button class="eora-float-buy" id="eora-float-buy-btn">COMPRAR AGORA' + (priceText ? ' - ' + priceText : '') + '</button>';
+                document.body.appendChild(floatBar);
+                var popupLayer = document.createElement('div');
+                popupLayer.className = 'eora-pu-layer';
+                popupLayer.id = 'eora-pu-layer';
+                popupLayer.innerHTML =
+                    '<div class="eora-pu-box">' +
+                    '<div class="eora-pu-close" id="eora-pu-close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 1L1 13M1 1l12 12"/></svg></div>' +
+                    '<h3 class="eora-pu-title">SELECIONE UMA VARIANTE</h3>' +
+                    '<div id="eora-pu-list-container" style="max-height:60vh; overflow-y:auto; padding-right:4px;"></div>' +
+                    '<div id="eora-pu-tip-container" style="margin-top: 15px;"></div>' +
+                    '</div>';
+                document.body.appendChild(popupLayer);
+                function fecharPopupChanel() {
+                    popupLayer.classList.remove('eora-pu-open');
+                }
+                function abrirPopupChanel(mode) {
+                    mode = mode || 'buy';
+                    var listContainer = document.getElementById('eora-pu-list-container');
+                    var titleEl = document.querySelector('.eora-pu-title');
+                    if (titleEl) {
+                        titleEl.textContent = (mode === 'tryon') ? 'SELECIONE O MODELO PARA PROVAR' : 'SELECIONE UMA VARIANTE';
+                    }
+                    listContainer.innerHTML = '';
+
+                    var basePriceEl = ancora.querySelector('.js-price-display, .product-price');
+                    var basePrice = basePriceEl ? basePriceEl.textContent.trim() : '';
+                    var prodNameEl = ancora.querySelector('.js-product-name, .product-name');
+                    var baseName = prodNameEl ? prodNameEl.textContent.trim() : 'Produto';
+
+                    var validOptions = [];
+                    if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
+                        LS.variants.forEach(function (v) {
+                            var opts = [];
+                            if (v.option0) opts.push(v.option0);
+                            if (v.option1) opts.push(v.option1);
+                            if (v.option2) opts.push(v.option2);
+                            validOptions.push({
+                                name: opts.join(' '),
+                                id: v.id,
+                                sku: v.sku,
+                                price: v.price_short || basePrice,
+                                options: opts,
+                                image_url: v.image_url || '',
+                                stock: v.stock
+                            });
+                        });
+                    } else {
+                        var stSelects = Array.from(document.querySelectorAll('#product_form select, #eora-buy-form-container form select')).filter(function (s) {
+                            return !s.classList.contains('js-shipping-select') && !s.id.includes('shipping');
+                        });
+                        if (stSelects.length > 0) {
+                            var sel1 = stSelects[0];
+                            var opts1 = Array.from(sel1.querySelectorAll('option')).filter(function (o) { return o.value });
+                            if (stSelects.length === 1) {
+                                validOptions = opts1.map(function (o) { return { name: o.text, values: [o.value], refs: [sel1] } });
+                            } else if (stSelects.length === 2) {
+                                var sel2 = stSelects[1];
+                                var opts2 = Array.from(sel2.querySelectorAll('option')).filter(function (o) { return o.value });
+                                opts1.forEach(function (o1) {
+                                    opts2.forEach(function (o2) {
+                                        validOptions.push({ name: o1.text + ' ' + o2.text, values: [o1.value, o2.value], refs: [sel1, sel2] });
+                                    });
+                                });
+                            }
+                        }
+                    }
+
+                    if (validOptions.length > 0) {
+                        var seenCombos = {};
+                        validOptions = validOptions.filter(function (c) {
+                            if (seenCombos[c.name]) return false;
+                            seenCombos[c.name] = true;
+                            return true;
+                        });
+                        validOptions.forEach(function (combo, idx) {
+                            var actImg = combo.image_url || '';
+                            if (actImg && actImg.indexOf('//') === 0) actImg = 'https:' + actImg;
+                            if (!actImg) {
+                                var thumb = document.querySelector('.eora-pp-variante-item[data-idx="' + idx + '"] img:not(.eora-img-hover)');
+                                if (thumb && thumb.src) actImg = thumb.src;
+                                else if (document.querySelector('.eora-hero-img')) actImg = document.querySelector('.eora-hero-img').src;
+                            }
+
+                            var row = document.createElement('div');
+                            row.className = 'eora-pu-card';
+                            var variantOutOfStock = (combo.stock !== null && combo.stock !== undefined && combo.stock <= 0);
+                            
+                            if (mode === 'tryon' && typeof mkfashion !== 'undefined') {
+                                if (!mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', combo.sku || '')) return;
+                            }
+
+                            var btnLabel = 'SELECIONAR';
+                            if (mode === 'tryon') {
+                                btnLabel = 'PROVAR';
+                            } else if (variantOutOfStock) {
+                                btnLabel = 'PR\u00C9-VENDA';
+                            }
+                            
+                            var btnStyle = (mode === 'buy' && variantOutOfStock) ? 'background:#000;color:#fff;border:none;padding:10px 16px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;opacity:0.75;' : '';
+                            row.innerHTML =
+                                '<div style="display:flex; align-items:center; flex:1;">' +
+                                '<img src="' + actImg + '" alt="' + combo.name + '">' +
+                                '<div class="eora-pu-info">' +
+                                '<strong>' + combo.name + '</strong>' +
+                                '<span>' + (combo.price || basePrice) + '</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '<button class="eora-pu-select" data-idx="' + idx + '" data-out-of-stock="' + (variantOutOfStock ? '1' : '0') + '" style="' + btnStyle + '">' + btnLabel + '</button>';
+
+                            listContainer.appendChild(row);
+                        });
+
+                        var btns = listContainer.querySelectorAll('.eora-pu-select');
+                        btns.forEach(function (btn) {
+                             btn.addEventListener('click', function () {
+                                 var idx = parseInt(this.getAttribute('data-idx'));
+                                 var combo = validOptions[idx];
+                                 var isAviseMe = this.getAttribute('data-out-of-stock') === '1';
+                                 var actImgParam = btn.closest('.eora-pu-card').querySelector('img').src;
+                                 window.eoraSelectedVariantImg = actImgParam;
+                                 window.eoraSelectedVariantName = (baseName ? baseName + ' (' : '') + combo.name + (baseName ? ')' : '');
+
+                                 fecharPopupChanel();
+
+                                 if (mode === 'tryon') {
+                                     if (typeof mkfashion !== 'undefined') {
+                                         mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: combo.sku || '' });
+                                     }
+                                     return;
+                                 }
+
+                                 setTimeout(function () {
+                                    var formObj = document.getElementById('product_form') || document.querySelector('#eora-buy-form-container form');
+                                    if (formObj) {
+                                        var selects = formObj.querySelectorAll('select:not(.js-shipping-select):not([id*="shipping"])');
+
+                                        if (combo.options && selects.length > 0) {
+                                            selects.forEach(function (sel, i) {
+                                                if (combo.options[i]) {
+                                                    var opts = Array.from(sel.querySelectorAll('option'));
+                                                    var match = opts.find(function (o) { return o.text.trim().toLowerCase() === combo.options[i].trim().toLowerCase(); });
+                                                    if (match) {
+                                                        match.selected = true;
+                                                        sel.dispatchEvent(new Event('change', { bubbles: true }));
+                                                    }
+                                                }
+                                            });
+                                        } else if (combo.refs) {
+                                            combo.refs.forEach(function (selItem, i) {
+                                                selItem.value = combo.values[i];
+                                                selItem.dispatchEvent(new Event('change', { bubbles: true }));
+                                            });
+                                        }
+
+                                        if (combo.id) {
+                                            var vidInputs = document.querySelectorAll('input[name="variant_id"]');
+                                            if (vidInputs.length > 0) {
+                                                vidInputs.forEach(function (vid) { vid.value = combo.id; });
+                                            }
+                                            var shippingVid = document.getElementById('shipping-variant-id');
+                                            if (shippingVid) {
+                                                shippingVid.value = combo.id;
+                                            }
+                                        }
+
+                                        var pQtyInside = formObj.querySelector('input[name="quantity"]');
+                                        if (!pQtyInside) {
+                                            formObj.insertAdjacentHTML('beforeend', '<input type="hidden" name="quantity" value="1" />');
+                                        } else {
+                                            pQtyInside.value = "1";
+                                        }
+
+                                        var container = formObj.closest('.js-product-container');
+                                        if (container) {
+                                            var pImg = container.querySelector('.js-product-slide-img');
+                                            if (!pImg) {
+                                                container.insertAdjacentHTML('beforeend', '<div class="js-product-slide-img" data-srcset="' + actImgParam + ' 100w" style="display:none"></div>');
+                                            } else {
+                                                pImg.setAttribute('data-srcset', actImgParam + ' 100w');
+                                            }
+
+                                            var pName = container.querySelector('.js-product-name');
+                                            if (!pName) {
+                                                container.insertAdjacentHTML('beforeend', '<div class="js-product-name" style="display:none">' + (combo.name || baseName) + '</div>');
+                                            } else {
+                                                pName.textContent = combo.name || baseName;
+                                            }
+
+                                            var pPrice = container.querySelector('.js-price-display');
+                                            if (!pPrice) {
+                                                container.insertAdjacentHTML('beforeend', '<div class="js-price-display" style="display:none">' + (combo.price || basePrice) + '</div>');
+                                            }
+                                        }
+
+                                        // Fechar o popup de seleção
+                                        fecharPopupChanel();
+
+                                        if (isAviseMe) {
+                                            setTimeout(function() {
+                                                var chegueiInner = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                                                   document.querySelector('#cheguei-alert-div section') ||
+                                                                   document.getElementById('cheguei-alert-div');
+                                                if (chegueiInner) chegueiInner.click();
+                                            }, 250);
+                                            return;
+                                        }
+
+                                        // Criar e injetar overlay de Loading
+                                        var loadingOverlay = document.createElement('div');
+                                        loadingOverlay.id = 'eora-ajax-loading'; loadingOverlay.style = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; font-weight:bold; font-family:sans-serif;';
+                                        loadingOverlay.innerHTML = '<span>Adicionando ao carrinho...</span>';
+                                        document.body.appendChild(loadingOverlay);
+
+                                        // Submissão via Ajax (Fetch)
+                                        fetch('/comprar/', {
+                                            method: 'POST',
+                                            body: new FormData(formObj),
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest'
+                                            }
+                                        })
+                                            .then(function (r) {
+                                                if (!r.ok) { alert('Erro Nuvemshop: ' + r.status); }
+                                                return r.text().then(function (t) {
+                                                    try { return JSON.parse(t); }
+                                                    catch (e) {
+                                                        alert('Resposta não é JSON. Tamanho: ' + t.length + '\nComeço: ' + t.substring(0, 50));
+                                                        throw e;
+                                                    }
+                                                });
+                                            })
+                                            .then(function (json) {
+                                                if (loadingOverlay) loadingOverlay.remove();
+                                                if (json && typeof json === 'object') {
+                                                    try {
+                                                        if (json.cart) {
+                                                            var totalQty = 0;
+                                                            if (typeof json.cart.item_count !== 'undefined') {
+                                                                totalQty = json.cart.item_count;
+                                                            } else if (json.cart.products) {
+                                                                totalQty = json.cart.products.reduce(function (acc, p) { return acc + (p.quantity || 1); }, 0);
+                                                            }
+                                                            var counts = document.querySelectorAll('.js-cart-widget-amount, .cart-widget-amount, #cart-totals');
+                                                            counts.forEach(function (c) { c.innerText = totalQty; });
+                                                        }
+
+                                                        fetch('/cart/')
+                                                            .then(function (r) { return r.text(); })
+                                                            .then(function (html) {
+                                                                var tempDiv = document.createElement('div');
+                                                                tempDiv.innerHTML = html;
+                                                                var targetClasses = ['.js-ajax-cart-container', '#modal-cart .modal-body', '.cart-summary-container'];
+                                                                targetClasses.forEach(function (cls) {
+                                                                    var newEl = tempDiv.querySelector(cls);
+                                                                    var currEl = document.querySelector(cls);
+                                                                    if (newEl && currEl) currEl.innerHTML = newEl.innerHTML;
+                                                                });
+                                                            }).catch(function () { });
+                                                    } catch (e) {
+                                                        console.error('Erro na atualização da interface:', e);
+                                                    }
+
+
+                                                    window.populateNativeModal(json);
+                                                }
+
+                                            })
+                                            .catch(function (err) {
+                                                if (loadingOverlay) loadingOverlay.remove();
+                                                alert('Erro na requisição: ' + err.message);
+                                            });
+
+                                    }
+                                }, 100);
+                            });
+                        });
+                    } else {
+                        var actImgFallback = '';
+                        if (document.querySelector('.eora-hero-img')) actImgFallback = document.querySelector('.eora-hero-img').src;
+                        var fallbackRow = document.createElement('div');
+                        fallbackRow.className = 'eora-pu-card';
+                        fallbackRow.innerHTML =
+                            '<div style="display:flex; align-items:center; flex:1;">' +
+                            '<img src="' + actImgFallback + '" alt="Produto">' +
+                            '<div class="eora-pu-info">' +
+                            '<strong>' + baseName + '</strong>' +
+                            '<span>' + basePrice + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '<button class="eora-pu-select">ADICIONAR</button>';
+                        listContainer.appendChild(fallbackRow);
+
+                        fallbackRow.querySelector('.eora-pu-select').addEventListener('click', function () {
+                            fecharPopupChanel();
+                            setTimeout(function () {
+                                var formObj2 = document.getElementById('product_form') || document.querySelector('#eora-buy-form-container form');
+                                if (formObj2) {
+                                    var pQtyInside2 = formObj2.querySelector('input[name="quantity"]');
+                                    if (!pQtyInside2) {
+                                        formObj2.insertAdjacentHTML('beforeend', '<input type="hidden" name="quantity" value="1" />');
+                                    } else {
+                                        pQtyInside2.value = "1";
+                                    }
+
+                                    var container2 = formObj2.closest('.js-product-container');
+                                    if (container2) {
+                                        var pImg2 = container2.querySelector('.js-product-slide-img');
+                                        if (!pImg2) {
+                                            container2.insertAdjacentHTML('beforeend', '<div class="js-product-slide-img" data-srcset="' + actImgFallback + ' 100w" style="display:none"></div>');
+                                        }
+                                        var pName2 = container2.querySelector('.js-product-name');
+                                        if (!pName2) {
+                                            container2.insertAdjacentHTML('beforeend', '<div class="js-product-name" style="display:none">' + baseName + '</div>');
+                                        }
+                                        var pPrice2 = container2.querySelector('.js-price-display');
+                                        if (!pPrice2) {
+                                            container2.insertAdjacentHTML('beforeend', '<div class="js-price-display" style="display:none">' + basePrice + '</div>');
+                                        }
+                                    }
+                                    // Criar e injetar overlay de Loading
+                                    var loadingOverlay2 = document.createElement('div');
+                                    loadingOverlay2.id = 'eora-ajax-loading'; loadingOverlay2.style = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; font-weight:bold; font-family:sans-serif;';
+                                    loadingOverlay2.innerHTML = '<span>Adicionando ao carrinho...</span>';
+                                    document.body.appendChild(loadingOverlay2);
+
+                                    // Submissão via Ajax (Fetch)
+                                    fetch('/comprar/', {
+                                        method: 'POST',
+                                        body: new FormData(formObj2),
+                                        headers: {
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                        .then(function (r) {
+                                            if (!r.ok) { alert('Erro Fallback Nuvemshop: ' + r.status); }
+                                            return r.text().then(function (t) {
+                                                try { return JSON.parse(t); }
+                                                catch (e) {
+                                                    alert('Resposta Fallback não é JSON. Tamanho: ' + t.length + '\nComeço: ' + t.substring(0, 50));
+                                                    throw e;
+                                                }
+                                            });
+                                        })
+                                        .then(function (json) {
+                                            if (loadingOverlay2) loadingOverlay2.remove();
+                                            if (json && typeof json === 'object') {
+                                                try {
+                                                    if (json.cart) {
+                                                        var totalQty = 0;
+                                                        if (typeof json.cart.item_count !== 'undefined') {
+                                                            totalQty = json.cart.item_count;
+                                                        } else if (json.cart.products) {
+                                                            totalQty = json.cart.products.reduce(function (acc, p) { return acc + (p.quantity || 1); }, 0);
+                                                        }
+                                                        var counts = document.querySelectorAll('.js-cart-widget-amount, .cart-widget-amount, #cart-totals');
+                                                        counts.forEach(function (c) { c.innerText = totalQty; });
+                                                    }
+
+                                                    fetch('/cart/')
+                                                        .then(function (r) { return r.text(); })
+                                                        .then(function (html) {
+                                                            var tempDiv = document.createElement('div');
+                                                            tempDiv.innerHTML = html;
+                                                            var targetClasses = ['.js-ajax-cart-container', '#modal-cart .modal-body', '.cart-summary-container'];
+                                                            targetClasses.forEach(function (cls) {
+                                                                var newEl = tempDiv.querySelector(cls);
+                                                                var currEl = document.querySelector(cls);
+                                                                if (newEl && currEl) currEl.innerHTML = newEl.innerHTML;
+                                                            });
+                                                        }).catch(function () { });
+                                                } catch (e) {
+                                                    console.error('Erro na atualização da interface (Fallback):', e);
+                                                }
+
+
+                                                window.populateNativeModal(json);
+                                            }
+
+                                        })
+                                        .catch(function (err) {
+                                            if (loadingOverlay2) loadingOverlay2.remove();
+                                            alert('Erro Fallback na requisição: ' + err.message);
+                                        });
+                                }
+                            }, 100);
+                        });
+                    }
+                    popupLayer.classList.add('eora-pu-open');
+                    if (window.eoraUpdateModalTip) window.eoraUpdateModalTip();
+                }
+                window.abrirPopupChanel = abrirPopupChanel; // Expôe para o outro botão falso
+                document.getElementById('eora-pu-close').addEventListener('click', fecharPopupChanel);
+                var floatBuyBtn = document.getElementById('eora-float-buy-btn');
+                if (floatBuyBtn) {
+                    floatBuyBtn.addEventListener('click', function (e) { 
+                        e.preventDefault();
+                        if(typeof abrirPopupChanel === 'function') abrirPopupChanel('buy'); 
+                    });
+                }
+                var heroEl = document.getElementById('eora-hero');
+                window.addEventListener('scroll', function () {
+                    if (!heroEl) return;
+                    var heroBottom = heroEl.getBoundingClientRect().bottom;
+                    if (heroBottom < 100) { floatBar.classList.remove('eora-hidden'); }
+                    else { floatBar.classList.add('eora-hidden'); }
+                });
+                var observerExperiencia = new MutationObserver(function (mutations) {
+                    var bannersAltInfo = document.querySelector('.js-banners-alternados-product');
+                    if (bannersAltInfo && !document.querySelector('.eora-experiencia-titulo') && bannersAltInfo.innerHTML.trim().length > 10) {
+                        var tit = document.createElement('h2');
+                        tit.className = 'eora-experiencia-titulo';
+                        tit.innerHTML = 'EXPERIÊNCIA';
+                        bannersAltInfo.parentNode.insertBefore(tit, bannersAltInfo);
+                    }
+                });
+                observerExperiencia.observe(document.body, { childList: true, subtree: true });
+
+                // ---- Carousel helpers (mobile/tablet) ----
+                function eoraSetCarouselIndex(wrapper, nextIdx) {
+                    if (!wrapper) return;
+                    var items = Array.from(wrapper.querySelectorAll('.eora-pp-vf-item:not(.eora-pp-vf-large)'));
+                    var len = items.length;
+                    if (!len) return;
+                    var safeIdx = ((nextIdx % len) + len) % len;
+                    for (var i = 0; i < len; i++) {
+                        var isActive = i === safeIdx;
+                        items[i].classList.toggle('eora-carousel-active', isActive);
+                        items[i].style.cssText = isActive
+                            ? 'display: block !important; opacity: 1 !important; visibility: visible !important; height: auto !important; overflow: visible !important;'
+                            : 'display: none !important; opacity: 0 !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important;';
+                    }
+                    wrapper.setAttribute('data-eora-idx', String(safeIdx));
+                }
+                window.eoraSetCarouselIndex = eoraSetCarouselIndex;
+
+                // Init carousels: mark first item active, hide rest, set arrow visibility
+                function eoraInitCarousels() {
+                    if (window.innerWidth >= 1025) return;
+                    var wrappers = document.querySelectorAll('.eora-pp-vf-wrapper');
+                    wrappers.forEach(function(wrapper) {
+                        var items = Array.from(wrapper.querySelectorAll('.eora-pp-vf-item:not(.eora-pp-vf-large)'));
+                        var total = items.length;
+                        if (total === 0) return;
+                        var prev = wrapper.querySelector('.eora-vf-prev');
+                        var next = wrapper.querySelector('.eora-vf-next');
+                        if (prev) prev.style.display = (total <= 1) ? 'none' : 'flex';
+                        if (next) next.style.display = (total <= 1) ? 'none' : 'flex';
+                        var savedIdx = parseInt(wrapper.getAttribute('data-eora-idx') || '0', 10);
+                        eoraSetCarouselIndex(wrapper, isNaN(savedIdx) ? 0 : savedIdx);
+                    });
+                }
+                setTimeout(eoraInitCarousels, 400);
+                setTimeout(eoraInitCarousels, 1200);
+
+                // ---- Fix iOS native pinch-zoom breaking layout ----
+                // iOS Safari ignores user-scalable=no since iOS 10.
+                // gesturestart preventDefault is the only reliable method on iPhone.
+                document.addEventListener('gesturestart', function(e) {
+                    // Allow pinch inside our custom zoom overlay, block everywhere else
+                    var zOverlay = document.getElementById('eora-zoom-overlay');
+                    if (zOverlay && zOverlay.classList.contains('eora-zoom-open')) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, { passive: false });
+                document.addEventListener('gesturechange', function(e) {
+                    var zOverlay = document.getElementById('eora-zoom-overlay');
+                    if (zOverlay && zOverlay.classList.contains('eora-zoom-open')) return;
+                    e.preventDefault();
+                }, { passive: false });
+                document.addEventListener('gestureend', function(e) {
+                    var zOverlay = document.getElementById('eora-zoom-overlay');
+                    if (zOverlay && zOverlay.classList.contains('eora-zoom-open')) return;
+                    e.preventDefault();
+                }, { passive: false });
+
+                // ---- Zoom Overlay ----
+                var zoomOverlay = document.createElement('div');
+                zoomOverlay.id = 'eora-zoom-overlay';
+                zoomOverlay.innerHTML =
+                    '<button id="eora-zoom-close"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M13 1L1 13M1 1l12 12"/></svg></button>' +
+                    '<img id="eora-zoom-img" src="" alt="zoom">';
+                document.body.appendChild(zoomOverlay);
+
+                var zImg = document.getElementById('eora-zoom-img');
+                var zClose = document.getElementById('eora-zoom-close');
+                var zScale = 1, zMinScale = 1, zMaxScale = 4;
+                var zTransX = 0, zTransY = 0;
+                var zLastTap = 0, zPinchStart = 0;
+                var zIsPanning = false;
+                var zPanStartX = 0, zPanStartY = 0, zInitTransX = 0, zInitTransY = 0;
+
+                function eoraZoomApply(animate) {
+                    zImg.style.transition = animate ? 'transform 0.25s ease' : 'none';
+                    zImg.style.transform = 'translate(' + zTransX + 'px,' + zTransY + 'px) scale(' + zScale + ')';
+                }
+                function eoraZoomOpen(src) {
+                    zImg.src = src;
+                    zScale = 1; zTransX = 0; zTransY = 0;
+                    eoraZoomApply(false);
+                    zoomOverlay.classList.add('eora-zoom-open');
+                    document.body.style.overflow = 'hidden';
+                }
+                function eoraZoomClose() {
+                    zoomOverlay.classList.remove('eora-zoom-open');
+                    document.body.style.overflow = '';
+                    zScale = 1; zTransX = 0; zTransY = 0;
+                    eoraZoomApply(false);
+                }
+                zClose.addEventListener('click', eoraZoomClose);
+                zoomOverlay.addEventListener('click', function(e) {
+                    if (e.target === zoomOverlay) eoraZoomClose();
+                });
+
+                // Touch handling inside zoom overlay
+                zoomOverlay.addEventListener('touchstart', function(e) {
+                    if (e.touches.length === 2) {
+                        zIsPanning = false;
+                        zPinchStart = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                    } else if (e.touches.length === 1) {
+                        zPanStartX = e.touches[0].clientX;
+                        zPanStartY = e.touches[0].clientY;
+                        zInitTransX = zTransX;
+                        zInitTransY = zTransY;
+                        zIsPanning = zScale > 1; // only pan when zoomed
+                    }
+                }, { passive: true });
+
+                zoomOverlay.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                    if (e.touches.length === 2) {
+                        var dist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        if (zPinchStart > 0) {
+                            var newScale = Math.min(zMaxScale, Math.max(zMinScale, zScale * (dist / zPinchStart)));
+                            zScale = newScale;
+                        }
+                        zPinchStart = dist;
+                        eoraZoomApply(false);
+                    } else if (e.touches.length === 1 && zIsPanning) {
+                        zTransX = zInitTransX + (e.touches[0].clientX - zPanStartX);
+                        zTransY = zInitTransY + (e.touches[0].clientY - zPanStartY);
+                        eoraZoomApply(false);
+                    }
+                }, { passive: false });
+
+                zoomOverlay.addEventListener('touchend', function(e) {
+                    zIsPanning = false;
+                    if (e.touches.length < 2 && zScale < zMinScale) {
+                        zScale = zMinScale; zTransX = 0; zTransY = 0;
+                        eoraZoomApply(true);
+                    }
+                    // Double-tap: toggle 1x / 2.5x
+                    if (e.touches.length === 0) {
+                        var now = Date.now();
+                        if (now - zLastTap < 300) {
+                            if (zScale > 1.5) { zScale = 1; zTransX = 0; zTransY = 0; }
+                            else { zScale = 2.5; }
+                            eoraZoomApply(true);
+                        }
+                        zLastTap = now;
+                    }
+                }, { passive: true });
+
+                // Open zoom on image tap — strict tap detection (no accidental scroll triggers)
+                var zTapStartX = 0, zTapStartY = 0, zTapStartTime = 0;
+                document.body.addEventListener('touchstart', function(e) {
+                    if (window.innerWidth >= 768 || e.touches.length > 1) return;
+                    zTapStartX = e.touches[0].clientX;
+                    zTapStartY = e.touches[0].clientY;
+                    zTapStartTime = Date.now();
+                }, { passive: true });
+                document.body.addEventListener('touchend', function(e) {
+                    if (window.innerWidth >= 768) return;
+                    if (zoomOverlay.classList.contains('eora-zoom-open')) return;
+                    var touch = e.changedTouches[0];
+                    var dx = Math.abs(touch.clientX - zTapStartX);
+                    var dy = Math.abs(touch.clientY - zTapStartY);
+                    var dt = Date.now() - zTapStartTime;
+                    if (dx > 8 || dy > 8 || dt > 200) return; // scrolling, not tapping
+                    var img = e.target;
+                    if (!img || img.tagName !== 'IMG') return;
+                    var parent = img.closest ? img.closest('.eora-pp-vf-item') : null;
+                    if (!parent) return;
+                    e.preventDefault();
+                    eoraZoomOpen(img.src || img.getAttribute('src'));
+                }, { passive: false });
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+            else init();
+        })();
+    </script>
+</p>
+<!-- ============================================================
+     BANNER DO PRODUTO (label, detalhes e botÃ£o na coluna direita)
+     Preencha os campos abaixo â€” deixe vazio para nÃ£o exibir
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 15%; padding: 6px; font-size: 11px;">banner_produto</td>
+<td style="width: 15%; padding: 6px; font-size: 11px; text-align: center; vertical-align: middle;">NOVO</td>
+<td style="width: 25%; padding: 6px; font-size: 11px; vertical-align: middle;">Arma&ccedil;&atilde;o: Dourado, Preto e Prata.&nbsp;</td>
+<td style="width: 25%; padding: 6px; font-size: 11px; vertical-align: middle;">Lentes: Marrom, Preta e Cinza.&nbsp;</td>
+<td style="width: 20%; padding: 6px; font-size: 11px; text-align: center; vertical-align: middle;">VER DETALHES</td>
+</tr>
+<tr>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;" colspan="5">O modelo LUAR apresenta uma estrutura em metal com acabamento de alto brilho, destacando um shape cat eye preciso e marcante. Seu desenho estruturado transmite eleg&acirc;ncia e for&ccedil;a, elevando o look com presen&ccedil;a e defini&ccedil;&atilde;o.</td>
+</tr>
+<tr>
+<td style="padding: 12px; font-size: 11px; color: #aaaaaa; vertical-align: middle; text-align: center;" colspan="5"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/BANNER DESKTOP.png" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="width: 15%; padding: 6px; font-size: 11px;">banner_mobile</td>
+<td style="padding: 12px; font-size: 11px; color: #aaaaaa; vertical-align: middle; text-align: center;" colspan="4"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/BANNER MOBILE.png" alt="" width="100" height="100" /></td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
+     SEÃ‡ÃƒO DE VARIANTES + FOTOS POR VARIANTE
+     Linha 1: miniaturas (clique para exibir as fotos da variante)
+     Linhas 2-5: 3 fotos de cada variante (inserir via Ã­cone de imagem)
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 25%; padding: 6px; font-size: 11px;">variantes_produto</td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO CAPA .jpg" alt="" width="100" height="100" /></td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO CAPA .jpg" alt="" width="100" height="100" /></td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRAT CAPA .jpg" alt="" width="100" height="100" /></td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">
+<h4><span style="color: #000000;"><strong>hover thumbnails &rarr;</strong></span></h4>
+</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">
+<p>&nbsp;</p>
+<p><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (9).png" alt="" width="100" height="100" /></p>
+</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (10).png" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (11).png" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 1 &rarr;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO LADO VERT.jpg" alt="" width="100" height="111" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK METAL DOURADO DIAGONAL 1.2..jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO DETALHE TRAS VERT.jpg" alt="foto 4" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL GRANDE DOURADO.jpg" alt="foto 5" width="100" height="56" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 2 &rarr;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO LADO VERT.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK METAL PRETO DIAGONAL 1.2.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO DETALHE TRAS VERT.jpg" alt="foto 4" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL GRANDE PRETO.jpg" alt="foto 5" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 3 &rarr;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRATA FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRATA LADO VERT.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK METAL PRATA DIAGONAL 1.2..jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRATA DETALHE TRAS VERT.jpg" alt="foto 4" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL GRANDE PRATA (3).jpg" alt="foto 5" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 4 &rarr; Dourado/Cinza</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 5 &rarr; Prata/Rosa fotocrom&aacute;tica</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 6 &rarr; Prata/Prata fotocrom&aacute;tica</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #555; font-weight: bold;">video_link</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+<td style="padding: 6px; font-size: 11px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #555; font-weight: bold; vertical-align: top;">descricao_video</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">
+<div style="text-align: center; font-size: 14px; line-height: 1.8; color: #000;">Texto da variante 1</div>
+</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">
+<div style="text-align: center; font-size: 14px; line-height: 1.8; color: #000;">Texto da variante 2</div>
+</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">
+<div style="text-align: center; font-size: 14px; line-height: 1.8; color: #000;">Texto da variante 3</div>
+</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
+<td style="padding: 12px; font-size: 11px; vertical-align: top;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
+     TEXTO DE CAMPANHA
+     Linha 1 = texto principal | Linha 2 = assinatura | Linha 3 = link "Sobre a EORA"
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 30%;">texto_campanha</td>
+<td style="width: 70%;">
+<p>Na EORA, cada detalhe foi criado para entregar mais do que produtos: entregamos um objeto de desejo. Materiais nobres, design autoral e uma experi&ecirc;ncia que transforma cada cliente em colecionadora. Quem tem um, sempre quer o pr&oacute;ximo.</p>
+</td>
+</tr>
+<tr>
+<td>assinatura</td>
+<td>&mdash; Marcela Carrasco, Co-Fundadora da EORA</td>
+</tr>
+<tr>
+<td>link_sobre</td>
+<td>https://www.eoraeyewear.com/sobre1/</td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
+     SEÃ‡ÃƒO DE VÃDEO COM TEXTO AO LADO
+     video_link     = URL do Vimeo (ex: https://vimeo.com/1169067768)
+     descricao_video = HTML com os textos exibidos ao lado do vÃ­deo
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 20%; padding: 6px; font-size: 11px;">video_produto</td>
+<td style="padding: 6px; font-size: 10px; color: #aaa; text-align: center;" colspan="2">&acirc;&dagger;&ldquo; preencha as linhas abaixo &acirc;&dagger;&ldquo;</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 11px;">video_link</td>
+<td style="padding: 6px; font-size: 11px;" colspan="2">https://vimeo.com/1176623075?fl=ip&amp;fe=ec</td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 11px; vertical-align: top;">descricao_video</td>
+<td style="padding: 12px; font-size: 11px;" colspan="2">
+<div style="text-align: center; font-size: 16px; line-height: 1.8; color: #000;"><strong>Design Brasileiro</strong><br /><br />Cada pe&ccedil;a EORA &eacute; cuidadosamente desenhada e desenvolvida por nosso time no brasil, visando usabilidade e exclusividade. <br /><br /><br /><strong>Materiais de alta qualidade</strong><br /><br />Utilizamos mat&eacute;rias-primas nobres e selecionadas,<br />garantindo leveza, conforto e durabilidade que atravessam o tempo. <br /><br /><br /><strong>Qualidade EORA</strong><br /><br />Mais que um produto, um padr&atilde;o.<br />Cada cria&ccedil;&atilde;o EORA reflete autenticidade, precis&atilde;o<br />e o compromisso com excel&ecirc;ncia.</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
+     BANNERS ALTERNADOS (Kit, Qualidade, Matéria-Prima)
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 25%; padding: 6px; font-size: 11px;">banners_alternados</td>
+<td style="width: 25%; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/experiencia eora (4).png" alt="Img 1" width="100" height="59" /></td>
+<td style="width: 25%; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (12).png" alt="Img 2" width="100" height="136" /></td>
+<td style="width: 25%; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO DETALHE TRAS VERT.jpg" alt="Img 3" width="100" height="111" /></td>
+</tr>
+<tr>
+<td style="padding: 6px;">&nbsp;</td>
+<td style="padding: 12px; vertical-align: middle; text-align: center;">
+<h2>KIT COMPLETO</h2>
+<p>Cada pe&ccedil;a do nosso kit foi cuidadosamente pensada para elevar sua experi&ecirc;ncia com a EORA. Da embalagem sofisticada aos acess&oacute;rios exclusivos, cada componente reflete a qualidade, o design e a ess&ecirc;ncia &uacute;nica da nossa marca.</p>
+</td>
+<td style="padding: 12px; vertical-align: middle; text-align: center;">
+<h2>PRECIS&Atilde;O ESTRUTURAL</h2>
+<div class="pointer-events-none h-px w-px absolute bottom-0" aria-hidden="true" data-edge="true">&nbsp;</div>
+<div class="flex flex-col text-sm pb-25">
+<section class="text-token-text-primary w-full focus:outline-none [--shadow-height:45px] has-data-writing-block:pointer-events-none has-data-writing-block:-mt-(--shadow-height) has-data-writing-block:pt-(--shadow-height) [&amp;:has([data-writing-block])&gt;*]:pointer-events-auto scroll-mt-[calc(var(--header-height)+min(200px,max(70px,20svh)))]" dir="auto" data-turn-id="request-68ccb68e-fa3c-8329-9f94-e5b167f08267-1" data-testid="conversation-turn-244" data-scroll-anchor="true" data-turn="assistant">
+<div class="text-base my-auto mx-auto pb-10 [--thread-content-margin:var(--thread-content-margin-xs,calc(var(--spacing)*4))] @w-sm/main:[--thread-content-margin:var(--thread-content-margin-sm,calc(var(--spacing)*6))] @w-lg/main:[--thread-content-margin:var(--thread-content-margin-lg,calc(var(--spacing)*16))] px-(--thread-content-margin)">
+<div class="[--thread-content-max-width:40rem] @w-lg/main:[--thread-content-max-width:48rem] mx-auto max-w-(--thread-content-max-width) flex-1 group/turn-messages focus-visible:outline-hidden relative flex w-full min-w-0 flex-col agent-turn">
+<div class="flex max-w-full flex-col gap-4 grow">
+<div class="min-h-8 text-message relative flex w-full flex-col items-end gap-2 text-start break-words whitespace-normal outline-none keyboard-focused:focus-ring [.text-message+&amp;]:mt-1" dir="auto" tabindex="0" data-message-author-role="assistant" data-message-id="7dccd308-7540-44ba-9f2e-62d551e5c4c8" data-message-model-slug="gpt-5-3" data-turn-start-message="true">
+<div class="flex w-full flex-col gap-1 empty:hidden">
+<div class="markdown prose dark:prose-invert w-full wrap-break-word dark markdown-new-styling">
+<p data-start="66" data-end="286" data-is-last-node="" data-is-only-node="">Desenvolvidos em uma f&aacute;brica japonesa e produzidos com as melhores mat&eacute;rias primas do mercado, os &oacute;culos de metal EORA seguem padr&otilde;es rigorosos de constru&ccedil;&atilde;o, garantindo precis&atilde;o, resist&ecirc;ncia e durabilidade ao longo do tempo.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="z-0 flex min-h-[46px] justify-start">&nbsp;</div>
+<div class="mt-3 w-full empty:hidden">
+<div class="text-center">&nbsp;</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</td>
+<td style="padding: 12px; vertical-align: middle; text-align: center;">
+<h2>MAT&Eacute;RIA PRIMA</h2>
+<p>Utilizamos a prata alem&atilde;, um metal de alta performance, reconhecido por sua resist&ecirc;ncia e estabilidade estrutural, oferecendo maior durabilidade e alta prote&ccedil;&atilde;o contra oxida&ccedil;&atilde;o ao longo do tempo.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
+     ESPECIFICAÇÕES TÉCNICAS (Bloqueio de Luz e Medidas)
+     bloqueio: alta, media ou baixa
+     medidas: HTML com as dimensões (ex: 50 | 20 | 145)
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 25%; padding: 6px; font-size: 11px;">capacidade_bloqueio</td>
+<td style="width: 25%; padding: 6px; font-size: 11px;">valor</td>
+<td style="width: 50%; padding: 6px; font-size: 11px;">ALTA</td>
+</tr>
+</tbody>
+</table>
+<div>&nbsp;</div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 25%; padding: 6px; font-size: 11px;">medidas_do_oculos</td>
+<td style="width: 75%; padding: 6px; font-size: 11px;">
+<ul>
+<li>Medida da haste &ndash; 146 mm</li>
+<li>Medida da lente &ndash; 53 mm</li>
+<li>Medida do frontal total &ndash; 143 mm</li>
+<li>Medida da altura total &ndash; 38 mm</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Modal Sucesso Customizado (Adicionado ao Carrinho) -->
+<div id="eora-success-modal" class="eora-success-overlay" style="display: none;">
+<div class="eora-success-content"><span class="eora-success-close">&times;</span>
+<h3 class="eora-success-title">ADICIONADO AO CARRINHO!</h3>
+<div class="eora-success-body">
+<div class="eora-success-item"><img id="eora-success-img" alt="" />
+<div class="eora-success-info"><span id="eora-success-name"></span> <span id="eora-success-price"></span></div>
+</div>
+<div class="eora-success-summary"><span id="eora-success-total"></span> <a class="js-modal-close js-modal-open js-fullscreen-modal-open eora-success-btn" href="#" data-toggle="#modal-cart" data-modal-url="modal-fullscreen-cart">Ver carrinho</a></div>
+</div>
+<div class="eora-success-recommendations">
+<h4>COMPRE JUNTO</h4>
+<div id="eora-success-products" class="eora-success-grid"></div>
+</div>
+</div>
+</div>
+<p>
+<script>
+    window.populateNativeModal = function (json) {
+        var nativeModal = document.querySelector('.js-modal#related-products-notification, .js-related-products-notification, #related-products-notification');
+        if (nativeModal) {
+            var item = json.item || {};
+            var totalQty = 1;
+            if (json.cart) {
+                totalQty = json.cart.item_count !== undefined ? json.cart.item_count : json.cart.items_count !== undefined ? json.cart.items_count : (json.cart.products ? json.cart.products.reduce(function (a, b) { return a + (b.quantity || 1); }, 0) : 1);
+            }
+            var allCounts = document.querySelectorAll('.js-cart-widget-amount, .js-cart-count, .cart-count, .js-cart-amount, .js-cart-quantity, .js-cart-items-amount');
+            allCounts.forEach(function (el) { el.innerText = totalQty; });
+            var cartModalCount = document.querySelector('#modal-cart .modal-header p');
+            if (cartModalCount) cartModalCount.innerText = '(' + totalQty + ')';
+            var emptyMessages = document.querySelectorAll('.js-empty-ajax-cart, .empty-ajax-cart, .empty-cart, .js-ajax-cart-empty');
+            emptyMessages.forEach(function (el) { if (totalQty > 0) el.style.setProperty('display', 'none', 'important'); });
+            if (typeof jQuery !== 'undefined') { $(document).trigger('ajax_cart:update'); }
+            var emptyMessages = document.querySelectorAll('.js-empty-ajax-cart, .empty-ajax-cart, .empty-cart, .js-ajax-cart-empty');
+            emptyMessages.forEach(function (el) { if (totalQty > 0) el.style.setProperty('display', 'none', 'important'); });
+            if (typeof jQuery !== 'undefined') { $(document).trigger('ajax_cart:update'); }
+
+            var imgN = nativeModal.querySelector('.js-cart-notification-item-img');
+            if (imgN) {
+                var src = '';
+                if (item.featured_image) {
+                    src = typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || '');
+                } else if (item.image) {
+                    src = typeof item.image === 'string' ? item.image : (item.image.src || '');
+                } else {
+                    src = item.thumbnail_url || '';
+                }
+                if (!src && window.eoraSelectedVariantImg) {
+                    src = window.eoraSelectedVariantImg;
+                }
+                if (!src) {
+                    var firstImg = document.querySelector('.js-product-slide-img img, .eora-hero-img');
+                    if (firstImg) src = firstImg.src;
+                }
+                if (src) {
+                    imgN.src = src;
+                    imgN.setAttribute('srcset', src);
+                    imgN.style.opacity = '1';
+                }
+            }
+
+            var widgetAmount = nativeModal.querySelector('.js-cart-widget-amount');
+            if (widgetAmount && widgetAmount.parentNode) {
+                widgetAmount.parentNode.innerHTML = 'Total:';
+            }
+
+            var relContainer = nativeModal.querySelector('.js-related-products-notification-container');
+            if (relContainer) {
+                relContainer.style.setProperty('display', 'block', 'important');
+                if (relContainer.innerHTML.trim() === '') {
+                    relContainer.innerHTML = '<section id="related-products-notification" class="products-section js-related-products-notification"><div class="products-section-title-container" style="margin-top: 25px; margin-bottom: 20px;"><h2 class="h5 mb-2">Compre também</h2></div><div class="products-section-container"><div class="swiper-wrapper"></div></div></section>';
+                }
+            }
+
+            var wrapper = nativeModal.querySelector('.swiper-wrapper, .products-section-slider-wrapper');
+            if (wrapper) {
+                if (wrapper.children.length === 0) {
+                    // Só clona da página se o modal nativo estiver vazio
+                    wrapper.innerHTML = '';
+                    wrapper.style.display = 'flex';
+                    wrapper.style.flexWrap = 'nowrap';
+                    wrapper.style.gap = '12px';
+                    wrapper.style.overflowX = 'auto';
+                    wrapper.style.transform = 'none';
+                    wrapper.style.transition = 'none';
+
+                    var liveRelated = document.querySelectorAll('.js-alternative-products .swiper-slide, .alternative-products .swiper-slide, .js-related-products .swiper-slide, .section-products-related .swiper-slide, #related-products .swiper-slide, .item-product');
+                    if (liveRelated.length > 0) {
+                        var count = 0;
+                        liveRelated.forEach(function (itemNode) {
+                            if (count < 5 && !itemNode.classList.contains('swiper-slide-duplicate')) {
+                                var clone = itemNode.cloneNode(true);
+                                clone.style.width = '130px';
+                                clone.style.flex = '0 0 130px';
+                                clone.style.setProperty('margin-right', '12px', 'important');
+                                clone.className = 'col-grid item-product';
+                                var elements = clone.querySelectorAll('img, [data-src], [data-bg], [data-background], .js-lazy-bg');
+                                elements.forEach(function (el) {
+                                    var s = el.getAttribute('data-src') || el.getAttribute('data-bg') || el.getAttribute('data-background') || el.getAttribute('data-srcset');
+                                    if (s) {
+                                        if (el.tagName.toLowerCase() === 'img') { el.src = s; el.srcset = s; }
+                                        else { el.style.backgroundImage = 'url(' + s + ')'; }
+                                    }
+                                    el.classList.remove('lazyload', 'lazyloading');
+                                    el.style.opacity = '1';
+                                });
+                                wrapper.appendChild(clone);
+                                count++;
+                            }
+                        });
+                    }
+                } else {
+                    // Se já tem filhos, apenas garante que as imagens carreguem
+                    var elements = wrapper.querySelectorAll('img, [data-src], [data-bg], [data-background], .js-lazy-bg');
+                    elements.forEach(function (el) {
+                        var s = el.getAttribute('data-src') || el.getAttribute('data-bg') || el.getAttribute('data-background') || el.getAttribute('data-srcset');
+                        if (s && el.src !== s) {
+                            if (el.tagName.toLowerCase() === 'img') { el.src = s; el.srcset = s; }
+                            else { el.style.backgroundImage = 'url(' + s + ')'; }
+                        }
+                        el.classList.remove('lazyload', 'lazyloading');
+                        el.style.opacity = '1';
+                    });
+                }
+            }
+
+            var nName = nativeModal.querySelector('.js-cart-notification-item-name');
+            if (nName) nName.innerText = (window.eoraSelectedVariantName || item.name || 'Produto').toUpperCase();
+
+            var nPrice = nativeModal.querySelector('.js-cart-notification-item-price');
+            var priceText = item.price_short || item.price || '';
+            if (nPrice) nPrice.innerText = priceText;
+
+            var nQty = nativeModal.querySelector('.js-cart-notification-item-quantity');
+            if (nQty) nQty.innerText = "1";
+
+            var nTotal = nativeModal.querySelector('.js-cart-total');
+            if (nTotal && json.cart) nTotal.innerText = json.cart.total_short || '';
+
+
+
+
+            nativeModal.classList.add('modal-show', 'show', 'active');
+            nativeModal.style.setProperty('display', 'block', 'important');
+            document.body.classList.add('modal-open');
+
+            if (!document.querySelector('.eora-popup-backdrop')) {
+                var b = document.createElement('div');
+                b.className = 'eora-popup-backdrop';
+                document.body.appendChild(b);
+                b.addEventListener('click', function () { closeNative(); });
+            }
+
+            function closeNative() {
+                nativeModal.classList.remove('modal-show', 'show', 'active');
+                nativeModal.style.display = 'none';
+                var b = document.querySelector('.eora-popup-backdrop');
+                if (b) b.remove();
+                document.body.classList.remove('modal-open');
+            }
+
+            var closeButtons = nativeModal.querySelectorAll('.js-modal-close, .modal-close');
+            closeButtons.forEach(function (btn) { btn.addEventListener('click', function (e) { e.preventDefault(); closeNative(); }); });
+        } else {
+            if (typeof window.mostrarModalSucessoCombo === 'function') { window.mostrarModalSucessoCombo(json); }
+        }
+    };
+
+    window.mostrarModalSucessoCombo = function (json) {
+        // Force clear any ajax loaders!
+        var load = document.getElementById('eora-ajax-loading');
+        if (load) load.remove();
+
+        var styleNode = document.getElementById('eora-modal-inner-styles');
+        if (!styleNode) {
+            styleNode = document.createElement('style');
+            styleNode.id = 'eora-modal-inner-styles';
+            document.head.appendChild(styleNode);
+        }
+        styleNode.textContent = `
+            .eora-success-overlay { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background: rgba(0,0,0,0.5) !important; z-index: 2147483647 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+            .eora-success-overlay.eora-hide { display: none !important; }
+            .eora-success-content { background: #fff !important; width: 95% !important; max-width: 650px !important; padding: 25px !important; position: relative !important; border-radius: 12px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important; font-family: sans-serif !important; display: block !important; }
+            .eora-success-close { position: absolute !important; top: 15px !important; right: 15px !important; font-size: 24px !important; cursor: pointer !important; color: #333 !important; }
+            .eora-success-title { text-align: center !important; font-size: 15px !important; font-weight: bold !important; margin-bottom: 25px !important; border-bottom: 1px solid #eee !important; padding-bottom: 15px !important; text-transform: uppercase !important; letter-spacing: 1px !important; display: block !important; }
+            .eora-success-body { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 25px !important; padding-bottom: 20px !important; border-bottom: 1px solid #eee !important; }
+            .eora-success-item { display: flex !important; align-items: center !important; gap: 15px !important; flex: 1 !important; }
+            .eora-success-item img { width: 65px !important; height: 65px !important; min-width: 65px !important; min-height: 65px !important; max-width: 65px !important; max-height: 65px !important; object-fit: cover !important; background: #f4f4f4 !important; border-radius: 2px !important; display: block !important; }
+            .eora-success-info { display: flex !important; flex-direction: column !important; font-weight: bold !important; font-size: 13px !important; color: #000 !important; }
+            .eora-success-price { font-weight: normal !important; color: #555 !important; font-size: 12px !important; margin-top: 5px !important; }
+            .eora-success-summary { text-align: right !important; margin-left: 20px !important; }
+            .eora-success-summary span { display: block !important; font-weight: bold !important; font-size: 14px !important; margin-bottom: 12px !important; color: #000 !important; }
+            .eora-success-btn { display: inline-block !important; background: #000 !important; color: #fff !important; text-decoration: none !important; padding: 12px 30px !important; font-size: 11px !important; font-weight: bold !important; text-transform: uppercase !important; border-radius: 2px !important; letter-spacing: 1px !important; text-align: center !important; }
+            .eora-success-recommendations h4 { font-size: 11px !important; font-weight: bold !important; margin: 15px 0 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; border-top: 1px solid #eee !important; padding-top: 15px !important; }
+            .eora-success-grid { display: flex !important; gap: 12px !important; overflow-x: auto !important; padding-bottom: 10px !important; }
+            .eora-success-grid .swiper-slide { flex: 0 0 130px !important; width: 130px !important; display: flex !important; flex-direction: column !important; position: relative !important; }
+            .eora-success-grid .js-item-image, .eora-success-grid .item-image { position: relative !important; width: 100% !important; padding-bottom: 130% !important; height: 0 !important; overflow: hidden !important; background: #f4f4f4 !important; }
+            .eora-success-grid .js-item-image img, .eora-success-grid .item-image img { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+            .eora-success-grid .item-description { font-size: 11px !important; padding-top: 8px !important; }
+    `;
+
+        var modal = document.getElementById('eora-success-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'eora-success-modal';
+            modal.className = 'eora-success-overlay';
+            modal.innerHTML = `
+        <div class="eora-success-content">
+            <span class="eora-success-close">&times;</span>
+            <h3 class="eora-success-title">ADICIONADO AO CARRINHO!</h3>
+            <div class="eora-success-body">
+                <div class="eora-success-item">
+                    <img id="eora-success-img" src="" alt="">
+                    <div class="eora-success-info">
+                        <span id="eora-success-name"></span>
+                        <span id="eora-success-price"></span>
+                    </div>
+                </div>
+                <div class="eora-success-summary">
+                    <span id="eora-success-total"></span>
+                    <a href="#" data-toggle="#modal-cart" data-modal-url="modal-fullscreen-cart" class="js-modal-close js-modal-open js-fullscreen-modal-open eora-success-btn" onclick="if(window.eoraForceClose) clearInterval(window.eoraForceClose); var m=document.getElementById('eora-success-modal'); if(m) m.remove(); document.body.classList.remove('eora-success-modal-open');">Ver carrinho</a>
+                </div>
+            </div>
+            <div class="eora-success-recommendations">
+                <h4>COMPRE JUNTO</h4>
+                <div id="eora-success-products" class="eora-success-grid"></div>
+            </div>
+        </div>`;
+            document.body.appendChild(modal);
+        }
+
+        try {
+            var item = json.item || {};
+            var imgNode = document.getElementById('eora-success-img');
+            if (imgNode) {
+                var src = '';
+                if (item.featured_image) {
+                    src = typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || '');
+                } else if (item.image) {
+                    src = typeof item.image === 'string' ? item.image : (item.image.src || '');
+                } else {
+                    src = item.thumbnail_url || '';
+                }
+                if (!src && window.eoraSelectedVariantImg) {
+                    src = window.eoraSelectedVariantImg;
+                }
+                if (!src) {
+                    var firstImg = document.querySelector('.js-product-slide-img img, .eora-hero-img');
+                    if (firstImg) src = firstImg.src;
+                }
+                if (src) imgNode.src = src;
+            }
+            var displayName = window.eoraSelectedVariantName || item.name || 'PRODUTO';
+            document.getElementById('eora-success-name').innerText = displayName.toUpperCase();
+            var basePriceEl = document.querySelector('.js-price-display, .product-price');
+            document.getElementById('eora-success-price').innerText = '1 x ' + (item.price_short || item.price || (basePriceEl ? basePriceEl.textContent.trim() : ''));
+
+            var totalQty = 1;
+            if (json.cart) {
+                totalQty = json.cart.item_count !== undefined ? json.cart.item_count : json.cart.items_count !== undefined ? json.cart.items_count : (json.cart.products ? json.cart.products.reduce(function (a, b) { return a + (b.quantity || 1); }, 0) : 1);
+            }
+            var allCounts = document.querySelectorAll('.js-cart-widget-amount, .js-cart-count, .cart-count, .js-cart-amount, .js-cart-quantity');
+            allCounts.forEach(function (el) { el.innerText = totalQty; });
+            var cartModalCount2 = document.querySelector('#modal-cart .modal-header p');
+            if (cartModalCount2) cartModalCount2.innerText = '(' + totalQty + ')';
+
+            var totalText = json.cart && json.cart.total_short ? json.cart.total_short : '';
+            document.getElementById('eora-success-total').innerText = 'TOTAL: ' + (totalText.includes('R$') ? totalText : 'R$' + totalText);
+
+            var grid = document.getElementById('eora-success-products');
+            if (grid) {
+                var hasRecs = false;
+                var liveRelated = document.querySelectorAll('.js-alternative-products .swiper-slide, .alternative-products .swiper-slide, .js-related-products .swiper-slide, .section-products-related .swiper-slide, #related-products .swiper-slide, .item-product');
+                if (liveRelated.length > 0) {
+                    grid.innerHTML = '';
+                    var count = 0;
+                    liveRelated.forEach(function (itemNode) {
+                        if (count >= 5) return;
+                        if (itemNode.classList.contains('swiper-slide-duplicate')) return;
+
+                        var img = itemNode.querySelector('img');
+                        var name = itemNode.querySelector('.js-item-name, .item-name, h3, h4, .product-title, .title');
+                        var price = itemNode.querySelector('.js-price-display, .price, .item-price, .product-price');
+                        var link = itemNode.querySelector('a');
+
+                        var nameText = name ? name.textContent.trim() : 'Produto';
+                        var priceText = price ? price.textContent.trim() : '';
+                        var href = link ? link.href : '#';
+                        var imgSrc = '';
+
+                        if (img) {
+                            imgSrc = img.getAttribute('data-src') || img.getAttribute('data-lazy-src') || img.getAttribute('src') || img.src || '';
+                        }
+
+                        if (nameText && imgSrc) {
+                            var html = '<div class="swiper-slide">' +
+                                '<a href="' + href + '" class="item-link" style="text-decoration:none; color:#000; width:100%;">' +
+                                '<div class="item-image"><img src="' + imgSrc + '" alt="' + nameText + '"></div>' +
+                                '<div class="item-description">' +
+                                '<div class="item-name" style="font-weight:bold; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + nameText + '</div>' +
+                                '<div class="item-price" style="color:#555;">' + priceText + '</div>' +
+                                '</div>' +
+                                '</a>' +
+                                '</div>';
+                            grid.insertAdjacentHTML('beforeend', html);
+                            count++;
+                        }
+                    });
+                    hasRecs = count > 0;
+                }
+                if (!hasRecs) {
+                    grid.innerHTML = '<p style="font-size:11px; color:#aaa;">Nenhuma recomendação disponível no momento.</p>';
+                }
+            }
+        } catch (e) { console.error('Erro:', e); }
+
+        if (window.eoraForceClose) clearInterval(window.eoraForceClose);
+        window.eoraForceClose = setInterval(function () {
+            var sideCart = document.querySelector('#modal-cart, .js-ajax-cart-container, .modal-right, .js-modal');
+            if (sideCart) {
+                sideCart.classList.remove('active', 'open', 'show', 'modal-show');
+                if (sideCart.style.display === 'block' || sideCart.style.display === 'flex') { sideCart.style.setProperty('display', 'none', 'important'); }
+            }
+            var backdrops = document.querySelectorAll('.modal-backdrop, .js-modal-backdrop, .overlay, .eora-popup-backdrop');
+            if (backdrops) backdrops.forEach(function (b) { b.remove(); });
+            document.body.classList.remove('modal-open');
+        }, 150);
+        setTimeout(function () { clearInterval(window.eoraForceClose); }, 3000);
+    };
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('eora-success-close') || e.target.classList.contains('eora-success-overlay')) {
+            var modal = document.getElementById('eora-success-modal');
+            if (modal) modal.remove();
+            document.body.classList.remove('eora-success-modal-open');
+            if (window.eoraForceClose) clearInterval(window.eoraForceClose);
+        }
+    });
+
+    window.eoraCarouselScroll = function(btn, dir) {
+        
+        btn.style.opacity = '0.3';
+        setTimeout(function() { btn.style.opacity = '1'; }, 150);
+        
+        var wrapper = btn.closest('.eora-pp-vf-wrapper');
+        if (!wrapper) { return; }
+        
+        var items = wrapper.querySelectorAll('.eora-pp-vf-item:not(.eora-pp-vf-large)');
+        var len = items.length;
+        if (len <= 1) return;
+        
+        var activeIdx = parseInt(wrapper.getAttribute('data-eora-idx') || '0', 10);
+        if (isNaN(activeIdx)) {
+            activeIdx = 0;
+        }
+        
+        var nextIdx = (activeIdx + dir + len) % len;
+        if (typeof window.eoraSetCarouselIndex === 'function') {
+            window.eoraSetCarouselIndex(wrapper, nextIdx);
+        } else {
+            for (var j = 0; j < len; j++) {
+                items[j].classList.remove('eora-carousel-active');
+                items[j].style.cssText = 'display: none !important; opacity: 0 !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important;';
+            }
+            items[nextIdx].classList.add('eora-carousel-active');
+            items[nextIdx].style.cssText = 'display: block !important; opacity: 1 !important; visibility: visible !important; height: auto !important; overflow: visible !important;';
+            wrapper.setAttribute('data-eora-idx', String(nextIdx));
+        }
+        
+    };
+
+    // --- EORA: sync cart count badge on remove (cart.released) ---
+    function eoraUpdateCartCount(count) {
+        document.querySelectorAll('.js-cart-widget-amount, .js-cart-count, .cart-count').forEach(function(el) { el.innerText = count; });
+        var p = document.querySelector('#modal-cart .modal-header p');
+        if (p) p.innerText = '(' + count + ')';
+    }
+    document.addEventListener('cart.released', function() {
+        var badge = document.querySelector('.js-cart-widget-amount.badge, .js-cart-widget-amount');
+        if (badge) eoraUpdateCartCount(badge.innerText.trim());
+    });
+    // Watch badge text for any platform-driven changes (remove, coupon, etc.)
+    (function() {
+        var badge = document.querySelector('.js-cart-widget-amount.badge');
+        if (!badge) return;
+        new MutationObserver(function() {
+            var count = badge.innerText.trim();
+            if (count !== '') {
+                var p = document.querySelector('#modal-cart .modal-header p');
+                if (p) p.innerText = '(' + count + ')';
+            }
+        }).observe(badge, { childList: true, characterData: true, subtree: true });
+    })();
+    // --- FIM EORA cart count sync ---
+
+</script>
+</p>
