@@ -323,20 +323,7 @@
 
             // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?v=
             var URL_LUAR = 'https://www.eoraeyewear.com/produtos/luar/';
-            function luarSlugParaVariante(caminho) {
-                var base = '/produtos/luar';
-                var c = caminho.replace(/\/$/, '').toLowerCase();
-                if (c.startsWith(base) && c !== base) {
-                    // Remove o prefixo base e qualquer separador inicial
-                    var slug = c.slice(base.length).replace(/^[-_]/, '');
-                    // Remove sufixo de ID numérico/alfanumérico (ex: -1rh88 no final)
-                    slug = slug.replace(/-[a-z0-9]{4,}$/i, '');
-                    return slug.trim();
-                }
-                return '';
-            }
             document.addEventListener('click', function(e) {
-                // Clique em qualquer elemento dentro do card (imagem, botão, link)
                 var item = e.target.closest('.js-item-product, .item-product');
                 if (!item) return;
                 var link = item.querySelector('a[href]');
@@ -346,8 +333,22 @@
                     if (caminho.startsWith('/produtos/luar') && caminho !== '/produtos/luar' && caminho !== '/produtos/luar/') {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-                        var slug = luarSlugParaVariante(caminho);
-                        window.location.href = URL_LUAR + (slug ? '?v=' + encodeURIComponent(slug) : '');
+                        // Lê o nome do produto no card para extrair a cor
+                        var nomeEl = item.querySelector('.item-name, .js-item-name, h3, h2, [class*="name"]');
+                        var nome = nomeEl ? nomeEl.textContent.toLowerCase() : '';
+                        var cor = '';
+                        var cores = ['prata', 'preto', 'dourado', 'cinza', 'rosé', 'rose', 'azul', 'verde', 'branco'];
+                        for (var ci = 0; ci < cores.length; ci++) {
+                            if (nome.indexOf(cores[ci]) !== -1) { cor = cores[ci]; break; }
+                        }
+                        // Normaliza sufixo de gênero (preta→preto)
+                        if (!cor) {
+                            var coresNorm = ['prat', 'pret', 'dour', 'cinz'];
+                            for (var cni = 0; cni < coresNorm.length; cni++) {
+                                if (nome.indexOf(coresNorm[cni]) !== -1) { cor = coresNorm[cni]; break; }
+                            }
+                        }
+                        window.location.href = URL_LUAR + (cor ? '?v=' + encodeURIComponent(cor) : '');
                     }
                 } catch(err) {}
             }, true);
