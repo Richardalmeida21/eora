@@ -118,7 +118,7 @@
                     {% if is_new_product and not reduced_item %}
                         <div class="badge-novo" aria-label="Produto novo">NOVO</div>
                     {% endif %}
-                    {% if product.sku and not reduced_item and 'luar' in product.url %}
+                    {% if product.sku and not reduced_item and 'luar' in product.url and product.handle not in ['luar-copia', 'luar3', 'luar2'] %}
                     <button
                         class="js-btn-provador-virtual btn-provador-virtual"
                         type="button"
