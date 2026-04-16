@@ -458,6 +458,19 @@
                 var identifier = btn.getAttribute('data-mkfashion-identifier');
                 if (!identifier) return;
 
+                // Para cards fake Luar, usar o SKU real mapeado no isAvailable
+                var item = btn.closest('.js-item-product, .item-product');
+                if (item) {
+                    var link = item.querySelector('a[href]');
+                    if (link) {
+                        try {
+                            var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
+                            var mapped = LUAR_SKU_MAP[slug];
+                            if (mapped) identifier = mapped;
+                        } catch(ex) {}
+                    }
+                }
+
                 mkfashion.isAvailable(PROJECT_ID, identifier).then(function(disponivel) {
                     if (!disponivel) return;
 
