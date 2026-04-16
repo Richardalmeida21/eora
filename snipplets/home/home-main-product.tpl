@@ -14,7 +14,7 @@
 					</div>
 					<div class="col-md-auto product-info-column" data-store="product-info-{{ product.id }}">
 						{% include 'snipplets/product/product-form.tpl' with { home_main_product: true } %}
-						{% if product.description is not empty %}
+						{% if product.description is not empty and '<table' in product.description %}
 							<div class="{% if settings.product_stock %}mt-1{% else %}mt-2{% endif %}">
 								{# Product description #}
 								<div class="js-product-description product-description user-content font-small">
