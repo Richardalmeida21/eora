@@ -340,36 +340,36 @@
                 }
                 return '';
             }
-            // Mapa: slug do fake product → SKU real da variante Luar
+            // Mapa: slug do fake product → SKU real da variante Luar (para provador virtual)
             var LUAR_SKU_MAP = {
                 'luar-copia': 'LUADC',   // Dourado/Preto
                 'luar3':      'LUAPRF',  // Prata/Rosa Fotocromática
                 'luar2':      'LUAPCF'   // Prata/Prata Fotocromática
             };
 
-            // Corrige o data-mkfashion-identifier dos botões provador nos cards fake
-            function fixLuarProvadorIdentifiers() {
-                document.querySelectorAll('.js-item-product, .item-product').forEach(function(item) {
-                    var link = item.querySelector('a[href]');
-                    if (!link) return;
-                    try {
-                        var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
-                        var realSku = LUAR_SKU_MAP[slug];
-                        if (!realSku) return;
-                        var btn = item.querySelector('.js-btn-provador-virtual');
-                        if (btn) btn.setAttribute('data-mkfashion-identifier', realSku);
-                    } catch(e) {}
-                });
-            }
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', fixLuarProvadorIdentifiers);
-            } else {
-                fixLuarProvadorIdentifiers();
-            }
-
+            // Interceptor 1: clique no botão do provador nos cards fake Luar → abre mkfashion com SKU real
             document.addEventListener('click', function(e) {
-                // Não intercepta cliques no botão do provador virtual
-                if (e.target.closest('.js-btn-provador-virtual')) return;
+                var btn = e.target.closest('.js-btn-provador-virtual');
+                if (!btn) return;
+                var item = btn.closest('.js-item-product, .item-product');
+                if (!item) return;
+                var link = item.querySelector('a[href]');
+                if (!link) return;
+                try {
+                    var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
+                    var realSku = LUAR_SKU_MAP[slug];
+                    if (!realSku) return; // não é card fake Luar, deixa o handler normal do mkfashion funcionar
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if (typeof mkfashion !== 'undefined') {
+                        mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: realSku });
+                    }
+                } catch(err) {}
+            }, true);
+
+            // Interceptor 2: cliques gerais nos cards fake Luar → redireciona para /produtos/luar/?vi=N
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.js-btn-provador-virtual')) return; // tratado pelo interceptor acima
                 var item = e.target.closest('.js-item-product, .item-product');
                 if (!item) return;
                 var link = item.querySelector('a[href]');
