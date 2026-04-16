@@ -347,24 +347,31 @@
                 'luar2':      'LUAPCF'   // Prata/Prata Fotocromática
             };
 
-            // Interceptor 1: clique no botão do provador nos cards fake Luar → abre mkfashion com SKU real
+            // Interceptor 1: clique no botão do provador → abre mkfashion com SKU correto
+            // Cards fake Luar usam o SKU real mapeado; demais produtos usam o próprio data-mkfashion-identifier
             document.addEventListener('click', function(e) {
                 var btn = e.target.closest('.js-btn-provador-virtual');
                 if (!btn) return;
+
+                var identifier = null;
                 var item = btn.closest('.js-item-product, .item-product');
-                if (!item) return;
-                var link = item.querySelector('a[href]');
-                if (!link) return;
-                try {
-                    var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
-                    var realSku = LUAR_SKU_MAP[slug];
-                    if (!realSku) return; // não é card fake Luar, deixa o handler normal do mkfashion funcionar
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    if (typeof mkfashion !== 'undefined') {
-                        mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: realSku });
+                if (item) {
+                    var link = item.querySelector('a[href]');
+                    if (link) {
+                        try {
+                            var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
+                            identifier = LUAR_SKU_MAP[slug] || null;
+                        } catch(err) {}
                     }
-                } catch(err) {}
+                }
+                if (!identifier) identifier = btn.getAttribute('data-mkfashion-identifier');
+                if (!identifier) return;
+
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                if (typeof mkfashion !== 'undefined') {
+                    mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: identifier });
+                }
             }, true);
 
             // Interceptor 2: cliques gerais nos cards fake Luar → redireciona para /produtos/luar/?vi=N
