@@ -897,51 +897,20 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             }, 200);
                         }
                     }
-                    // Pré-seleciona variante via parâmetro ?v= na URL (ex: ?v=preto, ?v=prata)
+                    // Pré-seleciona variante via ?vi= (índice direto do card)
                     (function() {
                         var params = new URLSearchParams(window.location.search);
-                        var vParam = (params.get('v') || '').toLowerCase().trim();
-                        if (!vParam || !cards.length) return;
-                        function norm(str) { return str.replace(/[ao]$/, '').toLowerCase(); }
-                        var vNorm = norm(vParam);
-                        function tentarSelecionar() {
-                            // Estratégia 1: lê o src da imagem do card (mais confiável)
-                            for (var ci = 0; ci < cards.length; ci++) {
-                                var img = cards[ci].querySelector('img:not(.eora-img-hover)');
-                                if (!img) continue;
-                                var srcNorm = norm((img.src || img.getAttribute('src') || '').toLowerCase());
-                                if (srcNorm.indexOf(vNorm) !== -1) {
-                                    if (parseInt(cards[ci].getAttribute('data-idx')) !== activeIdx) {
-                                        cards[ci].click();
-                                    }
-                                    return true;
-                                }
-                            }
-                            // Estratégia 2: fallback por LS.variants (índice pode não coincidir)
-                            if (typeof LS === 'undefined' || !LS.variants) return false;
-                            for (var vi = 0; vi < LS.variants.length; vi++) {
-                                var vv = LS.variants[vi];
-                                var optsArr = [(vv.option0||''),(vv.option1||''),(vv.option2||'')];
-                                var matched = false;
-                                for (var oi = 0; oi < optsArr.length; oi++) {
-                                    var optNorm = norm(optsArr[oi]);
-                                    if (!optNorm) continue;
-                                    if (optNorm === vNorm || optNorm.indexOf(vNorm) !== -1 || vNorm.indexOf(optNorm) !== -1) {
-                                        matched = true; break;
-                                    }
-                                }
-                                if (matched) {
-                                    var alvo = el.querySelector('.eora-pp-variante-item[data-idx="' + vi + '"]');
-                                    if (alvo && vi !== activeIdx) { alvo.click(); return true; }
-                                }
-                            }
-                            return false;
-                        }
-                        // Aguarda os cards estarem visíveis antes de tentar
+                        var viParam = parseInt(params.get('vi'));
+                        if (isNaN(viParam) || viParam < 0 || !cards.length) return;
                         var tentativas = 0;
                         var poll = setInterval(function() {
                             tentativas++;
-                            if (tentarSelecionar() || tentativas > 30) clearInterval(poll);
+                            var alvo = el.querySelector('.eora-pp-variante-item[data-idx="' + viParam + '"]');
+                            if (alvo) {
+                                if (viParam !== activeIdx) alvo.click();
+                                clearInterval(poll);
+                            }
+                            if (tentativas > 30) clearInterval(poll);
                         }, 200);
                     })();
                 }
@@ -1668,23 +1637,22 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 <td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO CAPA .jpg" alt="" width="100" height="100" /></td>
 <td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO CAPA .jpg" alt="" width="100" height="100" /></td>
 <td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRAT CAPA .jpg" alt="" width="100" height="100" /></td>
-<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
-<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
-<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;">&nbsp;</td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://acdn-us.mitiendanube.com/stores/006/201/247/products/still-luar-dourado-preto-2-7c448b165a8dce4bfe17762766284360-640-01-29d751f2918f941ae517763672105000-640-0.webp" alt="" width="100" height="100" /></td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://acdn-us.mitiendanube.com/stores/006/201/247/products/still-luar-prata-furta-cor-1-b92811e655e1c3d43d17763542621831-640-01-53508642beff5ba33517763672509804-640-0.webp" alt="" width="100" height="100" /></td>
+<td style="width: 25%; padding: 6px; font-size: 10px; color: #aaa; text-align: center; vertical-align: middle;"><img src="https://acdn-us.mitiendanube.com/stores/006/201/247/products/still-luar-prata-prata-85e6d0bda66afc65d417762765039884-640-01-4a64a06a7f23b4459517763672319522-640-0.webp" alt="" width="100" height="100" /></td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #aaa;">
 <h4><span style="color: #000000;"><strong>hover thumbnails &rarr;</strong></span></h4>
 </td>
 <td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">
-<p>&nbsp;</p>
 <p><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (9).png" alt="" width="100" height="100" /></p>
 </td>
 <td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (10).png" alt="" width="100" height="100" /></td>
 <td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (11).png" alt="" width="100" height="100" /></td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR DOURADO PRETO FRENTE.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR PRATA ROSA FRENTE.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR PRATA FRENTE.jpg" alt="" width="100" height="100" /></td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 1 &rarr;</td>
@@ -1712,27 +1680,27 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 4 &rarr; Dourado/Cinza</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR DOURADO PRETO DIAGONAL.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO DETALHE TRAS.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO STILL GRANDE.jpg" alt="" width="100" height="100" /></td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 5 &rarr; Prata/Rosa fotocrom&aacute;tica</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA COR FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR ROSA DIAGONAL.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA COR DETALHE TRAS.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA COR STILL GRANDE.jpg" alt="" width="100" height="100" /></td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #aaa;">fotos variante 6 &rarr; Prata/Prata fotocrom&aacute;tica</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
-<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;">&nbsp;</td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LOOKBOOK LUAR PRATA DIAGONAL.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA DETALHE TRAS.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA STILL GRANDE.jpg" alt="" width="100" height="100" /></td>
 </tr>
 <tr>
 <td style="padding: 6px; font-size: 10px; color: #555; font-weight: bold;">video_link</td>

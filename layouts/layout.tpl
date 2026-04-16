@@ -321,12 +321,15 @@
 
             });
 
-            // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?v=
+            // Intercepta clique nos cards LUAR fake → redireciona pra página LUAR com ?vi=
             var URL_LUAR = 'https://www.eoraeyewear.com/produtos/luar/';
-            // Mapa fixo: slug do produto fictício → cor da variante no Luar
+            // Mapa fixo: slug → índice do card (data-idx) na página do Luar
             var LUAR_SLUG_MAP = {
-                'luar-1rh88': 'prata',
-                'luar1':      'preto'
+                'luar1':      1,  // Preto Fosco/Preto
+                'luar-1rh88': 2,  // Prata/Cinza
+                'luar-copia': 3,  // Dourado/Preto
+                'luar3':      4,  // Prata/Rosa Fotocromática
+                'luar2':      5   // Prata/Prata Fotocromática
             };
             var CORES_LUAR = ['prata', 'preto', 'dourado', 'cinza', 'rose', 'rosé', 'azul', 'verde', 'branco'];
             function extrairCorDeTexto(txt) {
@@ -348,19 +351,8 @@
                         e.preventDefault();
                         e.stopImmediatePropagation();
                         var slug = caminho.replace('/produtos/', '');
-                        var cor = LUAR_SLUG_MAP[slug] || '';
-                        // Fallback: nome do produto
-                        if (!cor) {
-                            var nomeEl = item.querySelector('.js-item-name, .item-name');
-                            cor = extrairCorDeTexto(nomeEl ? nomeEl.textContent : '');
-                        }
-                        // Fallback: imagem
-                        if (!cor) {
-                            var img = item.querySelector('img[src], img[data-src]');
-                            var imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
-                            cor = extrairCorDeTexto(imgSrc);
-                        }
-                        window.location.href = URL_LUAR + (cor ? '?v=' + encodeURIComponent(cor) : '');
+                        var vi = LUAR_SLUG_MAP[slug];
+                        window.location.href = URL_LUAR + (vi !== undefined ? '?vi=' + vi : '');
                     }
                 } catch(err) {}
             }, true);
