@@ -103,22 +103,17 @@
                     {% endfor %}
                 {% endif %}
                 
-                <a href="{{ product_variant_var.url }}" target="_top" class="btn btn-variant btn-variant-color{% if is_current %} selected{% endif %}" title="{{ product_variant_var.name }}">
-                    {% set class_variant = settings.product_by_reference_colors ? 'btn-variant-content-color': 'btn-variant-content-square' %}
-                    <span class="btn-variant-content {{ class_variant }}" data-name="{{ product_variant_var.name }}"
-                        {% if settings.product_by_reference_colors %}
-                            style="background: {{ product_bg_color_variant }};"
+                <a href="{{ product_variant_var.url }}" target="_top" class="btn btn-variant btn-variant-color btn-variant-thumb{% if is_current %} selected{% endif %}" title="{{ product_variant_var.name }}">
+                    <span class="btn-variant-content btn-variant-content-thumb" data-name="{{ product_variant_var.name }}">
+                        {% set variant_img = product_variant_var.images|first %}
+                        {% if variant_img %}
+                            <img src="{{ 'images/empty-placeholder.png' | static_url }}"
+                                data-src="{{ variant_img | product_image_url('thumb') }}"
+                                data-sizes="auto"
+                                class="lazyload"
+                                alt="{{ product_variant_var.name }}" />
                         {% else %}
-                            style="display:none;"
-                        {% endif %}>
-                        {% if not settings.product_by_reference_colors %}
-                            {% for image in product_variant_var.images|slice(0, 1) %}
-                                <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                                    data-src="{{ image | product_image_url('thumb')}}"
-                                    data-sizes="auto"
-                                    class="lazyload img-absolute-centered-vertically"
-                                    {% if image.alt %}alt="{{image.alt}}"{% endif %} />
-                            {% endfor %}
+                            <span style="display:block;width:100%;height:100%;background:{{ product_bg_color_variant }};border-radius:50%;"></span>
                         {% endif %}
                     </span>
                 </a>

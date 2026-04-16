@@ -3635,6 +3635,37 @@ body {
   background: linear-gradient(-45deg, var(--main-background-opacity-30) calc(50% - .7px), var(--main-foreground) calc(50% - .7px), var(--main-foreground) 50%, var(--main-foreground) calc(50% + .7px), var(--main-background-opacity-30) calc(50% + .7px));
 }
 
+/* Variante thumbnail */
+.btn-variant-thumb {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  border: 2px solid transparent !important;
+  transition: border-color 0.2s ease !important;
+}
+.btn-variant-thumb.selected {
+  border-color: #111 !important;
+}
+.btn-variant-thumb:hover {
+  border-color: #555 !important;
+}
+.btn-variant-content-thumb {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  background: none !important;
+}
+.btn-variant-content-thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 2px !important;
+}
+
 .btn-facebook {
   background-color: #1977f2;
   color: white;
