@@ -344,10 +344,6 @@
                         {{ product.description }}
                     </div>
                     <div class="js-product-card-description-text product-card-description-text"></div>
-                {% elseif product.description is not empty %}
-                    <div class="js-product-description">
-                        {{ product.description }}
-                    </div>
                 {% endif %}
                 </a>
             </div>

@@ -902,6 +902,12 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                         var params = new URLSearchParams(window.location.search);
                         var viParam = parseInt(params.get('vi'));
                         if (isNaN(viParam) || viParam < 0 || !cards.length) return;
+                        // Avança o carrossel para a página correta antes de clicar
+                        var paginaAlvo = Math.floor(viParam / varPerPage);
+                        if (paginaAlvo !== varPage) {
+                            varPage = paginaAlvo;
+                            updateVarCarousel();
+                        }
                         var tentativas = 0;
                         var poll = setInterval(function() {
                             tentativas++;
