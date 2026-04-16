@@ -2916,7 +2916,7 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     {# /* // product card description */ #}
 
-    {% if template != 'page' %}
+    {% if template != 'page' and template != 'home' %}
         {# /* // percorre todos os produtos da página */ #}
         const allProductsCards = document.querySelectorAll('.js-item-product');
         allProductsCards.forEach((card) => {
