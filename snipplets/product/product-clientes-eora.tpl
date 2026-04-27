@@ -61,7 +61,7 @@
 
 {% if _has_gallery_clients or _has_marker %}
 <section class="clientes-eora-section" data-store="clientes-eora-{{ product.id }}">
-    <div class="container">
+    <div class="clientes-eora-inner">
         <h3 class="clientes-eora-title">Clientes Eora</h3>
 
         <div class="swiper js-swiper-clientes-eora clientes-eora-swiper">
@@ -100,7 +100,20 @@
 
 <style>
     .clientes-eora-section {
-        margin: 60px auto;
+        width: 100%;
+        margin: 60px 0;
+        padding: 0;
+        overflow: hidden; /* evita que slides "vazem" pra direita */
+        box-sizing: border-box;
+    }
+    .clientes-eora-section *,
+    .clientes-eora-section *::before,
+    .clientes-eora-section *::after {
+        box-sizing: border-box;
+    }
+    .clientes-eora-inner {
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 0 20px;
     }
     .clientes-eora-title {
@@ -110,38 +123,66 @@
         text-transform: uppercase;
         font-weight: 500;
         color: #000;
-        margin-bottom: 32px;
+        margin: 0 0 32px;
     }
     .clientes-eora-swiper {
         position: relative;
-        max-width: 1200px;
+        width: 100%;
+        max-width: 100%;
         margin: 0 auto;
-        padding-bottom: 40px;
+        padding-bottom: 40px; /* espaço pra paginação */
+        overflow: hidden;
+    }
+    .clientes-eora-swiper .swiper-wrapper {
+        align-items: stretch;
+    }
+    .clientes-eora-swiper .swiper-slide {
+        height: auto;
     }
     .clientes-eora-slide {
         position: relative;
         width: 100%;
-        padding-bottom: 125%; /* 4:5 */
+        padding-bottom: 125%; /* proporção 4:5 */
         overflow: hidden;
         background: #f5f5f5;
     }
     .clientes-eora-slide img {
         position: absolute;
-        top: 0; left: 0;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
     }
+    /* Setas */
     .clientes-eora-swiper .swiper-button-prev,
     .clientes-eora-swiper .swiper-button-next {
         color: #000;
+        width: 32px;
+        height: 32px;
+        margin-top: -28px; /* compensa o padding-bottom da paginação */
+    }
+    .clientes-eora-swiper .swiper-button-prev:after,
+    .clientes-eora-swiper .swiper-button-next:after {
+        font-size: 22px;
+        font-weight: 700;
+    }
+    /* Paginação */
+    .clientes-eora-swiper .swiper-pagination {
+        bottom: 0;
     }
     .clientes-eora-swiper .swiper-pagination-bullet-active {
         background: #000;
     }
+    /* Tablet */
+    @media (max-width: 991px) {
+        .clientes-eora-inner { padding: 0 16px; }
+    }
+    /* Mobile */
     @media (max-width: 767px) {
-        .clientes-eora-section { margin: 40px auto; }
+        .clientes-eora-section { margin: 40px 0; }
+        .clientes-eora-inner { padding: 0 12px; }
         .clientes-eora-title { font-size: 1.1rem; margin-bottom: 20px; }
         .clientes-eora-swiper .swiper-button-prev,
         .clientes-eora-swiper .swiper-button-next { display: none; }
@@ -159,6 +200,10 @@
                 slidesPerView: 1,
                 spaceBetween: 16,
                 loop: false,
+                watchOverflow: true,
+                centerInsufficientSlides: true,
+                observer: true,
+                observeParents: true,
                 pagination: { el: '.js-clientes-eora-pagination', clickable: true },
                 navigation: { prevEl: '.js-clientes-eora-prev', nextEl: '.js-clientes-eora-next' },
                 breakpoints: {
