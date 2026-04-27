@@ -52,9 +52,20 @@
                                                  data-srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
                                                  data-sizes="auto"
                                                  class="lazyautosizes lazyload"
-                                                 alt="Banner {{ loop.index }}">
+                                                 alt="{% if slide.title %}{{ slide.title }}{% else %}Banner {{ loop.index }}{% endif %}">
+
+                                            {% if slide.button %}
+                                                <div class="banner-floating-button banners-scroll-button">
+                                                    <div class="banner-floating-button-content">
+                                                        <div class="banner-floating-title">{{ slide.button }}</div>
+                                                        <svg class="banner-floating-icon" viewbox="0 0 10 10" fill="none">
+                                                            <use xlink:href="#chevron-diagonal"></use>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
                                         </div>
-                                        {% if slide.link %}
+                                        {% if not slide.button and slide.link %}
                                             {% set category_handle = slide.link | trim('/') | split('/') | last %}
                                             {% include 'snipplets/home/home-categories-name.tpl' %}
                                         {% endif %}
