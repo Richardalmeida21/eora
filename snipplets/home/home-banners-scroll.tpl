@@ -41,17 +41,24 @@
                             <div class="swiper-slide banners-scroll-slide">
                                 {% if slide.link %}
                                     <a href="{{ slide.link | setting_url }}"
-                                       class="banners-scroll-link"
+                                       class="banners-scroll-link js-home-category"
                                        aria-label="Banner {{ loop.index }}">
                                 {% endif %}
-                                    <div class="banners-scroll-image"
-                                         style="padding-bottom: {{ bs_padding_bottom }}%;">
-                                        <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                                             data-src="{{ slide.image | static_url | settings_image_url('large') }}"
-                                             data-srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
-                                             data-sizes="auto"
-                                             class="lazyautosizes lazyload"
-                                             alt="Banner {{ loop.index }}">
+                                    <div class="home-category h3-huge h2-huge-md">
+                                        <div class="home-category-image banners-scroll-image"
+                                             style="padding-bottom: {{ bs_padding_bottom }}%;">
+                                            <img src="{{ 'images/empty-placeholder.png' | static_url }}"
+                                                 data-src="{{ slide.image | static_url | settings_image_url('large') }}"
+                                                 data-srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
+                                                 data-sizes="auto"
+                                                 class="lazyautosizes lazyload"
+                                                 alt="Banner {{ loop.index }}">
+                                            <div class="placeholder-fade"></div>
+                                        </div>
+                                        {% if slide.link %}
+                                            {% set category_handle = slide.link | trim('/') | split('/') | last %}
+                                            {% include 'snipplets/home/home-categories-name.tpl' %}
+                                        {% endif %}
                                     </div>
                                 {% if slide.link %}
                                     </a>
