@@ -62,8 +62,6 @@
 {% if _has_gallery_clients or _has_marker %}
 <section class="clientes-eora-section" data-store="clientes-eora-{{ product.id }}">
     <div class="clientes-eora-inner">
-        <h3 class="clientes-eora-title">Clientes Eora</h3>
-
         <div class="clientes-eora-carousel">
             <button type="button"
                     class="clientes-eora-arrow clientes-eora-arrow-prev js-clientes-eora-prev"
