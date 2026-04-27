@@ -2024,6 +2024,38 @@ Página de inicio
 		name = home_popup_mensagem_error_color
 		description = Cor da mensagem de erro
 	collapse
+		title = Banner Duplo
+		backto = home_order_position
+	checkbox
+		name = banner_duplo_show
+		description = Mostrar banner duplo na página principal
+	subtitle
+		subtitle = Banner 1 (esquerda)
+	image
+		name = banner_duplo_1_image
+		title = Imagem (JPG, PNG)
+		width = 960
+		height = 1200
+	i18n_input
+		name = banner_duplo_1_link
+		description = Link ao clicar no banner 1
+	i18n_input
+		name = banner_duplo_1_label
+		description = Label sobreposto (ex: Feminino)
+	subtitle
+		subtitle = Banner 2 (direita)
+	image
+		name = banner_duplo_2_image
+		title = Imagem (JPG, PNG)
+		width = 960
+		height = 1200
+	i18n_input
+		name = banner_duplo_2_link
+		description = Link ao clicar no banner 2
+	i18n_input
+		name = banner_duplo_2_label
+		description = Label sobreposto (ex: Masculino)
+	collapse
 		title = Banner Vídeo + Botão
 		backto = home_order_position
 	checkbox
@@ -2121,6 +2153,7 @@ Página de inicio
 			CARROSSEL_TEXT = Carrossel de Texto
 			BANNERS_SCROLL = Banners Scroll
 			BANNER_VIDEO_BOTAO = Banner Vídeo + Botão
+			BANNER_DUPLO = Banner Duplo
 	link
 		text = Pop-up promocional
 		linkto = home_promotional_popup

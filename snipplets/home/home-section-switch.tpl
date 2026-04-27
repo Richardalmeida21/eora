@@ -68,6 +68,12 @@
 	{% else %}
 		{% include 'snipplets/home/home-banner-video-botao.tpl' %}
 	{% endif %}
+{% elseif section_select == 'BANNER_DUPLO' %}
+	{% if show_help or (show_component_help and false) %}
+		VAZIO
+	{% else %}
+		{% include 'snipplets/home/home-banner-duplo.tpl' %}
+	{% endif %}
 {% elseif section_select == 'SECAO_FRANQUEADOS' %}
 	{% if show_help or (show_component_help and not has_franqueados and not has_franqueados) %}
 		VAZIO	
