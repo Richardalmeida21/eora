@@ -8,6 +8,12 @@
 {% set product_img_width =  settings.product_img_width | default(100) %}
 
 {% set is_coach_layout = 'layout_coach' in product.description %}
+
+{# Imagens com este prefixo no nome do arquivo são exibidas no carrossel
+   "Clientes Eora" (snipplets/product/product-clientes-eora.tpl) e devem
+   ser ocultadas da galeria principal para não duplicar. #}
+{% set _eora_cliente_prefix = 'eora-cliente-' %}
+
 <div class="{% if mobile %}d-xl-none{% else %}d-none d-xl-block{% endif %} {% if is_coach_layout and not mobile %}coach-style-layout{% endif %}" data-store="product-image-{{ product.id }}">
 
     {% if product.images_count > 0 %}
@@ -18,9 +24,11 @@
                 </button>
                 <div class="custom-thumbnails-strip">
                     {% for image in product.images %}
-                        <button class="custom-thumb {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
-                            <img src="{{ image | product_image_url('tiny') }}" />
-                        </button>
+                        {% if _eora_cliente_prefix not in (image | product_image_url('original')) %}
+                            <button class="custom-thumb {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                                <img src="{{ image | product_image_url('tiny') }}" />
+                            </button>
+                        {% endif %}
                     {% endfor %}
                 </div>
                 <button class="thumb-nav-arrow down js-thumb-nav-down">
@@ -73,6 +81,7 @@
 				{% include 'snipplets/labels.tpl' with {product_detail: true, label_custom_class: product_grid_detail_md_class} %}
 			<div class="swiper-wrapper">
 				{% for image in product.images %}
+				{% if _eora_cliente_prefix not in (image | product_image_url('original')) %}
 					<div class="js-product-slide swiper-slide{% if settings.product_image_format == 'slider' or home_main_product %} product-slide{% if home_main_product %}-small{% endif %}{% endif %} slider-slide{% if product_grid_detail and not mobile %} col-md-6 {% endif %}" data-image="{{image.id}}" data-image-position="{{loop.index0}}">
 					{% if home_main_product %}
 						<div class="js-product-slide-link d-block position-relative" style="padding-bottom: {{ image.dimensions['height'] / image.dimensions['width'] * 100}}%;">
@@ -107,6 +116,7 @@
 					</a>
 				{% endif %}
 				</div>
+				{% endif %}
 				{% endfor %}
 				{% if not home_main_product %}
 					{% include 'snipplets/product/product-video.tpl' %}

@@ -13,14 +13,12 @@
                 '.js-add-to-wishlist,.js-wishlist-button,.product-wishlist,.wishlist-btn,.js-product-wishlist,[data-js="wishlist"],[class*="wishlist"],[class*="favorite"]{display:none!important}',
                 '[data-store="home-institutional-message"]:not(#eora-injected-campanha){display:none!important}',
                 'html,body{overflow-x:hidden!important}',
-                '#single-product .container-fluid{padding:0!important;max-width:100%!important}',
-                '#single-product .product-image-column{display:none!important}',
-                '#single-product .product-info-column{height:0!important;min-height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;border:none!important}',
-                '#eora-hero{position:relative!important;width:100vw!important;max-width:100vw!important;overflow:hidden!important;background:#f5f5f3!important;height:78vh!important;margin-left:0!important;transition:height 0.4s cubic-bezier(0.25, 1, 0.5, 1)!important}',
+                /* Layout padrão restaurado: imagens à esquerda, info à direita (igual à pág. Astra) */
+                '#eora-hero{display:none!important}',
                 '#eora-hero img.eora-hero-img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;display:block!important;image-rendering:-webkit-optimize-contrast!important;image-rendering:crisp-edges!important;-ms-interpolation-mode:bicubic!important;backface-visibility:hidden!important;transform:translateZ(0)!important}',
                 '#single-product .product-info-column h1{font-size:26px!important;letter-spacing:5px!important;font-weight:700!important;text-transform:uppercase!important;color:#111!important;margin:4px 0!important;text-align:center!important}',
                 '#single-product .product-info-column .product-price{font-size:13px!important;letter-spacing:2px!important;color:#333!important;margin:8px 0 0!important},',
-                '.eora-pp-variantes{box-sizing:border-box!important;padding:0!important;background:#fff!important}',
+                '.eora-pp-variantes{display:none!important;box-sizing:border-box!important;padding:0!important;background:#fff!important}',
                 '.eora-pp-variantes-titulo{font-size:11px!important;letter-spacing:8px!important;text-transform:uppercase!important;color:#555!important;text-align:center!important;margin:0!important;padding:40px 0 24px!important;font-weight:700!important}',
                 '.eora-pp-variantes-grid{display:grid!important;width:100%!important;gap:4px!important;grid-template-columns:repeat(3,1fr)!important;background:#fff!important}',
                 '.eora-pp-variante-item{overflow:hidden!important;background:transparent!important;display:none!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;opacity:0!important;transition:opacity 0.35s ease!important}',
@@ -56,7 +54,44 @@
                 '.eora-pp-btn:hover{color:#555!important}',
                 '#eora-hero, #eora-hero *, .eora-pp-variantes, .eora-pp-variantes *, .eora-pp-campanha, .eora-pp-campanha *, .eora-pp-alternados, .eora-pp-alternados *, .eora-pp-video-secao, .eora-pp-video-secao *, .eora-floating-bar, .eora-floating-bar *, #eora-purchase-overlay, #eora-purchase-overlay *{font-family:var(--body-font, "Hanken Grotesk", sans-serif)!important}',
                 '#eora-buy-form-container .js-shipping-calculator, #eora-buy-form-container #shipping-calculator, #eora-buy-form-container [id*="shipping"], #eora-buy-form-container .js-product-variants, #eora-buy-form-container .product-variants{display:none!important}',
-                '.js-addtocart, .js-prod-submit-form, input.js-addtocart, button.js-addtocart, .js-restock-notification, .js-restock-notification-form{display:none!important}',
+                /* Botão Comprar nativo precisa aparecer (layout padrão restaurado) */
+                /* Esconde a seção nativa de "variantes" do tema (que mostra outros produtos
+                   ASTRA, LUNA, BLAZE etc.) e a substituição vem via #eora-info-thumbs abaixo. */
+                '#single-product .js-product-variants, #single-product .js-color-variants-container{display:none!important}',
+                /* Strip de miniaturas das variantes do LUAR (acima do botão Comprar) */
+                '#eora-info-thumbs{display:flex!important;flex-wrap:nowrap!important;gap:6px!important;width:100%!important;margin:8px 0 12px!important;padding:0!important;box-sizing:border-box!important;overflow-x:auto!important}',
+                '#eora-info-thumbs .eora-info-thumb{flex:1 1 0!important;min-width:0!important;aspect-ratio:1/1!important;border:1px solid transparent!important;border-radius:0!important;cursor:pointer!important;background:transparent!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;box-sizing:border-box!important;transition:border-color .2s ease!important}',
+                '#eora-info-thumbs .eora-info-thumb:hover, #eora-info-thumbs .eora-info-thumb.eora-active{border-color:#111!important}',
+                '#eora-info-thumbs .eora-info-thumb img{max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;object-fit:contain!important;display:block!important}',
+                '#eora-variant-desc{font-size:13px!important;line-height:1.8!important;color:#444!important;margin:0 0 12px!important;font-weight:400!important;font-family:var(--body-font,"Hanken Grotesk",sans-serif)!important;display:block!important}',
+
+                /* Galeria da .product-image-column (esquerda) quando uma variante é escolhida
+                   Layout: 2 + 2 + 1 (igual ao painel inferior do carrossel de variantes) */
+                '#single-product .product-image-column .eora-left-gallery{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%!important}',
+                '#single-product .product-image-column .eora-left-gallery .eora-lg-large{grid-column:1/-1!important}',
+                '#single-product .product-image-column .eora-left-gallery img{width:100%!important;height:auto!important;display:block!important;background:#f5f5f3!important}',
+                /* Carrossel mobile da galeria esquerda — translateX, não depende de overflow do pai */
+                '@media(max-width:1024px){' +
+                  '.eora-lg-wrap{position:relative!important;width:100%!important;overflow:hidden!important}' +
+                  '.eora-lg-track{display:flex!important;flex-direction:row!important;transition:transform .35s ease!important;will-change:transform!important;width:100%!important}' +
+                  '.eora-lg-slide{flex:0 0 100%!important;width:100%!important;min-width:100%!important;box-sizing:border-box!important}' +
+                  '.eora-lg-slide img{width:100%!important;height:auto!important;display:block!important}' +
+                  '.eora-lg-arrow{display:flex!important;position:absolute!important;top:42%!important;transform:translateY(-50%)!important;z-index:20!important;background:rgba(255,255,255,0.85)!important;border:none!important;border-radius:50%!important;width:38px!important;height:38px!important;cursor:pointer!important;align-items:center!important;justify-content:center!important;padding:0!important;box-shadow:0 1px 4px rgba(0,0,0,0.15)!important}' +
+                  '.eora-lg-prev{left:8px!important}.eora-lg-next{right:8px!important}' +
+                  '.eora-lg-arrow svg{width:18px!important;height:18px!important;display:block!important;pointer-events:none!important}' +
+                  '.eora-lg-dots{display:flex!important;justify-content:center!important;gap:6px!important;padding:10px 0!important}' +
+                  '.eora-lg-dot{width:6px!important;height:6px!important;border-radius:50%!important;background:#ccc!important;border:none!important;padding:0!important;cursor:pointer!important;transition:background .2s!important}' +
+                  '.eora-lg-dot.eora-lg-dot-active{background:#111!important}' +
+                '}',
+                /* Esconde APENAS o botão auto-injetado pelo SDK mkfashion (tem [data-mkfashion-identifier]) */
+                '.btn-tip-card[data-mkfashion-identifier], .js-tip-card-btn[data-mkfashion-identifier]{display:none!important}',
+                '#tip-card-provador:not(#eora-static-provador-container){display:none!important}',
+                /* Esconde o botão flutuante de provador (canto da 1ª foto) injetado pelo SDK; usamos um clone próprio */
+                '.js-btn-provador-virtual:not(.eora-clone), .btn-provador-virtual:not(.eora-clone){display:none!important}',
+                '.btn-provador-virtual.eora-clone{display:flex!important}',
+                /* Nosso botão "Experimente agora": mesma largura do Comprar + espaçamento */
+                '#eora-static-provador-container{display:block!important;width:100%!important;margin-top:10px!important;padding:0!important}',
+                '#eora-static-provador-container .btn-tip-card{display:flex!important;width:100%!important;align-items:center!important;justify-content:center!important;gap:8px!important;box-sizing:border-box!important}',
                 '#eora-hero-actions{display:flex!important;width:100%!important;flex-direction:column!important;align-items:center!important;gap:10px!important}',
                 '#eora-fake-buy-btn{display:block!important;width:100%!important;max-width:300px!important;z-index:20!important}',
                 '#eora-hero-desc-content, #eora-hero-desc-content *{background-color:transparent!important;color:#111!important;font-weight:700!important}',
@@ -162,6 +197,10 @@
                 var ancora = document.querySelector('#single-product');
                 if (!ancora) return;
                 function injectHero() {
+                    // Hero customizado desativado: usamos o layout padrão de produto
+                    // (imagens à esquerda + coluna de info à direita com botão Comprar,
+                    // descrição e variantes em miniatura).
+                    return;
                     if (document.getElementById('eora-hero')) return;
                     var d = getDados();
                     var txtCampanha = d['texto_campanha'];
@@ -558,6 +597,370 @@
                     }, 200);
                 }
                 injectHero();
+                // Coleta antecipada das miniaturas do LUAR (vindas da tabela variantes_produto)
+                // para injetar na .product-info-column acima do botão Comprar.
+                window.__eoraVariantThumbs = (function () {
+                    var thumbs = [];
+                    if (!dados['variantes_produto']) return thumbs;
+                    var trs = dados['variantes_produto'].querySelectorAll('tbody > tr');
+                    var thumbRow = trs[0] ? trs[0].querySelectorAll('td') : [];
+                    var maxThumbs = Math.min(thumbRow.length, 7);
+                    for (var i = 1; i < maxThumbs; i++) {
+                        var imgs = thumbRow[i].querySelectorAll('img');
+                        var url = '';
+                        for (var j = 0; j < imgs.length; j++) {
+                            var su = imgs[j].getAttribute('data-src') || imgs[j].getAttribute('src') || '';
+                            if (su && su.indexOf('data:') !== 0 && su.length > 10) { url = su; break; }
+                        }
+                        if (url) thumbs.push(url);
+                    }
+                    return thumbs;
+                })();
+                // Coleta as 4 fotos da galeria esquerda por variante (tabela galeria_esquerda)
+                // Independente das fotos do painel central (fotoGroups / variantes_produto)
+                window.__eoraLeftGalleryPhotos = (function () {
+                    var groups = [];
+                    var galTable = dados['galeria_esquerda'] || null;
+                    if (!galTable) {
+                        // Fallback: busca em TODAS as tabelas do documento
+                        var allT = document.querySelectorAll('table');
+                        for (var ai = 0; ai < allT.length; ai++) {
+                            var aFc = allT[ai].querySelector('tbody > tr:first-child td:first-child');
+                            if (aFc && aFc.textContent.trim().toLowerCase().indexOf('galeria_esquerda') !== -1) {
+                                galTable = allT[ai]; break;
+                            }
+                        }
+                    }
+                    if (!galTable) return groups;
+                    var trs = galTable.querySelectorAll('tbody > tr');
+                    for (var r = 0; r < trs.length; r++) {
+                        var tds = trs[r].querySelectorAll('td');
+                        var fotos = [];
+                        for (var c = 1; c < tds.length; c++) {
+                            var fimg = tds[c].querySelector('img');
+                            if (!fimg) continue;
+                            var fu = getSrc(fimg);
+                            if (fu && fu.indexOf('data:') !== 0 && fu.length > 10) fotos.push(fu);
+                        }
+                        groups.push(fotos);
+                    }
+                    return groups;
+                })();
+                // Layout padrão: injeta o botão "Experimente agora" logo abaixo do
+                // botão Comprar nativo (.product-info-column), preservando a lógica
+                // antiga de popups (abrirPopupChanel('tryon' | 'buy')).
+                (function injectStaticProvadorInInfoColumn() {
+                    function buildProvadorMarkup() {
+                        // Replica o mesmo estilo/espaçamento do botão original do tema
+                        // (.btn-tip-card dentro de .col-12.pb-1.mb-2) que vinha do SDK mkfashion.
+                        return '<div id="eora-static-provador-container" class="col-12 pb-1 mb-2 eora-always-visible">' +
+                            '  <button type="button" class="js-tip-card-btn btn-tip-card js-eora-static-btn">' +
+                            '    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>' +
+                            '      <circle cx="12" cy="13" r="4"></circle>' +
+                            '    </svg>' +
+                            '    EXPERIMENTE AGORA' +
+                            '  </button>' +
+                            '</div>';
+                    }
+                    function eoraInitLgCarousel(gallery) {
+                        gallery.dataset.lgCarousel = '1';
+                        // Pega os filhos originais (cada <div> com uma img)
+                        var originalSlides = Array.prototype.slice.call(gallery.children);
+                        if (!originalSlides.length) return;
+                        var n = originalSlides.length;
+                        var cur = 0;
+                        // Monta: wrap > track > [slides], + setas + dots abaixo
+                        var wrap = document.createElement('div');
+                        wrap.className = 'eora-lg-wrap';
+                        var track = document.createElement('div');
+                        track.className = 'eora-lg-track';
+                        // Move cada filho original para um .eora-lg-slide dentro da track
+                        originalSlides.forEach(function(child) {
+                            var slide = document.createElement('div');
+                            slide.className = 'eora-lg-slide';
+                            slide.appendChild(child);
+                            track.appendChild(slide);
+                        });
+                        wrap.appendChild(track);
+                        // Setas
+                        var svgL = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+                        var svgR = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+                        var prevBtn = document.createElement('button');
+                        prevBtn.className = 'eora-lg-arrow eora-lg-prev';
+                        prevBtn.setAttribute('aria-label', 'Anterior');
+                        prevBtn.innerHTML = svgL;
+                        var nextBtn = document.createElement('button');
+                        nextBtn.className = 'eora-lg-arrow eora-lg-next';
+                        nextBtn.setAttribute('aria-label', 'Próximo');
+                        nextBtn.innerHTML = svgR;
+                        wrap.appendChild(prevBtn);
+                        wrap.appendChild(nextBtn);
+                        // Dots
+                        var dotsWrap = document.createElement('div');
+                        dotsWrap.className = 'eora-lg-dots';
+                        var dots = originalSlides.map(function(_, di) {
+                            var d = document.createElement('button');
+                            d.className = 'eora-lg-dot' + (di === 0 ? ' eora-lg-dot-active' : '');
+                            d.setAttribute('aria-label', 'Foto ' + (di + 1));
+                            dotsWrap.appendChild(d);
+                            return d;
+                        });
+                        // Substitui a gallery pelo wrap no DOM
+                        gallery.parentNode.insertBefore(wrap, gallery);
+                        gallery.parentNode.removeChild(gallery);
+                        // Insere dots após o wrap
+                        wrap.parentNode.insertBefore(dotsWrap, wrap.nextSibling);
+                        function goTo(idx) {
+                            cur = Math.max(0, Math.min(n - 1, idx));
+                            track.style.setProperty('transform', 'translateX(-' + (cur * 100) + '%)', 'important');
+                            dots.forEach(function(d, i) { d.classList.toggle('eora-lg-dot-active', i === cur); });
+                        }
+                        prevBtn.addEventListener('click', function() { goTo(cur - 1); });
+                        nextBtn.addEventListener('click', function() { goTo(cur + 1); });
+                        dots.forEach(function(d, di) { d.addEventListener('click', function() { goTo(di); }); });
+                        // Swipe touch
+                        var touchX = null;
+                        track.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; }, { passive: true });
+                        track.addEventListener('touchend', function(e) {
+                            if (touchX === null) return;
+                            var dx = e.changedTouches[0].clientX - touchX;
+                            touchX = null;
+                            if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+                        }, { passive: true });
+                        goTo(0);
+                    }
+                    function place() {
+                        if (document.getElementById('eora-static-provador-container')) return true;
+                        var infoCol = document.querySelector('#single-product .product-info-column');
+                        if (!infoCol) return false;
+                        // Âncora: botão Comprar nativo (input.js-addtocart submit). Inserimos LOGO APÓS ele.
+                        var buyBtn = infoCol.querySelector('input.js-addtocart, button.js-addtocart, .js-addtocart, .js-add-to-cart, [name="commit"], button[type="submit"], .btn-add-to-cart, .product-buy');
+                        if (!buyBtn || !buyBtn.parentNode) return false;
+                        var wrapper = document.createElement('div');
+                        wrapper.innerHTML = buildProvadorMarkup();
+                        var node = wrapper.firstChild;
+                        if (buyBtn.nextSibling) buyBtn.parentNode.insertBefore(node, buyBtn.nextSibling);
+                        else buyBtn.parentNode.appendChild(node);
+                        // Insere strip de miniaturas das variantes LUAR acima do botão Comprar
+                        if (!document.getElementById('eora-info-thumbs') && window.__eoraVariantThumbs && window.__eoraVariantThumbs.length) {
+                            var strip = document.createElement('div');
+                            strip.id = 'eora-info-thumbs';
+                            window.__eoraVariantThumbs.forEach(function (u, i) {
+                                var t = document.createElement('div');
+                                t.className = 'eora-info-thumb' + (i === 0 ? ' eora-active' : '');
+                                t.setAttribute('data-idx', i);
+                                t.innerHTML = '<img src="' + u + '" alt="variante ' + (i + 1) + '">';
+                                t.addEventListener('click', function () {
+                                    var all = document.querySelectorAll('#eora-info-thumbs .eora-info-thumb');
+                                    for (var k = 0; k < all.length; k++) all[k].classList.remove('eora-active');
+                                    t.classList.add('eora-active');
+                                    // Memoriza a variante atualmente selecionada (índice da tabela
+                                    // variantes_produto = mesmo índice de LS.variants).
+                                    window.eoraSelectedThumbIdx = i;
+                                    // Atualiza a coluna esquerda (.product-image-column) com as fotos desta variante
+                                    var leftCol = document.querySelector('#single-product .product-image-column');
+                                    // 1. Tenta cache pré-carregado
+                                    var lgPhotos = (window.__eoraLeftGalleryPhotos && window.__eoraLeftGalleryPhotos[i] && window.__eoraLeftGalleryPhotos[i].length)
+                                        ? window.__eoraLeftGalleryPhotos[i] : null;
+                                    // 2. Se cache vazio, relê ao vivo (fallback de timing)
+                                    if (!lgPhotos) {
+                                        var galT = dados['galeria_esquerda'] || null;
+                                        if (!galT) {
+                                            var allT3 = document.querySelectorAll('table');
+                                            for (var ti3 = 0; ti3 < allT3.length; ti3++) {
+                                                var fc3 = allT3[ti3].querySelector('tbody > tr:first-child td:first-child');
+                                                if (fc3 && fc3.textContent.trim().toLowerCase().indexOf('galeria_esquerda') !== -1) { galT = allT3[ti3]; break; }
+                                            }
+                                        }
+                                        if (galT) {
+                                            var lgTrs3 = galT.querySelectorAll('tbody > tr');
+                                            if (lgTrs3[i]) {
+                                                var lgTds3 = lgTrs3[i].querySelectorAll('td');
+                                                var lgRead = [];
+                                                for (var lc3 = 1; lc3 < lgTds3.length; lc3++) {
+                                                    var lgImg3 = lgTds3[lc3].querySelector('img');
+                                                    if (!lgImg3) continue;
+                                                    var lgU3 = getSrc(lgImg3);
+                                                    if (lgU3 && lgU3.indexOf('data:') !== 0 && lgU3.length > 10) lgRead.push(lgU3);
+                                                }
+                                                if (lgRead.length) {
+                                                    lgPhotos = lgRead;
+                                                    if (window.__eoraLeftGalleryPhotos) window.__eoraLeftGalleryPhotos[i] = lgRead;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    var photos = (lgPhotos && lgPhotos.length) ? lgPhotos :
+                                                 ((window.__eoraVariantPhotos && window.__eoraVariantPhotos[i]) || []);
+                                    if (leftCol && photos.length) {
+                                        // Esconde os filhos originais e injeta nossa galeria
+                                        for (var c = 0; c < leftCol.children.length; c++) {
+                                            var ch = leftCol.children[c];
+                                            if (ch.classList && (ch.classList.contains('eora-left-gallery') || ch.classList.contains('eora-lg-wrap'))) continue;
+                                            ch.style.setProperty('display', 'none', 'important');
+                                        }
+                                        // Remove wrap de carrossel anterior se existir (troca de variante)
+                                        var oldWrap = leftCol.querySelector('.eora-lg-wrap');
+                                        if (oldWrap) oldWrap.parentNode.removeChild(oldWrap);
+                                        var oldDots = leftCol.querySelector('.eora-lg-dots');
+                                        if (oldDots) oldDots.parentNode.removeChild(oldDots);
+                                        var gallery = leftCol.querySelector('.eora-left-gallery');
+                                        if (!gallery) {
+                                            gallery = document.createElement('div');
+                                            gallery.className = 'eora-left-gallery';
+                                            leftCol.appendChild(gallery);
+                                        }
+                                        delete gallery.dataset.lgCarousel;
+                                        gallery.innerHTML = photos.map(function (u, n) {
+                                            // Layout: 2+2+1 (n=0,1 → 1ª linha; n=2,3 → 2ª linha; n=4 → ocupa linha inteira)
+                                            var cls = (n === 4) ? ' class="eora-lg-large"' : '';
+                                            return '<div' + cls + '><img src="' + u + '" alt="variante ' + (i + 1) + ' foto ' + (n + 1) + '"></div>';
+                                        }).join('');
+                                        // Carrossel mobile — aguarda o browser calcular o layout antes de ativar
+                                        var galleryRef = gallery;
+                                        requestAnimationFrame(function() {
+                                            requestAnimationFrame(function() {
+                                                if (window.innerWidth <= 1024 && !galleryRef.dataset.lgCarousel) {
+                                                    eoraInitLgCarousel(galleryRef);
+                                                }
+                                            });
+                                        });
+                                    }
+                                    // Reaproveita o clique do carrossel de variantes maior (se existir)
+                                    var card = document.querySelector('.eora-pp-variante-item[data-idx="' + i + '"]');
+                                    if (card) card.click();
+                                });
+                                strip.appendChild(t);
+                            });
+                            // Insere antes do form (acima do Comprar)
+                            var formNode = buyBtn.closest('form, .js-prod-submit-form, .row') || buyBtn.parentNode;
+                            // Texto de descrição do modelo acima das miniaturas
+                            if (!document.getElementById('eora-variant-desc')) {
+                                var descEl = document.createElement('p');
+                                descEl.id = 'eora-variant-desc';
+                                descEl.textContent = 'O modelo LUAR apresenta uma estrutura em metal com acabamento de alto brilho, destacando um shape cat eye preciso e marcante. Seu desenho estruturado transmite elegância e força, elevando o look com presença e definição.';
+                                if (formNode && formNode.parentNode) {
+                                    formNode.parentNode.insertBefore(descEl, formNode);
+                                } else {
+                                    infoCol.insertBefore(descEl, buyBtn);
+                                }
+                            }
+                            if (formNode && formNode.parentNode) {
+                                formNode.parentNode.insertBefore(strip, formNode);
+                            } else {
+                                infoCol.insertBefore(strip, buyBtn);
+                            }
+                            // Pré-seleciona a variante correta: usa ?vi= se presente (vindo
+                            // de um produto fake na vitrine), senão cai no índice 0.
+                            var viInitParams = new URLSearchParams(window.location.search);
+                            var viInitVal = parseInt(viInitParams.get('vi'));
+                            var viInitIdx = (!isNaN(viInitVal) && viInitVal >= 0) ? viInitVal : 0;
+                            var initThumb = strip.querySelector('.eora-info-thumb[data-idx="' + viInitIdx + '"]') ||
+                                            strip.querySelector('.eora-info-thumb[data-idx="0"]');
+                            if (initThumb) {
+                                setTimeout(function () { initThumb.click(); }, 0);
+                            }
+                        }
+                        // Esconde duplicatas auto-injetadas pelo SDK mkfashion (sempre têm data-mkfashion-identifier)
+                        var dups = document.querySelectorAll('.btn-tip-card[data-mkfashion-identifier], .js-tip-card-btn[data-mkfashion-identifier]');
+                        for (var d = 0; d < dups.length; d++) {
+                            var holder = dups[d].closest('#tip-card-provador') || dups[d];
+                            if (holder && holder.id !== 'eora-static-provador-container') {
+                                holder.style.setProperty('display', 'none', 'important');
+                            }
+                        }
+                        // Intercepta o botão Comprar nativo: usa direto a variante selecionada
+                        // pela miniatura (sem popup). Fallback para o popup se não houver thumb.
+                        if (!buyBtn.dataset.eoraBuyHooked) {
+                            buyBtn.dataset.eoraBuyHooked = '1';
+                            buyBtn.addEventListener('click', function (ev) {
+                                if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
+                                    ev.preventDefault();
+                                    ev.stopImmediatePropagation();
+                                    window.eoraQuickSelect('buy');
+                                } else if (typeof abrirPopupChanel === 'function') {
+                                    ev.preventDefault();
+                                    ev.stopImmediatePropagation();
+                                    abrirPopupChanel('buy');
+                                }
+                            }, true);
+                        }
+                        // Substitui o botão flutuante "Provador Virtual" (canto da 1ª foto)
+                        // por um clone visual idêntico, sem listeners do SDK, que abre direto
+                        // o provador da variante atualmente selecionada na miniatura.
+                        var origs = document.querySelectorAll('.js-btn-provador-virtual:not(.eora-clone), .btn-provador-virtual:not(.eora-clone)');
+                        for (var pp = 0; pp < origs.length; pp++) {
+                            var orig = origs[pp];
+                            if (orig.dataset.eoraReplaced) continue;
+                            orig.dataset.eoraReplaced = '1';
+                            var newBtn = document.createElement('button');
+                            newBtn.type = 'button';
+                            newBtn.className = 'btn-provador-virtual eora-clone';
+                            newBtn.setAttribute('aria-label', 'Provador Virtual');
+                            newBtn.innerHTML = orig.innerHTML;
+                            newBtn.addEventListener('click', function (ev) {
+                                ev.preventDefault();
+                                ev.stopPropagation();
+                                if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
+                                    window.eoraQuickSelect('tryon');
+                                } else if (typeof abrirPopupChanel === 'function') {
+                                    abrirPopupChanel('tryon');
+                                }
+                            });
+                            if (orig.parentNode) {
+                                if (orig.nextSibling) orig.parentNode.insertBefore(newBtn, orig.nextSibling);
+                                else orig.parentNode.appendChild(newBtn);
+                            }
+                        }
+                        return true;
+                    }
+                    var tries = 0;
+                    var iv = setInterval(function () {
+                        if (place() || ++tries > 40) clearInterval(iv);
+                    }, 250);
+                    place();
+
+                    // Religa a lógica original (popups + checagem de disponibilidade)
+                    function eoraStaticActions() {
+                        try {
+                            var v = (typeof LS !== 'undefined' && LS.variants && LS.variants[0]) ? LS.variants[0] : null;
+                            var sku = window.eoraCurrentSKU || (v ? v.sku : '');
+                            if (typeof LS !== 'undefined' && LS.variants) {
+                                for (var i = 0; i < LS.variants.length; i++) {
+                                    if (LS.variants[i].sku === sku) { v = LS.variants[i]; break; }
+                                }
+                            }
+                            var disponivel = true;
+                            if (typeof mkfashion !== 'undefined') {
+                                var isAv = mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', v ? v.sku : '');
+                                if (isAv === false) disponivel = false;
+                            }
+                            var provContainer = document.getElementById('eora-static-provador-container');
+                            if (provContainer) {
+                                provContainer.style.display = disponivel ? 'flex' : 'none';
+                                var provBtn = provContainer.querySelector('.js-eora-static-btn');
+                                if (provBtn) provBtn.onclick = function () {
+                                    if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
+                                        window.eoraQuickSelect('tryon');
+                                    } else if (typeof abrirPopupChanel === 'function') {
+                                        abrirPopupChanel('tryon');
+                                    }
+                                };
+                            }
+                        } catch (e) { console.log('Eora static provador error:', e); }
+                    }
+                    window.eoraUpdateProvadorSku = function (newSku) {
+                        window.eoraCurrentSKU = newSku;
+                        eoraStaticActions();
+                    };
+                    var c2 = 0;
+                    var iv2 = setInterval(function () {
+                        eoraStaticActions();
+                        if (++c2 > 100) clearInterval(iv2);
+                    }, 800);
+                    eoraStaticActions();
+                })();
                 var afterEl = ancora;
                 function inserirApos(el) {
                     if (afterEl.nextSibling) afterEl.parentNode.insertBefore(el, afterEl.nextSibling);
@@ -578,6 +981,8 @@
                         }
                         fotoGroups.push(fotos);
                     }
+                    // Expõe as fotos por variante para o handler das miniaturas (.product-info-column)
+                    window.__eoraVariantPhotos = fotoGroups;
                     var html = '<p class="eora-pp-variantes-titulo">Variantes</p><div class="eora-pp-variantes-grid">';
                     var thumbRow = allTrs[0] ? allTrs[0].querySelectorAll('td') : [];
                     var hoverRow = allTrs[1] ? allTrs[1].querySelectorAll('td') : [];
@@ -606,11 +1011,19 @@
                         html += '</div></div>';
                         thumbCount++;
                     }
-                    html += '</div><div class="eora-pp-variante-fotos"></div>';
+                    html += '</div>';
                     var el = document.createElement('div');
                     el.className = 'eora-pp-variantes';
                     el.innerHTML = html;
+                    el.style.setProperty('display', 'none', 'important');
+                    el.setAttribute('aria-hidden', 'true');
                     inserirApos(el);
+                    // fotosPanel fica FORA do el (que está hidden), visível na página
+                    var fotosPanel = document.createElement('div');
+                    fotosPanel.className = 'eora-pp-variante-fotos';
+                    fotosPanel.style.display = 'none';
+                    el.parentNode.insertBefore(fotosPanel, el.nextSibling);
+                    afterEl = fotosPanel;
                     // Wrap grid in carousel wrapper and inject arrows via DOM
                     var grid = el.querySelector('.eora-pp-variantes-grid');
                     if (grid) {
@@ -677,8 +1090,7 @@
                             varCards[vi0].classList.add('eora-var-shown');
                         }
                     }
-                    var fotosPanel = el.querySelector('.eora-pp-variante-fotos');
-                    fotosPanel.style.display = 'none';
+                    // fotosPanel já foi criado fora do el acima
                     // Lê video_link e descricao_video das linhas finais da tabela variantes_produto
                     var varVideoData = [];
                     var vvLinkRow = null, vvDescRow = null;
@@ -825,7 +1237,7 @@ var c1 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                         window.addEventListener('resize', fitFull);
                     })(el);
                     if (cards.length > 0) {
-                        activeIdx = 0;
+                        activeIdx = -1;
                         cards[0].classList.add('eora-ativa');
                         var loadedFromLS0 = false;
                         if (typeof LS !== 'undefined' && LS.variants && LS.variants[0]) {
@@ -1042,7 +1454,59 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                     var baseName = prodNameEl ? prodNameEl.textContent.trim() : 'Produto';
 
                     var validOptions = [];
-                    if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
+                    // Prioridade 1: <select.js-variation-option> nativo do produto atual.
+                    // Isso evita pegar "color variants" cross-produto (ASTRA, LUNA, BLAZE...).
+                    var nativeSelects = Array.from(document.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (s) {
+                        if (s.classList.contains('js-shipping-select')) return false;
+                        if ((s.id || '').toLowerCase().indexOf('shipping') !== -1) return false;
+                        // Garante que está dentro do formulário do produto (não em outros widgets)
+                        return !!s.closest('#product_form, .js-product-form, #single-product');
+                    });
+                    console.log('[EORA popup] selects nativos encontrados:', nativeSelects.length, nativeSelects);
+                    if (nativeSelects.length > 0) {
+                        function buildFromSelects(sels) {
+                            var combos = [];
+                            function recurse(i, accVals, accLabels, accRefs) {
+                                if (i >= sels.length) {
+                                    combos.push({ name: accLabels.join(' '), values: accVals.slice(), refs: accRefs.slice(), options: accLabels.slice() });
+                                    return;
+                                }
+                                var sel = sels[i];
+                                var opts = Array.from(sel.querySelectorAll('option')).filter(function (o) { return o.value; });
+                                opts.forEach(function (o) {
+                                    accVals.push(o.value); accLabels.push(o.text.trim()); accRefs.push(sel);
+                                    recurse(i + 1, accVals, accLabels, accRefs);
+                                    accVals.pop(); accLabels.pop(); accRefs.pop();
+                                });
+                            }
+                            recurse(0, [], [], []);
+                            return combos;
+                        }
+                        var combosFromSelects = buildFromSelects(nativeSelects);
+                        // Tenta enriquecer com dados de LS.variants (id/sku/preço/imagem/stock) por nome
+                        var lsByName = {};
+                        if (typeof LS !== 'undefined' && LS.variants) {
+                            LS.variants.forEach(function (v) {
+                                var lbls = [v.option0, v.option1, v.option2].filter(Boolean).map(function (x) { return String(x).trim().toLowerCase(); });
+                                if (lbls.length) lsByName[lbls.join(' ')] = v;
+                            });
+                        }
+                        validOptions = combosFromSelects.map(function (c) {
+                            var key = c.options.map(function (x) { return x.toLowerCase(); }).join(' ');
+                            var v = lsByName[key];
+                            return {
+                                name: c.name,
+                                values: c.values,
+                                refs: c.refs,
+                                options: c.options,
+                                id: v ? v.id : null,
+                                sku: v ? v.sku : '',
+                                price: v ? (v.price_short || basePrice) : basePrice,
+                                image_url: v ? (v.image_url || '') : '',
+                                stock: v ? v.stock : null
+                            };
+                        });
+                    } else if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
                         LS.variants.forEach(function (v) {
                             var opts = [];
                             if (v.option0) opts.push(v.option0);
@@ -1089,11 +1553,10 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                         validOptions.forEach(function (combo, idx) {
                             var actImg = combo.image_url || '';
                             if (actImg && actImg.indexOf('//') === 0) actImg = 'https:' + actImg;
-                            if (!actImg) {
-                                var thumb = document.querySelector('.eora-pp-variante-item[data-idx="' + idx + '"] img:not(.eora-img-hover)');
-                                if (thumb && thumb.src) actImg = thumb.src;
-                                else if (document.querySelector('.eora-hero-img')) actImg = document.querySelector('.eora-hero-img').src;
-                            }
+                            // NÃO usa fallback para .eora-pp-variante-item nem .eora-hero-img,
+                            // pois esses elementos vêm da tabela "variantes_produto" do snippet
+                            // (que pode ter dados antigos de outro produto). Usamos apenas a
+                            // imagem oficial da variante do produto atual (LS.variants[i].image_url).
 
                             var row = document.createElement('div');
                             row.className = 'eora-pu-card';
@@ -1403,6 +1866,34 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                     if (window.eoraUpdateModalTip) window.eoraUpdateModalTip();
                 }
                 window.abrirPopupChanel = abrirPopupChanel; // Expôe para o outro botão falso
+                // Atalho: usa direto a variante selecionada na strip de miniaturas, sem popup.
+                // Reaproveita toda a lógica do popup: abre escondido, clica no item correspondente
+                // pela SKU/nome da variante e remove a classe de abertura.
+                window.eoraQuickSelect = function (mode) {
+                    mode = mode || 'buy';
+                    var idx = window.eoraSelectedThumbIdx;
+                    if (typeof idx !== 'number') return false;
+                    var layer = document.getElementById('eora-pu-layer');
+                    if (layer) layer.style.setProperty('visibility', 'hidden', 'important');
+                    abrirPopupChanel(mode);
+                    setTimeout(function () {
+                        var listContainer = document.getElementById('eora-pu-list-container');
+                        if (!listContainer) { if (layer) layer.style.removeProperty('visibility'); return; }
+                        // A ordem dos cards no popup vem dos <select.js-variation-option> nativos,
+                        // que est\u00e3o na MESMA ordem das miniaturas (tabela variantes_produto).
+                        var cards = listContainer.querySelectorAll('.eora-pu-card');
+                        var picked = cards[idx] || null;
+                        if (picked) {
+                            var btn = picked.querySelector('.eora-pu-select');
+                            if (btn) btn.click();
+                        }
+                        if (layer) {
+                            layer.classList.remove('eora-pu-open');
+                            layer.style.removeProperty('visibility');
+                        }
+                    }, 0);
+                    return true;
+                };
                 document.getElementById('eora-pu-close').addEventListener('click', fecharPopupChanel);
                 var floatBuyBtn = document.getElementById('eora-float-buy-btn');
                 if (floatBuyBtn) {
@@ -1412,10 +1903,15 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                     });
                 }
                 var heroEl = document.getElementById('eora-hero');
+                var floatRefEl = heroEl || document.getElementById('eora-buy-form-container') || document.getElementById('product_form') || ancora.querySelector('.product-info-column');
                 window.addEventListener('scroll', function () {
-                    if (!heroEl) return;
-                    var heroBottom = heroEl.getBoundingClientRect().bottom;
-                    if (heroBottom < 100) { floatBar.classList.remove('eora-hidden'); }
+                    var show = false;
+                    if (floatRefEl) {
+                        show = floatRefEl.getBoundingClientRect().bottom < 100;
+                    } else {
+                        show = window.scrollY > 300;
+                    }
+                    if (show) { floatBar.classList.remove('eora-hidden'); }
                     else { floatBar.classList.add('eora-hidden'); }
                 });
                 var observerExperiencia = new MutationObserver(function (mutations) {
@@ -1610,6 +2106,56 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
     </script>
 </p>
 <!-- ============================================================
+     GALERIA ESQUERDA POR VARIANTE (4 fotos por variante)
+     Cada linha = 1 variante | Colunas 2-5 = 4 imagens da coluna esquerda
+     ============================================================ -->
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 18%; padding: 6px; font-size: 11px;">galeria_esquerda<br /><small style="color: #aaa; font-weight: normal;">Dourado/Marrom</small></td>
+<td style="width: 20%; padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="width: 20%; padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL DOURADO LADO VERT.jpg" alt="" width="100" height="100" /></td>
+<td style="width: 20%; padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (5).jpg" alt="" width="100" height="100" /></td>
+<td style="width: 20%; padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (14).jpg" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;"><span style="color: #000000;">Preto Fosco/Preto</span></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRETO LADO VERT.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (16).jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (15).jpg" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;"><span style="color: #000000;">Prata/Cinza</span></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRATA FRENTE VERT .jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL METAL PRATA LADO VERT.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (6).jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (7).jpg" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;"><span style="color: #000000;">Dourado/Preto</span></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR DOURADO PRETO LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (8).jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (26).jpg" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;"><span style="color: #000000;">Prata/Rosa Fotocrom&aacute;tica</span></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA COR FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA FURTA LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (12).jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (11).jpg" alt="" width="100" height="100" /></td>
+</tr>
+<tr>
+<td style="padding: 6px; font-size: 10px; color: #aaa;"><span style="color: #000000;">Prata/Prata Fotocrom&aacute;tica</span></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA FRENTE PDP.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL LUAR PRATA PRATA LADO.jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (4).jpg" alt="" width="100" height="100" /></td>
+<td style="padding: 6px; text-align: center; vertical-align: middle; color: #aaa; font-size: 10px;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca produto website (28).jpg" alt="" width="100" height="100" /></td>
+</tr>
+</tbody>
+</table>
+<!-- ============================================================
      BANNER DO PRODUTO (label, detalhes e botÃ£o na coluna direita)
      Preencha os campos abaixo â€” deixe vazio para nÃ£o exibir
      ============================================================ -->
@@ -1624,13 +2170,6 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 </tr>
 <tr>
 <td style="padding: 12px; font-size: 11px; vertical-align: top;" colspan="5">O modelo LUAR apresenta uma estrutura em metal com acabamento de alto brilho, destacando um shape cat eye preciso e marcante. Seu desenho estruturado transmite eleg&acirc;ncia e for&ccedil;a, elevando o look com presen&ccedil;a e defini&ccedil;&atilde;o.</td>
-</tr>
-<tr>
-<td style="padding: 12px; font-size: 11px; color: #aaaaaa; vertical-align: middle; text-align: center;" colspan="5"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/BANNER DESKTOP.png" alt="" width="100" height="100" /></td>
-</tr>
-<tr>
-<td style="width: 15%; padding: 6px; font-size: 11px;">banner_mobile</td>
-<td style="padding: 12px; font-size: 11px; color: #aaaaaa; vertical-align: middle; text-align: center;" colspan="4"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/BANNER MOBILE.png" alt="" width="100" height="100" /></td>
 </tr>
 </tbody>
 </table>
