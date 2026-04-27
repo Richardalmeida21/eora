@@ -147,17 +147,30 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 177.78vh;
-            height: 100vh;
-            min-width: 100%;
-            min-height: 100%;
             transform: translate(-50%, -50%);
+            border: 0;
             pointer-events: none;
+            /* Desktop (wrapper 21:9): cobre pela largura, transborda no topo/baixo */
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+        }
+        @supports not (aspect-ratio: 16 / 9) {
+            .banner-video-botao-video iframe {
+                width: 100%;
+                height: 56.25%;
+                min-height: 100%;
+            }
         }
         @media (max-width: 767px) {
             .banner-video-botao-wrapper { aspect-ratio: 4 / 5; }
             @supports not (aspect-ratio: 4 / 5) {
                 .banner-video-botao-wrapper { padding-bottom: 125%; }
+            }
+            /* Mobile (wrapper 4:5): cobre pela altura, transborda nas laterais */
+            .banner-video-botao-video iframe {
+                width: auto;
+                height: 100%;
             }
         }
     </style>
