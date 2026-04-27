@@ -123,17 +123,17 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            background: #fff;
-            aspect-ratio: 21 / 9;
+            background: #000;
         }
-        @supports not (aspect-ratio: 21 / 9) {
-            .banner-video-botao-wrapper { padding-bottom: 42.857%; }
+        .banner-video-botao-wrapper::before {
+            content: '';
+            display: block;
+            padding-bottom: 42.857%; /* 21:9 */
         }
         .banner-video-botao-video,
         .banner-video-botao-image {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             border: 0;
@@ -142,27 +142,30 @@
         .banner-video-botao-video {
             overflow: hidden;
         }
+        /* mesma lógica do Banner Video Horizontal existente */
         .banner-video-botao-video iframe {
             position: absolute;
             top: 50%;
             left: 50%;
+            width: 177.78vh;
+            height: 100vh;
+            min-width: 100%;
+            min-height: 100%;
             transform: translate(-50%, -50%);
             border: 0;
             pointer-events: none;
-            /* Cobre todo o wrapper sem bordas: usa o maior entre 16:9 por largura ou por altura */
-            width: 100%;
-            height: 100%;
-            min-width: 177.78%;   /* 100% * 16/9 — garante cobrir altura quando wrapper for "alto" */
-            min-height: 56.25%;   /* 100% * 9/16 — garante cobrir largura quando wrapper for "largo" */
+        }
+        @media (min-aspect-ratio: 16/9) {
+            .banner-video-botao-video iframe {
+                width: 100vw;
+                height: 56.25vw;
+            }
         }
         @media (max-width: 767px) {
-            .banner-video-botao-wrapper { aspect-ratio: 4 / 5; }
-            @supports not (aspect-ratio: 4 / 5) {
-                .banner-video-botao-wrapper { padding-bottom: 125%; }
-            }
+            .banner-video-botao-wrapper::before { padding-bottom: 125%; /* 4:5 */ }
             .banner-video-botao-video iframe {
-                /* Mobile (4:5 = 0.8): precisa de mais largura pra cobrir */
-                min-width: 222%;
+                width: 177.78vh;
+                height: 100vh;
             }
         }
     </style>
