@@ -250,13 +250,13 @@
 						}
 						span.slider-overlay-button {
 							display: inline-block !important;
-							padding: 16px 40px !important;
-							border: 1.5px solid rgba(255,255,255,.7) !important;
-							border-radius: 4px !important;
-							color: #fff !important;
-							font-size: 1rem !important;
-							font-weight: 400 !important;
-							letter-spacing: 1px !important;
+								padding: 20px 56px !important;
+								border: 1.5px solid rgba(255,255,255,.8) !important;
+								border-radius: 4px !important;
+								color: #fff !important;
+								font-size: 1.15rem !important;
+								font-weight: 400 !important;
+								letter-spacing: 2px !important;
 							text-transform: uppercase !important;
 							background: rgba(255,255,255,.15) !important;
 							backdrop-filter: blur(10px);
