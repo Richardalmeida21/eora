@@ -64,36 +64,48 @@
     <div class="clientes-eora-inner">
         <h3 class="clientes-eora-title">Clientes Eora</h3>
 
-        <div class="swiper js-swiper-clientes-eora clientes-eora-swiper">
-            <div class="swiper-wrapper">
-                {% if _has_gallery_clients %}
-                    {% for image in _cliente_images %}
-                        <div class="swiper-slide">
-                            <div class="clientes-eora-slide">
-                                <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                                     data-srcset="{{ image | product_image_url('large') }} 480w, {{ image | product_image_url('huge') }} 800w, {{ image | product_image_url('original') }} 1200w"
-                                     data-sizes="auto"
-                                     class="lazyautosizes lazyload"
-                                     alt="{% if image.alt %}{{ image.alt }}{% else %}Cliente Eora usando {{ product.name }}{% endif %}">
+        <div class="clientes-eora-carousel">
+            <button type="button"
+                    class="clientes-eora-arrow clientes-eora-arrow-prev js-clientes-eora-prev"
+                    aria-label="Anterior">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+
+            <div class="swiper js-swiper-clientes-eora clientes-eora-swiper">
+                <div class="swiper-wrapper">
+                    {% if _has_gallery_clients %}
+                        {% for image in _cliente_images %}
+                            <div class="swiper-slide">
+                                <div class="clientes-eora-slide">
+                                    <img src="{{ 'images/empty-placeholder.png' | static_url }}"
+                                         data-srcset="{{ image | product_image_url('large') }} 480w, {{ image | product_image_url('huge') }} 800w, {{ image | product_image_url('original') }} 1200w"
+                                         data-sizes="auto"
+                                         class="lazyautosizes lazyload"
+                                         alt="{% if image.alt %}{{ image.alt }}{% else %}Cliente Eora usando {{ product.name }}{% endif %}">
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    {% for url in _marker_urls %}
-                        <div class="swiper-slide">
-                            <div class="clientes-eora-slide">
-                                <img src="{{ url }}"
-                                     alt="Cliente Eora usando {{ product.name }}"
-                                     loading="lazy">
+                        {% endfor %}
+                    {% else %}
+                        {% for url in _marker_urls %}
+                            <div class="swiper-slide">
+                                <div class="clientes-eora-slide">
+                                    <img src="{{ url }}"
+                                         alt="Cliente Eora usando {{ product.name }}"
+                                         loading="lazy">
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="swiper-pagination js-clientes-eora-pagination"></div>
             </div>
 
-            <div class="swiper-pagination js-clientes-eora-pagination"></div>
-            <div class="swiper-button-prev js-clientes-eora-prev"></div>
-            <div class="swiper-button-next js-clientes-eora-next"></div>
+            <button type="button"
+                    class="clientes-eora-arrow clientes-eora-arrow-next js-clientes-eora-next"
+                    aria-label="Próximo">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
         </div>
     </div>
 </section>
@@ -125,6 +137,11 @@
         color: #000;
         margin: 0 0 32px;
     }
+    /* Wrapper relativo para posicionar as setas fora do .swiper */
+    .clientes-eora-carousel {
+        position: relative;
+        width: 100%;
+    }
     .clientes-eora-swiper {
         position: relative;
         width: 100%;
@@ -155,19 +172,37 @@
         object-fit: cover;
         display: block;
     }
-    /* Setas */
-    .clientes-eora-swiper .swiper-button-prev,
-    .clientes-eora-swiper .swiper-button-next {
+    /* Setas customizadas (fora do .swiper para não serem cortadas) */
+    .clientes-eora-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid #000;
+        background: #fff;
         color: #000;
-        width: 32px;
-        height: 32px;
-        margin-top: -28px; /* compensa o padding-bottom da paginação */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition: background .2s ease, color .2s ease, opacity .2s ease;
+        margin-top: -20px; /* compensa o padding-bottom da paginação */
     }
-    .clientes-eora-swiper .swiper-button-prev:after,
-    .clientes-eora-swiper .swiper-button-next:after {
-        font-size: 22px;
-        font-weight: 700;
+    .clientes-eora-arrow:hover {
+        background: #000;
+        color: #fff;
     }
+    .clientes-eora-arrow:focus { outline: none; }
+    .clientes-eora-arrow.swiper-button-disabled {
+        opacity: .35;
+        cursor: default;
+    }
+    .clientes-eora-arrow-prev { left: -8px; }
+    .clientes-eora-arrow-next { right: -8px; }
     /* Paginação */
     .clientes-eora-swiper .swiper-pagination {
         bottom: 0;
@@ -178,14 +213,18 @@
     /* Tablet */
     @media (max-width: 991px) {
         .clientes-eora-inner { padding: 0 16px; }
+        .clientes-eora-arrow { width: 38px; height: 38px; }
+        .clientes-eora-arrow-prev { left: 4px; }
+        .clientes-eora-arrow-next { right: 4px; }
     }
     /* Mobile */
     @media (max-width: 767px) {
         .clientes-eora-section { margin: 40px 0; }
         .clientes-eora-inner { padding: 0 12px; }
         .clientes-eora-title { font-size: 1.1rem; margin-bottom: 20px; }
-        .clientes-eora-swiper .swiper-button-prev,
-        .clientes-eora-swiper .swiper-button-next { display: none; }
+        .clientes-eora-arrow { width: 34px; height: 34px; }
+        .clientes-eora-arrow-prev { left: 0; }
+        .clientes-eora-arrow-next { right: 0; }
     }
 </style>
 
