@@ -222,10 +222,11 @@
     /* Mobile */
     @media (max-width: 767px) {
         .clientes-eora-section { margin: 40px 0; }
-        .clientes-eora-inner { padding: 0 12px; }
-        .clientes-eora-carousel { padding: 0 36px; }
+        .clientes-eora-inner { padding: 0 8px; }
+        .clientes-eora-carousel { padding: 0 28px; }
         .clientes-eora-title { font-size: 1.1rem; margin-bottom: 20px; }
-        .clientes-eora-arrow { width: 30px; height: 30px; }
+        .clientes-eora-arrow { width: 26px; height: 26px; }
+        .clientes-eora-arrow svg { width: 14px; height: 14px; }
         .clientes-eora-arrow-prev { left: 0; }
         .clientes-eora-arrow-next { right: 0; }
     }
@@ -239,8 +240,8 @@
             if (!el || el.dataset.swiperInit === '1') return true;
             el.dataset.swiperInit = '1';
             new Swiper(el, {
-                slidesPerView: 1,
-                spaceBetween: 16,
+                slidesPerView: 3,
+                spaceBetween: 6,
                 loop: false,
                 watchOverflow: true,
                 centerInsufficientSlides: true,
@@ -249,7 +250,7 @@
                 pagination: { el: '.js-clientes-eora-pagination', clickable: true },
                 navigation: { prevEl: '.js-clientes-eora-prev', nextEl: '.js-clientes-eora-next' },
                 breakpoints: {
-                    576: { slidesPerView: 2, spaceBetween: 16 },
+                    576: { slidesPerView: 3, spaceBetween: 10 },
                     992: { slidesPerView: 3, spaceBetween: 20 }
                 }
             });
