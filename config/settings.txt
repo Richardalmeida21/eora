@@ -1997,6 +1997,38 @@ Página de inicio
 		name = home_popup_mensagem_error_color
 		description = Cor da mensagem de erro
 	collapse
+		title = Banner Vídeo + Botão
+		backto = home_order_position
+	checkbox
+		name = banner_video_botao_show
+		description = Mostrar banner de vídeo com botão na página principal
+	subtitle
+		subtitle = Vídeo (YouTube ou Vimeo) — autoplay e mudo
+	i18n_input
+		name = banner_video_botao_embed
+		description = URL do vídeo (desktop)
+	i18n_input
+		name = banner_video_botao_embed_mobile
+		description = URL do vídeo (mobile, opcional)
+	subtitle
+		subtitle = Imagem de fallback (usada se não houver vídeo)
+	image
+		name = banner_video_botao_image
+		title = Imagem (JPG, PNG)
+		width = 1920
+		height = 820
+	subtitle
+		subtitle = Botão e link
+	i18n_input
+		name = banner_video_botao_button
+		description = Texto do botão (ex: Ver mais)
+	i18n_input
+		name = banner_video_botao_title
+		description = Título / descrição (opcional)
+	i18n_input
+		name = banner_video_botao_link
+		description = Link de destino ao clicar no banner
+	collapse
 		title = Banners Scroll
 		backto = home_order_position
 	checkbox
@@ -2061,6 +2093,7 @@ Página de inicio
 			BANNER_HORIZONTAL_VIDEO = Banner Video Horizontal
 			CARROSSEL_TEXT = Carrossel de Texto
 			BANNERS_SCROLL = Banners Scroll
+			BANNER_VIDEO_BOTAO = Banner Vídeo + Botão
 	link
 		text = Pop-up promocional
 		linkto = home_promotional_popup
