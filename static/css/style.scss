@@ -33,20 +33,23 @@
 }
 .slider-overlay-button {
   display: inline-block;
-  padding: 12px 28px;
-  border: 1.5px solid #fff;
+  padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 4px;
   color: #fff;
-  font-size: .85rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  background: transparent;
+  font-size: .78rem;
+  font-weight: 400;
+  letter-spacing: .5px;
+  text-transform: none;
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: background .2s ease, color .2s ease;
+  transition: background .2s ease, border-color .2s ease;
 }
 .slider-overlay-link:hover .slider-overlay-button {
-  background: #fff;
-  color: #000;
+  background: rgba(255,255,255,.28);
+  border-color: rgba(255,255,255,.7);
 }
 @media (max-width: 991px) {
   .slider-overlay-content {
@@ -64,8 +67,8 @@
     font-size: 1.3rem;
   }
   .slider-overlay-button {
-    padding: 9px 20px;
-    font-size: .78rem;
+    padding: 7px 14px;
+    font-size: .74rem;
   }
 }
 
