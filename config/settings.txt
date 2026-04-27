@@ -631,12 +631,9 @@ Página de inicio
 		name = slider_video_desktop
 		description = URL do vídeo (desktop)
 	subtitle
-		subtitle = Título e botão sobre o banner principal
+		subtitle = Botão sobre o banner principal
 	description
-		description = Aparecem sobrepostos ao banner (imagem ou vídeo)
-	i18n_input
-		name = slider_overlay_title
-		description = Título
+		description = Aparece sobreposto ao banner (imagem ou vídeo)
 	i18n_input
 		name = slider_overlay_button
 		description = Texto do botão

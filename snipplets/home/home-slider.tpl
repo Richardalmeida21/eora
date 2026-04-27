@@ -225,20 +225,13 @@
   <div class="js-swiper-home-pagination swiper-pagination swiper-pagination-bullets" style="display: {{ show_pagination ? 'flex' : 'none' }};"></div>
 			</div>
 
-			{# === Overlay global: título + botão configurados no painel === #}
 			{% if not mobile %}
-				{% set so_title  = settings.slider_overlay_title %}
 				{% set so_button = settings.slider_overlay_button %}
 				{% set so_link   = settings.slider_overlay_link %}
-				{% if so_title or so_button %}
+				{% if so_button %}
 					<div class="slider-overlay-content{% if so_link %} slider-overlay-has-link{% endif %}">
 						{% if so_link %}<a href="{{ so_link | setting_url }}" class="slider-overlay-link">{% endif %}
-						{% if so_title %}
-							<p class="slider-overlay-title">{{ so_title }}</p>
-						{% endif %}
-						{% if so_button %}
-							<span class="slider-overlay-button">{{ so_button }}</span>
-						{% endif %}
+						<span class="slider-overlay-button">{{ so_button }}</span>
 						{% if so_link %}</a>{% endif %}
 					</div>
 					<style>
@@ -247,64 +240,45 @@
 							bottom: 48px;
 							left: 48px;
 							z-index: 10;
-							display: flex;
-							flex-direction: column;
-							align-items: flex-start;
-							gap: 12px;
 							pointer-events: none;
 						}
 						.slider-overlay-has-link { pointer-events: auto; }
 						.slider-overlay-link {
-							display: flex;
-							flex-direction: column;
-							align-items: flex-start;
-							gap: 12px;
 							text-decoration: none;
 							color: inherit;
-						}
-						p.slider-overlay-title {
-							font-size: clamp(1.4rem, 3vw, 2.6rem) !important;
-							font-weight: 500 !important;
-							letter-spacing: 2px !important;
-							text-transform: uppercase !important;
-							color: #fff !important;
-							margin: 0 !important;
-							padding: 0 !important;
-							text-shadow: 0 1px 8px rgba(0,0,0,.35);
-							line-height: 1.15 !important;
-							background: none !important;
-							border: none !important;
+							display: block;
 						}
 						span.slider-overlay-button {
 							display: inline-block !important;
-							padding: 8px 18px !important;
-							border: 1px solid rgba(255,255,255,.5) !important;
+							padding: 16px 40px !important;
+							border: 1.5px solid rgba(255,255,255,.7) !important;
 							border-radius: 4px !important;
 							color: #fff !important;
-							font-size: .78rem !important;
+							font-size: 1rem !important;
 							font-weight: 400 !important;
-							letter-spacing: .5px !important;
-							text-transform: none !important;
+							letter-spacing: 1px !important;
+							text-transform: uppercase !important;
 							background: rgba(255,255,255,.15) !important;
-							backdrop-filter: blur(8px);
-							-webkit-backdrop-filter: blur(8px);
+							backdrop-filter: blur(10px);
+							-webkit-backdrop-filter: blur(10px);
 							cursor: pointer;
 							line-height: normal !important;
 							width: auto !important;
 							height: auto !important;
 							margin: 0 !important;
+							transition: background .2s ease, border-color .2s ease;
 						}
 						.slider-overlay-link:hover span.slider-overlay-button {
 							background: rgba(255,255,255,.28) !important;
-							border-color: rgba(255,255,255,.75) !important;
+							border-color: rgba(255,255,255,1) !important;
 						}
 						@media (max-width: 991px) {
 							.slider-overlay-content { bottom: 36px; left: 32px; }
+							span.slider-overlay-button { padding: 14px 32px !important; font-size: .9rem !important; }
 						}
 						@media (max-width: 767px) {
-							.slider-overlay-content { bottom: 24px; left: 20px; gap: 8px; }
-							p.slider-overlay-title { font-size: 1.2rem !important; }
-							span.slider-overlay-button { padding: 7px 14px !important; font-size: .72rem !important; }
+							.slider-overlay-content { bottom: 24px; left: 20px; }
+							span.slider-overlay-button { padding: 12px 24px !important; font-size: .82rem !important; }
 						}
 					</style>
 				{% endif %}
