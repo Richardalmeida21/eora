@@ -123,15 +123,14 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            background: #000;
+            background: #fff;
             aspect-ratio: 21 / 9;
         }
         @supports not (aspect-ratio: 21 / 9) {
             .banner-video-botao-wrapper { padding-bottom: 42.857%; }
         }
         .banner-video-botao-video,
-        .banner-video-botao-image,
-        .banner-video-botao-wrapper iframe {
+        .banner-video-botao-image {
             position: absolute;
             top: 0;
             left: 0;
@@ -150,27 +149,20 @@
             transform: translate(-50%, -50%);
             border: 0;
             pointer-events: none;
-            /* Desktop (wrapper 21:9): cobre pela largura, transborda no topo/baixo */
+            /* Cobre todo o wrapper sem bordas: usa o maior entre 16:9 por largura ou por altura */
             width: 100%;
-            height: auto;
-            aspect-ratio: 16 / 9;
-        }
-        @supports not (aspect-ratio: 16 / 9) {
-            .banner-video-botao-video iframe {
-                width: 100%;
-                height: 56.25%;
-                min-height: 100%;
-            }
+            height: 100%;
+            min-width: 177.78%;   /* 100% * 16/9 — garante cobrir altura quando wrapper for "alto" */
+            min-height: 56.25%;   /* 100% * 9/16 — garante cobrir largura quando wrapper for "largo" */
         }
         @media (max-width: 767px) {
             .banner-video-botao-wrapper { aspect-ratio: 4 / 5; }
             @supports not (aspect-ratio: 4 / 5) {
                 .banner-video-botao-wrapper { padding-bottom: 125%; }
             }
-            /* Mobile (wrapper 4:5): cobre pela altura, transborda nas laterais */
             .banner-video-botao-video iframe {
-                width: auto;
-                height: 100%;
+                /* Mobile (4:5 = 0.8): precisa de mais largura pra cobrir */
+                min-width: 222%;
             }
         }
     </style>
