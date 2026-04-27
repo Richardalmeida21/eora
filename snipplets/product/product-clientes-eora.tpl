@@ -152,10 +152,13 @@
         overflow: hidden;
     }
     .clientes-eora-swiper .swiper-wrapper {
+        display: flex;
         align-items: stretch;
     }
     .clientes-eora-swiper .swiper-slide {
+        display: block !important;
         height: auto;
+        flex-shrink: 0;
     }
     .clientes-eora-slide {
         position: relative;
@@ -243,8 +246,7 @@
                 slidesPerView: 3,
                 spaceBetween: 6,
                 loop: false,
-                watchOverflow: true,
-                centerInsufficientSlides: true,
+                watchOverflow: false,
                 observer: true,
                 observeParents: true,
                 pagination: { el: '.js-clientes-eora-pagination', clickable: true },
