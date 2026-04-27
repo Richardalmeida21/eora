@@ -611,7 +611,7 @@ Página de inicio
 	gallery
 		name = slider
 		gallery_image = Agregar imagen
-		gallery_link = [Opcional] Página web a la que quieres que te lleve la imagen al hacer click
+		gallery_link = Link (ou cole URL do YouTube/Vimeo para usar como vídeo)
 		gallery_width = 1580
 		gallery_height = 700
 		gallery_more_info = true
@@ -633,7 +633,7 @@ Página de inicio
 	gallery
 		name = slider_mobile
 		gallery_image = Agregar imagen
-		gallery_link = [Opcional] Página web a la que quieres que te lleve la imagen al hacer click
+		gallery_link = Link (ou cole URL do YouTube/Vimeo para usar como vídeo no mobile)
 		gallery_width = 820
 		gallery_height = 1000
 		gallery_more_info = true
