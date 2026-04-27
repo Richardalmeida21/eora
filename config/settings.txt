@@ -624,6 +624,13 @@ Página de inicio
 		name = slider_height_desktop
 		description = Altura
 	subtitle
+		subtitle = Vídeo do banner principal (desktop)
+	description
+		description = Cole a URL do YouTube ou Vimeo para exibir um vídeo no banner em vez das imagens
+	i18n_input
+		name = slider_video_desktop
+		description = URL do vídeo (desktop)
+	subtitle
 		subtitle = Imágenes para celulares
 	description
 		description = Mejorá la calidad y velocidad de carga con esta opción
@@ -645,6 +652,13 @@ Página de inicio
 	i18n_input	
 		name = slider_height_mobile
 		description = Altura
+	subtitle
+		subtitle = Vídeo do banner principal (mobile)
+	description
+		description = Cole a URL do YouTube ou Vimeo para o vídeo mobile. Se vazio, usa o mesmo vídeo do desktop
+	i18n_input
+		name = slider_video_mobile
+		description = URL do vídeo (mobile)
 	subtitle
 		subtitle = <a target='_blank' data-toggle-info='show-on_slider_mobile-inactive' href='https://ayuda.tiendanube.com/es/articles/3297783-como-usar-el-carrusel-de-imagenes-para-las-plantillas-idea-bahia-y-amazonas'>¿Cómo diseñar las imágenes para tu carrusel?</a>
 	collapse

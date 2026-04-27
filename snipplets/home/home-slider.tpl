@@ -37,6 +37,50 @@
 						{% set slider = settings.slider %}
 					{% endif %}
 
+					{# === Vídeo dedicado configurado no painel === #}
+					{% if mobile %}
+						{% set sv_url = settings.slider_video_mobile | default(settings.slider_video_desktop) %}
+					{% else %}
+						{% set sv_url = settings.slider_video_desktop %}
+					{% endif %}
+					{% if sv_url %}
+						{% set sv_provider = '' %}
+						{% set sv_id = '' %}
+						{% set sv_embed = '' %}
+						{% if '/watch?v=' in sv_url %}
+							{% set sv_id = sv_url | split('/watch?v=') | last | split('&') | first %}
+							{% set sv_provider = 'youtube' %}
+						{% elseif 'youtu.be/' in sv_url %}
+							{% set sv_id = sv_url | split('youtu.be/') | last | split('?') | first %}
+							{% set sv_provider = 'youtube' %}
+						{% elseif '/shorts/' in sv_url %}
+							{% set sv_id = sv_url | split('/shorts/') | last | split('?') | first %}
+							{% set sv_provider = 'youtube' %}
+						{% elseif 'vimeo.com/' in sv_url %}
+							{% set sv_id = sv_url | split('vimeo.com/') | last | split('?') | first | split('/') | first %}
+							{% set sv_provider = 'vimeo' %}
+						{% endif %}
+						{% if sv_provider == 'youtube' %}
+							{% set sv_embed = 'https://www.youtube.com/embed/' ~ sv_id ~ '?autoplay=1&mute=1&loop=1&playlist=' ~ sv_id ~ '&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1' %}
+						{% elseif sv_provider == 'vimeo' %}
+							{% set sv_embed = 'https://player.vimeo.com/video/' ~ sv_id ~ '?autoplay=1&muted=1&loop=1&background=1&controls=0&playsinline=1' %}
+						{% endif %}
+						<div class="swiper-slide slide-container swiper-dark" style="height:100vh;">
+							<div class="slider-slide fullscreen video-wrapper">
+								<iframe
+									src="{{ sv_embed }}"
+									title="Banner vídeo"
+									frameborder="0"
+									allow="autoplay; fullscreen; picture-in-picture"
+									allowfullscreen
+									class="video-iframe"
+									loading="eager"
+									width="100%"
+									height="360"
+								></iframe>
+							</div>
+						</div>
+					{% else %}
 					{% for slide in slider %}
   {% set slide_link = slide.link|default('') %}
   {% set video_provider = '' %}
@@ -163,6 +207,7 @@
     {% endif %}
   </div>
 {% endfor %}
+					{% endif %}
 
 				</div>
 
