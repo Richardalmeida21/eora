@@ -631,6 +631,19 @@ Página de inicio
 		name = slider_video_desktop
 		description = URL do vídeo (desktop)
 	subtitle
+		subtitle = Título e botão sobre o banner principal
+	description
+		description = Aparecem sobrepostos ao banner (imagem ou vídeo)
+	i18n_input
+		name = slider_overlay_title
+		description = Título
+	i18n_input
+		name = slider_overlay_button
+		description = Texto do botão
+	i18n_input
+		name = slider_overlay_link
+		description = Link do botão
+	subtitle
 		subtitle = Imágenes para celulares
 	description
 		description = Mejorá la calidad y velocidad de carga con esta opción

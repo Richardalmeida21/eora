@@ -224,6 +224,25 @@
   {% set show_pagination = slider|length > 1 %}
   <div class="js-swiper-home-pagination swiper-pagination swiper-pagination-bullets" style="display: {{ show_pagination ? 'flex' : 'none' }};"></div>
 			</div>
+
+			{# === Overlay global: título + botão configurados no painel === #}
+			{% if not mobile %}
+				{% set so_title  = settings.slider_overlay_title %}
+				{% set so_button = settings.slider_overlay_button %}
+				{% set so_link   = settings.slider_overlay_link %}
+				{% if so_title or so_button %}
+					<div class="slider-overlay-content{% if so_link %} slider-overlay-has-link{% endif %}">
+						{% if so_link %}<a href="{{ so_link | setting_url }}" class="slider-overlay-link">{% endif %}
+						{% if so_title %}
+							<h2 class="slider-overlay-title">{{ so_title }}</h2>
+						{% endif %}
+						{% if so_button %}
+							<div class="slider-overlay-button">{{ so_button }}</div>
+						{% endif %}
+						{% if so_link %}</a>{% endif %}
+					</div>
+				{% endif %}
+			{% endif %}
 		</div>
 	</div>
 {% if not mobile %}
