@@ -45,7 +45,7 @@
                                        aria-label="Banner {{ loop.index }}">
                                 {% endif %}
                                     <div class="home-category h3-huge h2-huge-md">
-                                        <div class="home-category-image banners-scroll-image"
+                                        <div class="banners-scroll-image"
                                              style="padding-bottom: {{ bs_padding_bottom }}%;">
                                             <img src="{{ 'images/empty-placeholder.png' | static_url }}"
                                                  data-src="{{ slide.image | static_url | settings_image_url('large') }}"
@@ -53,7 +53,6 @@
                                                  data-sizes="auto"
                                                  class="lazyautosizes lazyload"
                                                  alt="Banner {{ loop.index }}">
-                                            <div class="placeholder-fade"></div>
                                         </div>
                                         {% if slide.link %}
                                             {% set category_handle = slide.link | trim('/') | split('/') | last %}
