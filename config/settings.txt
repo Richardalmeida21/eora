@@ -1997,6 +1997,32 @@ Página de inicio
 		name = home_popup_mensagem_error_color
 		description = Cor da mensagem de erro
 	collapse
+		title = Banners Scroll
+		backto = home_order_position
+	checkbox
+		name = banners_scroll_show
+		description = Mostrar banners scroll na página principal
+	i18n_input
+		name = banners_scroll_title
+		description = Título da seção (opcional)
+	subtitle
+		subtitle = Banners (até 6 imagens)
+	gallery
+		name = banners_scroll
+		gallery_image = Adicionar imagem
+		gallery_link = Link da página ao clicar no banner
+		gallery_width = 310
+		gallery_height = 465
+		gallery_more_info = true
+	subtitle
+		subtitle = Tamanho de referência das imagens (px)
+	i18n_input
+		name = banners_scroll_width
+		description = Largura
+	i18n_input
+		name = banners_scroll_height
+		description = Altura
+	collapse
 		title = Seção de Pesquise Por
 		backto = home_order_position
 	checkbox
@@ -2034,6 +2060,7 @@ Página de inicio
 			LOOKS = Looks
 			BANNER_HORIZONTAL_VIDEO = Banner Video Horizontal
 			CARROSSEL_TEXT = Carrossel de Texto
+			BANNERS_SCROLL = Banners Scroll
 	link
 		text = Pop-up promocional
 		linkto = home_promotional_popup

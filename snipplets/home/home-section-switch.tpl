@@ -160,6 +160,8 @@
 	{% else %}
 		{% include 'snipplets/home/home-categories.tpl' %}
 	{% endif %}
+{% elseif section_select == 'BANNERS_SCROLL' %}
+	{% include 'snipplets/home/home-banners-scroll.tpl' %}
 {% elseif section_select == 'welcome' %}
 	{% set title_welcome = 'Mensaje de bienvenida' | translate %}
 	{% if show_help or (show_component_help and not has_welcome_message) %}
@@ -206,7 +208,7 @@
 {% elseif section_select == 'LOOKS' %}
 	{% if show_help or (show_component_help and false) %}
 		VAZIO
-	{% else %}
+	{% elseif settings.looks_show %}
 		{% include 'snipplets/home/home-looks.tpl' %}
 	{% endif %}
 {% elseif section_select == 'promotional' %}
