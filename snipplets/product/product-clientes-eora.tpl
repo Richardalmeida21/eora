@@ -141,6 +141,7 @@
     .clientes-eora-carousel {
         position: relative;
         width: 100%;
+        padding: 0 64px; /* reserva espaço pras setas, fora das imagens */
     }
     .clientes-eora-swiper {
         position: relative;
@@ -201,8 +202,8 @@
         opacity: .35;
         cursor: default;
     }
-    .clientes-eora-arrow-prev { left: -8px; }
-    .clientes-eora-arrow-next { right: -8px; }
+    .clientes-eora-arrow-prev { left: 8px; }
+    .clientes-eora-arrow-next { right: 8px; }
     /* Paginação */
     .clientes-eora-swiper .swiper-pagination {
         bottom: 0;
@@ -213,6 +214,7 @@
     /* Tablet */
     @media (max-width: 991px) {
         .clientes-eora-inner { padding: 0 16px; }
+        .clientes-eora-carousel { padding: 0 48px; }
         .clientes-eora-arrow { width: 38px; height: 38px; }
         .clientes-eora-arrow-prev { left: 4px; }
         .clientes-eora-arrow-next { right: 4px; }
@@ -221,8 +223,9 @@
     @media (max-width: 767px) {
         .clientes-eora-section { margin: 40px 0; }
         .clientes-eora-inner { padding: 0 12px; }
+        .clientes-eora-carousel { padding: 0 36px; }
         .clientes-eora-title { font-size: 1.1rem; margin-bottom: 20px; }
-        .clientes-eora-arrow { width: 34px; height: 34px; }
+        .clientes-eora-arrow { width: 30px; height: 30px; }
         .clientes-eora-arrow-prev { left: 0; }
         .clientes-eora-arrow-next { right: 0; }
     }
