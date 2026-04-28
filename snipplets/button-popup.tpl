@@ -24,7 +24,7 @@
 
   .notification-cart-reopen-container {
     position: fixed;
-    bottom: 150px;
+    bottom: 90px;
     left: 20px;
     z-index: 100;
     background-color: {{ popup_bg }};
@@ -33,6 +33,11 @@
     border-radius: 10px;
     font-size: 14px;
     box-shadow: 0 4px 10px #00000041;
+  }
+
+  /* Página de categoria: FILTROS sobe o ícone de presente — baixar o cupom para não sobrepor */
+  body:has(.floating-filter-btn) .notification-cart-reopen-container {
+    bottom: 10px;
   }
 
   .notification-cart-reopen-container button {
