@@ -237,8 +237,9 @@
 					<style>
 						.slider-overlay-content {
 							position: absolute;
-							bottom: 48px;
-							left: 48px;
+							bottom: 32px;
+							right: 48px;
+							left: auto;
 							z-index: 10;
 							pointer-events: none;
 						}
@@ -250,13 +251,13 @@
 						}
 						span.slider-overlay-button {
 							display: inline-block !important;
-								padding: 20px 56px !important;
-								border: 1.5px solid rgba(255,255,255,.8) !important;
-								border-radius: 4px !important;
-								color: #fff !important;
-								font-size: 1.15rem !important;
-								font-weight: 400 !important;
-								letter-spacing: 2px !important;
+							padding: 20px 56px !important;
+							border: 1.5px solid rgba(255,255,255,.8) !important;
+							border-radius: 4px !important;
+							color: #fff !important;
+							font-size: 1.15rem !important;
+							font-weight: 400 !important;
+							letter-spacing: 2px !important;
 							text-transform: uppercase !important;
 							background: rgba(255,255,255,.15) !important;
 							backdrop-filter: blur(10px);
@@ -273,11 +274,11 @@
 							border-color: rgba(255,255,255,1) !important;
 						}
 						@media (max-width: 991px) {
-							.slider-overlay-content { bottom: 36px; left: 32px; }
+							.slider-overlay-content { bottom: 28px; right: 32px; }
 							span.slider-overlay-button { padding: 14px 32px !important; font-size: .9rem !important; }
 						}
 						@media (max-width: 767px) {
-							.slider-overlay-content { bottom: 24px; left: 20px; }
+							.slider-overlay-content { bottom: 20px; right: 16px; }
 							span.slider-overlay-button { padding: 12px 24px !important; font-size: .82rem !important; }
 						}
 					</style>
