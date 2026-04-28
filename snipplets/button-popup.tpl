@@ -35,11 +35,6 @@
     box-shadow: 0 4px 10px #00000041;
   }
 
-  /* Página de categoria: FILTROS sobe o ícone de presente — baixar o cupom para não sobrepor */
-  body:has(.floating-filter-btn) .notification-cart-reopen-container {
-    bottom: 10px;
-  }
-
   .notification-cart-reopen-container button {
     background: none;
     border: none;

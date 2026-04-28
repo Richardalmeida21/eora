@@ -103,7 +103,7 @@
 	}
 
 	.notification-cart-reopen-container  {
-		bottom: 100px !important;
+		bottom: 160px !important;
 	}
 </style>
 
