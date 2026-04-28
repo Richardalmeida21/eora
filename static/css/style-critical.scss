@@ -101,6 +101,13 @@ critical-css.tpl
   .section-banners-home .swiper-buttons { display: none !important; }
 }
 
+/* ============================================================
+   Widget de presente Selly — posição fixa (todas as páginas)
+   ============================================================ */
+#selly-gift-widget {
+  bottom: 130px !important;
+}
+
 /*============================================================================
   Table of Contents
 
