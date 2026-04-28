@@ -188,11 +188,10 @@
         @media (max-width: 767px) {
             .section-banners-scroll { margin: 24px 0; }
             .section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; }
-            .banners-scroll-wrapper { padding: 0 28px; }
-            .banners-scroll-arrow { width: 28px; height: 28px; }
-            .banners-scroll-arrow svg { width: 14px; height: 14px; }
-            .banners-scroll-arrow-prev { left: 0; }
-            .banners-scroll-arrow-next { right: 0; }
+            /* No mobile: remove padding das setas, deixa o swiper sangrar até a direita */
+            .banners-scroll-wrapper { padding: 0; overflow: hidden; }
+            .banners-scroll-swiper { overflow: visible; }
+            .banners-scroll-arrow { display: none; }
         }
     </style>
 
@@ -215,6 +214,7 @@
                         nextEl: '.js-banners-scroll-next'
                     },
                     breakpoints: {
+                        0:   { slidesPerView: 1.12, spaceBetween: 10, centeredSlides: false },
                         768: { slidesPerView: 3, spaceBetween: 16 },
                         992: { slidesPerView: 3, spaceBetween: 20 }
                     }
