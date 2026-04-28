@@ -204,7 +204,7 @@
                 el.dataset.swiperInit = '1';
                 new Swiper(el, {
                     slidesPerView: 3,
-                    spaceBetween: 12,
+                    spaceBetween: 8,
                     loop: false,
                     observer: true,
                     observeParents: true,
@@ -214,9 +214,9 @@
                         nextEl: '.js-banners-scroll-next'
                     },
                     breakpoints: {
-                        0:   { slidesPerView: 1.12, spaceBetween: 10, centeredSlides: false },
-                        768: { slidesPerView: 3, spaceBetween: 16 },
-                        992: { slidesPerView: 3, spaceBetween: 20 }
+                        0:   { slidesPerView: 1.12, spaceBetween: 6, centeredSlides: false },
+                        768: { slidesPerView: 3, spaceBetween: 8 },
+                        992: { slidesPerView: 3, spaceBetween: 8 }
                     }
                 });
                 return true;
