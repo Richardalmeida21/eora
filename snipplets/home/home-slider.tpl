@@ -225,11 +225,14 @@
   <div class="js-swiper-home-pagination swiper-pagination swiper-pagination-bullets" style="display: {{ show_pagination ? 'flex' : 'none' }};"></div>
 			</div>
 
+			{% set so_show   = settings.slider_overlay_show %}
+			{% set so_text   = settings.slider_overlay_text %}
 			{% set so_button = settings.slider_overlay_button %}
 			{% set so_link   = settings.slider_overlay_link %}
-			{% if so_button %}
+			{% if so_show and so_button %}
 				<div class="slider-overlay-content{% if so_link %} slider-overlay-has-link{% endif %}">
 					{% if so_link %}<a href="{{ so_link | setting_url }}" class="slider-overlay-link">{% endif %}
+					{% if so_text %}<span class="slider-overlay-text">{{ so_text }}</span>{% endif %}
 					<span class="slider-overlay-button">{{ so_button }}</span>
 					{% if so_link %}</a>{% endif %}
 				</div>

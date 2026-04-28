@@ -634,9 +634,15 @@ Página de inicio
 		subtitle = Botão sobre o banner principal
 	description
 		description = Aparece sobreposto ao banner (imagem ou vídeo)
+	checkbox
+		name = slider_overlay_show
+		description = Exibir botão sobre o banner
+	i18n_input
+		name = slider_overlay_text
+		description = Texto acima do botão
 	i18n_input
 		name = slider_overlay_button
-		description = Texto do botão
+		description = Título do botão
 	i18n_input
 		name = slider_overlay_link
 		description = Link do botão
