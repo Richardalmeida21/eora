@@ -39,7 +39,8 @@ critical-css.tpl
   margin: 0;
   line-height: 1.4;
   text-align: center;
-  width: 340px;
+  width: 100%;
+  box-sizing: border-box;
   padding: 8px 14px;
   background: rgba(0,0,0,.28);
   backdrop-filter: blur(6px);
