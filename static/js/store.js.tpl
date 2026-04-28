@@ -1803,19 +1803,16 @@ DOMContentLoaded.addEventOrExecute(() => {
                             nextEl: '.js-swiper-banners-next',
                             prevEl: '.js-swiper-banners-prev',
                         },
-                        slidesPerView: 1,
+                        slidesPerView: 1.12,
                         on: {
                             afterInit: function () {
                                 hideSwiperControls(".js-swiper-banners-prev", ".js-swiper-banners-next");
                             },
                         },
-                    {% if banner_desktop_slider %}
                         breakpoints: {
-                            768: {
-                                slidesPerView: bannersPerViewDesktopVal,
-                            }
+                            0: { slidesPerView: 1.12, spaceBetween: 4 },
+                            768: { slidesPerView: bannersPerViewDesktopVal, spaceBetween: bannersSpaceBetween },
                         }
-                    {% endif %}
                     });
 
                 {% endif %}
@@ -1836,19 +1833,16 @@ DOMContentLoaded.addEventOrExecute(() => {
                             nextEl: '.js-swiper-banners-mobile-next',
                             prevEl: '.js-swiper-banners-mobile-prev',
                         },
-                        slidesPerView: 1,
+                        slidesPerView: 1.12,
                         on: {
                             afterInit: function () {
                                 hideSwiperControls(".js-swiper-banners-mobile-prev", ".js-swiper-banners-mobile-next");
                             },
                         },
-                    {% if banner_desktop_slider %}
                         breakpoints: {
-                            768: {
-                                slidesPerView: bannersPerViewDesktopVal,
-                            }
+                            0: { slidesPerView: 1.12, spaceBetween: 4 },
+                            768: { slidesPerView: bannersPerViewDesktopVal, spaceBetween: bannersSpaceBetween },
                         }
-                    {% endif %}
                     });
 
                 {% endif %}

@@ -91,6 +91,16 @@ critical-css.tpl
   .section-slider .slider-overlay-button { padding: 10px 28px !important; font-size: .76rem !important; }
 }
 
+/* ============================================================
+   Banners de categorias — peek mobile
+   ============================================================ */
+@media (max-width: 767px) {
+  .section-banners-home .banner-categorias { overflow: hidden; padding-left: 0; padding-right: 0; }
+  .section-banners-home .js-swiper-banners,
+  .section-banners-home .js-swiper-banners-mobile { overflow: visible; }
+  .section-banners-home .swiper-buttons { display: none !important; }
+}
+
 /*============================================================================
   Table of Contents
 
