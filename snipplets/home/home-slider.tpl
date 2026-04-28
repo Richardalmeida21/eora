@@ -225,64 +225,14 @@
   <div class="js-swiper-home-pagination swiper-pagination swiper-pagination-bullets" style="display: {{ show_pagination ? 'flex' : 'none' }};"></div>
 			</div>
 
-			{% if not mobile %}
-				{% set so_button = settings.slider_overlay_button %}
-				{% set so_link   = settings.slider_overlay_link %}
-				{% if so_button %}
-					<div class="slider-overlay-content{% if so_link %} slider-overlay-has-link{% endif %}">
-						{% if so_link %}<a href="{{ so_link | setting_url }}" class="slider-overlay-link">{% endif %}
-						<span class="slider-overlay-button">{{ so_button }}</span>
-						{% if so_link %}</a>{% endif %}
-					</div>
-					<style>
-						.slider-overlay-content {
-							position: absolute;
-							bottom: 32px;
-							right: 48px;
-							left: auto;
-							z-index: 10;
-							pointer-events: none;
-						}
-						.slider-overlay-has-link { pointer-events: auto; }
-						.slider-overlay-link {
-							text-decoration: none;
-							color: inherit;
-							display: block;
-						}
-						span.slider-overlay-button {
-							display: inline-block !important;
-							padding: 20px 56px !important;
-							border: 1.5px solid rgba(255,255,255,.8) !important;
-							border-radius: 4px !important;
-							color: #fff !important;
-							font-size: 1.15rem !important;
-							font-weight: 400 !important;
-							letter-spacing: 2px !important;
-							text-transform: uppercase !important;
-							background: rgba(255,255,255,.15) !important;
-							backdrop-filter: blur(10px);
-							-webkit-backdrop-filter: blur(10px);
-							cursor: pointer;
-							line-height: normal !important;
-							width: auto !important;
-							height: auto !important;
-							margin: 0 !important;
-							transition: background .2s ease, border-color .2s ease;
-						}
-						.slider-overlay-link:hover span.slider-overlay-button {
-							background: rgba(255,255,255,.28) !important;
-							border-color: rgba(255,255,255,1) !important;
-						}
-						@media (max-width: 991px) {
-							.slider-overlay-content { bottom: 28px; right: 32px; }
-							span.slider-overlay-button { padding: 14px 32px !important; font-size: .9rem !important; }
-						}
-						@media (max-width: 767px) {
-							.slider-overlay-content { bottom: 20px; right: 16px; }
-							span.slider-overlay-button { padding: 12px 24px !important; font-size: .82rem !important; }
-						}
-					</style>
-				{% endif %}
+			{% set so_button = settings.slider_overlay_button %}
+			{% set so_link   = settings.slider_overlay_link %}
+			{% if so_button %}
+				<div class="slider-overlay-content{% if so_link %} slider-overlay-has-link{% endif %}">
+					{% if so_link %}<a href="{{ so_link | setting_url }}" class="slider-overlay-link">{% endif %}
+					<span class="slider-overlay-button">{{ so_button }}</span>
+					{% if so_link %}</a>{% endif %}
+				</div>
 			{% endif %}
 		</div>
 	</div>
