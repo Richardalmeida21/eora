@@ -24,7 +24,7 @@
 {% set section_slider_mobile_only = section_products_format_mobile == 'slider' and section_products_format_desktop == 'grid' %}
 {% set section_slider_desktop_only = section_products_format_desktop == 'slider' and section_products_format_mobile == 'grid' %}
 
-<div class="container-fluid my-5">
+<div class="container-fluid my-5 campaign-featured-grid">
     <div class="row">
         <div class="col-md-12">
             {# {% if use_slider %}
@@ -74,7 +74,7 @@
 
             {% if use_slider %}
                     </div>
-                    <div class="swiper-buttons">
+                    <div class="swiper-buttons d-none d-md-block">
 						<div class="js-swiper-{{ section_name }}-prev swiper-button-prev">
 							<svg class="icon-inline icon-lg icon-flip-horizontal"><use xlink:href="#arrow-long"/></svg>
 						</div>
@@ -90,3 +90,10 @@
         </div>
     </div>
 </div>
+
+<style>
+@media (max-width: 767px) {
+  .campaign-featured-grid { overflow: hidden; }
+  .campaign-featured-grid .swiper-container { overflow: visible; }
+}
+</style>

@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
             createSwiper(deskEl, {
                 lazy: true, 
                 watchOverflow: true, 
-                slidesPerView: 1,
+                slidesPerView: 1.12,
                 spaceBetween: space,
                 navigation: { prevEl: deskSelector + '-prev', nextEl: deskSelector + '-next' },
                 breakpoints: { 768: { slidesPerView: dCols } }
@@ -272,6 +272,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
 .full-width-link { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .textbanner-image img { min-height: 1px; }
+
+/* Peek mobile — mostra pedaço do próximo slide */
+@media (max-width: 767px) {
+  .banner-categorias { overflow: hidden; }
+  .banner-wrapper-desktop .swiper-container { overflow: visible; }
+}
 
 /* CSS do Floating Button */
 .banner-floating-button {
