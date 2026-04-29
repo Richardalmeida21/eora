@@ -108,6 +108,26 @@ critical-css.tpl
   bottom: 170px !important;
 }
 
+/* ============================================================
+   Carrinho — botão "Iniciar Compra" fixo no mobile
+   ============================================================ */
+@media (max-width: 767px) {
+  [data-store="cart-page"] #go-to-checkout {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+  #shoppingCartPage {
+    padding-bottom: 64px;
+  }
+}
+
 /*============================================================================
   Table of Contents
 
