@@ -109,6 +109,14 @@ critical-css.tpl
 }
 
 /* ============================================================
+   Carrinho — oculta "Mensagem para clientes" no carrinho
+   (aparece apenas após confirmação do pedido, fora do tema)
+   ============================================================ */
+#shoppingCartPage .alert.alert-warning.mb-4 {
+  display: none !important;
+}
+
+/* ============================================================
    Carrinho — botão "Iniciar Compra" fixo no mobile
    ============================================================ */
 @media (max-width: 767px) {

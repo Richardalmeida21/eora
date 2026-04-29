@@ -119,6 +119,11 @@
                 }
             }
 
+            /* Oculta "Mensagem para clientes" (shipping_emergency_message) no mini-carrinho */
+            .alert.alert-warning.mb-4 {
+                display: none !important;
+            }
+
             .cart-row {
                 padding: 30px 24px 20px;
                 background-color: #f2f2f2;
@@ -126,8 +131,18 @@
                 position: sticky;
                 bottom: 0;
                 z-index: 20;
+                /* limita altura para não empurrar o botão para fora da tela */
+                max-height: 65vh;
+                overflow-y: auto;
 
+                /* botão sempre visível ao fundo da cart-row */
                 .js-visible-on-cart-filled {
+                    position: sticky;
+                    bottom: 0;
+                    background-color: #f2f2f2;
+                    padding-top: 8px;
+                    z-index: 1;
+
                     .js-ajax-cart-submit {
                         position: relative;
 
