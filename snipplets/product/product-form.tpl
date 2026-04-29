@@ -229,13 +229,7 @@
                 </button>
                 <div class="dropdown-content js-glasses-measurements"></div>
             </div>
-            <div class="dropdown-wrapper js-dropdown-wrapper-content js-accessories-information-wrapper">
-                <button class="dropdown-toggle" type="button">
-                    <span class="js-title-dropdown title-dropdown">Informações</span>
-                    <svg class="dropdown-arrow icon-inline icon-xs svg-icon-text"><use xlink:href="#chevron"/></svg>
-                </button>
-                <div class="dropdown-content js-accessories-information"></div>
-            </div>
+
 
             {% set show_product_fulfillment = settings.shipping_calculator_product_page and (store.has_shipping or store.branches) and not product.free_shipping and not product.is_non_shippable %}
 
