@@ -39,7 +39,7 @@
                                 {% block modal_head %}{% endblock %}
                             </div>
                             <div class="col-auto">
-                                <a class="js-modal-close modal-close">
+                                <a href="javascript:void(0)" role="button" class="js-modal-close modal-close">
                                     <svg class="icon-inline icon-lg svg-icon-text"><use xlink:href="#times"/></svg>
                                 </a>
                             </div>
