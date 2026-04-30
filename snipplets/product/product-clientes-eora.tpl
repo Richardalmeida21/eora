@@ -113,7 +113,6 @@
         width: 100%;
         margin: 60px 0;
         padding: 0;
-        overflow: hidden; /* evita que slides "vazem" pra direita */
         box-sizing: border-box;
     }
     .clientes-eora-section *,
@@ -222,14 +221,12 @@
     }
     /* Mobile */
     @media (max-width: 767px) {
-        .clientes-eora-section { margin: 40px 0; }
-        .clientes-eora-inner { padding: 0 8px; }
-        .clientes-eora-carousel { padding: 0 28px; }
+        .clientes-eora-section { margin: 40px 0; overflow: visible; }
+        .clientes-eora-inner { padding: 0; overflow: hidden; }
+        .clientes-eora-carousel { padding: 0; overflow: visible; }
         .clientes-eora-title { font-size: 1.1rem; margin-bottom: 20px; }
-        .clientes-eora-arrow { width: 26px; height: 26px; }
-        .clientes-eora-arrow svg { width: 14px; height: 14px; }
-        .clientes-eora-arrow-prev { left: 0; }
-        .clientes-eora-arrow-next { right: 0; }
+        .clientes-eora-arrow { display: none !important; }
+        .clientes-eora-swiper { overflow: visible; padding-left: 12px; }
     }
 </style>
 
@@ -240,9 +237,10 @@
             var el = document.querySelector('.js-swiper-clientes-eora');
             if (!el || el.dataset.swiperInit === '1') return true;
             el.dataset.swiperInit = '1';
+            var isMobile = window.innerWidth < 576;
             new Swiper(el, {
-                slidesPerView: 3,
-                spaceBetween: 6,
+                slidesPerView: isMobile ? 3.15 : 3,
+                spaceBetween: isMobile ? 8 : 6,
                 loop: false,
                 watchOverflow: false,
                 observer: true,
