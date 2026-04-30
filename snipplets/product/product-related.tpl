@@ -7,7 +7,7 @@
     {% set related_products = related_products_ids_from_app | get_products %}
 {% endif %}
 {% if related_products is empty %}
-    {% set max_related_products_length = 8 %}
+    {% set max_related_products_length = 15 %}
     {% set max_related_products_achieved = false %}
     {% set related_products_without_stock = [] %}
     {% set max_related_products_without_achieved = false %}
