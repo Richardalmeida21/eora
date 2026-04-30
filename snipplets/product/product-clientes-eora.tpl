@@ -239,7 +239,7 @@
             el.dataset.swiperInit = '1';
             var isMobile = window.innerWidth < 576;
             new Swiper(el, {
-                slidesPerView: isMobile ? 3.15 : 3,
+                slidesPerView: isMobile ? 2.2 : 2.5,
                 spaceBetween: isMobile ? 8 : 6,
                 loop: false,
                 watchOverflow: false,
@@ -248,7 +248,7 @@
                 pagination: { el: '.js-clientes-eora-pagination', clickable: true },
                 navigation: { prevEl: '.js-clientes-eora-prev', nextEl: '.js-clientes-eora-next' },
                 breakpoints: {
-                    576: { slidesPerView: 3, spaceBetween: 10 },
+                    576: { slidesPerView: 2.5, spaceBetween: 10 },
                     992: { slidesPerView: 3, spaceBetween: 20 }
                 }
             });
