@@ -29,14 +29,14 @@
     </div>
 </div> #}
 
+{# Carrossel "Clientes Eora" — fotos de clientes usando o produto.
+   Cadastro via marcador na descrição do produto. Veja instruções no snippet. #}
+{% include 'snipplets/product/product-clientes-eora.tpl' %}
+
 {% include 'snipplets/home/home-institutional-message.tpl' %}
 
 {% if settings.full_width_description %}
     <div class="container-fluid">
-
-{# Carrossel "Clientes Eora" — fotos de clientes usando o produto.
-   Cadastro via marcador na descrição do produto. Veja instruções no snippet. #}
-{% include 'snipplets/product/product-clientes-eora.tpl' %}
 
         {# {% include 'snipplets/product/product-description-tabs.tpl' %} #}
         {% include 'snipplets/product/product-description.tpl' %}
