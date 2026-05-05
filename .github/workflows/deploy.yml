@@ -26,7 +26,6 @@ jobs:
                    mirror --reverse \
                           --verbose \
                           --ignore-time \
-                          --checksum \
                           -p \
                           --parallel=10 \
                           --exclude .git/ \
