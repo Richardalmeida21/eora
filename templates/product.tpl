@@ -30,7 +30,8 @@
 </div> #}
 
 {# Carrossel "Clientes Eora" — fotos de clientes usando o produto.
-   Cadastro via marcador na descrição do produto. Veja instruções no snippet. #}
+   Cadastro via marcador na descrição do produto. Veja instruções no snippet.
+   (Posicionado antes da mensagem institucional) #}
 {% include 'snipplets/product/product-clientes-eora.tpl' %}
 
 {% include 'snipplets/home/home-institutional-message.tpl' %}
