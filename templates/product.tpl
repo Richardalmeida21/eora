@@ -33,6 +33,11 @@
 
 {% if settings.full_width_description %}
     <div class="container-fluid">
+
+{# Carrossel "Clientes Eora" — fotos de clientes usando o produto.
+   Cadastro via marcador na descrição do produto. Veja instruções no snippet. #}
+{% include 'snipplets/product/product-clientes-eora.tpl' %}
+
         {# {% include 'snipplets/product/product-description-tabs.tpl' %} #}
         {% include 'snipplets/product/product-description.tpl' %}
         
@@ -53,10 +58,6 @@
         </div>
     </div>
 </div>
-
-{# Carrossel "Clientes Eora" — fotos de clientes usando o produto.
-   Cadastro via marcador na descrição do produto. Veja instruções no snippet. #}
-{% include 'snipplets/product/product-clientes-eora.tpl' %}
 
         <div class="swiper js-swiper-banners-experiencia swiper-container d-none">
             <h3 class="js-banners-experiencia-title banners-experiencia-title mb-3 mb-md-0">Experiência eora</h3>
