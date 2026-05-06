@@ -264,7 +264,7 @@
         {% endif %}
 
         {# mKFashion Provador Virtual #}
-        <script src="https://unpkg.com/mkfashion-sdk/src/mkfashion.js"></script>
+        <script src="https://unpkg.com/mkfashion-sdk/src/mkfashion.js" async onload="window._eoraInitMkFashion&&window._eoraInitMkFashion()"></script>
         <style>
             .btn-provador-virtual {
                 position: absolute;
@@ -393,6 +393,7 @@
                 } catch(err) {}
             }, true);
 
+            window._eoraInitMkFashion = function() {
             var PROJECT_ID = '69bbd36a44b548ccd0f965f4';
 
             // Pre-fetch real LUAR product variants (SKU → variant ID mapping)
@@ -405,11 +406,8 @@
                         var sku = (v.sku || '').toUpperCase().trim();
                         if (sku && v.id) luarVariantMap[sku] = v.id;
                     });
-                    console.log('LUAR variant map:', luarVariantMap);
                 })
                 .catch(function() {});
-
-            if (typeof mkfashion === 'undefined') return;
 
             mkfashion.addToCart(function(payload) {
                 console.log('Provador Virtual - Produto:', payload);
@@ -513,6 +511,7 @@
                     });
                 });
             });
+            }; // fim _eoraInitMkFashion
         })();
         </script>
 
