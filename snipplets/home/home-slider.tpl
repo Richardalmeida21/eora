@@ -156,9 +156,10 @@
       <div class="slider-slide fullscreen">
       {% if loop.first %}
         <img
-          src="{{ slide.image | static_url | settings_image_url('1080p') }}"
-          srcset="{{ slide.image | static_url | settings_image_url('original') }} 1024w,
-                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
+          src="{{ slide.image | static_url | settings_image_url('original') }}"
+          srcset="{{ slide.image | static_url | settings_image_url('huge') }} 1024w,
+                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w,
+                  {{ slide.image | static_url | settings_image_url('original') }} 3200w"
           class="slider-image {% if settings.slider_animation %}slider-image-animation{% endif %}"
           alt="{{ 'Carrusel' | translate }} {{ loop.index }}"
           style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"
@@ -171,9 +172,10 @@
       {% else %}
         <img
           src="{{ 'images/empty-placeholder.png' | static_url }}"
-          data-src="{{ slide.image | static_url | settings_image_url('1080p') }}"
-          data-srcset="{{ slide.image | static_url | settings_image_url('original') }} 1024w,
-                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
+          data-src="{{ slide.image | static_url | settings_image_url('original') }}"
+          data-srcset="{{ slide.image | static_url | settings_image_url('huge') }} 1024w,
+                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w,
+                  {{ slide.image | static_url | settings_image_url('original') }} 3200w"
           class="slider-image lazyload {% if settings.slider_animation %}slider-image-animation{% endif %}"
           alt="{{ 'Carrusel' | translate }} {{ loop.index }}"
           style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"

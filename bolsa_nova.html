@@ -2,55 +2,48 @@
 <script>
 (function () {
     var css = [
-        /* Esconde seletores nativos de cor (HEX) */
-        '#single-product .js-color-variants-container,#single-product .js-product-variants{display:none!important}',
+        /* Esconde o bloco inteiro do tema */
+        '#single-product{display:none!important}',
 
-        /* ── Layout do produto: desktop 60/40 ── */
-        '#single-product{display:flex!important;flex-wrap:wrap!important;align-items:flex-start!important}',
-        '#single-product .product-image-column{flex:0 0 60%!important;max-width:60%!important;width:60%!important;box-sizing:border-box!important}',
-        '#single-product .product-info-column{flex:0 0 40%!important;max-width:40%!important;width:40%!important;box-sizing:border-box!important;padding-left:40px!important;text-align:left!important}',
-        '#single-product .product-info-column .eora-bolsa-vars{margin-left:0!important;margin-right:0!important}',
-
-        /* tablet: 55/45 */
-        '@media(max-width:1024px) and (min-width:769px){' +
-            '#single-product .product-image-column{flex:0 0 55%!important;max-width:55%!important;width:55%!important}' +
-            '#single-product .product-info-column{flex:0 0 45%!important;max-width:45%!important;width:45%!important;padding-left:24px!important}' +
-        '}',
-
-        /* mobile: coluna única */
-        '@media(max-width:768px){' +
-            '#single-product .product-image-column,#single-product .product-info-column{flex:0 0 100%!important;max-width:100%!important;width:100%!important;padding-left:0!important}' +
-        '}',
+        /* Container EORA que substitui */
+        '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box}',
+        '@media(max-width:1024px) and (min-width:769px){.eora-product-wrap{grid-template-columns:55% 45%}}',
+        '@media(max-width:768px){.eora-product-wrap{grid-template-columns:1fr}}',
+        '.eora-product-info{padding-left:40px;box-sizing:border-box}',
+        '@media(max-width:1024px) and (min-width:769px){.eora-product-info{padding-left:24px}}',
+        '@media(max-width:768px){.eora-product-info{padding-left:0;margin-top:24px}}',
+        /* Remove estilos que o tema coloca no .product-info-column que agora está clonado */
+        '.eora-product-info .eora-bolsa-vars{margin-left:0!important;margin-right:0!important}',
 
         /* ── Galeria vertical ── */
-        '.eora-blg-wrap{display:grid!important;grid-template-columns:72px 1fr!important;width:100%!important;gap:10px!important;align-items:stretch!important}',
-        '.eora-blg-strip{display:flex!important;flex-direction:column!important;align-items:center!important;width:72px!important;box-sizing:border-box!important;align-self:stretch!important}',
+        '.eora-blg-wrap{display:flex!important;flex-direction:row!important;width:100%!important;gap:16px!important;align-items:stretch!important}',
+        '.eora-product-gallery{width:100%!important;min-width:0!important;display:block!important}',
+        '.eora-blg-strip{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-between!important;width:180px!important;box-sizing:border-box!important;align-self:stretch!important;flex-shrink:0!important}',
         '.eora-blg-arrow{background:none!important;border:none!important;padding:6px!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:0.5!important;transition:opacity .2s!important;flex-shrink:0!important}',
         '.eora-blg-arrow:hover{opacity:1!important}',
         '.eora-blg-arrow svg{width:14px!important;height:14px!important;fill:none!important;stroke:#111!important;stroke-width:2px!important;stroke-linecap:round!important;stroke-linejoin:round!important;display:block!important}',
-        '.eora-blg-tvp{overflow:hidden!important;width:72px!important;flex:1!important;min-height:0!important}',
-        '.eora-blg-ttrack{display:flex!important;flex-direction:column!important;gap:6px!important;transition:transform .3s ease!important}',
-        '.eora-blg-thumb{width:72px!important;height:72px!important;cursor:pointer!important;border:1px solid transparent!important;box-sizing:border-box!important;flex-shrink:0!important;transition:border-color .2s!important}',
-        '.eora-blg-thumb img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}',
+        '.eora-blg-tvp{overflow:hidden!important;width:180px!important;flex:1 1 auto!important;min-height:0!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;padding:8px 0!important}',
+        '.eora-blg-ttrack{display:flex!important;flex-direction:column!important;gap:14px!important;transition:transform .3s ease!important;width:100%!important}',
+        '.eora-blg-thumb{width:180px!important;height:180px!important;cursor:pointer!important;border:1px solid transparent!important;box-sizing:border-box!important;flex-shrink:0!important;transition:border-color .2s!important}',
+        '.eora-blg-thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}',
         '.eora-blg-thumb.eora-active{border-color:#111!important}',
-        '.eora-blg-main-wrap{flex:1!important;min-width:0!important;overflow:hidden!important;position:relative!important}',
+        '.eora-blg-main-wrap{flex:1 1 auto!important;width:100%!important;min-width:0!important;overflow:hidden!important;position:relative!important;aspect-ratio:1/1!important;align-self:flex-start!important}',
         '.eora-blg-track{display:flex!important;transition:transform .35s ease!important;will-change:transform!important}',
         '.eora-blg-slide{flex:0 0 100%!important;width:100%!important;box-sizing:border-box!important;aspect-ratio:1/1!important;overflow:hidden!important}',
-        '.eora-blg-slide img{width:100%!important;height:100%!important;display:block!important;object-fit:contain!important}',
+        '.eora-blg-slide img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important}',
         '.eora-blg-mdots{display:none!important;justify-content:center!important;gap:8px!important;padding:14px 0 6px!important}',
         '.eora-blg-dot{width:7px!important;height:7px!important;border-radius:50%!important;background:#ccc!important;border:none!important;padding:0!important;cursor:pointer!important;transition:background .2s!important}',
         '.eora-blg-dot.eora-active{background:#111!important}',
 
         /* tablet: esconde strip, mostra dots (imagem maior) */
         '@media(max-width:1024px) and (min-width:769px){' +
-            '.eora-blg-wrap{grid-template-columns:1fr!important}' +
             '.eora-blg-strip{display:none!important}' +
             '.eora-blg-mdots{display:flex!important}' +
         '}',
 
-        /* mobile: coluna única + galeria vertical retrato */
+        /* mobile: coluna única + galeria retrato */
         '@media(max-width:768px){' +
-            '.eora-blg-wrap{grid-template-columns:1fr!important;gap:0!important}' +
+            '.eora-blg-wrap{gap:0!important}' +
             '.eora-blg-strip{display:none!important}' +
             '.eora-blg-mdots{display:flex!important}' +
             '.eora-blg-slide{aspect-ratio:4/5!important}' +
@@ -65,7 +58,16 @@
         /* mobile: 3 swatches por linha */
         '@media(max-width:480px){' +
             '.eora-bolsa-vars{grid-template-columns:repeat(3,1fr)!important}' +
-        '}'
+        '}',
+
+        /* ── Descrição com "ver mais" ── */
+        '.eora-desc-acc{margin-bottom:16px!important}',
+        '.eora-desc-body{max-height:130px!important;overflow:hidden!important;transition:max-height .4s ease!important;position:relative!important}',
+        '.eora-desc-body::after{content:""!important;position:absolute!important;bottom:0!important;left:0!important;right:0!important;height:32px!important;background:linear-gradient(transparent,#fff)!important;pointer-events:none!important;transition:opacity .3s!important}',
+        '.eora-desc-acc.eora-open .eora-desc-body{max-height:1200px!important}',
+        '.eora-desc-acc.eora-open .eora-desc-body::after{opacity:0!important}',
+        '.eora-desc-inner{font-size:13px!important;line-height:1.75!important;color:#444!important}',
+        '.eora-desc-toggle{background:none!important;border:none!important;padding:4px 0!important;cursor:pointer!important;font-size:12px!important;letter-spacing:.5px!important;text-decoration:underline!important;color:#111!important;font-family:inherit!important;display:block!important;margin-top:6px!important}'
     ].join('');
 
     var styleEl = document.createElement('style');
@@ -112,24 +114,17 @@
         return d;
     }
 
-    function buildGallery(leftCol, photos) {
-        /* Esconde filhos nativos da coluna de imagem */
-        Array.prototype.slice.call(leftCol.children).forEach(function (ch) {
-            ch.style.setProperty('display', 'none', 'important');
-        });
-
+    function buildGallery(galleryEl, photos) {
         var activeIdx = 0, visStart = 0;
-        var VISIBLE = 4, THUMB_STEP = 78; /* 72px thumb + 6px gap */
+        var VISIBLE = 3, THUMB_STEP = 194;
 
         var wrap = document.createElement('div');
         wrap.className = 'eora-blg-wrap';
 
-        /* -- Strip de thumbnails (desktop) -- */
         var strip = document.createElement('div');
         strip.className = 'eora-blg-strip';
         var svgUp = '<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>';
         var svgDn = '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>';
-
         var btnUp = document.createElement('button');
         btnUp.className = 'eora-blg-arrow'; btnUp.innerHTML = svgUp; btnUp.setAttribute('aria-label', 'Anterior');
         var tvp = document.createElement('div'); tvp.className = 'eora-blg-tvp';
@@ -139,7 +134,6 @@
         btnDn.className = 'eora-blg-arrow'; btnDn.innerHTML = svgDn; btnDn.setAttribute('aria-label', 'Pr\u00f3ximo');
         strip.appendChild(btnUp); strip.appendChild(tvp); strip.appendChild(btnDn);
 
-        /* -- Foto principal / carrossel mobile -- */
         var mainWrap = document.createElement('div'); mainWrap.className = 'eora-blg-main-wrap';
         var mainTrack = document.createElement('div'); mainTrack.className = 'eora-blg-track';
         mainWrap.appendChild(mainTrack);
@@ -147,7 +141,7 @@
         mainWrap.appendChild(dotsEl);
 
         wrap.appendChild(strip); wrap.appendChild(mainWrap);
-        leftCol.appendChild(wrap);
+        galleryEl.appendChild(wrap);
 
         var thumbEls = [], dots = [];
 
@@ -156,24 +150,20 @@
             thumbEls.length = 0; dots.length = 0;
             activeIdx = 0; visStart = 0;
             ph.forEach(function (u, idx) {
-                /* Thumbnail */
                 var th = document.createElement('div');
                 th.className = 'eora-blg-thumb' + (idx === 0 ? ' eora-active' : '');
                 var tim = document.createElement('img'); tim.src = u; tim.alt = 'foto ' + (idx + 1);
                 th.appendChild(tim); ttrack.appendChild(th); thumbEls.push(th);
                 th.addEventListener('click', function () { goTo(idx); });
-                /* Slide */
                 var slide = document.createElement('div'); slide.className = 'eora-blg-slide';
                 var sim = document.createElement('img'); sim.src = u; sim.alt = 'EORA';
                 slide.appendChild(sim); mainTrack.appendChild(slide);
-                /* Dot */
                 var dot = document.createElement('button');
                 dot.className = 'eora-blg-dot' + (idx === 0 ? ' eora-active' : '');
                 dot.setAttribute('aria-label', 'Foto ' + (idx + 1));
                 dotsEl.appendChild(dot); dots.push(dot);
                 dot.addEventListener('click', function () { goTo(idx); });
             });
-            /* altura do tvp controlada por CSS (flex:1, estica com a imagem principal) */
             goTo(0);
         }
 
@@ -190,7 +180,6 @@
         btnUp.addEventListener('click', function () { goTo(activeIdx - 1); });
         btnDn.addEventListener('click', function () { goTo(activeIdx + 1); });
 
-        /* Swipe mobile */
         var tx = null;
         mainTrack.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
         mainTrack.addEventListener('touchend', function (e) {
@@ -200,92 +189,51 @@
         }, { passive: true });
 
         populate(photos);
-        leftCol._eoraSetPhotos = populate; /* exposto para troca por variante */
-
-        /* ── Guardian: re-aplica layout a cada 200ms por 10s ── */
-        var lastGoodH = 0;
-        function syncStripH() {
-            var h = mainWrap.offsetHeight;
-            if (h > 0) lastGoodH = h;
-            if (lastGoodH > 0) strip.style.setProperty('height', lastGoodH + 'px', 'important');
-        }
-
-        function guardCycle() {
-            /* 1. Se o tema removeu nosso wrap, re-anexa */
-            if (!leftCol.contains(wrap)) {
-                Array.prototype.slice.call(leftCol.children).forEach(function (ch) {
-                    ch.style.setProperty('display', 'none', 'important');
-                });
-                leftCol.appendChild(wrap);
-            }
-            /* 2. Esconde qualquer filho nativo que o tema tenha reexibido */
-            Array.prototype.slice.call(leftCol.children).forEach(function (ch) {
-                if (ch !== wrap) ch.style.setProperty('display', 'none', 'important');
-            });
-            /* 3. Sincroniza altura do strip */
-            syncStripH();
-        }
-
-        var guardEnd = Date.now() + 10000;
-        var guardId = setInterval(function () {
-            if (Date.now() > guardEnd) { clearInterval(guardId); return; }
-            guardCycle();
-        }, 200);
-
-        if (window.ResizeObserver) {
-            new ResizeObserver(syncStripH).observe(mainWrap);
-        }
-        window.addEventListener('resize', syncStripH);
+        galleryEl._eoraSetPhotos = populate;
     }
 
-    function buildVariantSwatches(anchor, relatedItems, leftCol) {
-        var infoCol = anchor.querySelector('.product-info-column');
-        if (!infoCol) return;
-        var buyBtn = infoCol.querySelector('input.js-addtocart,button.js-addtocart,.js-addtocart,[name="commit"]');
-        if (!buyBtn) return;
-
+    function buildVariantSwatches(infoEl, relatedItems) {
         var grid = document.createElement('div'); grid.className = 'eora-bolsa-vars';
-
         relatedItems.forEach(function (item, i) {
-            var el = document.createElement('div');
-            el.className = 'eora-bolsa-var-item';
+            var el = document.createElement('div'); el.className = 'eora-bolsa-var-item';
             var img = document.createElement('img');
             img.alt = item.name || ('variante ' + (i + 1));
-            /* Se a URL falhar, tenta a versão 480px do mesmo arquivo */
             img.onerror = function () {
-                if (img._fallback) return;
-                img._fallback = true;
-                var alt480 = item.url.replace(/(-\d+-\d+)(\.[\w]{2,5})(\?.*)?$/, '-480-480$2');
-                if (alt480 !== item.url) img.src = alt480;
+                if (img._fallback) return; img._fallback = true;
+                img.src = item.url.replace(/(-\d+-\d+)(\.[\w]{2,5})(\?.*)?$/, '-480-480$2');
             };
             img.src = item.url;
             el.appendChild(img);
             if (item.href) {
-                el.style.setProperty('cursor', 'pointer', 'important');
-                el.addEventListener('click', function () {
-                    window.location.href = item.href;
-                });
+                el.addEventListener('click', function () { window.location.href = item.href; });
             }
             grid.appendChild(el);
         });
 
-        var formNode = buyBtn.closest('form') || buyBtn.parentNode;
-        if (formNode && formNode.parentNode) {
-            formNode.parentNode.insertBefore(grid, formNode);
+        /* Tenta inserir ANTES do botao comprar (form) */
+        var buyBtn = infoEl.querySelector('input.js-addtocart,button.js-addtocart,.js-addtocart,[name="commit"]');
+        if (buyBtn) {
+            var formNode = buyBtn.closest('form') || buyBtn.parentNode;
+            if (formNode && formNode.parentNode) { formNode.parentNode.insertBefore(grid, formNode); return; }
         }
+        /* Fallback: logo apos o preco */
+        var priceEl = infoEl.querySelector('.js-price-display,.product-price,.js-product-price,[class*="price"]');
+        if (priceEl) {
+            var anchor = priceEl;
+            while (anchor.parentNode && anchor.parentNode !== infoEl) anchor = anchor.parentNode;
+            anchor.parentNode.insertBefore(grid, anchor.nextSibling);
+            return;
+        }
+        infoEl.appendChild(grid);
     }
 
     function init() {
-        var anchor = document.querySelector('#single-product');
-        if (!anchor) return;
-        var leftCol = anchor.querySelector('.product-image-column');
-        if (!leftCol) return;
-        if (leftCol.querySelector('.eora-blg-wrap')) return;
+        var themeProd = document.querySelector('#single-product');
+        if (!themeProd) return;
+        if (document.querySelector('.eora-product-wrap')) return;
 
-        var dados = getDados();
-        var photos = [];
-        var seenUrls = {};
-
+        /* ── Coleta fotos ── */
+        var photos = [], seenUrls = {};
         function addPhoto(url) {
             if (!url || typeof url !== 'string' || url.indexOf('data:') === 0 || url.length < 10) return;
             var u = normalizeUrl(url);
@@ -295,115 +243,188 @@
             seenUrls[k] = true;
             photos.push(u);
         }
-
-        /* ===== GALERIA: LS.product.images → URLs convertidas para /original/ ===== */
         try {
             if (typeof LS !== 'undefined' && LS.product && LS.product.images && LS.product.images.length) {
-                LS.product.images.forEach(function (img) {
-                    addPhoto(img.src || img.url || '');
-                });
+                LS.product.images.forEach(function (img) { addPhoto(img.src || img.url || ''); });
             }
         } catch (e) {}
-
-        /* Fallback: imagens DOM da .product-image-column */
         if (!photos.length) {
-            leftCol.querySelectorAll('img').forEach(function (img) { addPhoto(getSrc(img)); });
+            themeProd.querySelectorAll('.product-image-column img').forEach(function (img) { addPhoto(getSrc(img)); });
         }
-
-        /* Fallback: tabela galeria_esquerda manual */
-        if (!photos.length && dados['galeria_esquerda']) {
-            var rows = dados['galeria_esquerda'].querySelectorAll('tbody > tr');
-            if (rows[0]) {
-                rows[0].querySelectorAll('td').forEach(function (td, ci) {
-                    if (ci === 0) return;
-                    var gimg = td.querySelector('img');
-                    if (gimg) addPhoto(getSrc(gimg));
-                });
-            }
-        }
-
         if (!photos.length) return;
-        buildGallery(leftCol, photos);
 
-        /* ===== VARIANTES: produtos relacionados já renderizados no DOM ===== */
+        /* ── Cria container externo ao #single-product ── */
+        var wrap = document.createElement('div');
+        wrap.className = 'eora-product-wrap';
+
+        /* Coluna da galeria */
+        var galleryEl = document.createElement('div');
+        galleryEl.className = 'eora-product-gallery';
+        wrap.appendChild(galleryEl);
+
+        /* Coluna de info: clona o .product-info-column original */
+        var origInfo = themeProd.querySelector('.product-info-column');
+        var infoEl;
+        if (origInfo) {
+            infoEl = origInfo.cloneNode(true);
+            infoEl.className = 'eora-product-info';
+            /* Remove os seletores de cor nativos (substituidos pelos nossos swatches) */
+            infoEl.querySelectorAll('.js-color-variants-container,.js-product-variants').forEach(function (el) {
+                el.parentNode && el.parentNode.removeChild(el);
+            });
+            /* Remove a descricao longa — ela ja aparece no resto da pagina,
+               mantemos so titulo + preco + variantes + botao COMPRAR visíveis */
+            infoEl.querySelectorAll(
+                '.js-product-description,.js-product-description-base,.product-description,' +
+                '.js-product-info,.product-info-tabs,.js-product-tabs,' +
+                '[class*="description"]:not([class*="price"]):not([class*="name"])'
+            ).forEach(function (el) {
+                /* Nao remove se contem o form de compra ou preco */
+                if (el.querySelector('form,.js-addtocart,[name="commit"],[class*="price"]')) return;
+                el.parentNode && el.parentNode.removeChild(el);
+            });
+            /* Remove tambem qualquer <table> que veio do conteudo da descricao do admin */
+            infoEl.querySelectorAll('table').forEach(function (t) {
+                t.parentNode && t.parentNode.removeChild(t);
+            });
+            /* Remove paragrafos longos soltos (descricao em texto plano) */
+            infoEl.querySelectorAll('p').forEach(function (p) {
+                if (p.closest('form')) return;
+                if (p.closest('[class*="price"]')) return;
+                if (p.textContent.trim().length > 80) p.parentNode && p.parentNode.removeChild(p);
+            });
+        } else {
+            infoEl = document.createElement('div');
+            infoEl.className = 'eora-product-info';
+        }
+
+        /* Constroi accordion de descricao antes do preco */
+        (function () {
+            var dados = getDados();
+            var descTable = dados['descricao_curta'];
+            if (!descTable) return;
+            var td = descTable.querySelector('tbody > tr:first-child td:last-child');
+            if (!td || !td.innerHTML.trim()) return;
+            var acc = document.createElement('div');
+            acc.className = 'eora-desc-acc';
+            var body = document.createElement('div'); body.className = 'eora-desc-body';
+            var inner = document.createElement('div'); inner.className = 'eora-desc-inner';
+            inner.innerHTML = td.innerHTML;
+            body.appendChild(inner);
+            var btn = document.createElement('button'); btn.className = 'eora-desc-toggle';
+            btn.textContent = 'ver mais';
+            acc.appendChild(body); acc.appendChild(btn);
+            btn.addEventListener('click', function () {
+                var open = acc.classList.toggle('eora-open');
+                btn.textContent = open ? 'ver menos' : 'ver mais';
+            });
+            /* Insere logo antes do form de compra (fica entre preco e variacoes) */
+            var buyBtn2 = infoEl.querySelector('input.js-addtocart,button.js-addtocart,.js-addtocart,[name="commit"]');
+            if (buyBtn2) {
+                var formNode2 = buyBtn2.closest('form') || buyBtn2.parentNode;
+                if (formNode2 && formNode2.parentNode) { formNode2.parentNode.insertBefore(acc, formNode2); return; }
+            }
+            var priceEl = infoEl.querySelector('.js-price-display,.product-price,.js-product-price,[class*="price"]');
+            if (priceEl) {
+                var anchor = priceEl;
+                while (anchor.parentNode && anchor.parentNode !== infoEl) anchor = anchor.parentNode;
+                anchor.parentNode.insertBefore(acc, anchor.nextSibling);
+            } else {
+                infoEl.appendChild(acc);
+            }
+        })();
+
+        wrap.appendChild(infoEl);
+
+        /* Insere o container logo antes do #single-product */
+        themeProd.parentNode.insertBefore(wrap, themeProd);
+
+        /* Esconde via inline style com !important — bate qualquer CSS do tema */
+        function hideTheme() {
+            themeProd.style.setProperty('display', 'none', 'important');
+            themeProd.style.setProperty('visibility', 'hidden', 'important');
+            themeProd.style.setProperty('height', '0', 'important');
+            themeProd.style.setProperty('overflow', 'hidden', 'important');
+            themeProd.style.setProperty('position', 'absolute', 'important');
+            themeProd.style.setProperty('left', '-99999px', 'important');
+            themeProd.style.setProperty('top', '-99999px', 'important');
+            themeProd.style.setProperty('width', '0', 'important');
+            themeProd.style.setProperty('opacity', '0', 'important');
+            themeProd.style.setProperty('pointer-events', 'none', 'important');
+        }
+        hideTheme();
+
+        /* Reaplica sempre que o tema reescrever o style attribute */
+        var hideGuard = false;
+        var moStyle = new MutationObserver(function () {
+            if (hideGuard) return;
+            hideGuard = true;
+            hideTheme();
+            hideGuard = false;
+        });
+        moStyle.observe(themeProd, { attributes: true, attributeFilter: ['style', 'class'] });
+
+        /* Se o tema remover/recriar o #single-product, garante que nosso wrap permanece */
+        var moParent = new MutationObserver(function () {
+            if (!document.body.contains(wrap)) return;
+            /* Se o tema inseriu algo visível com gallery dentro, esconde */
+            var newSP = document.querySelector('#single-product');
+            if (newSP && newSP !== themeProd) {
+                themeProd = newSP;
+                hideTheme();
+                moStyle.disconnect();
+                moStyle.observe(themeProd, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
+        });
+        if (themeProd.parentNode) {
+            moParent.observe(themeProd.parentNode, { childList: true });
+        }
+
+        /* Constrói galeria */
+        buildGallery(galleryEl, photos);
+
+        /* ── Variantes ── */
         var IMG_EXT = /\.(jpg|jpeg|png|webp|avif)(\?|$)/i;
-
         function collectRelated() {
             var items = [];
-            /* Estrutura nativa do Nuvemshop/tema: .btn-variant-thumb dentro de .js-color-variants-container
-               Cada <a> tem href para o produto e dentro um <img data-src="..."> com a miniatura */
             document.querySelectorAll('.js-color-variants-container .btn-variant-thumb').forEach(function (a) {
-                var href = a.getAttribute('href') || '';
-                /* Ignora o produto atual (tem classe "selected") */
                 if (a.classList.contains('selected')) return;
                 var img = a.querySelector('img');
                 if (!img) return;
                 var src = normalizeUrl(img.getAttribute('data-src') || img.getAttribute('src') || '');
                 if (!src || !IMG_EXT.test(src)) return;
                 if (items.some(function (r) { return r.url === src; })) return;
-                var name = (img.getAttribute('alt') || a.getAttribute('title') || '').trim();
-                items.push({ url: src, href: href, name: name });
+                items.push({ url: src, href: a.getAttribute('href') || '', name: (img.getAttribute('alt') || '').trim() });
             });
             return items;
         }
-
         function applyVariants(items) {
-            /* Remove swatches anteriores (se existir resultado melhor) */
-            var old = anchor.querySelector('.eora-bolsa-vars');
+            var old = infoEl.querySelector('.eora-bolsa-vars');
             if (old) old.parentNode.removeChild(old);
-            buildVariantSwatches(anchor, items, leftCol);
+            buildVariantSwatches(infoEl, items);
         }
-
-        var relatedItems = collectRelated();
-
-        /* Fallback: tabela variantes_produto manual */
-        if (!relatedItems.length && dados['variantes_produto']) {
-            var vRow = dados['variantes_produto'].querySelector('tbody > tr');
-            if (vRow) {
-                vRow.querySelectorAll('td').forEach(function (td, ci) {
-                    if (ci === 0) return;
-                    var vimg = td.querySelector('img');
-                    if (vimg) {
-                        var vu = normalizeUrl(getSrc(vimg));
-                        if (vu && vu.indexOf('data:') !== 0) relatedItems.push({ url: vu, href: '', name: '' });
-                    }
-                });
-            }
-        }
-
-        if (relatedItems.length) applyVariants(relatedItems);
-
-        /* Retry: Swiper pode renderizar slides depois — tenta por até 5 s */
+        var rel = collectRelated();
+        if (rel.length) applyVariants(rel);
         var retryN = 0;
         function retryVariants() {
             retryN++;
             var late = collectRelated();
-            var existing = anchor.querySelector('.eora-bolsa-vars');
-            var currentCount = existing ? existing.querySelectorAll('.eora-bolsa-var-item').length : 0;
-            if (late.length > currentCount) applyVariants(late);
-            if (!anchor.querySelector('.eora-bolsa-vars') && retryN < 10) setTimeout(retryVariants, 500);
+            var existing = infoEl.querySelector('.eora-bolsa-vars');
+            var cur = existing ? existing.querySelectorAll('.eora-bolsa-var-item').length : 0;
+            if (late.length > cur) applyVariants(late);
+            if (!infoEl.querySelector('.eora-bolsa-vars') && retryN < 10) setTimeout(retryVariants, 500);
         }
         setTimeout(retryVariants, 500);
     }
 
-    /* Aguarda LS.product.images OU imagens DOM estarem prontas */
-    function tryInit(attempts) {
-        var hasLs = typeof LS !== 'undefined' && LS.product && LS.product.images;
-        var leftCol = document.querySelector('#single-product .product-image-column');
-        var hasDom = leftCol && leftCol.querySelectorAll('img').length > 0;
-        if (hasLs || hasDom) {
-            init();
-        } else if (attempts > 0) {
-            setTimeout(function () { tryInit(attempts - 1); }, 150);
-        } else {
-            init();
-        }
+    function setup() {
+        init();
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { tryInit(10); });
+        document.addEventListener('DOMContentLoaded', setup);
     } else {
-        tryInit(10);
+        setup();
     }
 })();
 </script>
