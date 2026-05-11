@@ -612,8 +612,8 @@ Página de inicio
 		name = slider
 		gallery_image = Agregar imagen
 		gallery_link = Link (ou cole URL do YouTube/Vimeo para usar como vídeo)
-		gallery_width = 1580
-		gallery_height = 700
+		gallery_width = 3840
+		gallery_height = 1700
 		gallery_more_info = true
 	subtitle 
 		subtitle = Tamanho de imagens no desktop
