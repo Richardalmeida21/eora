@@ -24,7 +24,7 @@
 
   .notification-cart-reopen-container {
     position: fixed;
-    bottom: 20px;
+    bottom: 20px !important;
     left: 20px;
     z-index: 100;
     background-color: {{ popup_bg }};
