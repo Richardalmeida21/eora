@@ -18,7 +18,7 @@ jobs:
           server: ftp.nuvemshop.com.br
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp
+          protocol: ftps
           server-dir: /
           exclude: |
             **/.git*
