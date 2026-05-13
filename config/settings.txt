@@ -2394,6 +2394,34 @@ Detalle de producto
 		name = full_width_description
 		description = Mostrar la descripción ocupando todo el ancho de la pantalla (solo en computadoras)
 	collapse
+		title = Banner Vídeo/Foto + Botão (Produto)
+	checkbox
+		name = product_banner_show
+		description = Mostrar banner de vídeo ou foto na página de produto (após o texto de campanha)
+	subtitle
+		subtitle = Vídeo (YouTube ou Vimeo) — autoplay e mudo
+	i18n_input
+		name = product_banner_video
+		description = URL do vídeo (YouTube ou Vimeo)
+	subtitle
+		subtitle = Imagem (usada se não houver vídeo)
+	image
+		name = product_banner_image
+		title = Imagem do banner (JPG, PNG)
+		width = 1920
+		height = 820
+	subtitle
+		subtitle = Botão e link
+	i18n_input
+		name = product_banner_button
+		description = Texto do botão (ex: Ver coleção)
+	i18n_input
+		name = product_banner_title
+		description = Descrição / subtítulo do botão (opcional)
+	i18n_input
+		name = product_banner_link
+		description = Link ao clicar no banner
+	collapse
 		title = Seção bloqueio de luz
 	i18n_input
 		name = light_blocking_title

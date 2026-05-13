@@ -182,7 +182,7 @@
 
             {% if settings.ajax_cart %}
                 <div class="col-12">
-                    <div class="js-added-to-cart-product-message font-small my-3" style="display: none;">
+                    <div class="js-added-to-cart-product-message font-small my-3">
                         <svg class="icon-inline icon-lg svg-icon-text"><use xlink:href="#check"/></svg>
                         <span>
                             {{'Ya agregaste este producto.' | translate }}<a href="#" class="js-modal-open js-open-cart js-fullscreen-modal-open btn-link font-small ml-1" data-toggle="#modal-cart" data-modal-url="modal-fullscreen-cart">{{ 'Ver carrito' | translate }}</a>

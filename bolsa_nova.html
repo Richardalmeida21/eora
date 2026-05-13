@@ -1,4 +1,5 @@
 <!-- layout_coach -->
+<p>
 <script>
 (function () {
     var css = [
@@ -232,6 +233,200 @@
         infoEl.appendChild(grid);
     }
 
+    function buildBannerImagemFull() {
+        if (document.querySelector('.eora-banner-imagem-full')) return;
+
+        /* Busca tabela banner_imagem_full */
+        var t = null;
+        document.querySelectorAll('table').forEach(function (tb) {
+            if (t) return;
+            var first = tb.querySelector('tbody > tr:first-child > td:first-child');
+            if (first && first.textContent.trim().toLowerCase() === 'banner_imagem_full') t = tb;
+        });
+        if (!t) return;
+
+        /* Lê imagem e link */
+        var cfg = {};
+        t.querySelectorAll('tbody tr').forEach(function (row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length < 2) return;
+            var k = cells[0].textContent.trim().toLowerCase();
+            if (k && k !== 'banner_imagem_full') cfg[k] = cells[1];
+        });
+
+        var imgEl = cfg['imagem'] ? cfg['imagem'].querySelector('img') : null;
+        var imagemUrl = imgEl ? (imgEl.getAttribute('src') || imgEl.src || '') : '';
+        if (!imagemUrl) return;
+
+        var imgMobileEl = cfg['imagem_mobile'] ? cfg['imagem_mobile'].querySelector('img') : null;
+        var imagemMobileUrl = imgMobileEl ? (imgMobileEl.getAttribute('src') || imgMobileEl.src || '') : '';
+
+        function cleanText(td) { return td ? td.textContent.replace(/[\u00a0\s]+/g, ' ').trim() : ''; }
+        var linkUrl = cleanText(cfg['link']);
+
+        /* CSS */
+        var css = [
+            '.eora-banner-imagem-full{display:block;width:100%;text-decoration:none}',
+            '.eora-banner-imagem-full picture{display:block;width:100%}',
+            '.eora-banner-imagem-full img{display:block;width:100%;height:auto;object-fit:cover}'
+        ].join('');
+        var styleEl = document.createElement('style');
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
+
+        var outer = document.createElement(linkUrl ? 'a' : 'div');
+        outer.className = 'eora-banner-imagem-full';
+        if (linkUrl) { outer.href = linkUrl; outer.rel = 'noopener'; }
+
+        var picture = document.createElement('picture');
+        if (imagemMobileUrl) {
+            var source = document.createElement('source');
+            source.media = '(max-width: 768px)';
+            source.srcset = imagemMobileUrl;
+            picture.appendChild(source);
+        }
+        var img = document.createElement('img');
+        img.src = imagemUrl;
+        img.alt = 'Banner';
+        picture.appendChild(img);
+        outer.appendChild(picture);
+
+        /* Insere após o .js-product-video */
+        var anchor =
+            document.querySelector('.js-product-video') ||
+            document.querySelector('[data-store="home-institutional-message"]') ||
+            document.querySelector('.js-banners-alternados-product');
+        if (anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(outer, anchor.nextSibling);
+        } else {
+            document.body.appendChild(outer);
+        }
+    }
+
+    function buildBannerProduto() {
+        if (document.querySelector('.eora-banner-produto')) return;
+
+        /* Busca a tabela banner_produto em QUALQUER lugar da página */
+        var t = null;
+        document.querySelectorAll('table').forEach(function (tb) {
+            if (t) return;
+            var first = tb.querySelector('tbody > tr:first-child > td:first-child');
+            if (first && first.textContent.trim().toLowerCase() === 'banner_produto') t = tb;
+        });
+        if (!t) return;
+
+        /* Lê sub-chaves das linhas da tabela */
+        var cfg = {};
+        t.querySelectorAll('tbody tr').forEach(function (row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length < 2) return;
+            var k = cells[0].textContent.trim().toLowerCase();
+            if (k && k !== 'banner_produto') cfg[k] = cells[1];
+        });
+
+        function cleanText(td) { return td ? td.textContent.replace(/[\u00a0\s]+/g, ' ').trim() : ''; }
+        var videoUrl  = cleanText(cfg['video']);
+        var botaoText = cleanText(cfg['botao']);
+        var linkUrl   = cleanText(cfg['link']);
+        var imagemUrl = '';
+        if (cfg['imagem']) {
+            var imgEl = cfg['imagem'].querySelector('img');
+            imagemUrl = imgEl ? (imgEl.getAttribute('src') || imgEl.src || '') : cfg['imagem'].textContent.trim();
+        }
+
+        if (!videoUrl && !imagemUrl) return;
+
+        /* Detecta plataforma do vídeo */
+        var platform = '', videoId = '', m;
+        if (videoUrl) {
+            if ((m = videoUrl.match(/vimeo\.com\/(\d+)/)))          { platform = 'vimeo';   videoId = m[1]; }
+            else if ((m = videoUrl.match(/[?&]v=([^&]+)/)))          { platform = 'youtube'; videoId = m[1]; }
+            else if ((m = videoUrl.match(/youtu\.be\/([^?]+)/)))    { platform = 'youtube'; videoId = m[1]; }
+            else if ((m = videoUrl.match(/\/shorts\/([^?]+)/)))     { platform = 'youtube'; videoId = m[1]; }
+        }
+
+        /* CSS */
+        var css = [
+            '.eora-banner-produto{display:block;text-decoration:none;color:inherit;box-sizing:border-box}',
+            '.eora-banner-prod-wrap{position:relative;width:100%;overflow:hidden;background:#000}',
+            '.eora-banner-prod-wrap::before{content:"";display:block;padding-bottom:42.857%}',
+            '.eora-banner-prod-video,.eora-banner-prod-img{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}',
+            '.eora-banner-prod-video{overflow:hidden}',
+            '.eora-banner-prod-video iframe{position:absolute;top:50%;left:50%;width:177.78vh;height:100vh;min-width:100%;min-height:100%;transform:translate(-50%,-50%);border:0;pointer-events:none}',
+            '@media(min-aspect-ratio:16/9){.eora-banner-prod-video iframe{width:100vw;height:56.25vw}}',
+            '@media(max-width:767px){.eora-banner-prod-wrap::before{padding-bottom:100%}.eora-banner-prod-video iframe{width:177.78vh;height:100vh}}',
+            '.eora-banner-prod-btn{position:absolute!important;bottom:20px!important;left:20px!important;z-index:2!important}'
+        ].join('');
+        var styleEl = document.createElement('style');
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
+
+        /* Monta DOM */
+        var uid = 'bprod-' + Math.random().toString(36).slice(2, 8);
+        var outer = document.createElement(linkUrl ? 'a' : 'section');
+        outer.className = 'eora-banner-produto my-4 my-md-5';
+        if (linkUrl) { outer.href = linkUrl; outer.rel = 'noopener'; }
+
+        var wrap = document.createElement('div');
+        wrap.className = 'eora-banner-prod-wrap';
+        wrap.id = uid;
+
+        if (platform && videoId) {
+            var vbox = document.createElement('div');
+            vbox.className = 'eora-banner-prod-video';
+            vbox.dataset.platform = platform;
+            vbox.dataset.videoId  = videoId;
+            wrap.appendChild(vbox);
+        } else if (imagemUrl) {
+            var img = document.createElement('img');
+            img.src = imagemUrl;
+            img.className = 'eora-banner-prod-img';
+            img.alt = botaoText || 'Banner';
+            wrap.appendChild(img);
+        }
+
+        if (botaoText) {
+            var btn = document.createElement('div');
+            btn.className = 'banner-floating-button eora-banner-prod-btn';
+            btn.innerHTML =
+                '<div class="banner-floating-button-content">' +
+                '<div class="banner-floating-title">' + botaoText + '</div>' +
+                '<svg class="banner-floating-icon" viewBox="0 0 10 10" fill="none"><use xlink:href="#chevron-diagonal"></use></svg>' +
+                '</div>';
+            wrap.appendChild(btn);
+        }
+
+        outer.appendChild(wrap);
+
+        /* Insere após a mensagem institucional */
+        var anchor =
+            document.querySelector('[data-store="home-institutional-message"]') ||
+            document.querySelector('.js-texto-campanha-produto') ||
+            document.querySelector('.js-banners-alternados-product') ||
+            document.querySelector('.js-banner-produto') ||
+            document.querySelector('#single-product');
+        if (anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(outer, anchor.nextSibling);
+        } else {
+            document.body.appendChild(outer);
+        }
+
+        /* Injeta iframe de vídeo */
+        if (platform && videoId) {
+            var src = platform === 'vimeo'
+                ? 'https://player.vimeo.com/video/' + videoId + '?autoplay=1&muted=1&loop=1&background=1&controls=0&playsinline=1&dnt=1'
+                : 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + videoId + '&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1';
+            var iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('title', 'Banner vídeo produto');
+            var vboxEl = document.getElementById(uid);
+            if (vboxEl) { var vd = vboxEl.querySelector('.eora-banner-prod-video'); if (vd) vd.appendChild(iframe); }
+        }
+    }
+
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
@@ -420,10 +615,14 @@
             if (!infoEl.querySelector('.eora-bolsa-vars') && retryN < 10) setTimeout(retryVariants, 500);
         }
         setTimeout(retryVariants, 500);
+
     }
 
     function setup() {
         init();
+        /* Banners rodam independente do init(), com delay para garantir DOM pronto */
+        setTimeout(buildBannerImagemFull, 800);
+        setTimeout(buildBannerProduto, 800);
     }
 
     if (document.readyState === 'loading') {
@@ -433,39 +632,7 @@
     }
 })();
 </script>
-<table style="border-collapse: collapse; width: 100%;" border="1">
-<tbody>
-<tr>
-<td style="width: 48.057%;">video_link</td>
-<td style="width: 48.057%;">https://vimeo.com/1169067768</td>
-</tr>
-<tr>
-<td style="width: 48.057%;">descricao_video</td>
-<td style="width: 48.057%;">
-<p style="text-align: center;" data-start="292" data-end="430">&lt;div style="text-align:center; font-size:14px; line-height:1.6; color:#000;"&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Feito &agrave; m&atilde;o no Brasil&lt;/b&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada pe&ccedil;a EORA &eacute; cuidadosamente esculpida por artes&atilde;os brasileiros,&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; unindo t&eacute;cnica e sensibilidade em um acabamento &uacute;nico.</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Materiais de alta qualidade&lt;/b&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Utilizamos mat&eacute;rias-primas nobres e selecionadas,&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; garantindo leveza, conforto e durabilidade que atravessam o tempo.</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Qualidade EORA&lt;/b&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Mais que um produto, um padr&atilde;o.&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada cria&ccedil;&atilde;o EORA reflete autenticidade, precis&atilde;o&lt;br&gt;</p>
-<p style="text-align: center;" data-start="292" data-end="430">&nbsp; e o compromisso com a excel&ecirc;ncia.</p>
-<p style="text-align: center;" data-start="292" data-end="430">&lt;/div&gt;</p>
-<p style="text-align: center;">&nbsp;</p>
-</td>
-</tr>
-</tbody>
-</table>
+</p>
 <div>
 <table style="border-collapse: collapse; width: 100%;" border="1">
 <tbody>
@@ -509,39 +676,87 @@
 </table>
 </div>
 <div>
-<p>&nbsp;</p>
-</div>
-<div>
-<table style="border-collapse: collapse; width: 362.041%;" border="1">
+<table style="border-collapse: collapse; width: 100%;" border="1">
 <tbody>
 <tr>
-<td style="width: 0.526223%;">&nbsp;</td>
-<td style="width: 16.576%;">
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-</td>
-<td style="width: 16.6136%;">&nbsp;</td>
-<td style="width: 16.576%;">&nbsp;</td>
-<td style="width: 16.576%;">&nbsp;</td>
-<td style="width: 16.6136%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Rectangle 97 (4).png" alt="" width="428" height="270" /></td>
-<td style="width: 16.576%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Rectangle 97 (5).png" alt="" width="427" height="270" /></td>
+<td style="width: 25%;">banner_produto</td>
+<td style="width: 75%;"></td>
 </tr>
 <tr>
-<td style="width: 0.526223%;">
-<h2>&nbsp;</h2>
-</td>
-<td style="width: 16.576%;">&nbsp;</td>
-<td style="width: 16.6136%;">&nbsp;</td>
-<td style="width: 16.576%;">&nbsp;</td>
-<td style="width: 16.576%;">&nbsp;</td>
-<td style="width: 16.6136%;">&nbsp;</td>
-<td style="width: 16.576%;">&nbsp;</td>
+<td>video</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>imagem</td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/2-img-7431898419888773148-1777403552-63d8ca12873287159e13c359463a71491777403552-1920-1920.webp" alt="" width="100" height="38" /></td>
+</tr>
+<tr>
+<td>botao</td>
+<td>Teste Bot&atilde;o</td>
+</tr>
+<tr>
+<td>link</td>
+<td>https://www.eoraeyewear.com/</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div>
-<p>&nbsp;</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 48.057%;">video_link</td>
+<td style="width: 48.057%;">https://vimeo.com/1169067768</td>
+</tr>
+<tr>
+<td style="width: 48.057%;">descricao_video</td>
+<td style="width: 48.057%;">
+<p style="text-align: center;" data-start="292" data-end="430">&lt;div style="text-align:center; font-size:14px; line-height:1.6; color:#000;"&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Feito &agrave; m&atilde;o no Brasil&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada pe&ccedil;a EORA &eacute; cuidadosamente esculpida por artes&atilde;os brasileiros,&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; unindo t&eacute;cnica e sensibilidade em um acabamento &uacute;nico.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Materiais de alta qualidade&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Utilizamos mat&eacute;rias-primas nobres e selecionadas,&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; garantindo leveza, conforto e durabilidade que atravessam o tempo.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Qualidade EORA&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Mais que um produto, um padr&atilde;o.&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada cria&ccedil;&atilde;o EORA reflete autenticidade, precis&atilde;o&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; e o compromisso com a excel&ecirc;ncia.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&lt;/div&gt;</p>
+<p style="text-align: center;">&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 25%;">banner_imagem_full</td>
+<td style="width: 75%;"></td>
+</tr>
+<tr>
+<td>imagem</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>imagem_mobile</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>link</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div>
 <table style="border-collapse: collapse; width: 100%;" border="1">

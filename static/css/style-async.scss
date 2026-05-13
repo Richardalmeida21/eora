@@ -258,6 +258,20 @@ button[readonly]:hover {
   overflow: hidden;
 }
 
+/* CLS fix: pre-allocate space for add-to-cart confirmation message so it never shifts content */
+.js-added-to-cart-product-message {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.js-added-to-cart-product-message.eora-msg-visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .notification-img svg {
   border-radius: 100%;
   background: var(--main-background);

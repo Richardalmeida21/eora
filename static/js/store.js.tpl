@@ -347,6 +347,9 @@ DOMContentLoaded.addEventOrExecute(() => {
             {# Lock body scroll if there is no modal visible on screen #}
             
             if(!jQueryNuvem(".js-modal.modal-show").length){
+                {# CLS fix: compensate scrollbar width before hiding overflow to prevent content jump #}
+                var _scrollbarW = window.innerWidth - document.documentElement.clientWidth;
+                if (_scrollbarW > 0) { document.body.style.paddingRight = _scrollbarW + 'px'; }
                 jQueryNuvem("body").addClass("overflow-none move-right");
             }
 
@@ -374,6 +377,8 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         if(jQueryNuvem(".js-modal.modal-show").length == 1){
             jQueryNuvem("body").removeClass("overflow-none");
+            {# CLS fix: restore padding-right compensation after scrollbar returns #}
+            document.body.style.paddingRight = '';
         }
         var $modal = jQueryNuvem(this).closest(".js-modal");
         var modal_id = $modal.attr('id');
@@ -405,6 +410,8 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         if(jQueryNuvem(".js-modal.modal-show").length == 1){
             jQueryNuvem("body").removeClass("overflow-none");
+            {# CLS fix: restore padding-right compensation after scrollbar returns #}
+            document.body.style.paddingRight = '';
         }
 
         var modal_id = jQueryNuvem(this).data('modalId');
@@ -3184,12 +3191,20 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     jQueryNuvem(document).on("click", ".js-addtocart:not(.js-addtocart-placeholder)", function (e) {
 
+        {# INP fix: prevent default immediately before any DOM work to minimize input delay #}
+        var _isContactBtn = jQueryNuvem(this).hasClass('contact');
+        {% if settings.ajax_cart %}
+        if (!_isContactBtn) {
+            e.preventDefault();
+        }
+        {% endif %}
+
         {# Button variables for transitions on add to cart #}
 
         var $productContainer = jQueryNuvem(this).closest('.js-product-container');
         var $productVariants = $productContainer.find(".js-variation-option");
         var $productButton = $productContainer.find("input[type='submit'].js-addtocart");
-        var productButtonWidth = $productButton.first(el => el.offsetWidth);
+        var productButtonWidth = $productButton[0] ? $productButton[0].offsetWidth : 0;
 
         {# Define if event comes from quickshop, product page or cross selling #}
 
@@ -3234,14 +3249,11 @@ DOMContentLoaded.addEventOrExecute(() => {
             }
         }
 
-        if (!jQueryNuvem(this).hasClass('contact')) {
+        if (!_isContactBtn) {
 
-            {% if settings.ajax_cart %}
-                e.preventDefault();
-            {% endif %}
+            {# INP fix: defer visual DOM mutations to requestAnimationFrame to unblock the main thread #}
 
-            {# Hide real button and show button placeholder during event #}
-
+            requestAnimationFrame(function() {
             $productButton.hide();
             if (isQuickShop) {
                 $productButtonContainer.hide();
@@ -3250,6 +3262,7 @@ DOMContentLoaded.addEventOrExecute(() => {
             $productButtonPlaceholder.width(productButtonWidth).css('display' , 'block');
             $productButtonText.fadeOut();
             $productButtonAdding.addClass("active");
+            }); {# end requestAnimationFrame #}
 
             {% if settings.ajax_cart %}
 
@@ -3311,7 +3324,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                         }
                     },3000);
 
-                    $productContainer.find(".js-added-to-cart-product-message").slideDown();
+                    $productContainer.find(".js-added-to-cart-product-message").addClass("eora-msg-visible");
 
                     if (isQuickShop) {
                         jQueryNuvem("#quickshop-modal").removeClass('modal-show');
