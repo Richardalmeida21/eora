@@ -104,7 +104,7 @@
             font-size: 1.4rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 800;
             color: #000;
             margin: 0 0 24px;
         }
@@ -187,7 +187,7 @@
         }
         @media (max-width: 767px) {
             .section-banners-scroll { margin: 24px 0; }
-            .section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; }
+            .section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; font-weight: 800; }
             /* No mobile: remove padding das setas, deixa o swiper sangrar até a direita */
             .banners-scroll-wrapper { padding: 0; overflow: hidden; }
             .banners-scroll-swiper { overflow: visible; }

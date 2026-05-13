@@ -89,6 +89,10 @@
 
         <div class="banner-wrapper-desktop {{ visibility_desktop }}">
             {% if desktop_format == 'slider' %}
+                <div class="banners-campaign-wrapper">
+                <button type="button" class="banners-scroll-arrow banners-scroll-arrow-prev js-swiper-{{ js_id }}-prev" aria-label="Anterior">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
                 <div class="js-swiper-{{ js_id }} swiper-container">
                     <div class="swiper-wrapper">
             {% else %}
@@ -139,10 +143,10 @@
 
             {% if desktop_format == 'slider' %}
                     </div>
-                    <div class="swiper-buttons d-none d-md-block">
-                        <div class="js-swiper-{{ js_id }}-prev swiper-button-prev"><svg class="icon-inline icon-lg icon-flip-horizontal"><use xlink:href="#arrow-long"/></svg></div>
-                        <div class="js-swiper-{{ js_id }}-next swiper-button-next"><svg class="icon-inline icon-lg"><use xlink:href="#arrow-long"/></svg></div>
-                    </div>
+                </div>
+                <button type="button" class="banners-scroll-arrow banners-scroll-arrow-next js-swiper-{{ js_id }}-next" aria-label="Próximo">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
                 </div>
             {% else %}
                 </div>
@@ -273,10 +277,59 @@ document.addEventListener('DOMContentLoaded', function () {
 .full-width-link { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .textbanner-image img { min-height: 1px; }
 
+/* Carrossel campanha — mesmo visual da home */
+.banners-campaign-wrapper {
+  position: relative;
+  padding: 0 56px;
+}
+.banners-campaign-wrapper .banners-scroll-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background .2s ease, color .2s ease, opacity .2s ease;
+}
+.banners-campaign-wrapper .banners-scroll-arrow:hover {
+  background: #000;
+  color: #fff;
+}
+.banners-campaign-wrapper .banners-scroll-arrow:focus { outline: none; }
+.banners-campaign-wrapper .banners-scroll-arrow.swiper-button-disabled {
+  opacity: .35;
+  cursor: default;
+}
+.banners-campaign-wrapper .banners-scroll-arrow-prev { left: 4px; }
+.banners-campaign-wrapper .banners-scroll-arrow-next { right: 4px; }
+
+/* Hover nas imagens */
+.banner-categorias .textbanner-image img {
+  transition: transform .4s ease;
+}
+.banner-categorias .textbanner-image:hover img {
+  transform: scale(1.03);
+}
+
 /* Peek mobile — mostra pedaço do próximo slide */
+@media (max-width: 991px) {
+  .banners-campaign-wrapper { padding: 0 40px; }
+  .banners-campaign-wrapper .banners-scroll-arrow { width: 38px; height: 38px; }
+}
 @media (max-width: 767px) {
   .banner-categorias { overflow: hidden; }
   .banner-wrapper-desktop .swiper-container { overflow: visible; }
+  .banners-campaign-wrapper { padding: 0; overflow: hidden; }
+  .banners-campaign-wrapper .banners-scroll-arrow { display: none; }
 }
 
 /* CSS do Floating Button */
