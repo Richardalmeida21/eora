@@ -253,12 +253,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 lazy: true,
                 watchOverflow: true,
                 slidesPerView: 1.12,
-                spaceBetween: 4,
+                spaceBetween: 0,
                 loop: false,
                 centerInsufficientSlides: true,
                 navigation: { prevEl: deskSelector + '-prev', nextEl: deskSelector + '-next' },
                 breakpoints: {
-                    768: { slidesPerView: dCols, spaceBetween: 4 }
+                    768: { slidesPerView: dCols, spaceBetween: 0 }
                 }
             });
         }
@@ -270,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 lazy: true,
                 watchOverflow: true,
                 slidesPerView: 1.12,
-                spaceBetween: 4
+                spaceBetween: 0,
+                centeredSlides: false
             });
         }
     }
@@ -350,6 +351,8 @@ document.addEventListener('DOMContentLoaded', function () {
 @media (max-width: 767px) {
   .banner-categorias { overflow: hidden; }
   .banner-wrapper-desktop .swiper-container { overflow: visible; }
+  .banner-wrapper-mobile { overflow: hidden; }
+  .banner-wrapper-mobile .swiper-container { overflow: visible; }
   .banners-campaign-wrapper { padding: 0; overflow: hidden; }
   .banners-campaign-wrapper .banners-scroll-arrow { display: none; }
 }
