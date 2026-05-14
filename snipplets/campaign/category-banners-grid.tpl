@@ -162,29 +162,12 @@
 			align-items: stretch !important;
 		}
 		/* Carrossel para telas menores que 1440px */
-		@media (max-width: 1439px) {
+		@media (min-width: 768px) and (max-width: 1439px) {
 			.category-banners-gallery {
-				display: flex;
-				justify-content: flex-start;
-				overflow: hidden;
-				scrollbar-width: none;
-				-ms-overflow-style: none;
-				scroll-snap-type: x mandatory;
-				min-width: 100vw;
-				box-sizing: border-box;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 				gap: 0;
-			}
-			.category-banners-gallery::-webkit-scrollbar { display: none; }
-			.category-banners-gallery-item {
-				flex: 1 0 0;
-				display: flex;
-				align-items: stretch;
-				justify-content: center;
-				scroll-snap-align: center;
-			}
-			.category-banners-grid-img-wrapper {
 				width: 100%;
-				height: 100%;
 			}
 		}
 		/* Mobile: peek igual ao Swiper 1.12 slides */
