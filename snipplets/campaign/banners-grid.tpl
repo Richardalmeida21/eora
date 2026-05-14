@@ -253,12 +253,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 lazy: true,
                 watchOverflow: true,
                 slidesPerView: 1.12,
-                spaceBetween: 0,
+                spaceBetween: 4,
                 loop: false,
                 centerInsufficientSlides: true,
                 navigation: { prevEl: deskSelector + '-prev', nextEl: deskSelector + '-next' },
                 breakpoints: {
-                    768: { slidesPerView: dCols, spaceBetween: 0 }
+                    768: { slidesPerView: dCols, spaceBetween: 4 }
                 }
             });
         }
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 lazy: true,
                 watchOverflow: true,
                 slidesPerView: 1.12,
-                spaceBetween: 0,
+                spaceBetween: 4,
                 centeredSlides: false
             });
         }
@@ -281,6 +281,19 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
 .full-width-link { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .textbanner-image img { min-height: 1px; }
+
+/* Gap de 4px entre banners — igual ao carrossel de Bolsas */
+.banner-wrapper-desktop .row-grid,
+.banner-wrapper-mobile .row-grid { margin-left: -2px !important; margin-right: -2px !important; }
+.banner-wrapper-desktop .row-grid .col-grid,
+.banner-wrapper-mobile .row-grid .col-grid { padding-left: 2px !important; padding-right: 2px !important; }
+.banner-wrapper-desktop .px-2,
+.banner-wrapper-mobile .px-2 { padding-left: 2px !important; padding-right: 2px !important; }
+/* Mobile peek: banner seguinte aparece na borda */
+@media (max-width: 767px) {
+    .banner-wrapper-mobile { overflow: hidden; }
+    .banner-wrapper-mobile .swiper-container { overflow: visible; }
+}
 
 /* Título igual à home */
 .section-title-banners-scroll {

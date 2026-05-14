@@ -9,6 +9,12 @@
         .section-banners-home .row-grid { margin-left: -2px; margin-right: -2px; }
         .section-banners-home .row-grid .col-grid,
         .section-banners-home .banner-categorias .col-grid { padding-left: 2px; padding-right: 2px; }
+        /* Mobile peek: banner seguinte aparece na borda */
+        @media (max-width: 767px) {
+            .section-banners-home .banner-categorias { overflow: visible !important; }
+            .section-banners-home .js-swiper-banners,
+            .section-banners-home .js-swiper-banners-mobile { overflow: visible; }
+        }
     </style>
 
     <section class="section-home section-banners-home position-relative overflow-none {{ section_without_margins }}" data-store="{{ data_store_name }}">
