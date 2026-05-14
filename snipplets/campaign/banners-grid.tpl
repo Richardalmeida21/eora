@@ -283,12 +283,16 @@ document.addEventListener('DOMContentLoaded', function () {
 .textbanner-image img { min-height: 1px; }
 
 /* Gap de 4px entre banners — igual ao carrossel de Bolsas */
+/* Modo grid */
 .banner-wrapper-desktop .row-grid,
 .banner-wrapper-mobile .row-grid { margin-left: -2px !important; margin-right: -2px !important; }
 .banner-wrapper-desktop .row-grid .col-grid,
 .banner-wrapper-mobile .row-grid .col-grid { padding-left: 2px !important; padding-right: 2px !important; }
 .banner-wrapper-desktop .px-2,
 .banner-wrapper-mobile .px-2 { padding-left: 2px !important; padding-right: 2px !important; }
+/* Modo slider: remove padding interno do col-grid para que só o spaceBetween (4px) conte */
+.banner-wrapper-desktop .swiper-slide.col-grid,
+.banner-wrapper-mobile .swiper-slide.col-grid { padding-left: 0 !important; padding-right: 0 !important; }
 /* Mobile peek: banner seguinte aparece na borda */
 @media (max-width: 767px) {
     .banner-wrapper-mobile { overflow: hidden; }
