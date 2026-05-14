@@ -27,7 +27,7 @@
             {% endif %}
             {% for i in 1..repeat_number %}
                 {% for slide in settings.slider_categories %}
-                    <div class="{{ categories_container_classes }} mr-4">
+                    <div class="{{ categories_container_classes }}{% if not categories_slider %} mr-4{% endif %}">
                         {% if slide.link %}
                             <a href="{{ slide.link | setting_url }}" class="js-home-category" aria-label="{{ 'Categoría' | translate }} {{ loop.index }}">
                         {% endif %}

@@ -2217,6 +2217,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                 preloadImages : false,
                 watchOverflow: true,
                 watchSlidesVisibility : true,
+                spaceBetween: 4,
                 slidesPerView: 'auto',
                 navigation: {
                     nextEl: '.js-swiper-categories-next',
