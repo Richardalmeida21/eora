@@ -55,7 +55,7 @@
 <div class="banner-categorias {{ container_classes }} position-relative {% if module %}mt-4 pt-3{% endif %}" data-banner-id="{{ js_id }}">
     
     {% if section_title and not module %}
-        <h2 class="section-title text-center h3 mb-4">{{ section_title }}</h2>
+        <h2 class="section-title-banners-scroll">{{ section_title }}</h2>
     {% endif %}
 
     {% if section_without_margins %}
@@ -250,12 +250,16 @@ document.addEventListener('DOMContentLoaded', function () {
         var deskEl = document.querySelector(deskSelector);
         if(deskEl) {
             createSwiper(deskEl, {
-                lazy: true, 
-                watchOverflow: true, 
+                lazy: true,
+                watchOverflow: true,
                 slidesPerView: 1.12,
-                spaceBetween: space,
+                spaceBetween: 4,
+                loop: false,
+                centerInsufficientSlides: true,
                 navigation: { prevEl: deskSelector + '-prev', nextEl: deskSelector + '-next' },
-                breakpoints: { 768: { slidesPerView: dCols } }
+                breakpoints: {
+                    768: { slidesPerView: dCols, spaceBetween: 4 }
+                }
             });
         }
 
@@ -263,10 +267,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var mobEl = document.querySelector(mobSelector);
         if(mobEl) {
             createSwiper(mobEl, {
-                lazy: true, 
-                watchOverflow: true, 
-                slidesPerView: 1,
-                spaceBetween: space
+                lazy: true,
+                watchOverflow: true,
+                slidesPerView: 1.12,
+                spaceBetween: 4
             });
         }
     }
@@ -276,6 +280,24 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
 .full-width-link { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .textbanner-image img { min-height: 1px; }
+
+/* Título igual à home */
+.section-title-banners-scroll {
+  display: block;
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 24px;
+}
+
+/* Margem de seção igual à home */
+.banner-categorias:not(.module) {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
 
 /* Carrossel campanha — mesmo visual da home */
 .banners-campaign-wrapper {
