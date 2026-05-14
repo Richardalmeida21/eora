@@ -159,7 +159,7 @@
 			.category-banners-gallery {
 				display: flex;
 				justify-content: flex-start;
-				overflow-x: auto;
+				overflow: hidden;
 				scrollbar-width: none;
 				-ms-overflow-style: none;
 				scroll-snap-type: x mandatory;
@@ -168,11 +168,29 @@
 			}
 			.category-banners-gallery::-webkit-scrollbar { display: none; }
 			.category-banners-gallery-item {
-				flex: 0 0 auto;
+				flex: 1 0 0;
 				display: flex;
-				align-items: center;
+				align-items: stretch;
 				justify-content: center;
 				scroll-snap-align: center;
+			}
+			.category-banners-grid-img-wrapper {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		/* Mobile: peek igual ao Swiper 1.12 slides */
+		@media (max-width: 767px) {
+			.category-banners-gallery {
+				overflow-x: auto;
+				overflow-y: hidden;
+			}
+			.category-banners-gallery-item {
+				flex: 0 0 88% !important;
+				max-width: 88%;
+			}
+			.category-banners-grid-img-wrapper {
+				width: 100%;
 			}
 		}
 		/* Grid para telas a partir de 1440px */
