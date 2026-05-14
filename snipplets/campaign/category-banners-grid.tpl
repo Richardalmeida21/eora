@@ -40,8 +40,8 @@
 		============================ */
 		.category-banners-grid-img-wrapper {
 			position: relative;
-			width: 360px;
-			height: 470px;
+			width: 100%;
+			aspect-ratio: 360 / 470;
 			overflow: hidden;
 			background: #f7f7f7;
 			margin: 0;
