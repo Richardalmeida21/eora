@@ -14,9 +14,22 @@
 {% if has_banners %}
 <section class="position-relative no-x-padding pt-5 pb-0 pb-md-5">
 	{% if section_title %}
-		<h2 class="section-title text-center h3">{{ section_title }}</h2>
+		<h2 class="section-title-banners-scroll">{{ section_title }}</h2>
 	{% endif %}
 	<style>
+		.section-title-banners-scroll {
+			display: block;
+			text-align: center;
+			font-size: 1.4rem;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			font-weight: 800;
+			color: #000;
+			margin: 0 0 24px;
+		}
+		@media (max-width: 767px) {
+			.section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; }
+		}
 		/* Remove padding lateral do container-fluid para colar nas bordas */
 		.banner-categorias.container-fluid.no-x-padding {
 			padding-left: 0 !important;
