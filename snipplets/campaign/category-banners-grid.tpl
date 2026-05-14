@@ -166,7 +166,7 @@
 			.category-banners-gallery {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-				gap: 0;
+				gap: 4px;
 				width: 100%;
 			}
 		}
@@ -189,7 +189,7 @@
 			.category-banners-gallery {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); /* ocupa todo o espaço */
-				gap: 0;
+				gap: 4px;
 				width: 100%;
 				height: 100%; /* deixa o grid crescer em altura */
 			}
