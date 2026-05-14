@@ -81,7 +81,7 @@
 	}
 	.banner-categoria-grid {
 		display: flex;
-		gap: 24px;
+		gap: 4px;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
@@ -127,7 +127,7 @@
 		}
 		.banner-categoria-grid {
 			flex-direction: column;
-			gap: 16px;
+			gap: 4px;
 		}
 	}
 </style>

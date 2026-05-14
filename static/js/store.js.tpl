@@ -995,7 +995,7 @@ DOMContentLoaded.addEventOrExecute(() => {
     {% set columns_mobile = settings.grid_columns_mobile %}
     var slidesPerViewDesktopVal = {% if columns_desktop == 4 %}4{% elseif columns_desktop == 3 %}3{% else %}2{% endif %};
     var slidesPerViewMobileVal = {% if columns_mobile == 1 %}1{% else %}2{% endif %};
-    var itemSwiperSpaceBetween = 16;
+    var itemSwiperSpaceBetween = 4;
 
     {# Hide arrow controls when swiper is not swipable #}
 
