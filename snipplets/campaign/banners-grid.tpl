@@ -89,55 +89,87 @@
 
         <div class="banner-wrapper-desktop {{ visibility_desktop }}">
             {% if desktop_format == 'slider' %}
-                <div class="banners-campaign-wrapper">
+                <div class="banners-scroll-wrapper banners-campaign-wrapper">
                 <button type="button" class="banners-scroll-arrow banners-scroll-arrow-prev js-swiper-{{ js_id }}-prev" aria-label="Anterior">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
-                <div class="js-swiper-{{ js_id }} swiper-container">
+                <div class="swiper js-swiper-{{ js_id }} banners-scroll-swiper">
                     <div class="swiper-wrapper">
             {% else %}
                 <div class="row {% if section_without_margins %}no-gutters{% else %}px-2 row-grid{% endif %}">
             {% endif %}
 
             {% for slide in banners_desktop %}
-                <div class="{% if desktop_format == 'slider' %}swiper-slide{% endif %} col-grid {{ col_class }}">
-                    <div class="textbanner {{ banner_classes }}">
-                        
-                        <div class="textbanner-image{% if not section_same_size %} p-0{% endif %} position-relative overflow-hidden">
-                            <figure class="image -custom" style="--padding-bottom-banner: {{ pb_d }}%">
-                                {% if loop.first %}
-                                    <img src="{{ slide.image | static_url | settings_image_url('original') }}" 
-                                         class="img-fluid d-block w-100 {% if section_same_size %}textbanner-image-background{% endif %}" 
-                                         style="width: 100%; display: block;" 
-                                         alt="{{ slide.title }}" />
-                                {% else %}
-                                    <img src="{{ placeholder }}" 
-                                         data-srcset="{{ slide.image | static_url | settings_image_url('original') }}" 
-                                         class="img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}" 
-                                         alt="{{ slide.title }}" 
-                                         style="width: 100%; display: block;" />
-                                {% endif %}
-
-                                {# --- ESTRUTURA FLOATING BUTTON (DESKTOP) --- #}
-                                {% if slide.title %}
-                                    <div class="banner-floating-button">
-                                        <div class="banner-floating-button-content">
-                                            <div class="banner-floating-title">{{ slide.title }}</div>
-                                            <svg class="banner-floating-icon" viewbox="0 0 10 10" fill="none" style="transform: scaleX(-1)">
-                                                <use xlink:href="#chevron-diagonal"></use>
-                                            </svg>
-                                        </div>
-                                        {% if slide.description %}
-                                            <div class="banner-floating-description mt-1">{{ slide.description }}</div>
-                                        {% endif %}
+                <div class="{% if desktop_format == 'slider' %}swiper-slide banners-scroll-slide{% endif %} col-grid {{ col_class }}">
+                    {% if desktop_format == 'slider' %}
+                        {% if slide.link %}
+                            <a href="{{ slide.link }}" class="banners-scroll-link" aria-label="{{ slide.title }}">
+                        {% endif %}
+                        <div class="banners-scroll-image" style="padding-bottom: {{ pb_d }}%;">
+                            {% if loop.first %}
+                                <img src="{{ slide.image | static_url | settings_image_url('large') }}"
+                                     srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
+                                     alt="{{ slide.title }}" />
+                            {% else %}
+                                <img src="{{ 'images/empty-placeholder.png' | static_url }}"
+                                     data-src="{{ slide.image | static_url | settings_image_url('large') }}"
+                                     data-srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
+                                     data-sizes="auto"
+                                     class="lazyautosizes lazyload"
+                                     alt="{{ slide.title }}" />
+                            {% endif %}
+                            {% if slide.title %}
+                                <div class="banner-floating-button banners-scroll-button">
+                                    <div class="banner-floating-button-content">
+                                        <div class="banner-floating-title">{{ slide.title }}</div>
+                                        <svg class="banner-floating-icon" viewbox="0 0 10 10" fill="none">
+                                            <use xlink:href="#chevron-diagonal"></use>
+                                        </svg>
                                     </div>
-                                {% endif %}
-
-                                {% if slide.link %}<a href="{{ slide.link }}" class="full-width-link"></a>{% endif %}
-                            </figure>
+                                    {% if slide.description %}
+                                        <div class="banner-floating-description mt-1">{{ slide.description }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
-
-                    </div>
+                        {% if slide.link %}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        {# Modo grid — mantém estrutura original #}
+                        <div class="textbanner {{ banner_classes }}">
+                            <div class="textbanner-image{% if not section_same_size %} p-0{% endif %} position-relative overflow-hidden">
+                                <figure class="image -custom" style="--padding-bottom-banner: {{ pb_d }}%">
+                                    {% if loop.first %}
+                                        <img src="{{ slide.image | static_url | settings_image_url('original') }}" 
+                                             class="img-fluid d-block w-100 {% if section_same_size %}textbanner-image-background{% endif %}" 
+                                             style="width: 100%; display: block;" 
+                                             alt="{{ slide.title }}" />
+                                    {% else %}
+                                        <img src="{{ placeholder }}" 
+                                             data-srcset="{{ slide.image | static_url | settings_image_url('original') }}" 
+                                             class="img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}" 
+                                             alt="{{ slide.title }}" 
+                                             style="width: 100%; display: block;" />
+                                    {% endif %}
+                                    {% if slide.title %}
+                                        <div class="banner-floating-button">
+                                            <div class="banner-floating-button-content">
+                                                <div class="banner-floating-title">{{ slide.title }}</div>
+                                                <svg class="banner-floating-icon" viewbox="0 0 10 10" fill="none" style="transform: scaleX(-1)">
+                                                    <use xlink:href="#chevron-diagonal"></use>
+                                                </svg>
+                                            </div>
+                                            {% if slide.description %}
+                                                <div class="banner-floating-description mt-1">{{ slide.description }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if slide.link %}<a href="{{ slide.link }}" class="full-width-link"></a>{% endif %}
+                                </figure>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
 
@@ -240,37 +272,58 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof Swiper !== 'undefined') {
-        var jsId = '{{ js_id }}';
-        var dCols = {{ d_cols | default(1) }};
-        var space = {% if section_without_margins %}0{% else %}16{% endif %};
+(function () {
+    var jsId = '{{ js_id }}';
+    var dCols = {{ d_cols | default(3) }};
 
-        var deskSelector = '.js-swiper-' + jsId;
-        var deskEl = document.querySelector(deskSelector);
-        if(deskEl) {
-            createSwiper(deskEl, {
-                lazy: true, 
-                watchOverflow: true, 
+    function initCampaignBanners() {
+        if (typeof Swiper === 'undefined') return false;
+
+        var deskEl = document.querySelector('.js-swiper-' + jsId);
+        if (deskEl && !deskEl.dataset.swiperInit) {
+            deskEl.dataset.swiperInit = '1';
+            new Swiper(deskEl, {
+                slidesPerView: 3,
+                spaceBetween: 4,
+                loop: false,
+                observer: true,
+                observeParents: true,
+                centerInsufficientSlides: true,
+                navigation: {
+                    prevEl: '.js-swiper-' + jsId + '-prev',
+                    nextEl: '.js-swiper-' + jsId + '-next'
+                },
+                breakpoints: {
+                    0:   { slidesPerView: 1.12, spaceBetween: 4, centeredSlides: false },
+                    768: { slidesPerView: dCols, spaceBetween: 4 },
+                    992: { slidesPerView: dCols, spaceBetween: 4 }
+                }
+            });
+        }
+
+        var mobEl = document.querySelector('.js-swiper-' + jsId + '-mobile');
+        if (mobEl && !mobEl.dataset.swiperInit) {
+            mobEl.dataset.swiperInit = '1';
+            new Swiper(mobEl, {
                 slidesPerView: 1.12,
-                spaceBetween: space,
-                navigation: { prevEl: deskSelector + '-prev', nextEl: deskSelector + '-next' },
-                breakpoints: { 768: { slidesPerView: dCols } }
+                spaceBetween: 4,
+                loop: false
             });
         }
 
-        var mobSelector = '.js-swiper-' + jsId + '-mobile';
-        var mobEl = document.querySelector(mobSelector);
-        if(mobEl) {
-            createSwiper(mobEl, {
-                lazy: true, 
-                watchOverflow: true, 
-                slidesPerView: 1,
-                spaceBetween: space
-            });
-        }
+        return true;
     }
-});
+
+    if (!initCampaignBanners()) {
+        document.addEventListener('DOMContentLoaded', function () {
+            var tries = 0;
+            var iv = setInterval(function () {
+                tries++;
+                if (initCampaignBanners() || tries > 20) clearInterval(iv);
+            }, 250);
+        });
+    }
+})();
 </script>
 
 <style>
@@ -294,42 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
   margin: 0 0 24px;
 }
 
-/* Carrossel campanha — mesmo visual da home */
-.banners-campaign-wrapper {
-  position: relative;
-  padding: 0 56px;
-}
-.banners-campaign-wrapper .banners-scroll-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  background: #fff;
-  color: #000;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: background .2s ease, color .2s ease, opacity .2s ease;
-}
-.banners-campaign-wrapper .banners-scroll-arrow:hover {
-  background: #000;
-  color: #fff;
-}
-.banners-campaign-wrapper .banners-scroll-arrow:focus { outline: none; }
-.banners-campaign-wrapper .banners-scroll-arrow.swiper-button-disabled {
-  opacity: .35;
-  cursor: default;
-}
-.banners-campaign-wrapper .banners-scroll-arrow-prev { left: 4px; }
-.banners-campaign-wrapper .banners-scroll-arrow-next { right: 4px; }
-
-/* Hover nas imagens */
+/* Hover nas imagens (modo grid) */
 .banner-categorias .textbanner-image img {
   transition: transform .4s ease;
 }
@@ -337,16 +355,10 @@ document.addEventListener('DOMContentLoaded', function () {
   transform: scale(1.03);
 }
 
-/* Peek mobile — mostra pedaço do próximo slide */
-@media (max-width: 991px) {
-  .banners-campaign-wrapper { padding: 0 40px; }
-  .banners-campaign-wrapper .banners-scroll-arrow { width: 38px; height: 38px; }
-}
 @media (max-width: 767px) {
+  .section-banners-campaign { margin: 24px 0; }
+  .section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; }
   .banner-categorias { overflow: hidden; }
-  .banner-wrapper-desktop .swiper-container { overflow: visible; }
-  .banners-campaign-wrapper { padding: 0; overflow: hidden; }
-  .banners-campaign-wrapper .banners-scroll-arrow { display: none; }
 }
 
 /* CSS do Floating Button */
