@@ -19,8 +19,8 @@
 		============================ */
 		.category-banners-grid-img-wrapper {
 			position: relative;
-			width: 360px;
-			height: 470px;
+			width: 100%;
+			aspect-ratio: 360 / 470;
 			overflow: hidden;
 			background: #f7f7f7;
 			margin: 0;
@@ -133,51 +133,34 @@
 			margin: 0;
 			padding: 0;
 		}
-		/* Carrossel para telas menores que 1440px */
-		@media (max-width: 1439px) {
+		.category-banners-gallery-item > div {
+			width: 100%;
+			align-items: stretch !important;
+		}
+		/* Desktop/tablet: CSS Grid garante gap zero */
+		@media (min-width: 768px) {
+			.category-banners-gallery {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+				gap: 0;
+			}
+		}
+		/* Mobile: peek igual Swiper 1.12 */
+		@media (max-width: 767px) {
 			.category-banners-gallery {
 				display: flex;
-				justify-content: flex-start;
 				overflow-x: auto;
+				overflow-y: hidden;
 				scrollbar-width: none;
 				-ms-overflow-style: none;
 				scroll-snap-type: x mandatory;
-				min-width: 100vw;
-				box-sizing: border-box;
+				gap: 0;
 			}
 			.category-banners-gallery::-webkit-scrollbar { display: none; }
 			.category-banners-gallery-item {
-				flex: 0 0 auto;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				scroll-snap-align: center;
-			}
-		}
-		/* Grid para telas a partir de 1440px */
-		@media (min-width: 1440px) {
-			.category-banners-gallery {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); /* ocupa todo o espaço */
-				gap: 0;
-				width: 100%;
-				height: 100%; /* deixa o grid crescer em altura */
-			}
-			.category-banners-gallery-item {
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				padding: 0;
-			}
-			.category-banners-grid-img-wrapper {
-				width: 100%;
-				height: 100%;
-				aspect-ratio: auto; /* remove trava do 360/470 */
-			}
-			.category-banners-grid-img-wrapper img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover; /* imagem cobre tudo sem distorcer */
+				flex: 0 0 88%;
+				max-width: 88%;
+				scroll-snap-align: start;
 			}
 		}
 	</style>
