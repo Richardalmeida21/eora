@@ -5,6 +5,12 @@
     {% set data_store_name = 'home-banner-categories' %}
     {% set section_without_margins = settings.banner_without_margins ? 'section-home-color p-0' %}
 
+    <style>
+        .section-banners-home .row-grid { margin-left: -2px; margin-right: -2px; }
+        .section-banners-home .row-grid .col-grid,
+        .section-banners-home .banner-categorias .col-grid { padding-left: 2px; padding-right: 2px; }
+    </style>
+
     <section class="section-home section-banners-home position-relative overflow-none {{ section_without_margins }}" data-store="{{ data_store_name }}">
         {% include 'snipplets/home/home-banners-grid.tpl' with {'banner': true} %}
         {% if has_mobile_banners %}
