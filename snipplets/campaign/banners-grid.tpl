@@ -52,10 +52,10 @@
 {# === RENDERIZAÇÃO === #}
 {% if (banners_desktop and banners_desktop is not empty) or has_mobile_content %}
 
-<div class="banner-categorias {{ container_classes }} position-relative {% if module %}mt-4 pt-3{% endif %}" data-banner-id="{{ js_id }}">
+<div class="banner-categorias {% if not module %}section-banners-campaign{% endif %} {{ container_classes }} position-relative {% if module %}mt-4 pt-3{% endif %}" data-banner-id="{{ js_id }}">
     
     {% if section_title and not module %}
-        <h2 class="section-title text-center h3 mb-4">{{ section_title }}</h2>
+        <h2 class="section-title-banners-scroll">{{ section_title }}</h2>
     {% endif %}
 
     {% if section_without_margins %}
@@ -276,6 +276,23 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
 .full-width-link { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .textbanner-image img { min-height: 1px; }
+
+/* Seção campanha — mesma margem da home */
+.section-banners-campaign {
+  margin: 40px 0;
+  padding: 0;
+}
+
+/* Título igual ao carrossel da home */
+.section-title-banners-scroll {
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 24px;
+}
 
 /* Carrossel campanha — mesmo visual da home */
 .banners-campaign-wrapper {
