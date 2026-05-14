@@ -149,10 +149,17 @@
 			width: 100%;
 			margin: 0;
 			padding: 0;
+			gap: 0;
 		}
 		.category-banners-gallery-item {
 			margin: 0;
 			padding: 0;
+		}
+		/* Div interno Bootstrap que centraliza — forçar stretch */
+		.category-banners-gallery-item > div {
+			width: 100%;
+			height: 100%;
+			align-items: stretch !important;
 		}
 		/* Carrossel para telas menores que 1440px */
 		@media (max-width: 1439px) {
@@ -165,6 +172,7 @@
 				scroll-snap-type: x mandatory;
 				min-width: 100vw;
 				box-sizing: border-box;
+				gap: 0;
 			}
 			.category-banners-gallery::-webkit-scrollbar { display: none; }
 			.category-banners-gallery-item {
