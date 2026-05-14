@@ -4,260 +4,126 @@
 {% set section_title = settings.category_banners_images_title | default('') %}
 
 {% if has_banners %}
-<section class="position-relative no-x-padding pt-5 pb-0 pb-md-5">
+<section class="section-category-banners">
 	{% if section_title %}
-		<h2 class="section-title text-center h3">{{ section_title }}</h2>
+		<h2 class="section-title-banners-scroll">{{ section_title }}</h2>
 	{% endif %}
+
+	<div class="cat-banners-wrapper">
+		<button class="cat-banners-arrow js-cat-banners-prev" aria-label="Anterior">
+			<svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+		<div class="js-swiper-cat-banners swiper-container">
+			<div class="swiper-wrapper">
+				{% for banner in section_banners %}
+				<div class="swiper-slide">
+					<div class="cat-banner-img-wrap">
+						{% if loop.first %}
+							<img src="{{ banner.image | static_url | settings_image_url('original') }}"
+								class="img-fluid d-block w-100"
+								alt="{{ banner.title|default('') }}"
+								style="width:100%;display:block;" />
+						{% else %}
+							<img src="{{ 'images/empty-placeholder.png' | static_url }}"
+								data-srcset="{{ banner.image | static_url | settings_image_url('original') }}"
+								class="lazyload fade-in img-fluid d-block w-100"
+								alt="{{ banner.title|default('') }}"
+								style="width:100%;display:block;" />
+						{% endif %}
+						{% if banner.title %}
+							<div class="banner-floating-button">
+								<div class="banner-floating-button-content">
+									<div class="banner-floating-title">{{ banner.title }}</div>
+									<svg class="banner-floating-icon" viewBox="0 0 10 10" fill="none" style="transform:scaleX(-1)"><use xlink:href="#chevron-diagonal"></use></svg>
+								</div>
+							</div>
+						{% endif %}
+						{% if banner.link %}<a href="{{ banner.link }}" class="full-width-link"></a>{% endif %}
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		<button class="cat-banners-arrow js-cat-banners-next" aria-label="Próximo">
+			<svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+	</div>
+
 	<style>
-		/* Remove padding lateral do container-fluid para colar nas bordas */
-		.banner-categorias.container-fluid.no-x-padding {
-			padding-left: 0 !important;
-			padding-right: 0 !important;
+		.section-category-banners { margin: 40px 0; }
+		.section-title-banners-scroll {
+			display: block; text-align: center; font-size: 1.4rem;
+			letter-spacing: 2px; text-transform: uppercase;
+			font-weight: 800; color: #000; margin: 0 0 24px;
 		}
-		/* ============================
-			BOTÃO INTERNO DENTRO DO BANNER
-		============================ */
-		.category-banners-grid-img-wrapper {
+		.cat-banners-wrapper {
 			position: relative;
-			width: 100%;
-			aspect-ratio: 360 / 470;
-			overflow: hidden;
-			background: #f7f7f7;
-			margin: 0;
-			padding: 0;
-			display: block;
+			padding: 0 56px;
 		}
-		.category-banners-grid-img-wrapper img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			display: block;
-			margin: 0;
-			box-shadow: none;
+		.cat-banners-arrow {
+			position: absolute; top: 50%; transform: translateY(-50%);
+			z-index: 5; width: 44px; height: 44px; border-radius: 50%;
+			border: 1px solid #000; background: #fff; color: #000;
+			cursor: pointer; display: flex; align-items: center;
+			justify-content: center; padding: 0;
+			transition: background .2s ease, color .2s ease, opacity .2s ease;
 		}
-		.banner-categorias .row,
-		.banner-categorias .row.gx-0 {
-			gap: 0 !important;
-			margin: 0 !important;
+		.cat-banners-arrow:hover { background: #000; color: #fff; }
+		.cat-banners-arrow:focus { outline: none; }
+		.cat-banners-arrow.swiper-button-disabled { opacity: .35; cursor: default; }
+		.js-cat-banners-prev { left: 4px; }
+		.js-cat-banners-next { right: 4px; }
+		.cat-banner-img-wrap { position: relative; overflow: hidden; }
+		.cat-banner-img-wrap img { display: block; width: 100%; }
+		.full-width-link { position: absolute; top:0; left:0; width:100%; height:100%; z-index:5; }
+		@media (max-width: 991px) {
+			.cat-banners-wrapper { padding: 0 40px; }
+			.cat-banners-arrow { width: 38px; height: 38px; }
 		}
-		.image {
-			position: relative;
-		}
-		.banner-floating-button-category {
-			position: absolute;
-			left: 16px;
-			bottom: 16px;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: flex-start;
-			gap: 10px;
-			padding: 16px;
-			background: var(--banner-floating-background);
-			backdrop-filter: blur(8px);
-			width: 180px;
-			text-decoration: none;
-			color: var(--banner-floating-text);
-			z-index: 2;
-			cursor: pointer;
-		}
-		.banner-floating-button-category-content {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			gap: 25px;
-		}
-		.banner-floating-title {
-			color: var(--banner-floating-text,#222);
-			font-size: 14px;
-			font-weight: 500;
-			letter-spacing: 2px;
-			text-transform: uppercase;
-		}
-		.banner-floating-icon {
-			width: 12px;
-			height: 12px;
-			color: var(--banner-floating-text,#222);
-			transform: scaleX(-1);
-		}
-
-		/* ============================
-			BANNERS -- images -- carrossel
-		============================ */
-
-		.category-banners-dots {
-			position: absolute;
-			left: 0;
-			right: 0;
-			bottom: 32px;
-			display: none;
-			justify-content: center;
-			z-index: 10;
-			align-items: center;
-			gap: 0;
-			margin-top: 0;
-			pointer-events: none;
-		}
-		@media (max-width: 1439px) {
-			.category-banners-dots {
-				position: relative;
-				display: flex !important;
-				margin: 32px 0;
-				margin-top: 64px;
-			}
-		}
-		.category-banners-dot {
-			width: 80px;
-			height: 2px;
-			background: rgba(0, 0, 0, 0.12);
-			border: none;
-			border-radius: 0px;
-			margin: 0 8px;
-			transition: all 0.3s;
-			display: inline-block;
-			opacity: 1;
-			pointer-events: auto;
-			cursor: pointer;
-			outline: none;
-		}
-		.category-banners-dot.active {
-			background: #000000ff;
-			opacity: 1;
-		}
-		.category-banners-gallery {
-			width: 100%;
-			margin: 0;
-			padding: 0;
-		}
-		.category-banners-gallery-item {
-			margin: 0;
-			padding: 0;
-		}
-		.category-banners-gallery-item > div {
-			width: 100%;
-			align-items: stretch !important;
-		}
-		/* Desktop/tablet: CSS Grid garante gap zero */
-		@media (min-width: 768px) {
-			.category-banners-gallery {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-				gap: 0;
-			}
-		}
-		/* Mobile: peek igual Swiper 1.12 */
 		@media (max-width: 767px) {
-			.category-banners-gallery {
-				display: flex;
-				overflow-x: auto;
-				overflow-y: hidden;
-				scrollbar-width: none;
-				-ms-overflow-style: none;
-				scroll-snap-type: x mandatory;
-				gap: 0;
-			}
-			.category-banners-gallery::-webkit-scrollbar { display: none; }
-			.category-banners-gallery-item {
-				flex: 0 0 88%;
-				max-width: 88%;
-				scroll-snap-align: start;
-			}
+			.section-category-banners { margin: 24px 0; }
+			.section-title-banners-scroll { font-size: 1.1rem; margin-bottom: 16px; }
+			.cat-banners-wrapper { padding: 0; overflow: hidden; }
+			.cat-banners-arrow { display: none; }
+			.js-swiper-cat-banners { overflow: visible; }
 		}
 	</style>
-	<div class="category-banners-gallery" id="categoryBannersCarousel">
-		{% for banner in section_banners %}
-			<div class="category-banners-gallery-item">
-				<div class="position-relative d-flex flex-column align-items-center">
-					<a href="{{ banner.link|default('#') }}" class="w-100 h-100" {% if banner.link %}target="_blank"{% endif %} style="display:block;">
-						<div class="category-banners-grid-img-wrapper">
-							<img 
-								src="{{ 'images/empty-placeholder.png' | static_url }}"
-								data-srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('original') }} 1024w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w"
-								data-sizes="auto"
-								class="lazyautosizes lazyload fade-in"
-								width="360" height="470"
-								alt="{{ banner.title|default('Banner categoria') }}"
-							/>
-						</div>
-						{% if banner.title %}
-							<span class="banner-floating-button-category">
-								<span class="banner-floating-button-category-content">
-									<span class="banner-floating-title">{{ banner.title }}</span>
-									<svg class="banner-floating-icon" viewBox="0 0 10 10" fill="none">
-										<use xlink:href="#chevron-diagonal"></use>
-									</svg>
-								</span>
-							</span>
-						{% endif %}
-					</a>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
-	<div class="category-banners-dots" id="categoryBannersDots"></div>
+
 	<script>
-		function renderCategoryBannersDots() {
-			var carousel = document.getElementById('categoryBannersCarousel');
-			var dotsContainer = document.getElementById('categoryBannersDots');
-			var isMobile = window.innerWidth < 1440;
-			if (carousel && carousel.children.length > 0 && dotsContainer) {
-				if (isMobile) {
-					// Centralizar item no mobile
-					var middleIndex = Math.floor(carousel.children.length / 2);
-					var middleItem = carousel.children[middleIndex];
-					if (middleItem) {
-						var itemOffsetLeft = middleItem.offsetLeft;
-						var itemWidth = middleItem.offsetWidth;
-						var containerWidth = carousel.offsetWidth;
-						var scrollTo = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
-						carousel.scrollLeft = scrollTo;
-					}
-					// Dot pagination
-					var items = Array.from(carousel.children);
-					dotsContainer.innerHTML = '';
-					items.forEach(function(_, idx) {
-						var dot = document.createElement('button');
-						dot.className = 'category-banners-dot' + (idx === 0 ? ' active' : '');
-						dot.setAttribute('aria-label', 'Ir para banner ' + (idx + 1));
-						dot.addEventListener('click', function() {
-							var item = items[idx];
-							if (item) {
-								var itemOffsetLeft = item.offsetLeft;
-								var itemWidth = item.offsetWidth;
-								var containerWidth = carousel.offsetWidth;
-								var scrollTo = itemOffsetLeft - (containerWidth / 2) + (itemWidth / 2);
-								carousel.scrollTo({ left: scrollTo, behavior: 'smooth' });
-							}
-						});
-						dotsContainer.appendChild(dot);
-					});
-					// Atualizar dot ativo ao scroll
-					carousel.addEventListener('scroll', function() {
-						var scrollLeft = carousel.scrollLeft;
-						var containerWidth = carousel.offsetWidth;
-						var activeIdx = 0;
-						items.forEach(function(item, idx) {
-							var itemCenter = item.offsetLeft + item.offsetWidth / 2;
-							if (itemCenter - scrollLeft < containerWidth / 2 + item.offsetWidth / 2) {
-								activeIdx = idx;
-							}
-						});
-						Array.from(dotsContainer.children).forEach(function(dot, idx) {
-							dot.classList.toggle('active', idx === activeIdx);
-						});
-					});
-					dotsContainer.style.display = 'flex';
-				} else {
-					dotsContainer.innerHTML = '';
-					dotsContainer.style.display = 'none';
+	(function(){
+		function initCatBanners() {
+			if (typeof Swiper === 'undefined') return false;
+			var el = document.querySelector('.js-swiper-cat-banners');
+			if (!el || el.dataset.swiperInit === '1') return true;
+			el.dataset.swiperInit = '1';
+			new Swiper(el, {
+				slidesPerView: 3,
+				spaceBetween: 0,
+				loop: false,
+				observer: true,
+				observeParents: true,
+				centerInsufficientSlides: true,
+				navigation: {
+					prevEl: '.js-cat-banners-prev',
+					nextEl: '.js-cat-banners-next'
+				},
+				breakpoints: {
+					0:   { slidesPerView: 1.12, spaceBetween: 0, centeredSlides: false },
+					768: { slidesPerView: 3, spaceBetween: 0 }
 				}
-			}
+			});
+			return true;
 		}
-		window.addEventListener('load', renderCategoryBannersDots);
-		window.addEventListener('resize', function() {
-			// Redesenhar dots ao redimensionar tela
-			renderCategoryBannersDots();
-		});
+		if (!initCatBanners()) {
+			document.addEventListener('DOMContentLoaded', function(){
+				var tries = 0;
+				var iv = setInterval(function(){
+					tries++;
+					if (initCatBanners() || tries > 20) clearInterval(iv);
+				}, 250);
+			});
+		}
+	})();
 	</script>
 </section>
 {% endif %}
