@@ -75,7 +75,7 @@ window.urls = {
 }
 
 {#/*============================================================================
-  #Lazy load
+    #Lazy load
 ==============================================================================*/ #}
 
 document.addEventListener('lazybeforeunveil', function(e){
@@ -2588,6 +2588,14 @@ DOMContentLoaded.addEventOrExecute(() => {
     {% endif %}
 
     {# /* // product description */ #}
+    function normalizeProductDescriptionFont(root) {
+        if (!root) return;
+        [root, ...root.querySelectorAll("*")].forEach((element) => {
+            element.style.removeProperty("font-size");
+            element.style.removeProperty("line-height");
+        });
+    }
+
     const extractors = {
         video_link: (tabela) => {
             const tds = tabela.querySelectorAll("tr"); // Ajustando para pegar linhas (tr) corretamente
@@ -2647,6 +2655,7 @@ DOMContentLoaded.addEventOrExecute(() => {
 
             const tds = tabela.querySelectorAll("td");
             destino.innerHTML = tds[1].innerHTML;
+            normalizeProductDescriptionFont(destino);
         },
         video_url: (tabela) => {
             const valor = tabela.textContent.trim();
