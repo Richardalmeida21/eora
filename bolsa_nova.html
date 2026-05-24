@@ -98,13 +98,9 @@
     var eoraConfigTableCache = [];
 
     function snapshotConfigTables() {
+        if (eoraConfigTableCache.length) return;
         document.querySelectorAll('table').forEach(function (table) {
-            var jaExiste = eoraConfigTableCache.some(function (cachedTable) {
-                return cachedTable === table || cachedTable.isEqualNode(table);
-            });
-            if (!jaExiste) {
-                eoraConfigTableCache.push(table.cloneNode(true));
-            }
+            eoraConfigTableCache.push(table.cloneNode(true));
         });
     }
 
@@ -1978,13 +1974,13 @@
 
     function getRowValue(table, key, mode) {
         if (!table) return '';
-        var normalizedTarget = normalizeConfigKey(key);
+        key = String(key || '').toLowerCase();
         var value = '';
         table.querySelectorAll('tbody > tr').forEach(function (row) {
             if (value) return;
             var cells = row.querySelectorAll('td');
             if (cells.length < 2) return;
-            if (normalizeConfigKey(cells[0].textContent) !== normalizedTarget) return;
+            if (cells[0].textContent.trim().toLowerCase() !== key) return;
             value = mode === 'html' ? cells[1].innerHTML.trim() : cells[1].textContent.trim();
         });
         return value;
