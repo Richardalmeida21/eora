@@ -98,13 +98,9 @@
     var eoraConfigTableCache = [];
 
     function snapshotConfigTables() {
+        if (eoraConfigTableCache.length) return;
         document.querySelectorAll('table').forEach(function (table) {
-            var jaExiste = eoraConfigTableCache.some(function (cachedTable) {
-                return cachedTable === table || cachedTable.isEqualNode(table);
-            });
-            if (!jaExiste) {
-                eoraConfigTableCache.push(table.cloneNode(true));
-            }
+            eoraConfigTableCache.push(table.cloneNode(true));
         });
     }
 
@@ -1978,13 +1974,13 @@
 
     function getRowValue(table, key, mode) {
         if (!table) return '';
-        var normalizedTarget = normalizeConfigKey(key);
+        key = String(key || '').toLowerCase();
         var value = '';
         table.querySelectorAll('tbody > tr').forEach(function (row) {
             if (value) return;
             var cells = row.querySelectorAll('td');
             if (cells.length < 2) return;
-            if (normalizeConfigKey(cells[0].textContent) !== normalizedTarget) return;
+            if (cells[0].textContent.trim().toLowerCase() !== key) return;
             value = mode === 'html' ? cells[1].innerHTML.trim() : cells[1].textContent.trim();
         });
         return value;
@@ -2656,11 +2652,7 @@
 </tr>
 <tr>
 <td>titulo_institucional</td>
-<td>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">Na EORA, cada detalhe da M&Aacute;XI V&Eacute;RTICE foi criado para entregar mais do que uma bolsa: um objeto de desejo.</span></p>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">Couros nobres, design autoral e um shape que transforma qualquer look em presen&ccedil;a.</span></p>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">&Eacute; aquela pe&ccedil;a que chama aten&ccedil;&atilde;o sem esfor&ccedil;o, eleva a confian&ccedil;a e faz voc&ecirc; entender por que quem entra no universo EORA sempre quer o pr&oacute;ximo.</span></p>
-</td>
+<td>Na EORA, cada detalhe foi criado para entregar mais do que produtos: entregamos um objeto de desejo. Materiais nobres, design autoral e uma experiência que transforma cada cliente em colecionadora. Quem tem um, sempre quer o próximo.</td>
 </tr>
 <tr>
 <td>texto_institucional</td>
