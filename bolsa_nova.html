@@ -223,50 +223,34 @@
 
     var cachedInstitutionalAnchor = null;
     function buildCustomInstitutionalMessage() {
-        var table = findConfigTable(['texto_institucional', 'mensagem_institucional', 'institutional_message']);
-        if (!table) return;
+        // Busca em qualquer tabela a linha com chave 'titulo' e exibe como institucional
+        var found = '';
+        document.querySelectorAll('table').forEach(function (t) {
+            t.querySelectorAll('tbody > tr').forEach(function (row) {
+                var cells = row.querySelectorAll('td');
+                if (cells.length < 2) return;
+                var key = (cells[0].textContent || '').trim().toLowerCase();
+                if (key === 'titulo' && !found) {
+                    found = cells[1].innerHTML || cells[1].textContent;
+                }
+            });
+        });
+        if (!found) return;
 
-        var customTitle = getRowValue(table, 'titulo_institucional') || getRowValue(table, 'titulo') || getRowValue(table, 'mensagem') || getRowValue(table, 'institutional_title');
-        var customText = getRowValue(table, 'texto_institucional') || getRowValue(table, 'texto') || getRowValue(table, 'autor') || getRowValue(table, 'subtitulo') || getRowValue(table, 'institutional_text');
+        // Cria bloco institucional customizado
+        var bloco = document.createElement('div');
+        bloco.className = 'eora-section-bloco eora-institutional-custom';
+        var h2 = document.createElement('h2');
+        h2.className = 'eora-section-titulo';
+        h2.innerHTML = found;
+        bloco.appendChild(h2);
 
-        if (!customTitle && !customText) return;
-
-        var instEl = cachedInstitutionalAnchor || findInstitutionalAnchor();
-        if (!instEl) return;
-        cachedInstitutionalAnchor = instEl;
-
-        /* Garante que o elemento possui data-store para outras buscas internas */
-        if (!instEl.getAttribute('data-store')) {
-            instEl.setAttribute('data-store', 'home-institutional-message');
-        }
-
-        var instLeft = instEl.querySelector('.institutional-left');
-        if (!instLeft) return;
-
-        if (customTitle) {
-            var titleEl = instEl.querySelector('.institutional-title');
-            if (!titleEl) {
-                titleEl = document.createElement('h3');
-                titleEl.className = 'institutional-title mb-0';
-                instLeft.insertBefore(titleEl, instLeft.firstChild);
-            }
-            var cleanTitle = customTitle.replace(/[\u00a0\s]+/g, ' ').trim();
-            if (titleEl.textContent !== cleanTitle) {
-                titleEl.textContent = cleanTitle;
-            }
-        }
-
-        if (customText) {
-            var textEl = instEl.querySelector('.institutional-text');
-            if (!textEl) {
-                textEl = document.createElement('p');
-                textEl.className = 'institutional-text mb-0';
-                instLeft.appendChild(textEl);
-            }
-            var cleanText = customText.replace(/[\u00a0\s]+/g, ' ').trim();
-            if (textEl.textContent !== cleanText) {
-                textEl.textContent = cleanText;
-            }
+        // Insere antes do primeiro banner ou no início do wrap
+        var anchor = document.querySelector('.eora-banner-produto') || document.querySelector('.eora-product-wrap');
+        if (anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(bloco, anchor);
+        } else {
+            document.body.insertBefore(bloco, document.body.firstChild);
         }
     }
 
