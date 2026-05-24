@@ -340,9 +340,9 @@
                     {% endif %}
                 {# Product description #}
                 {% if product.description is not empty and '<table' in product.description %}
-                    <div class="js-product-card-description-base user-content d-none">
+                    <template class="js-product-card-description-base user-content d-none">
                         {{ product.description }}
-                    </div>
+                    </template>
                     <div class="js-product-card-description-text product-card-description-text"></div>
                 {% endif %}
                 </a>

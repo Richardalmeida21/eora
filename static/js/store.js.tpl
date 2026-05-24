@@ -2931,9 +2931,10 @@ DOMContentLoaded.addEventOrExecute(() => {
         {# /* // percorre todos os produtos da página */ #}
         const allProductsCards = document.querySelectorAll('.js-item-product');
         allProductsCards.forEach((card) => {
-            const base = card.querySelector('.js-product-card-description-base');
-            if (!base) return;
+            const baseElement = card.querySelector('.js-product-card-description-base');
+            if (!baseElement) return;
 
+            const base = baseElement.content ? baseElement.content : baseElement;
             {# /* // pega todas as tabelas dentro da base */ #}
             const tabelas = base.querySelectorAll('table');
 
