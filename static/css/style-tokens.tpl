@@ -224,14 +224,28 @@
     {% set page_current_01 = settings.campaign_page_01_url %}
     {% set page_current_02 = settings.campaign_page_02_url %}
     {% set page_current_03 = settings.campaign_page_03_url %}
+    {% set page_current_04 = settings.campaign_page_04_url %}
+    {% set page_current_05 = settings.campaign_page_05_url %}
+    {% set page_current_06 = settings.campaign_page_06_url %}
+    {% set page_current_07 = settings.campaign_page_07_url %}
+    {% set page_current_08 = settings.campaign_page_08_url %}
+    {% set page_current_09 = settings.campaign_page_09_url %}
+    {% set page_current_10 = settings.campaign_page_10_url %}
 
-    {% set is_on_campaign_page = page.handle == page_current_01 or page.handle == page_current_02 or page.handle == page_current_03  %}
+    {% set is_on_campaign_page = page.handle == page_current_01 or page.handle == page_current_02 or page.handle == page_current_03 or page.handle == page_current_04 or page.handle == page_current_05 or page.handle == page_current_06 or page.handle == page_current_07 or page.handle == page_current_08 or page.handle == page_current_09 or page.handle == page_current_10 %}
     {% set campaign_page_type_font_message = '' %}
     {% if is_on_campaign_page %}
       {% set current_settings_name = '' %}
       {% if page.handle == page_current_01 %} {% set current_settings_name = 'campaign_page_01' %}
       {% elseif page.handle == page_current_02 %} {% set current_settings_name = 'campaign_page_02' %}
       {% elseif page.handle == page_current_03 %} {% set current_settings_name = 'campaign_page_03' %}
+      {% elseif page.handle == page_current_04 %} {% set current_settings_name = 'campaign_page_04' %}
+      {% elseif page.handle == page_current_05 %} {% set current_settings_name = 'campaign_page_05' %}
+      {% elseif page.handle == page_current_06 %} {% set current_settings_name = 'campaign_page_06' %}
+      {% elseif page.handle == page_current_07 %} {% set current_settings_name = 'campaign_page_07' %}
+      {% elseif page.handle == page_current_08 %} {% set current_settings_name = 'campaign_page_08' %}
+      {% elseif page.handle == page_current_09 %} {% set current_settings_name = 'campaign_page_09' %}
+      {% elseif page.handle == page_current_10 %} {% set current_settings_name = 'campaign_page_10' %}
       {% endif %}
       {% set campaign_page_type_font_message = attribute(settings,"#{current_settings_name}_font_message") %}
       --campaign-page-font: {{ campaign_page_type_font_message | raw }};

@@ -4363,8 +4363,15 @@ let c_settings_name_04 = c_settings_name + '_04';
 
             {% set current_settings_name = '' %}
             {% if page.handle == page_current_01 %} {% set current_settings_name = 'campaign_page_01' %}
-                {% elseif page.handle == page_current_02 %} {% set current_settings_name = 'campaign_page_02' %}
-                {% elseif page.handle == page_current_03 %} {% set current_settings_name = 'campaign_page_03' %}
+            {% elseif page.handle == page_current_02 %} {% set current_settings_name = 'campaign_page_02' %}
+            {% elseif page.handle == page_current_03 %} {% set current_settings_name = 'campaign_page_03' %}
+            {% elseif page.handle == page_current_04 %} {% set current_settings_name = 'campaign_page_04' %}
+            {% elseif page.handle == page_current_05 %} {% set current_settings_name = 'campaign_page_05' %}
+            {% elseif page.handle == page_current_06 %} {% set current_settings_name = 'campaign_page_06' %}
+            {% elseif page.handle == page_current_07 %} {% set current_settings_name = 'campaign_page_07' %}
+            {% elseif page.handle == page_current_08 %} {% set current_settings_name = 'campaign_page_08' %}
+            {% elseif page.handle == page_current_09 %} {% set current_settings_name = 'campaign_page_09' %}
+            {% elseif page.handle == page_current_10 %} {% set current_settings_name = 'campaign_page_10' %}
             {% endif %}
 
             {% set campaign_banner_lado_url_video = attribute(settings,"#{current_settings_name}_banner_lado_url_video") %}
