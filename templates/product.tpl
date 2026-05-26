@@ -117,6 +117,7 @@
 
     .product-video-container iframe {
         width: 800px;
+        max-width: 100%;
         height: 450px;
     }
 
@@ -124,6 +125,13 @@
         font-size: 1rem;
         line-height: 1.6;
         padding: 0 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .product-video-container iframe {
+        height: auto;
+        aspect-ratio: 16 / 9;
     }
 }
 
