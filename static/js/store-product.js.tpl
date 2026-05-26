@@ -2473,6 +2473,7 @@ DOMContentLoaded.addEventOrExecute(() => {
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
+        if (!themeProd.classList.contains('js-coach-layout')) return;
         if (document.querySelector('.eora-product-wrap')) return;
 
         /* ── Coleta fotos ── */
