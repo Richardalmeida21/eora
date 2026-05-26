@@ -1,5 +1,5 @@
 {% set is_coach_layout = 'layout_coach' in product.description %}
-<div id="single-product" class="js-has-new-shipping js-product-detail js-product-container js-shipping-calculator-container pb-4 pt-md-4 pb-md-3 {% if is_coach_layout %}js-coach-layout{% endif %}" data-variants="{{product.variants_object | json_encode }}" data-store="product-detail">
+<div id="single-product" class="js-has-new-shipping js-product-detail js-product-container js-shipping-calculator-container pb-4 pt-md-4 pb-md-3" data-variants="{{product.variants_object | json_encode }}" data-store="product-detail">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 {% if is_coach_layout %}col-md-10{% else %}col-md-auto{% endif %} product-image-column ">
