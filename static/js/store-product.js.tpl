@@ -812,7 +812,7 @@ DOMContentLoaded.addEventOrExecute(() => {
         'input,select,textarea,button,a{touch-action:manipulation!important}',
 
         /* Esconde o bloco inteiro do tema */
-        '#single-product{display:none!important}',
+        '#single-product.js-coach-layout{display:none!important}',
 
         /* Container EORA que substitui */
         '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box}',
