@@ -151,6 +151,25 @@
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "wb7jil6ddu");
         </script>
+
+        <!-- Proteção máxima de layout e viewport contra quebras e encolhimento (squishing) -->
+        <style>
+            html, body {
+                max-width: 100% !important;
+                width: 100% !important;
+                overflow-x: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-text-size-adjust: 100% !important;
+                text-size-adjust: 100% !important;
+            }
+            input, select, textarea, button, a {
+                touch-action: manipulation !important;
+            }
+            img, iframe, video, .row, .container, .container-fluid {
+                max-width: 100% !important;
+            }
+        </style>
     </head>
     <body class="js-head-offset head-offset">
 
@@ -247,23 +266,85 @@
 
         {% if store.assorted_js %}
             <script>
-                LS.ready.then(function() {
-                    var externalScriptsLoaded = false;
-                    function loadExternalScripts() {
-                        if(externalScriptsLoaded) return;
-                        externalScriptsLoaded = true;
-                        var trackingCode = jQueryNuvem.parseHTML('{{ store.assorted_js| escape("js") }}', document, true);
-                        jQueryNuvem('body').append(trackingCode);
+                (function() {
+                    var criticalLoaded = false;
+                    var trackingLoaded = false;
+
+                    function parseAndSplitScripts() {
+                        var rawHtml = '{{ store.assorted_js| escape("js") }}';
+                        var temp = document.createElement('div');
+                        temp.innerHTML = rawHtml;
+
+                        var criticalScripts = [];
+                        var trackingScripts = [];
+
+                        temp.querySelectorAll('script, link, iframe').forEach(function(el) {
+                            var src = el.getAttribute('src') || el.src || '';
+                            var content = el.textContent || el.innerHTML || '';
+                            var str = (src + ' ' + content).toLowerCase();
+
+                            // Cheguei app ou Empreender scripts funcionais essenciais
+                            if (str.indexOf('cheguei') !== -1 || str.indexOf('empreender') !== -1 || str.indexOf('avise') !== -1) {
+                                criticalScripts.push(el);
+                            } else {
+                                trackingScripts.push(el);
+                            }
+                        });
+
+                        return {
+                            critical: criticalScripts,
+                            tracking: trackingScripts
+                        };
                     }
 
-                    // Load on user interaction
-                    ['mouseover', 'keydown', 'touchmove', 'touchstart'].forEach(function(event) {
-                        window.addEventListener(event, loadExternalScripts, {passive: true, once: true});
-                    });
+                    var scripts = parseAndSplitScripts();
 
-                    // Fallback: Load after 5 seconds
-                    setTimeout(loadExternalScripts, 5000);
-                });
+                    function loadCritical() {
+                        if (criticalLoaded) return;
+                        criticalLoaded = true;
+                        
+                        scripts.critical.forEach(function(el) {
+                            var freshNode = document.createElement(el.tagName);
+                            Array.from(el.attributes).forEach(function(attr) {
+                                freshNode.setAttribute(attr.name, attr.value);
+                            });
+                            freshNode.innerHTML = el.innerHTML;
+                            document.body.appendChild(freshNode);
+                        });
+                    }
+
+                    function loadTracking() {
+                        if (trackingLoaded) return;
+                        trackingLoaded = true;
+
+                        scripts.tracking.forEach(function(el) {
+                            var freshNode = document.createElement(el.tagName);
+                            Array.from(el.attributes).forEach(function(attr) {
+                                freshNode.setAttribute(attr.name, attr.value);
+                            });
+                            freshNode.innerHTML = el.innerHTML;
+                            document.body.appendChild(freshNode);
+                        });
+                    }
+
+                    // Carrega scripts críticos e funcionais imediatamente (0ms)
+                    loadCritical();
+
+                    // Agenda os rastreadores não críticos de forma segura sem travar o mobile
+                    function scheduleTracking() {
+                        if (typeof LS !== 'undefined' && LS.ready) {
+                            LS.ready.then(function() {
+                                ['mouseover', 'keydown', 'touchmove', 'touchstart'].forEach(function(event) {
+                                    window.addEventListener(event, loadTracking, {passive: true, once: true});
+                                });
+                                setTimeout(loadTracking, 2000);
+                            });
+                        } else {
+                            setTimeout(scheduleTracking, 50);
+                        }
+                    }
+                    scheduleTracking();
+                })();
             </script>
         {% endif %}
 
@@ -526,6 +607,137 @@
                 });
             });
             }; // fim _eoraInitMkFashion
+
+            /* ============================================================================
+               EORA GLOBAL SPA-LIKE VARIATION NAVIGATION & PREFETCHING (0ms Swatches)
+               ============================================================================ */
+            (function () {
+                if (window.location.pathname.indexOf('/produtos/') === -1) return;
+
+                var pageCache = {};
+
+                function normalizePath(url) {
+                    try {
+                        return new URL(url, window.location.origin).pathname.replace(/\/?$/, '/');
+                    } catch(e) { return ''; }
+                }
+
+                function prefetchPage(href) {
+                    var path = normalizePath(href);
+                    if (!path || pageCache[path]) return;
+
+                    var doFetch = function () {
+                        fetch(path)
+                            .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+                            .then(function (html) { pageCache[path] = html; })
+                            .catch(function () {});
+                    };
+
+                    if (typeof requestIdleCallback === 'function') {
+                        requestIdleCallback(doFetch);
+                    } else {
+                        setTimeout(doFetch, 1000);
+                    }
+                }
+
+                function bindPrefetches() {
+                    document.querySelectorAll('a.btn-variant-thumb, a.btn-variant, a.js-insta-variant, .js-color-variants-container a').forEach(function (a) {
+                        var href = a.getAttribute('href');
+                        if (href && href.indexOf('/produtos/') !== -1) {
+                            prefetchPage(href);
+                        }
+                    });
+                }
+
+                document.addEventListener('click', function (e) {
+                    var a = e.target.closest('a.btn-variant-thumb, a.btn-variant, a.js-insta-variant, .js-color-variants-container a');
+                    if (!a) return;
+
+                    var href = a.getAttribute('href');
+                    if (!href || href.indexOf('/produtos/') === -1) return;
+
+                    var path = normalizePath(href);
+                    var currentPath = normalizePath(window.location.href);
+                    if (path === currentPath) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    var oldSP = document.querySelector('#single-product');
+                    if (!oldSP) return;
+
+                    if (document.querySelector('.eora-product-wrap')) {
+                        return;
+                    }
+
+                    e.preventDefault();
+
+                    var htmlPromise = pageCache[path]
+                        ? Promise.resolve(pageCache[path])
+                        : fetch(path).then(function (r) { return r.ok ? r.text() : Promise.reject(); });
+
+                    htmlPromise.then(function (html) {
+                        pageCache[path] = html;
+
+                        var parser = new DOMParser();
+                        var newDoc = parser.parseFromString(html, 'text/html');
+                        var newSP = newDoc.querySelector('#single-product');
+
+                        if (!newSP) {
+                            window.location.href = href;
+                            return;
+                        }
+
+                        // Se o produto atual ou o destino estiver sem estoque, recarrega a página tradicionalmente para recriar o App Cheguei corretamente
+                        var currentIsNoStock = document.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || document.getElementById('cheguei-alert-div');
+                        var targetIsNoStock = newSP.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || newSP.querySelector('#cheguei-alert-div');
+                        if (currentIsNoStock || targetIsNoStock) {
+                            window.location.href = href;
+                            return;
+                        }
+
+                        if (newDoc.querySelector('.eora-product-wrap') || html.indexOf('eora-product-wrap') !== -1) {
+                            window.location.href = href;
+                            return;
+                        }
+
+                        history.pushState({ eoraGlobalPath: path }, '', href);
+                        document.title = newDoc.title;
+
+                        oldSP.parentNode.replaceChild(newSP, oldSP);
+
+                        if (window._eoraInitMkFashion) window._eoraInitMkFashion();
+
+                        bindPrefetches();
+
+                        newSP.querySelectorAll('script').forEach(function (s) {
+                            var freshScript = document.createElement('script');
+                            if (s.src) {
+                                freshScript.src = s.src;
+                            } else {
+                                freshScript.textContent = s.textContent;
+                            }
+                            document.body.appendChild(freshScript);
+                            setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
+                        });
+
+                    }).catch(function () {
+                        window.location.href = href;
+                    });
+                }, true);
+
+                window.addEventListener('popstate', function (e) {
+                    if (e.state && e.state.eoraGlobalPath) {
+                        window.location.reload();
+                    }
+                });
+
+                if (document.readyState === 'complete') {
+                    bindPrefetches();
+                } else {
+                    window.addEventListener('load', bindPrefetches);
+                }
+            })();
         })();
         </script>
 

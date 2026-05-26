@@ -3,8 +3,9 @@
 <script>
 (function () {
     var css = [
-        /* Impede scroll horizontal causado por elementos 100vw */
-        'html{overflow-x:hidden}',
+        /* Proteção máxima de layout e viewport contra quebras e encolhimento (squishing) */
+        'html,body{max-width:100%!important;width:100%!important;overflow-x:hidden!important;margin:0!important;padding:0!important;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}',
+        'input,select,textarea,button,a{touch-action:manipulation!important}',
 
         /* Esconde o bloco inteiro do tema */
         '#single-product{display:none!important}',
@@ -13,10 +14,10 @@
         '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-wrap{grid-template-columns:55% 45%}}',
         '@media(max-width:768px){.eora-product-wrap{grid-template-columns:1fr}}',
-        '.eora-product-info{padding-left:40px;box-sizing:border-box}',
+        '.eora-product-info{padding-left:40px;box-sizing:border-box;display:flex!important;flex-direction:column!important}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-info{padding-left:24px}}',
         '@media(max-width:768px){.eora-product-info{padding-left:0;margin-top:24px}}',
-        /* Remove estilos que o tema coloca no .product-info-column que agora está clonado */
+        '.eora-product-info .product-infos{display:flex!important;flex-direction:column!important}',
         '.eora-product-info .eora-bolsa-vars{margin-left:0!important;margin-right:0!important}',
 
         /* ── Galeria vertical ── */
@@ -65,7 +66,7 @@
         /* ── Swatches de variante ── */
         '.eora-bolsa-vars{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:12px 0 16px!important;width:100%!important;max-width:100%!important}',
         '.eora-bolsa-var-item{border:1px solid #ecece8!important;cursor:pointer!important;width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;overflow:hidden!important;transition:border-color .2s!important;box-sizing:border-box!important;background:#f5f5f3!important}',
-        '.eora-bolsa-var-item:hover,.eora-bolsa-var-item.eora-active{border-color:#111!important}',
+        '.eora-bolsa-var-item:hover,.eora-bolsa-var-item.eora-active{border:2px solid #111!important}',
         '.eora-bolsa-var-item img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}',
 
         /* mobile: miniaturas levemente menores */
@@ -88,7 +89,9 @@
         '@media(max-width:767px){.eora-section-titulo{font-size:26px!important;margin-bottom:24px!important}}',
         '.eora-section-bloco{margin-top:80px!important;width:100%!important;box-sizing:border-box!important}',
         '.eora-section-bloco.eora-banner-full-bloco{margin-top:40px!important}',
-        '@media(max-width:767px){.eora-section-bloco.eora-banner-full-bloco{margin-top:24px!important}}'
+        '#cheguei-alert-div{display:none!important}',
+        '.eora-cloned-product-form,.eora-cloned-product-form .row,.eora-cloned-product-form [class*="col-"]{margin-bottom:0px!important;padding-bottom:0px!important}',
+        '.eora-cloned-product-form .dropdown-wrapper,.eora-cloned-product-form .shipping-dropdown{margin-top:16px!important;margin-bottom:8px!important}'
     ].join('');
 
     var styleEl = document.createElement('style');
@@ -223,34 +226,65 @@
 
     var cachedInstitutionalAnchor = null;
     function buildCustomInstitutionalMessage() {
-        // Busca em qualquer tabela a linha com chave 'titulo' e exibe como institucional
-        var found = '';
-        document.querySelectorAll('table').forEach(function (t) {
-            t.querySelectorAll('tbody > tr').forEach(function (row) {
-                var cells = row.querySelectorAll('td');
-                if (cells.length < 2) return;
-                var key = (cells[0].textContent || '').trim().toLowerCase();
-                if (key === 'titulo' && !found) {
-                    found = cells[1].innerHTML || cells[1].textContent;
-                }
-            });
+        var dados = getDados();
+        var t = dados['texto_institucional'];
+        if (!t) return;
+        var titulo = '';
+        var texto = '';
+        var nomeVariacao = '';
+        t.querySelectorAll('tbody > tr').forEach(function(row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length < 2) return;
+            var key = (cells[0].textContent || '').trim().toLowerCase();
+            
+            var cleanHTML = function(html) {
+                return html.replace(/<br\s*\/?>/gi, ' ')
+                           .replace(/<\/p>\s*<p[^>]*>/gi, ' ')
+                           .replace(/<\/?p[^>]*>/gi, ' ')
+                           .replace(/\s+/g, ' ')
+                           .trim();
+            };
+            
+            if (key === 'titulo_institucional') titulo = cleanHTML(cells[1].innerHTML);
+            if (key === 'texto_institucional' && row.rowIndex > 0) texto = cleanHTML(cells[1].innerHTML);
+            if (key === 'nome_variacao' || key === 'nome_variação') nomeVariacao = cells[1].innerHTML || cells[1].textContent;
         });
-        if (!found) return;
 
-        // Cria bloco institucional customizado
-        var bloco = document.createElement('div');
-        bloco.className = 'eora-section-bloco eora-institutional-custom';
-        var h2 = document.createElement('h2');
-        h2.className = 'eora-section-titulo';
-        h2.innerHTML = found;
-        bloco.appendChild(h2);
+        if (nomeVariacao) {
+            var infoEl = document.querySelector('.eora-product-info');
+            if (infoEl) {
+                var h2 = infoEl.querySelector('.js-product-name');
+                if (h2 && !infoEl.querySelector('.eora-nome-variacao')) {
+                    var div = document.createElement('div');
+                    div.className = 'eora-nome-variacao';
+                    div.style.marginTop = '-8px';
+                    div.style.marginBottom = '16px';
+                    div.style.fontSize = '12px';
+                    div.style.color = '#666';
+                    div.innerHTML = nomeVariacao;
+                    h2.parentNode.insertBefore(div, h2.nextSibling);
+                }
+            }
+        }
 
-        // Insere antes do primeiro banner ou no início do wrap
-        var anchor = document.querySelector('.eora-banner-produto') || document.querySelector('.eora-product-wrap');
-        if (anchor && anchor.parentNode) {
-            anchor.parentNode.insertBefore(bloco, anchor);
-        } else {
-            document.body.insertBefore(bloco, document.body.firstChild);
+        if (!titulo && !texto) return;
+
+        var anchor = findInstitutionalAnchor();
+        if (anchor) {
+            var wrapper = anchor.querySelector('.container') || anchor.querySelector('.row') || anchor;
+            
+            var contentHTML = '<div class="institutional-container container-fluid">' +
+                              '<div class="institutional-left d-flex flex-column">' + 
+                              (titulo ? '<h3 class="institutional-title mb-0">' + titulo + '</h3>' : '') + 
+                              (texto ? '<p class="institutional-text mb-0">' + texto + '</p>' : '') + 
+                              '</div>' + 
+                              '<div class="institutional-right">' + 
+                              '<a href="/sobre1" class="institutional-link" aria-label="Sobre a EORA">' + 
+                              'Sobre a EORA' + 
+                              '<svg class="institutional-link-icon icon-inline icon-md"><use xlink:href="#chevron"></use></svg>' + 
+                              '</a></div></div>';
+            
+            wrapper.innerHTML = contentHTML;
         }
     }
 
@@ -316,6 +350,326 @@
         form.submit();
         return true;
     }
+
+    function bindShippingCalculator(infoEl, themeProd) {
+        var origShipping = themeProd.querySelector('.js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || themeProd.querySelector('input[name="zipcode"], .js-shipping-input')?.closest('div');
+        var clonedShipping = infoEl.querySelector('.js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || infoEl.querySelector('input[name="zipcode"], .js-shipping-input')?.closest('div');
+        
+        if (origShipping && clonedShipping) {
+            var origInput = origShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+            var origBtn = origShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"]');
+            var origResponse = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+            
+            var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+            var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"]');
+            var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+            
+            if (clonedBtn) {
+                clonedBtn.classList.remove('js-calculate-shipping', 'js-shipping-calculator-btn');
+                clonedBtn.classList.add('eora-calculate-shipping-btn');
+                
+                var freshBtn = clonedBtn.cloneNode(true);
+                clonedBtn.parentNode.replaceChild(freshBtn, clonedBtn);
+                
+                freshBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (clonedInput && origInput) {
+                        origInput.value = clonedInput.value;
+                        origInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        origInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    if (origBtn) {
+                        origBtn.click();
+                    }
+                });
+            }
+            
+            if (clonedInput) {
+                var freshInput = clonedInput.cloneNode(true);
+                clonedInput.parentNode.replaceChild(freshInput, clonedInput);
+                freshInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var btn = clonedShipping.querySelector('.eora-calculate-shipping-btn');
+                        if (btn) btn.click();
+                    }
+                });
+            }
+            
+            if (origResponse && clonedResponse) {
+                var syncResponse = function () {
+                    clonedResponse.innerHTML = origResponse.innerHTML;
+                    clonedResponse.style.display = origResponse.style.display;
+                    clonedResponse.className = origResponse.className;
+                };
+                var observer = new MutationObserver(syncResponse);
+                observer.observe(origResponse, { childList: true, subtree: true, attributes: true });
+                syncResponse();
+            }
+            
+            var syncAllShipping = function () {
+                var origResp = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+                var clonedResp = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+                if (origResp && clonedResp && clonedResp.innerHTML !== origResp.innerHTML) {
+                    clonedResp.innerHTML = origResp.innerHTML;
+                    clonedResp.style.display = origResp.style.display;
+                }
+            };
+            var fallbackObserver = new MutationObserver(syncAllShipping);
+            fallbackObserver.observe(origShipping, { childList: true, subtree: true, attributes: true });
+        }
+    }
+
+    var eoraPageCache = {};
+    
+    function prefetchVariationPages(items) {
+        items.forEach(function (item) {
+            var path = normalizePathname(item.href);
+            if (!path || eoraPageCache[path]) return;
+            
+            var doFetch = function () {
+                fetch(path)
+                    .then(function (r) { return r.text(); })
+                    .then(function (html) {
+                        eoraPageCache[path] = html;
+                    })
+                    .catch(function () {});
+            };
+            
+            if (typeof requestIdleCallback === 'function') {
+                requestIdleCallback(doFetch);
+            } else {
+                setTimeout(doFetch, 1000);
+            }
+        });
+    }
+
+    function reorganizeEoraProductInfo(infoEl) {
+        if (!infoEl) return;
+        
+        // 1. Reordenar fisicamente os filhos internos de .product-infos
+        var productInfos = infoEl.querySelector('.product-infos');
+        if (productInfos) {
+            var nameEl = productInfos.querySelector('.js-product-name');
+            var nameVarEl = productInfos.querySelector('.eora-nome-variacao');
+            var priceContainer = productInfos.querySelector('.price-container');
+            
+            var innerOrdered = [nameEl, nameVarEl, priceContainer];
+            innerOrdered.forEach(function (el) {
+                if (el && productInfos.contains(el)) {
+                    productInfos.appendChild(el);
+                }
+            });
+        }
+        
+        // 2. Reordenar fisicamente os filhos diretos da coluna de detalhes
+        var descAcc = infoEl.querySelector('.eora-desc-acc') || infoEl.querySelector('.js-product-description-short') || infoEl.querySelector('.product-description-short');
+        var bolsaVars = infoEl.querySelector('.eora-bolsa-vars') || infoEl.querySelector('.js-product-variants') || infoEl.querySelector('.js-color-variants-container');
+        var clonedForm = infoEl.querySelector('.eora-cloned-product-form') || infoEl.querySelector('#product_form') || infoEl.querySelector('form');
+        
+        var orderedElements = [productInfos, descAcc, bolsaVars, clonedForm];
+        orderedElements.forEach(function (el) {
+            if (el && infoEl.contains(el)) {
+                infoEl.appendChild(el);
+            }
+        });
+    }
+
+    function navigateToVariation(path, fullUrl) {
+        var grid = document.querySelector('.eora-bolsa-vars');
+        if (grid) {
+            grid.querySelectorAll('.eora-bolsa-var-item').forEach(function (x) {
+                var itemPath = x.getAttribute('data-href-path');
+                x.classList.toggle('eora-active', itemPath === path);
+            });
+        }
+        
+        var htmlPromise = eoraPageCache[path]
+            ? Promise.resolve(eoraPageCache[path])
+            : fetch(path).then(function (r) { return r.text(); });
+            
+        htmlPromise.then(function (html) {
+            eoraPageCache[path] = html;
+            
+            var parser = new DOMParser();
+            var newDoc = parser.parseFromString(html, 'text/html');
+            var newSP = newDoc.querySelector('#single-product');
+            
+            // Se o produto atual ou o destino estiver sem estoque, recarrega a página tradicionalmente para recriar o App Cheguei corretamente
+            var currentIsNoStock = document.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || document.getElementById('cheguei-alert-div');
+            var targetIsNoStock = newSP && (newSP.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || newSP.querySelector('#cheguei-alert-div'));
+            if (currentIsNoStock || targetIsNoStock) {
+                window.location.href = fullUrl;
+                return;
+            }
+            
+            if (normalizePathname(window.location.href) !== path) {
+                history.pushState({ eoraPath: path }, '', fullUrl);
+            }
+            
+            document.title = newDoc.title;
+            
+            var oldSP = document.querySelector('#single-product');
+            var newSP = newDoc.querySelector('#single-product');
+            if (oldSP && newSP) {
+                oldSP.parentNode.replaceChild(newSP, oldSP);
+                newSP.style.setProperty('display', 'none', 'important');
+                newSP.style.setProperty('visibility', 'hidden', 'important');
+                newSP.style.setProperty('height', '0', 'important');
+                newSP.style.setProperty('overflow', 'hidden', 'important');
+                newSP.style.setProperty('position', 'absolute', 'important');
+                newSP.style.setProperty('left', '-99999px', 'important');
+                newSP.style.setProperty('top', '-99999px', 'important');
+                newSP.style.setProperty('width', '0', 'important');
+                newSP.style.setProperty('opacity', '0', 'important');
+                newSP.style.setProperty('pointer-events', 'none', 'important');
+            }
+            
+            var infoEl = document.querySelector('.eora-product-info');
+            var galleryEl = document.querySelector('.eora-product-gallery');
+            var themeProd = document.querySelector('#single-product');
+            
+            if (infoEl && themeProd) {
+                var nameEl = infoEl.querySelector('.js-product-name');
+                var newNameEl = newSP.querySelector('.js-product-name');
+                if (nameEl && newNameEl) nameEl.innerHTML = newNameEl.innerHTML;
+                
+                var priceEl = infoEl.querySelector('.js-price-display, .product-price');
+                var newPriceEl = newSP.querySelector('.js-price-display, .product-price');
+                if (priceEl && newPriceEl) priceEl.innerHTML = newPriceEl.innerHTML;
+                
+                var dados = {};
+                newDoc.querySelectorAll('.js-product-description-base table').forEach(function (t) {
+                    var td = t.querySelector('tbody > tr:first-child td:first-child');
+                    if (td) dados[td.textContent.trim().toLowerCase()] = t;
+                });
+                var t = dados['texto_institucional'];
+                var nomeVariacao = '';
+                if (t) {
+                    t.querySelectorAll('tbody > tr').forEach(function(row) {
+                        var cells = row.querySelectorAll('td');
+                        if (cells.length < 2) return;
+                        var key = (cells[0].textContent || '').trim().toLowerCase();
+                        if (key === 'nome_variacao' || key === 'nome_variação') nomeVariacao = cells[1].innerHTML || cells[1].textContent;
+                    });
+                }
+                
+                var varTitleEl = infoEl.querySelector('.eora-nome-variacao');
+                if (varTitleEl) {
+                    if (nomeVariacao) {
+                        varTitleEl.style.display = 'block';
+                        varTitleEl.innerHTML = nomeVariacao;
+                    } else {
+                        varTitleEl.style.display = 'none';
+                    }
+                } else if (nomeVariacao) {
+                    var h2 = infoEl.querySelector('.js-product-name');
+                    if (h2) {
+                        var div = document.createElement('div');
+                        div.className = 'eora-nome-variacao';
+                        div.style.marginTop = '-8px';
+                        div.style.marginBottom = '16px';
+                        div.style.fontSize = '12px';
+                        div.style.color = '#666';
+                        div.innerHTML = nomeVariacao;
+                        h2.parentNode.insertBefore(div, h2.nextSibling);
+                    }
+                }
+                
+                var newPhotos = [];
+                var seenUrls = {};
+                function addPhoto(url) {
+                    if (!url || typeof url !== 'string' || url.indexOf('data:') === 0 || url.length < 10) return;
+                    var u = normalizeUrl(url);
+                    if (!u) return;
+                    var k = u.replace(/\?.*$/, '').toLowerCase();
+                    if (seenUrls[k]) return;
+                    seenUrls[k] = true;
+                    newPhotos.push(u);
+                }
+                try {
+                    var scripts = newDoc.querySelectorAll('script');
+                    var parsedLS = null;
+                    scripts.forEach(function (s) {
+                        var txt = s.textContent || '';
+                        if (txt.indexOf('LS.product') !== -1) {
+                            var m = txt.match(/LS\.product\s*=\s*({[\s\S]*?});/);
+                            if (m && m[1]) {
+                                try { parsedLS = JSON.parse(m[1]); } catch (e) {}
+                            }
+                        }
+                    });
+                    if (parsedLS && parsedLS.images) {
+                        parsedLS.images.forEach(function (img) { addPhoto(img.src || img.url || ''); });
+                    }
+                } catch (e) {}
+                if (!newPhotos.length) {
+                    newSP.querySelectorAll('.product-image-column img').forEach(function (img) { addPhoto(getSrc(img)); });
+                }
+                if (galleryEl && galleryEl._eoraSetPhotos && newPhotos.length) {
+                    galleryEl._eoraSetPhotos(newPhotos);
+                }
+                
+                var oldClonedForm = infoEl.querySelector('.eora-cloned-product-form');
+                var newClonedForm = newSP.querySelector('#product_form, .js-product-form, form[action*="/cart"], form');
+                if (oldClonedForm && newClonedForm) {
+                    var formParent = oldClonedForm.parentNode;
+                    var freshForm = newClonedForm.cloneNode(true);
+                    freshForm.classList.add('eora-cloned-product-form');
+                    if (freshForm.id === 'product_form') freshForm.removeAttribute('id');
+                    
+                    freshForm.querySelectorAll('.js-color-variants-container,.js-product-variants').forEach(function (el) {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    });
+                    
+                    formParent.replaceChild(freshForm, oldClonedForm);
+                    
+                    var forwardToOriginal = function () {
+                        var originalForm = getOriginalProductForm();
+                        if (!originalForm) return;
+                        syncFormValues(freshForm, originalForm);
+                        triggerOriginalBuy();
+                    };
+                    freshForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        forwardToOriginal();
+                    });
+                    freshForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
+                        btn.classList.remove('js-addtocart', 'js-addtocart-btn');
+                        btn.removeAttribute('name');
+                        btn.classList.add('eora-buy-btn');
+                        btn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            forwardToOriginal();
+                        });
+                    });
+                    freshForm.querySelectorAll('button, input[type="submit"]').forEach(function (btn) {
+                        if (btn.classList.contains('eora-buy-btn')) return;
+                        btn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            forwardToOriginal();
+                        });
+                    });
+                }
+                
+                bindShippingCalculator(infoEl, themeProd);
+                reorganizeEoraProductInfo(infoEl);
+            }
+        }).catch(function () {
+            window.location.href = fullUrl;
+        });
+    }
+
+    window.addEventListener('popstate', function (e) {
+        if (e.state && e.state.eoraPath) {
+            navigateToVariation(e.state.eoraPath, window.location.href);
+        }
+    });
 
     function makePlaceholderThumb(label) {
         var safeLabel = String(label || 'EORA').trim().slice(0, 18) || 'EORA';
@@ -523,6 +877,17 @@
         if (!tag) return Promise.resolve([]);
         var baseSearchUrl = '/search/?q=' + encodeURIComponent(tag);
 
+        var cacheKey = 'eora_vars_v2_' + tag.toLowerCase().trim();
+        var cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+            try {
+                var parsed = JSON.parse(cached);
+                if (parsed && parsed.length) {
+                    return Promise.resolve(parsed);
+                }
+            } catch (e) {}
+        }
+
         function extractUrlFromSrcset(srcset) {
             if (!srcset) return '';
             var parts = String(srcset).split(',').map(function (p) { return p.trim(); }).filter(Boolean);
@@ -531,55 +896,10 @@
             return last || '';
         }
 
-        function getSearchItemImageUrl(link, name) {
-            var candidates = [];
-            var img = link.querySelector('img');
-            if (img) {
-                candidates.push(img.getAttribute('data-zoom-image'));
-                candidates.push(img.getAttribute('data-image'));
-                candidates.push(img.getAttribute('data-srcset'));
-                candidates.push(img.getAttribute('srcset'));
-                candidates.push(img.getAttribute('data-src'));
-                candidates.push(img.getAttribute('data-lazy-src'));
-                candidates.push(img.getAttribute('data-original'));
-                candidates.push(img.getAttribute('src'));
-                candidates.push(img.src);
-            }
-
-            var source = link.querySelector('picture source');
-            if (source) {
-                candidates.push(source.getAttribute('data-srcset'));
-                candidates.push(source.getAttribute('srcset'));
-            }
-
-            var bg = '';
-            var styleNode = link.querySelector('[style*="background"]');
-            if (styleNode) {
-                var st = styleNode.getAttribute('style') || '';
-                var m = st.match(/url\((['"]?)(.*?)\1\)/i);
-                if (m && m[2]) bg = m[2];
-            }
-            candidates.push(bg);
-
-            for (var i = 0; i < candidates.length; i++) {
-                var raw = candidates[i];
-                if (!raw) continue;
-                var candidate = raw;
-                if (candidate.indexOf(',') !== -1 || /\s\d+w/.test(candidate)) {
-                    candidate = extractUrlFromSrcset(candidate);
-                }
-                if (!candidate || candidate.indexOf('data:') === 0) continue;
-                try {
-                    candidate = new URL(candidate, window.location.origin).href;
-                } catch (e) {}
-                if (isRenderableThumbUrl(candidate)) return normalizeUrl(candidate);
-            }
-
-            return makePlaceholderThumb(name || tag);
-        }
-
         function collectItemsFromDoc(doc, items, seen) {
-            doc.querySelectorAll('a.item-link, .item-link').forEach(function (link) {
+            doc.querySelectorAll('.item').forEach(function (itemEl) {
+                var link = itemEl.querySelector('a[href*="/produtos/"]');
+                if (!link) return;
                 var href = link.getAttribute('href') || '';
                 if (!href) return;
                 var absUrl;
@@ -590,16 +910,70 @@
                 }
 
                 var hrefPath = normalizePathname(absUrl);
-                if (!hrefPath || hrefPath === currentPath || hrefPath.indexOf('/produtos/') !== 0) return;
+                if (!hrefPath || hrefPath.indexOf('/produtos/') !== 0) return;
                 if (seen[hrefPath]) return;
 
-                var img = link.querySelector('img');
-                var name = (link.getAttribute('title') || link.getAttribute('aria-label') || cellText(link) || '').trim();
-                if (!name && img) name = (img.getAttribute('alt') || '').trim();
-                var imgUrl = getSearchItemImageUrl(link, name);
+                var img = itemEl.querySelector('img.js-item-image, img.item-image-primary, img');
+                var name = (link.getAttribute('title') || link.getAttribute('aria-label') || '').trim();
+                
+                if (!name) {
+                    var altLink = itemEl.querySelector('a.item-link');
+                    if (altLink) {
+                        name = (altLink.getAttribute('title') || altLink.getAttribute('aria-label') || altLink.textContent || '').trim();
+                    }
+                }
+                
+                if (!name && img) {
+                    name = (img.getAttribute('alt') || '').trim();
+                }
+                
+                var imgUrl = '';
+                if (img) {
+                    var candidates = [
+                        img.getAttribute('data-srcset'),
+                        img.getAttribute('srcset'),
+                        img.getAttribute('data-zoom-image'),
+                        img.getAttribute('data-image'),
+                        img.getAttribute('data-src'),
+                        img.getAttribute('data-lazy-src'),
+                        img.getAttribute('data-original'),
+                        img.getAttribute('src'),
+                        img.src
+                    ];
+                    
+                    var bg = '';
+                    var styleNode = itemEl.querySelector('[style*="background"]');
+                    if (styleNode) {
+                        var st = styleNode.getAttribute('style') || '';
+                        var m = st.match(/url\((['"]?)(.*?)\1\)/i);
+                        if (m && m[2]) bg = m[2];
+                    }
+                    candidates.push(bg);
+
+                    for (var i = 0; i < candidates.length; i++) {
+                        var raw = candidates[i];
+                        if (!raw) continue;
+                        var candidate = raw;
+                        if (candidate.indexOf(',') !== -1 || /\s\d+w/.test(candidate)) {
+                            candidate = extractUrlFromSrcset(candidate);
+                        }
+                        if (!candidate || candidate.indexOf('data:') === 0) continue;
+                        try {
+                            candidate = new URL(candidate, window.location.origin).href;
+                        } catch (e) {}
+                        if (isRenderableThumbUrl(candidate)) {
+                            imgUrl = normalizeUrl(candidate);
+                            break;
+                        }
+                    }
+                }
+                
+                if (!imgUrl) {
+                    imgUrl = makePlaceholderThumb(name || tag);
+                }
 
                 seen[hrefPath] = true;
-                items.push({ url: normalizeUrl(imgUrl), href: absUrl, name: name, _path: hrefPath });
+                items.push({ url: imgUrl, href: absUrl, name: name || tag });
             });
         }
 
@@ -656,35 +1030,53 @@
                 })).then(function () { return items; });
             })
             .then(function (items) {
-                items = items || [];
-                if (!items.length) return [];
-
-                return Promise.all(items.map(function (item) {
-                    return isProductPublicAndBuyable(item.href).then(function (ok) {
-                        return ok ? item : null;
-                    });
-                })).then(function (checked) {
-                    checked = checked.filter(Boolean);
-                    if (!checked.length) return [];
-
-                    return Promise.all(checked.map(function (item) {
-                        return fetchProductPrimaryImage(item.href).then(function (realUrl) {
-                            if (realUrl) {
-                                item.url = realUrl;
-                                return item;
-                            }
-                            if (!item.url || !isRenderableThumbUrl(item.url)) {
-                                item.url = makePlaceholderThumb(item.name || tag);
-                            }
-                            return item;
-                        });
-                    })).then(function (enriched) {
-                        return enriched.map(function (item) {
-                            delete item._path;
-                            return item;
-                        });
-                    });
+                var unique = [];
+                var seenHref = {};
+                (items || []).forEach(function (it) {
+                    var norm = normalizePathname(it.href);
+                    if (!seenHref[norm]) {
+                        seenHref[norm] = true;
+                        unique.push(it);
+                    }
                 });
+
+                // Garantia/Salvaguarda: assegurar que o produto atual está na lista de variações
+                var currentHref = window.location.href;
+                var currentPathNormalized = normalizePathname(currentHref);
+                var hasCurrent = unique.some(function (it) {
+                    return normalizePathname(it.href) === currentPathNormalized;
+                });
+                if (!hasCurrent) {
+                    var nameEl = document.querySelector('.js-product-name');
+                    var imgEl = document.querySelector('.eora-blg-slide img, .product-image-column img, img');
+                    if (nameEl) {
+                        var currentName = nameEl.textContent.trim();
+                        var currentImgSrc = '';
+                        if (imgEl) {
+                            currentImgSrc = imgEl.getAttribute('data-zoom-image') || imgEl.getAttribute('data-image') || imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
+                        }
+                        if (currentImgSrc) currentImgSrc = normalizeUrl(currentImgSrc);
+                        unique.push({
+                            url: currentImgSrc || makePlaceholderThumb(currentName),
+                            href: currentHref,
+                            name: currentName
+                        });
+                    }
+                }
+
+                // Ordenar alfabeticamente pelo nome para garantir ordem 100% idêntica em qualquer página
+                unique.sort(function (a, b) {
+                    var nameA = String(a.name || '');
+                    var nameB = String(b.name || '');
+                    return nameA.localeCompare(nameB, 'pt', { sensitivity: 'base' });
+                });
+
+                // Armazenar no cache da sessão
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(unique));
+                } catch (e) {}
+
+                return unique;
             })
             .catch(function () { return []; });
     }
@@ -829,8 +1221,13 @@
 
     function buildVariantSwatches(infoEl, relatedItems) {
         var grid = document.createElement('div'); grid.className = 'eora-bolsa-vars';
+        var currentPath = normalizePathname(window.location.href);
         relatedItems.forEach(function (item, i) {
-            var el = document.createElement('div'); el.className = 'eora-bolsa-var-item';
+            var itemPath = normalizePathname(item.href);
+            var isActive = (itemPath === currentPath);
+            var el = document.createElement('div');
+            el.className = 'eora-bolsa-var-item' + (isActive ? ' eora-active' : '');
+            el.setAttribute('data-href-path', itemPath);
             var img = document.createElement('img');
             img.alt = item.name || ('variante ' + (i + 1));
             img.onerror = function () {
@@ -853,7 +1250,11 @@
             img.src = item.url || makePlaceholderThumb(item.name || 'variante');
             el.appendChild(img);
             if (item.href) {
-                el.addEventListener('click', function () { window.location.href = item.href; });
+                el.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigateToVariation(itemPath, item.href);
+                });
             }
             grid.appendChild(el);
         });
@@ -1018,7 +1419,7 @@
         /* CSS */
         var css = [
             '.eora-banner-produto{display:block;text-decoration:none;color:inherit;box-sizing:border-box}',
-            '.eora-banner-prod-wrap{position:relative;width:100%;overflow:hidden;background:#000}',
+            '.eora-banner-prod-wrap{position:relative;width:100%;overflow:hidden;background:transparent}',
             '.eora-banner-prod-wrap::before{content:"";display:block;padding-bottom:42.857%}',
             '.eora-banner-prod-video{position:absolute;inset:0;width:100%;height:100%;border:0;overflow:hidden}',
             '.eora-banner-prod-img,.eora-banner-prod-img img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}',
@@ -1147,6 +1548,124 @@
         }
     }
 
+    function initChegueiObserver(visibleInfoEl) {
+        if (!visibleInfoEl) return;
+
+        var attempts = 0;
+        var checkInterval = setInterval(function () {
+            attempts++;
+            
+            // Tenta localizar o elemento clicável real do Cheguei
+            var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                 document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                                 document.querySelector('#cheguei-alert-div section');
+            
+            // Garante que não é o nosso próprio placeholder
+            var placeholder = visibleInfoEl.querySelector('.eora-cheguei-placeholder');
+            if (realChegueiBtn && (!placeholder || !placeholder.contains(realChegueiBtn))) {
+                clearInterval(checkInterval);
+                
+                var buyBtn = visibleInfoEl.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
+                var chegueiDiv = document.getElementById('cheguei-alert-div');
+                
+                if (chegueiDiv && buyBtn && buyBtn.parentNode) {
+                    // Move o bloco real para a posição visível correta
+                    buyBtn.parentNode.insertBefore(chegueiDiv, buyBtn.nextSibling);
+                    
+                    // Sobrescreve o display:none do CSS para exibir o real perfeitamente
+                    chegueiDiv.style.setProperty('display', 'block', 'important');
+                    chegueiDiv.style.setProperty('visibility', 'visible', 'important');
+                    chegueiDiv.style.setProperty('position', 'relative', 'important');
+                    chegueiDiv.style.setProperty('left', 'auto', 'important');
+                    chegueiDiv.style.setProperty('top', 'auto', 'important');
+                    chegueiDiv.style.setProperty('opacity', '1', 'important');
+                    chegueiDiv.style.setProperty('pointer-events', 'auto', 'important');
+                    chegueiDiv.style.setProperty('width', '100%', 'important');
+                    chegueiDiv.style.setProperty('max-width', '100%', 'important');
+                    chegueiDiv.style.setProperty('margin-top', '12px', 'important');
+                    chegueiDiv.style.setProperty('margin-bottom', '16px', 'important');
+                    chegueiDiv.style.setProperty('padding-bottom', '0px', 'important');
+                }
+                
+                // Esconde o nosso placeholder instantâneo agora que o real carregou
+                if (placeholder) {
+                    placeholder.style.setProperty('display', 'none', 'important');
+                }
+            }
+            
+            if (attempts > 400) { // 20 segundos
+                clearInterval(checkInterval);
+            }
+        }, 50);
+    }
+
+    function initChegueiPlaceholder(visibleInfoEl) {
+        if (!visibleInfoEl) return;
+
+        var buyBtn = visibleInfoEl.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
+        if (!buyBtn || !buyBtn.parentNode) return;
+
+        // Só injeta o placeholder se o botão de compra estiver desabilitado ou marcado como sem estoque (Esgotado)
+        var isNoStock = buyBtn.disabled || buyBtn.classList.contains('nostock') || buyBtn.value === 'Esgotado';
+        if (!isNoStock) return;
+
+        if (visibleInfoEl.querySelector('.eora-cheguei-placeholder')) return;
+
+        var placeholder = document.createElement('div');
+        placeholder.className = 'eora-cheguei-placeholder';
+        placeholder.style.cssText = 'width: 100%; max-width: 100%; margin-top: 12px !important; margin-bottom: 16px !important; padding-bottom: 0px !important; display: block !important;';
+        
+        placeholder.innerHTML = [
+            '<div class="placeholder-btn" style="display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; padding: 12px 10px; width: 100%; background: rgb(0, 9, 127); border-radius: 0px; color: rgb(255, 255, 255); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;">',
+            '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">',
+            '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>',
+            '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>',
+            '</svg>',
+            '<span class="placeholder-text" style="color: #FFFFFF !important; font-family: inherit !important;">Avise-me quando chegar!</span>',
+            '</div>'
+        ].join('');
+
+        buyBtn.parentNode.insertBefore(placeholder, buyBtn.nextSibling);
+
+        placeholder.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                 document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                                 document.querySelector('#cheguei-alert-div section') ||
+                                 document.querySelector('#cheguei-alert-div div') ||
+                                 document.getElementById('cheguei-alert-div');
+            
+            if (realChegueiBtn && realChegueiBtn !== placeholder && !placeholder.contains(realChegueiBtn)) {
+                realChegueiBtn.click();
+            } else {
+                var txtNode = placeholder.querySelector('.placeholder-text');
+                if (txtNode) txtNode.textContent = 'Carregando formulário...';
+
+                var attempts = 0;
+                var checkInterval = setInterval(function () {
+                    attempts++;
+                    var btn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                              document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                              document.querySelector('#cheguei-alert-div section') ||
+                              document.querySelector('#cheguei-alert-div div') ||
+                              document.getElementById('cheguei-alert-div');
+                    
+                    if (btn && btn !== placeholder && !placeholder.contains(btn)) {
+                        clearInterval(checkInterval);
+                        if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
+                        btn.click();
+                    } else if (attempts > 80) {
+                        clearInterval(checkInterval);
+                        if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
+                        alert('O formulário de aviso de estoque está demorando a carregar. Por favor, tente novamente em instantes.');
+                    }
+                }, 100);
+            }
+        });
+    }
+
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
@@ -1192,6 +1711,20 @@
                 clonedForm.classList.add('eora-cloned-product-form');
                 if (clonedForm.id === 'product_form') clonedForm.removeAttribute('id');
 
+                // Esconde a mensagem de carrinho vazio e seu container col-12 para eliminar o espaço em branco
+                var addMsg = clonedForm.querySelector('.js-added-to-cart-product-message');
+                if (addMsg && addMsg.parentNode) {
+                    var colContainer = addMsg.parentNode;
+                    while (colContainer && colContainer !== clonedForm && !colContainer.classList.contains('col-12')) {
+                        colContainer = colContainer.parentNode;
+                    }
+                    if (colContainer && colContainer.classList.contains('col-12')) {
+                        colContainer.style.setProperty('display', 'none', 'important');
+                    } else {
+                        addMsg.parentNode.style.setProperty('display', 'none', 'important');
+                    }
+                }
+
                 var forwardToOriginal = function () {
                     var originalForm = getOriginalProductForm();
                     if (!originalForm) return;
@@ -1201,16 +1734,35 @@
 
                 clonedForm.addEventListener('submit', function (e) {
                     e.preventDefault();
+                    e.stopPropagation(); // Impede o bubbling para evitar que listeners globais do tema quebrem
                     forwardToOriginal();
                 });
 
                 clonedForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
+                    // Remove classes de gatilho nativas do botão clonado para que listeners nativos delegados ao body/document não rodem nele
+                    btn.classList.remove('js-addtocart', 'js-addtocart-btn');
+                    btn.removeAttribute('name');
+                    btn.classList.add('eora-buy-btn');
+                    
                     btn.addEventListener('click', function (e) {
                         e.preventDefault();
+                        e.stopPropagation(); // Impede o bubbling
+                        forwardToOriginal();
+                    });
+                });
+                
+                clonedForm.querySelectorAll('button, input[type="submit"]').forEach(function (btn) {
+                    if (btn.classList.contains('eora-buy-btn')) return;
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         forwardToOriginal();
                     });
                 });
             }
+
+            // Ponte do calculador de frete para evitar quebra no JS nativo
+            bindShippingCalculator(infoEl, themeProd);
 
             /* Remove os seletores de cor nativos (substituidos pelos nossos swatches) */
             infoEl.querySelectorAll('.js-color-variants-container,.js-product-variants').forEach(function (el) {
@@ -1278,10 +1830,16 @@
             }
         })();
 
+        reorganizeEoraProductInfo(infoEl);
+
         wrap.appendChild(infoEl);
 
         /* Insere o container logo antes do #single-product */
         themeProd.parentNode.insertBefore(wrap, themeProd);
+
+        /* Inicializa o observador do app Cheguei para não sumir o Avise-me */
+        initChegueiObserver(infoEl);
+        initChegueiPlaceholder(infoEl);
 
         /* Esconde via inline style com !important — bate qualquer CSS do tema */
         function hideTheme() {
@@ -1418,9 +1976,13 @@
             items = items || [];
             if (!items.length) return;
             buildVariantSwatches(infoEl, items);
+            reorganizeEoraProductInfo(infoEl);
         }
         collectRelatedFromAnySource().then(function (rel) {
-            if (rel.length) applyVariants(rel);
+            if (rel.length) {
+                applyVariants(rel);
+                prefetchVariationPages(rel);
+            }
 
             var retryN = 0;
             function retryVariants() {
@@ -1428,12 +1990,20 @@
                 collectRelatedFromAnySource().then(function (late) {
                     var existing = infoEl.querySelector('.eora-bolsa-vars');
                     var cur = existing ? existing.querySelectorAll('.eora-bolsa-var-item').length : 0;
-                    if (late.length > cur) applyVariants(late);
+                    if (late.length > cur) {
+                        applyVariants(late);
+                        prefetchVariationPages(late);
+                    }
                     if (!infoEl.querySelector('.eora-bolsa-vars') && retryN < 10) setTimeout(retryVariants, 500);
                 });
             }
             setTimeout(retryVariants, 500);
         });
+
+        try {
+            var initialPath = normalizePathname(window.location.href);
+            history.replaceState({ eoraPath: initialPath }, '', window.location.href);
+        } catch (e) {}
 
     }
 
@@ -1519,13 +2089,13 @@
         var tituloText = getTableTitleText(t);
 
         var css = [
-            '.eora-banners-3-videos{width:100vw;position:relative;left:50%;transform:translateX(-50%);overflow:hidden;background:#000;display:block!important}',
+            '.eora-banners-3-videos{width:100vw;position:relative;left:50%;transform:translateX(-50%);overflow:hidden;background:transparent;display:block!important}',
             'html{overflow-x:hidden}',
             '.eora-b3v-track{display:flex;gap:0;width:100%}',
             '.eora-b3v-card{flex:0 0 calc(100% / 3);min-width:0;overflow:hidden}',
-            '.eora-b3v-frame{width:100%;padding-bottom:177.78%;position:relative;overflow:hidden;background:#000}',
+            '.eora-b3v-frame{width:100%;padding-bottom:177.78%;position:relative;overflow:hidden;background:transparent}',
             /* CSS matemático e responsivo para cobrir 100% do container sem usar vw/vh (evita falha no Safari mobile) */
-            '.eora-b3v-frame iframe{position:absolute;top:50%;left:50%;width:320%;height:102%;transform:translate(-50%,-50%);border:0;pointer-events:none;background:#000;z-index:2}',
+            '.eora-b3v-frame iframe{position:absolute;top:50%;left:50%;width:320%;height:102%;transform:translate(-50%,-50%);border:0;pointer-events:none;background:transparent;z-index:2}',
             '.eora-b3v-frame img,.eora-b3v-frame .eora-b3v-fallback{position:absolute;top:0;left:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}',
             '@media(max-width:768px){' +
                 '.eora-banners-3-videos{overflow:visible;background:transparent}' +
@@ -2393,6 +2963,8 @@
 <td style="width: 48.057%;">
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>Maxi V&eacute;rtice</strong></p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">&nbsp;</p>
+<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">(obs os envios acontecer&atilde;o a partir do dia 27)</p>
+<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>A&nbsp;Maxi V&eacute;rtice&nbsp;&eacute; a maior bolsa da fam&iacute;lia V&eacute;rtice, criada para quem precisa carregar o mundo sem abrir m&atilde;o de presen&ccedil;a. Inspirada no design da clutch, ela amplia o V caracter&iacute;stico da linha em uma constru&ccedil;&atilde;o imponente, funcional e extremamente elegante.</strong></p>
 <p class="p2" style="margin: 0px; font: 400 13px 'Helvetica Neue'; min-height: 16px;">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>Pensada para quem sai de manh&atilde; e volta tarde, para viagens, aeroporto e uma rotina intensa, a Maxi V&eacute;rtice une estrutura, capacidade e acabamento preciso em uma pe&ccedil;a de alto impacto. Conta com duas al&ccedil;as longas para uso no bra&ccedil;o ou ombro, al&ccedil;a transversal ajust&aacute;vel e remov&iacute;vel, compartimento para notebook, porta-chaves, porta-cart&atilde;o e porta EORA.</strong></p>
@@ -2567,27 +3139,27 @@
 </tr>
 <tr>
 <td>video_1 ou imagem</td>
-<td>https://vimeo.com/1195049747?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/IMG_4983.jpg.jpeg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_1_mobile</td>
-<td>https://vimeo.com/1195049747?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>video_2 ou imagem</td>
-<td>https://vimeo.com/1195049743?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/IMG_4981.jpg.jpeg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_2_mobile</td>
-<td>https://vimeo.com/1195047321?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>video_3 ou imagem</td>
-<td>https://vimeo.com/1195051884?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/IMG_4984.jpg.jpeg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_3_mobile</td>
-<td>https://vimeo.com/1195051884?share=copy&amp;fl=sv&amp;fe=ci</td>
+<td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -2645,6 +3217,10 @@
 <tr>
 <td>texto_institucional</td>
 <td>Marcela Carrasco, Co-Fundadora da EORA</td>
+</tr>
+<tr>
+<td>nome_variacao</td>
+<td>Preto / Prata</td>
 </tr>
 </tbody>
 </table>
