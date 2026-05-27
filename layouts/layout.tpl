@@ -169,6 +169,38 @@
             img, iframe, video, .row, .container, .container-fluid {
                 max-width: 100% !important;
             }
+
+            /* Header Global Eora: Fixo, fundo branco com letras/icones pretos e logo escuro */
+            .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
+                z-index: 99999 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                background-color: #ffffff !important;
+                background: #ffffff !important;
+                border-bottom: 1px solid #ecece8 !important;
+            }
+            .head-main a, .head-main span:not(.badge), .head-main svg {
+                color: #000000 !important;
+                fill: #000000 !important;
+            }
+            .head-main svg *, .head-main svg path {
+                stroke: #000000 !important;
+                fill: #000000 !important;
+            }
+            .head-main .logo-img, .js-head-main .logo-img {
+                opacity: 1 !important;
+                display: block !important;
+            }
+            .head-main .logo-header-transparent, .js-head-main .logo-header-transparent {
+                opacity: 0 !important;
+                display: none !important;
+            }
+            .head-main .badge {
+                color: #ffffff !important;
+                background-color: #000000 !important;
+            }
         </style>
     </head>
     <body class="js-head-offset head-offset">

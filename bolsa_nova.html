@@ -11,9 +11,9 @@
         '#single-product{display:none!important}',
 
         /* Container EORA que substitui */
-        '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box}',
+        '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box;margin-top:110px!important}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-wrap{grid-template-columns:55% 45%}}',
-        '@media(max-width:768px){.eora-product-wrap{grid-template-columns:1fr}}',
+        '@media(max-width:768px){.eora-product-wrap{grid-template-columns:1fr;margin-top:80px!important}}',
         '.eora-product-info{padding-left:40px;box-sizing:border-box;display:flex!important;flex-direction:column!important}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-info{padding-left:24px}}',
         '@media(max-width:768px){.eora-product-info{padding-left:0;margin-top:24px}}',
@@ -1551,119 +1551,153 @@
     function initChegueiObserver(visibleInfoEl) {
         if (!visibleInfoEl) return;
 
-        var attempts = 0;
-        var checkInterval = setInterval(function () {
-            attempts++;
-            
-            // Tenta localizar o elemento clicável real do Cheguei
-            var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
-                                 document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                                 document.querySelector('#cheguei-alert-div section');
-            
-            // Garante que não é o nosso próprio placeholder
-            var placeholder = visibleInfoEl.querySelector('.eora-cheguei-placeholder');
-            if (realChegueiBtn && (!placeholder || !placeholder.contains(realChegueiBtn))) {
-                clearInterval(checkInterval);
-                
+        var observer = new MutationObserver(function () {
+            updateChegueiState();
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+
+        var isUpdating = false;
+
+        function updateChegueiState() {
+            if (isUpdating) return;
+            isUpdating = true;
+            observer.disconnect();
+
+            try {
                 var buyBtn = visibleInfoEl.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
-                var chegueiDiv = document.getElementById('cheguei-alert-div');
-                
-                if (chegueiDiv && buyBtn && buyBtn.parentNode) {
-                    // Move o bloco real para a posição visível correta
-                    buyBtn.parentNode.insertBefore(chegueiDiv, buyBtn.nextSibling);
+                if (!buyBtn || !buyBtn.parentNode) return;
+
+                // Só ativa se o botão de compra estiver desabilitado ou marcado como sem estoque (Esgotado)
+                var isNoStock = buyBtn.disabled || buyBtn.classList.contains('nostock') || buyBtn.value === 'Esgotado' || buyBtn.textContent.trim() === 'Esgotado';
+
+                var placeholder = visibleInfoEl.querySelector('.eora-cheguei-placeholder');
+
+                if (!isNoStock) {
+                    // Se tem estoque, garante que o placeholder e o alert real estejam escondidos
+                    if (placeholder) {
+                        placeholder.style.setProperty('display', 'none', 'important');
+                    }
+                    var chegueiDiv = document.getElementById('cheguei-alert-div');
+                    if (chegueiDiv) {
+                        chegueiDiv.style.setProperty('display', 'none', 'important');
+                    }
+                    return;
+                }
+
+                // Se não tem estoque e não tem placeholder, injeta
+                if (!placeholder) {
+                    placeholder = document.createElement('div');
+                    placeholder.className = 'eora-cheguei-placeholder';
+                    placeholder.style.cssText = 'width: 100%; max-width: 100%; margin-top: 12px !important; margin-bottom: 16px !important; padding-bottom: 0px !important; display: block !important;';
                     
-                    // Sobrescreve o display:none do CSS para exibir o real perfeitamente
+                    placeholder.innerHTML = [
+                        '<div class="placeholder-btn" style="display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; padding: 12px 10px; width: 100%; background: rgb(0, 9, 127); border-radius: 0px; color: rgb(255, 255, 255); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;">',
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">',
+                        '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>',
+                        '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>',
+                        '</svg>',
+                        '<span class="placeholder-text" style="color: #FFFFFF !important; font-family: inherit !important;">Avise-me quando chegar!</span>',
+                        '</div>'
+                    ].join('');
+
+                    buyBtn.parentNode.insertBefore(placeholder, buyBtn.nextSibling);
+
+                    placeholder.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                             document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                                             document.querySelector('#cheguei-alert-div section') ||
+                                             document.querySelector('#cheguei-alert-div div') ||
+                                             document.getElementById('cheguei-alert-div');
+                        
+                        if (realChegueiBtn && realChegueiBtn !== placeholder && !placeholder.contains(realChegueiBtn)) {
+                            realChegueiBtn.click();
+                        } else {
+                            var txtNode = placeholder.querySelector('.placeholder-text');
+                            if (txtNode) txtNode.textContent = 'Carregando formulário...';
+
+                            var attempts = 0;
+                            var checkInterval = setInterval(function () {
+                                attempts++;
+                                var btn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                          document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                                          document.querySelector('#cheguei-alert-div section') ||
+                                          document.querySelector('#cheguei-alert-div div') ||
+                                          document.getElementById('cheguei-alert-div');
+                                
+                                if (btn && btn !== placeholder && !placeholder.contains(btn)) {
+                                    clearInterval(checkInterval);
+                                    if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
+                                    btn.click();
+                                } else if (attempts > 80) {
+                                    clearInterval(checkInterval);
+                                    if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
+                                    alert('O formulário de aviso de estoque está demorando a carregar. Por favor, tente novamente em instantes.');
+                                }
+                            }, 100);
+                        }
+                    });
+                }
+
+                // Garante que o nosso placeholder esteja sempre visível
+                placeholder.style.setProperty('display', 'block', 'important');
+
+                // Tenta localizar o elemento clicável real do Cheguei
+                var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                                     document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                                     document.querySelector('#cheguei-alert-div section') ||
+                                     document.querySelector('#cheguei-alert-div form') ||
+                                     document.querySelector('#cheguei-alert-div input[type="submit"]') ||
+                                     document.querySelector('#cheguei-alert-div button');
+                
+                // Oculta visualmente o botão real original para evitar duplicidade ou quebras,
+                // mas sem removê-lo ou dar display:none, para que o click() via JS funcione perfeitamente.
+                if (realChegueiBtn && realChegueiBtn !== placeholder && !placeholder.contains(realChegueiBtn)) {
+                    realChegueiBtn.style.setProperty('opacity', '0', 'important');
+                    realChegueiBtn.style.setProperty('visibility', 'hidden', 'important');
+                    realChegueiBtn.style.setProperty('position', 'absolute', 'important');
+                    realChegueiBtn.style.setProperty('pointer-events', 'none', 'important');
+                    realChegueiBtn.style.setProperty('height', '0', 'important');
+                    realChegueiBtn.style.setProperty('width', '0', 'important');
+                    realChegueiBtn.style.setProperty('overflow', 'hidden', 'important');
+                    realChegueiBtn.style.setProperty('margin', '0', 'important');
+                    realChegueiBtn.style.setProperty('padding', '0', 'important');
+                }
+
+                var chegueiDiv = document.getElementById('cheguei-alert-div');
+                if (chegueiDiv) {
+                    // Move real chegueiDiv next to buyBtn if it's not already there
+                    if (buyBtn && buyBtn.parentNode && chegueiDiv.parentNode !== buyBtn.parentNode) {
+                        buyBtn.parentNode.insertBefore(chegueiDiv, buyBtn.nextSibling);
+                    }
+                    
+                    // Sobrescreve o display:none do CSS para que a Div original exista e seu Modal abra normalmente
                     chegueiDiv.style.setProperty('display', 'block', 'important');
                     chegueiDiv.style.setProperty('visibility', 'visible', 'important');
                     chegueiDiv.style.setProperty('position', 'relative', 'important');
-                    chegueiDiv.style.setProperty('left', 'auto', 'important');
-                    chegueiDiv.style.setProperty('top', 'auto', 'important');
                     chegueiDiv.style.setProperty('opacity', '1', 'important');
-                    chegueiDiv.style.setProperty('pointer-events', 'auto', 'important');
                     chegueiDiv.style.setProperty('width', '100%', 'important');
                     chegueiDiv.style.setProperty('max-width', '100%', 'important');
-                    chegueiDiv.style.setProperty('margin-top', '12px', 'important');
-                    chegueiDiv.style.setProperty('margin-bottom', '16px', 'important');
+                    chegueiDiv.style.setProperty('margin-top', '0px', 'important');
+                    chegueiDiv.style.setProperty('margin-bottom', '0px', 'important');
+                    chegueiDiv.style.setProperty('padding-top', '0px', 'important');
                     chegueiDiv.style.setProperty('padding-bottom', '0px', 'important');
                 }
-                
-                // Esconde o nosso placeholder instantâneo agora que o real carregou
-                if (placeholder) {
-                    placeholder.style.setProperty('display', 'none', 'important');
-                }
+            } finally {
+                observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+                isUpdating = false;
             }
-            
-            if (attempts > 400) { // 20 segundos
-                clearInterval(checkInterval);
-            }
-        }, 50);
+        }
+
+        // Primeira execução
+        updateChegueiState();
     }
 
     function initChegueiPlaceholder(visibleInfoEl) {
-        if (!visibleInfoEl) return;
-
-        var buyBtn = visibleInfoEl.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
-        if (!buyBtn || !buyBtn.parentNode) return;
-
-        // Só injeta o placeholder se o botão de compra estiver desabilitado ou marcado como sem estoque (Esgotado)
-        var isNoStock = buyBtn.disabled || buyBtn.classList.contains('nostock') || buyBtn.value === 'Esgotado';
-        if (!isNoStock) return;
-
-        if (visibleInfoEl.querySelector('.eora-cheguei-placeholder')) return;
-
-        var placeholder = document.createElement('div');
-        placeholder.className = 'eora-cheguei-placeholder';
-        placeholder.style.cssText = 'width: 100%; max-width: 100%; margin-top: 12px !important; margin-bottom: 16px !important; padding-bottom: 0px !important; display: block !important;';
-        
-        placeholder.innerHTML = [
-            '<div class="placeholder-btn" style="display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; padding: 12px 10px; width: 100%; background: rgb(0, 9, 127); border-radius: 0px; color: rgb(255, 255, 255); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2;">',
-            '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">',
-            '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>',
-            '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>',
-            '</svg>',
-            '<span class="placeholder-text" style="color: #FFFFFF !important; font-family: inherit !important;">Avise-me quando chegar!</span>',
-            '</div>'
-        ].join('');
-
-        buyBtn.parentNode.insertBefore(placeholder, buyBtn.nextSibling);
-
-        placeholder.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
-                                 document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                                 document.querySelector('#cheguei-alert-div section') ||
-                                 document.querySelector('#cheguei-alert-div div') ||
-                                 document.getElementById('cheguei-alert-div');
-            
-            if (realChegueiBtn && realChegueiBtn !== placeholder && !placeholder.contains(realChegueiBtn)) {
-                realChegueiBtn.click();
-            } else {
-                var txtNode = placeholder.querySelector('.placeholder-text');
-                if (txtNode) txtNode.textContent = 'Carregando formulário...';
-
-                var attempts = 0;
-                var checkInterval = setInterval(function () {
-                    attempts++;
-                    var btn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
-                              document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                              document.querySelector('#cheguei-alert-div section') ||
-                              document.querySelector('#cheguei-alert-div div') ||
-                              document.getElementById('cheguei-alert-div');
-                    
-                    if (btn && btn !== placeholder && !placeholder.contains(btn)) {
-                        clearInterval(checkInterval);
-                        if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
-                        btn.click();
-                    } else if (attempts > 80) {
-                        clearInterval(checkInterval);
-                        if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
-                        alert('O formulário de aviso de estoque está demorando a carregar. Por favor, tente novamente em instantes.');
-                    }
-                }, 100);
-            }
-        });
+        // No-op - a lógica agora está integrada e autogerida dinamicamente no initChegueiObserver
     }
 
     function init() {
@@ -2961,8 +2995,6 @@
 <tr>
 <td style="width: 48.057%;">descricao_curta</td>
 <td style="width: 48.057%;">
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>Maxi V&eacute;rtice</strong></p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">(obs os envios acontecer&atilde;o a partir do dia 27)</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>A&nbsp;Maxi V&eacute;rtice&nbsp;&eacute; a maior bolsa da fam&iacute;lia V&eacute;rtice, criada para quem precisa carregar o mundo sem abrir m&atilde;o de presen&ccedil;a. Inspirada no design da clutch, ela amplia o V caracter&iacute;stico da linha em uma constru&ccedil;&atilde;o imponente, funcional e extremamente elegante.</strong></p>
@@ -3220,7 +3252,7 @@
 </tr>
 <tr>
 <td>nome_variacao</td>
-<td>Preto / Prata</td>
+<td>Cinza Rato / Prata</td>
 </tr>
 </tbody>
 </table>
