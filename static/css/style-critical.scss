@@ -9377,3 +9377,9 @@ html, body {
 .js-home-sections-container .swiper-container {
   overflow: visible !important;
 }
+.js-home-sections-container .swiper-button-prev {
+  left: calc(50% - 50vw + 15px) !important;
+}
+.js-home-sections-container .swiper-button-next {
+  right: calc(50% - 50vw + 15px) !important;
+}
