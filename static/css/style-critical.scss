@@ -9383,3 +9383,30 @@ html, body {
 .js-home-sections-container .swiper-button-next {
   right: calc(50% - 50vw + 15px) !important;
 }
+
+/* ==============================================================
+   FIXED/STICKY HEADER STYLING (EORA)
+   ============================================================== */
+.head-main.position-sticky {
+  position: fixed !important;
+  top: 0;
+  z-index: 1040;
+}
+.head-main.position-fixed {
+  position: fixed !important;
+  top: 0;
+  z-index: 1040;
+}
+
+@media (min-width: 1200px) {
+  .position-fixed-xl {
+    position: fixed !important;
+  }
+  .position-relative-xl {
+    position: relative !important;
+  }
+  .position-sticky-xl {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+  }
+}

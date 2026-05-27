@@ -867,30 +867,30 @@ DOMContentLoaded.addEventOrExecute(() => {
         function applyOffset(selector){
 
             // Get nav height on load
-            if (window.innerWidth > 768) {
-                setTimeout(function(){
-                    var head_height = jQueryNuvem(".js-head-main").outerHeight();
+            setTimeout(function(){
+                var $head = jQueryNuvem(".js-head-main");
+                var is_fixed_desktop = (window.innerWidth > 768) && ($head.hasClass("position-fixed-xl") || $head.css("position") === "fixed");
+                var is_fixed_mobile = (window.innerWidth <= 768);
+
+                if (is_fixed_desktop || is_fixed_mobile) {
+                    var head_height = $head.outerHeight();
                     jQueryNuvem(selector).css("paddingTop", head_height.toString() - 1 + 'px');
-                },210);
-            }else{
+                } else {
+                    jQueryNuvem(selector).css("paddingTop", "0px");
+                }
+            }, 250);
 
-                {# On mobile there is no top padding due to position sticky CSS #}
-                var head_height = 0;
-            }
-
-            // Apply offset nav height on load
-            
+            // Apply offset nav height on resize
             window.addEventListener("resize", function() {
 
-                // Get nav height on resize
-                var head_height = jQueryNuvem(".js-head-main").height();
+                var $head = jQueryNuvem(".js-head-main");
+                var is_fixed_desktop = (window.innerWidth > 768) && ($head.hasClass("position-fixed-xl") || $head.css("position") === "fixed");
+                var is_fixed_mobile = (window.innerWidth <= 768);
 
-                // Apply offset on resize
-                if (window.innerWidth > 768) {
+                if (is_fixed_desktop || is_fixed_mobile) {
+                    var head_height = $head.outerHeight();
                     jQueryNuvem(selector).css("paddingTop", head_height.toString() + 'px');
-                }else{
-
-                    {# On mobile there is no top padding due to position sticky CSS #}
+                } else {
                     jQueryNuvem(selector).css("paddingTop", "0px");
                 }
             });

@@ -1,5 +1,5 @@
  {% set logo_size_class = settings.logo_size == 'small' ? 'logo-img-small' : settings.logo_size == 'big' ? 'logo-img-big' %}
-{% set logo_size_thumbnail = settings.logo_size == 'big' ? 'large' ? 'medium' %}
+{% set logo_size_thumbnail = 'original' %}
 
 {{ component('logos/logo', {logo_thumbnail: logo_size_thumbnail, logo_img_classes: 'transition-soft ' ~ logo_size_class, logo_text_classes: 'h3 m-0'}) }}
 
