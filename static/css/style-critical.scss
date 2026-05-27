@@ -9368,9 +9368,9 @@ html, body {
   max-width: 100vw !important;
   width: 100% !important;
 }
-#single-product, .container-fluid, .js-product-container, #single-product .row {
+#single-product, .container-fluid, .js-product-container, #single-product .row, .js-home-sections-container {
   max-width: 100vw !important;
 }
-#single-product {
+#single-product, .js-home-sections-container {
   overflow-x: hidden !important;
 }
