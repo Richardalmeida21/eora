@@ -172,32 +172,23 @@
 
             /* --- CABEÇALHO GLOBAL EORA --- */
             
-            /* 1. Estado Padrão (Opaco / Fundo Branco com Letras Pretas e Borda Sutil) */
-            .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
-                z-index: 99999 !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                background-color: #ffffff !important;
-                background: #ffffff !important;
-                border-bottom: 1px solid #ecece8 !important;
-                transition: background-color 0.25s ease, border-color 0.25s ease !important;
-            }
-            
-            /* Textos, Links e Ícones Pretos por padrão */
-            .head-main a, .head-main span:not(.badge), .head-main svg {
+            /* 1. Elementos do Cabeçalho (Sempre Visíveis, Sempre Pretos, Mesmo Logo) */
+            /* Isso se aplica em qualquer estado (transparente ou branco, no topo ou scrolled) */
+            .head-main a, 
+            .head-main span:not(.badge), 
+            .head-main svg {
                 color: #000000 !important;
                 fill: #000000 !important;
                 transition: color 0.25s ease, fill 0.25s ease !important;
             }
-            .head-main svg *, .head-main svg path {
+            .head-main svg *, 
+            .head-main svg path {
                 stroke: #000000 !important;
                 fill: #000000 !important;
                 transition: stroke 0.25s ease, fill 0.25s ease !important;
             }
             
-            /* Logo Escuro Visível por padrão */
+            /* Logo Escuro: Sempre Visível e Ativo */
             .head-main img.logo-img, 
             .head-main img.logo-img-small, 
             .head-main img.logo-img-big,
@@ -209,7 +200,7 @@
                 transition: opacity 0.25s ease !important;
             }
             
-            /* Logo Claro (Transparente) Oculto por padrão */
+            /* Logo Claro (Transparente): Sempre Oculto */
             .head-main .logo-header-transparent, 
             .js-head-main .logo-header-transparent {
                 opacity: 0 !important;
@@ -217,76 +208,45 @@
                 transition: opacity 0.25s ease !important;
             }
             
-            /* Contador de Itens do Carrinho */
+            /* Carrinho / Badge: Sempre Fundo Preto e Texto Branco */
             .head-main .badge {
                 color: #ffffff !important;
                 background-color: #000000 !important;
             }
 
-            /* 2. Estado Especial: Transparente (Apenas na Home, no Topo do Banner/Vídeo e sem Hover) */
-            /* Quando tiver classes de transparência do tema E NÃO estiver comprimido pelo scroll (:not(.compress)) E NÃO estiver sob hover */
+            /* 2. Comportamento do Fundo e Posicionamento (Fixo no Topo) */
+            .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
+                z-index: 99999 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                transition: background-color 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
+            }
+
+            /* A. Fundo Branco Opaco (Com Borda inferior sutil) */
+            /* Este é o estado padrão para todas as páginas internas, quando scrolled (.compress) ou sob hover */
+            .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
+                background-color: #ffffff !important;
+                background: #ffffff !important;
+                border-bottom: 1px solid #ecece8 !important;
+            }
+
+            /* B. Fundo 100% Transparente (Apenas na Home, no Topo do Slider/Vídeo e sem Hover) */
+            /* Sobrescreve o fundo branco para transparente quando as classes de transparência do tema estão ativas */
             .head-main.head-transparent-on-section:not(.compress):not(:hover),
             .head-main.head-transparent:not(.compress):not(:hover),
-            .head-main.head-transparent-only:not(.compress):not(:hover) {
+            .head-main.head-transparent-only:not(.compress):not(:hover),
+            .head-main.head-transparent-on-section:not(.compress):not(:hover) .head-logo-row,
+            .head-main.head-transparent:not(.compress):not(:hover) .head-logo-row,
+            .head-main.head-transparent-only:not(.compress):not(:hover) .head-logo-row,
+            .head-main.head-transparent-on-section:not(.compress):not(:hover) .js-nav-logo-bar,
+            .head-main.head-transparent:not(.compress):not(:hover) .js-nav-logo-bar,
+            .head-main.head-transparent-only:not(.compress):not(:hover) .js-nav-logo-bar {
                 background-color: transparent !important;
                 background: transparent !important;
+                border-bottom: 1px solid transparent !important;
                 border-bottom-color: transparent !important;
-            }
-            
-            /* Textos e ícones brancos no modo transparente */
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) a,
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) span:not(.badge),
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) svg,
-            .head-main.head-transparent:not(.compress):not(:hover) a,
-            .head-main.head-transparent:not(.compress):not(:hover) span:not(.badge),
-            .head-main.head-transparent:not(.compress):not(:hover) svg,
-            .head-main.head-transparent-only:not(.compress):not(:hover) a,
-            .head-main.head-transparent-only:not(.compress):not(:hover) span:not(.badge),
-            .head-main.head-transparent-only:not(.compress):not(:hover) svg {
-                color: #ffffff !important;
-                fill: #ffffff !important;
-            }
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) svg *,
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) svg path,
-            .head-main.head-transparent:not(.compress):not(:hover) svg *,
-            .head-main.head-transparent:not(.compress):not(:hover) svg path,
-            .head-main.head-transparent-only:not(.compress):not(:hover) svg *,
-            .head-main.head-transparent-only:not(.compress):not(:hover) svg path {
-                stroke: #ffffff !important;
-                fill: #ffffff !important;
-            }
-            
-            /* Ocultar Logo Escuro no modo transparente */
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) img.logo-img,
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) img.logo-img-small,
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) img.logo-img-big,
-            .head-main.head-transparent:not(.compress):not(:hover) img.logo-img,
-            .head-main.head-transparent:not(.compress):not(:hover) img.logo-img-small,
-            .head-main.head-transparent:not(.compress):not(:hover) img.logo-img-big,
-            .head-main.head-transparent-only:not(.compress):not(:hover) img.logo-img,
-            .head-main.head-transparent-only:not(.compress):not(:hover) img.logo-img-small,
-            .head-main.head-transparent-only:not(.compress):not(:hover) img.logo-img-big {
-                opacity: 0 !important;
-                display: none !important;
-            }
-            
-            /* Exibir Logo Claro (Transparente) no modo transparente */
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) .logo-header-transparent,
-            .head-main.head-transparent:not(.compress):not(:hover) .logo-header-transparent,
-            .head-main.head-transparent-only:not(.compress):not(:hover) .logo-header-transparent {
-                opacity: 1 !important;
-                display: block !important;
-                position: absolute !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-            }
-            
-            /* Contador de Itens do Carrinho no modo transparente */
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) .badge,
-            .head-main.head-transparent:not(.compress):not(:hover) .badge,
-            .head-main.head-transparent-only:not(.compress):not(:hover) .badge {
-                color: #000000 !important;
-                background-color: #ffffff !important;
             }
         </style>
     </head>
