@@ -16,10 +16,12 @@ body.template-product:not(.eora-native-layout) [class*="wishlist"],
 body.template-product:not(.eora-native-layout) [class*="favorite"] { display: none !important; }
 
 /* Ajustes globais de layout */
-html, body { overflow-x: hidden !important; }
+html, body { overflow-x: hidden !important; width: 100%; }
+#single-product, .container-fluid { overflow-x: hidden; max-width: 100vw; }
 
 /* Estilos do Hero EORA (Apenas Produto) */
-body.template-product:not(.eora-native-layout) #single-product .container-fluid { padding: 0 !important; max-width: 100% !important; }
+body.template-product:not(.eora-native-layout) #single-product .container-fluid { padding: 0 !important; max-width: 100% !important; overflow-x: hidden !important; }
+body.template-product:not(.eora-native-layout) #single-product .container-fluid > .row { margin-left: 0 !important; margin-right: 0 !important; }
 body.template-product:not(.eora-native-layout) #single-product .product-image-column { display: none !important; }
 body.template-product:not(.eora-native-layout) #single-product .product-info-column { height: 0 !important; min-height: 0 !important; overflow: hidden !important; padding: 0 !important; margin: 0 !important; border: none !important; }
 
