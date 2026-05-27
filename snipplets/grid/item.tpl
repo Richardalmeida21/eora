@@ -63,7 +63,7 @@
     {% endfor %}
 {% else %} #}
     <div class="js-item-product {% if slide_item %} js-item-slide swiper-slide{% endif %} {% if look_item %} col-12 px-0 {% else %} {{ columns_mobile_class }} {{ columns_desktop_class }} {% endif %} item-product {% if reduced_item %}item-product-reduced{% endif %} col-grid" data-product-type="list" data-product-id="{{ product.id }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
-        <div class="item {% if reduced_item %}mb-0{% endif %}">
+        <div class="item {% if reduced_item %}mb-0{% endif %}" data-product-tags="{% for _tag in product.tags %}{{ _tag.tag ? _tag.tag : _tag }}{% if not loop.last %},{% endif %}{% endfor %}">
             {% if (settings.quick_shop or settings.product_color_variants) and not reduced_item %}
                 <div class="js-product-container js-quickshop-container{% if product.variations %} js-quickshop-has-variants{% endif %} position-relative" data-variants="{{ product.variants_object | json_encode }}" data-quickshop-id="quick{{ product.id }}">
             {% endif %}

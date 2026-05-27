@@ -65,8 +65,11 @@
 
         /* ── Swatches de variante ── */
         '.eora-bolsa-vars{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:12px 0 16px!important;width:100%!important;max-width:100%!important}',
-        '.eora-bolsa-var-item{border:1px solid #ecece8!important;cursor:pointer!important;width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;overflow:hidden!important;transition:border-color .2s!important;box-sizing:border-box!important;background:#f5f5f3!important}',
+        '.eora-bolsa-var-item{border:1px solid #ecece8!important;cursor:pointer!important;width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;overflow:hidden!important;transition:border-color .2s!important;box-sizing:border-box!important;background:#f5f5f3!important;position:relative!important}',
         '.eora-bolsa-var-item:hover,.eora-bolsa-var-item.eora-active{border:2px solid #111!important}',
+        '.eora-bolsa-var-item.eora-prevenda-item{border-color:#d90429!important}',
+        '.eora-bolsa-var-item.eora-prevenda-item:hover,.eora-bolsa-var-item.eora-prevenda-item.eora-active{border:2px solid #d90429!important}',
+        '.eora-prevenda-badge{position:absolute!important;bottom:0!important;left:0!important;right:0!important;background-color:#d90429!important;color:#ffffff!important;font-size:7px!important;font-weight:900!important;letter-spacing:0.2px!important;text-align:center!important;text-transform:uppercase!important;padding:2px 0!important;line-height:1!important;z-index:3!important;pointer-events:none!important;font-family:inherit!important}',
         '.eora-bolsa-var-item img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}',
 
         /* mobile: miniaturas levemente menores */
@@ -926,6 +929,14 @@
                 if (!name && img) {
                     name = (img.getAttribute('alt') || '').trim();
                 }
+
+                var tagsAttr = itemEl.getAttribute('data-product-tags') || '';
+                var tags = tagsAttr.split(',').map(function (t) {
+                    return t.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                });
+                var isPreVenda = tags.some(function (t) {
+                    return t === 'prevenda' || t === 'pre-venda' || t === 'pre venda' || t.indexOf('prevenda') !== -1 || t.indexOf('pre-venda') !== -1;
+                });
                 
                 var imgUrl = '';
                 if (img) {
@@ -973,7 +984,7 @@
                 }
 
                 seen[hrefPath] = true;
-                items.push({ url: imgUrl, href: absUrl, name: name || tag });
+                items.push({ url: imgUrl, href: absUrl, name: name || tag, isPreVenda: isPreVenda });
             });
         }
 
@@ -1056,10 +1067,17 @@
                             currentImgSrc = imgEl.getAttribute('data-zoom-image') || imgEl.getAttribute('data-image') || imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
                         }
                         if (currentImgSrc) currentImgSrc = normalizeUrl(currentImgSrc);
+                        var currentTags = getCurrentProductTags().map(function (t) {
+                            return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        });
+                        var currentIsPreVenda = currentTags.some(function (t) {
+                            return t === 'prevenda' || t === 'pre-venda' || t === 'pre venda' || t.indexOf('prevenda') !== -1 || t.indexOf('pre-venda') !== -1;
+                        });
                         unique.push({
                             url: currentImgSrc || makePlaceholderThumb(currentName),
                             href: currentHref,
-                            name: currentName
+                            name: currentName,
+                            isPreVenda: currentIsPreVenda
                         });
                     }
                 }
@@ -1225,8 +1243,22 @@
         relatedItems.forEach(function (item, i) {
             var itemPath = normalizePathname(item.href);
             var isActive = (itemPath === currentPath);
+            
+            var isPreVenda = !!item.isPreVenda;
+            if (isActive) {
+                var currentTags = getCurrentProductTags().map(function (t) {
+                    return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                });
+                var currentIsPreVenda = currentTags.some(function (t) {
+                    return t === 'prevenda' || t === 'pre-venda' || t === 'pre venda' || t.indexOf('prevenda') !== -1 || t.indexOf('pre-venda') !== -1;
+                });
+                if (currentIsPreVenda) {
+                    isPreVenda = true;
+                }
+            }
+
             var el = document.createElement('div');
-            el.className = 'eora-bolsa-var-item' + (isActive ? ' eora-active' : '');
+            el.className = 'eora-bolsa-var-item' + (isActive ? ' eora-active' : '') + (isPreVenda ? ' eora-prevenda-item' : '');
             el.setAttribute('data-href-path', itemPath);
             var img = document.createElement('img');
             img.alt = item.name || ('variante ' + (i + 1));
@@ -1249,6 +1281,13 @@
             };
             img.src = item.url || makePlaceholderThumb(item.name || 'variante');
             el.appendChild(img);
+
+            if (isPreVenda) {
+                var badge = document.createElement('div');
+                badge.className = 'eora-prevenda-badge';
+                badge.textContent = 'PRÉ-VENDA';
+                el.appendChild(badge);
+            }
             if (item.href) {
                 el.addEventListener('click', function (e) {
                     e.preventDefault();
