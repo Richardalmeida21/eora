@@ -173,19 +173,18 @@
             /* --- CABEÇALHO GLOBAL EORA --- */
             
             /* 1. Elementos do Cabeçalho (Sempre Visíveis, Sempre Pretos, Mesmo Logo) */
-            /* Isso se aplica em qualquer estado (transparente ou branco, no topo ou scrolled) */
             .head-main a, 
             .head-main span:not(.badge), 
             .head-main svg {
                 color: #000000 !important;
                 fill: #000000 !important;
-                transition: color 0.25s ease, fill 0.25s ease !important;
+                transition: color 0.2s ease, fill 0.2s ease !important;
             }
             .head-main svg *, 
             .head-main svg path {
                 stroke: #000000 !important;
                 fill: #000000 !important;
-                transition: stroke 0.25s ease, fill 0.25s ease !important;
+                transition: stroke 0.2s ease, fill 0.2s ease !important;
             }
             
             /* Logo Escuro: Sempre Visível e Ativo */
@@ -197,7 +196,7 @@
             .js-head-main img.logo-img-big {
                 opacity: 1 !important;
                 display: block !important;
-                transition: opacity 0.25s ease !important;
+                transition: opacity 0.2s ease !important;
             }
             
             /* Logo Claro (Transparente): Sempre Oculto */
@@ -205,7 +204,7 @@
             .js-head-main .logo-header-transparent {
                 opacity: 0 !important;
                 display: none !important;
-                transition: opacity 0.25s ease !important;
+                transition: opacity 0.2s ease !important;
             }
             
             /* Carrinho / Badge: Sempre Fundo Preto e Texto Branco */
@@ -214,39 +213,35 @@
                 background-color: #000000 !important;
             }
 
-            /* 2. Comportamento do Fundo e Posicionamento (Fixo no Topo) */
+            /* 2. Posição Fixa Absoluta (Nunca deve sumir ou subir) */
             .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
                 z-index: 99999 !important;
                 position: fixed !important;
-                top: 0 !important;
+                top: 0 !important; /* Mantém fixo no topo sempre, ignorando deslocamentos do JS */
                 left: 0 !important;
                 width: 100% !important;
-                transition: background-color 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
+                transition: background-color 0.2s ease, border-color 0.2s ease, background 0.2s ease !important;
             }
 
-            /* A. Fundo Branco Opaco (Com Borda inferior sutil) */
-            /* Este é o estado padrão para todas as páginas internas, quando scrolled (.compress) ou sob hover */
+            /* 3. Fundo 100% Transparente por Padrão (Sem rolagem, com rolagem, parado ou em movimento) */
             .head-main, .js-head-main, .head-logo-row, .js-nav-logo-bar {
-                background-color: #ffffff !important;
-                background: #ffffff !important;
-                border-bottom: 1px solid #ecece8 !important;
-            }
-
-            /* B. Fundo 100% Transparente (Apenas na Home, no Topo do Slider/Vídeo e sem Hover) */
-            /* Sobrescreve o fundo branco para transparente quando as classes de transparência do tema estão ativas */
-            .head-main.head-transparent-on-section:not(.compress):not(:hover),
-            .head-main.head-transparent:not(.compress):not(:hover),
-            .head-main.head-transparent-only:not(.compress):not(:hover),
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) .head-logo-row,
-            .head-main.head-transparent:not(.compress):not(:hover) .head-logo-row,
-            .head-main.head-transparent-only:not(.compress):not(:hover) .head-logo-row,
-            .head-main.head-transparent-on-section:not(.compress):not(:hover) .js-nav-logo-bar,
-            .head-main.head-transparent:not(.compress):not(:hover) .js-nav-logo-bar,
-            .head-main.head-transparent-only:not(.compress):not(:hover) .js-nav-logo-bar {
                 background-color: transparent !important;
                 background: transparent !important;
                 border-bottom: 1px solid transparent !important;
                 border-bottom-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            /* 4. Estado de Hover (Passar o mouse): Fica com fundo Branco */
+            .head-main:hover,
+            .head-main:hover .head-logo-row,
+            .head-main:hover .js-nav-logo-bar,
+            .js-head-main:hover,
+            .js-head-main:hover .head-logo-row,
+            .js-head-main:hover .js-nav-logo-bar {
+                background-color: #ffffff !important;
+                background: #ffffff !important;
+                border-bottom: 1px solid #ecece8 !important;
             }
         </style>
     </head>
