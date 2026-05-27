@@ -9359,3 +9359,18 @@ ul.desktop-submenu-list a.nav-list-link:hover {
     transform: translateY(0);
   }
 }
+
+/* ==============================================================
+   FIX HORIZONTAL OVERFLOW ON MOBILE (EORA)
+   ============================================================== */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+}
+#single-product, .container-fluid, .js-product-container, #single-product .row {
+  max-width: 100vw !important;
+}
+#single-product {
+  overflow-x: hidden !important;
+}
