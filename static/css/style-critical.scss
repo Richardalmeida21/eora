@@ -9550,3 +9550,21 @@ main,
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+/* ==============================================================
+   EORA HEADER OFFSET & OPAQUE TOP PADDING OVERRIDES
+   ============================================================== */
+body.head-offset-active {
+  padding-top: 90px !important;
+}
+body.head-offset-active.has-ad-bar {
+  padding-top: 125px !important;
+}
+@media (max-width: 991px) {
+  body.head-offset-active {
+    padding-top: 70px !important;
+  }
+  body.head-offset-active.has-ad-bar {
+    padding-top: 105px !important;
+  }
+}

@@ -1,3 +1,12 @@
+{# Slider and video presence for header transparency check #}
+{% if template == 'home' %}
+    {% set has_main_slider = settings.slider and settings.slider is not empty %}
+    {% set has_mobile_slider = settings.toggle_slider_mobile and settings.slider_mobile and settings.slider_mobile is not empty %}
+    {% set has_slider = has_main_slider or has_mobile_slider %}
+{% endif %}
+{% set head_transparent_type_on_section = template == 'home' and settings.head_transparent and settings.head_transparent_type == 'slider_and_video' and (has_slider or settings.video_embed) %}
+{% set head_transparent_type_always = settings.head_transparent and settings.head_transparent_type == 'all' %}
+{% set head_transparent = (head_transparent_type_on_section or head_transparent_type_always) %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://opengraphprotocol.org/schema/" lang="{% for language in languages %}{% if language.active %}{{ language.lang }}{% endif %}{% endfor %}">
     <head>
@@ -220,6 +229,22 @@
                 margin-left: auto !important;
                 margin-right: auto !important;
             }
+
+            /* Enforce body top padding when header is opaque/fixed to prevent content overlap */
+            body.head-offset-active {
+                padding-top: 90px !important;
+            }
+            body.head-offset-active.has-ad-bar {
+                padding-top: 125px !important;
+            }
+            @media (max-width: 991px) {
+                body.head-offset-active {
+                    padding-top: 70px !important;
+                }
+                body.head-offset-active.has-ad-bar {
+                    padding-top: 105px !important;
+                }
+            }
         </style>
 
         {#/*============================================================================
@@ -265,7 +290,9 @@
                 width: 100% !important;
                 overflow-x: hidden !important;
                 margin: 0 !important;
-                padding: 0 !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                padding-bottom: 0 !important;
                 -webkit-text-size-adjust: 100% !important;
                 text-size-adjust: 100% !important;
             }
@@ -277,7 +304,7 @@
             }
         </style>
     </head>
-    <body class="js-head-offset head-offset {% if is_on_campaign_page %}template-campaign-page{% endif %}">
+    <body class="js-head-offset {% if not head_transparent %}head-offset-active{% else %}head-offset-transparent{% endif %} {% if settings.ad_bar %}has-ad-bar{% endif %} {% if is_on_campaign_page %}template-campaign-page{% endif %}">
 
         {# Theme icons #}
 
