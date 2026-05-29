@@ -131,6 +131,17 @@
                 margin-right: auto !important;
                 max-width: 100% !important;
             }
+            /* Force row margins to match standard Bootstrap grid gutters, counteracting bad -3rem custom margins */
+            .row {
+                margin-left: -15px !important;
+                margin-right: -15px !important;
+            }
+            @media (min-width: 768px) {
+                .row {
+                    margin-left: -30px !important;
+                    margin-right: -30px !important;
+                }
+            }
             /* Override unconstrained margin filters bar */
             .category-controls {
                 margin-left: 0 !important;
