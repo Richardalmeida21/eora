@@ -178,7 +178,7 @@
                ============================================================== */
             @media (min-width: 992px) {
                 .template-campaign-page main .container-fluid:not(.desktop):not(.mobile) {
-                    max-width: 1200px !important;
+                    max-width: 100% !important;
                     margin-left: auto !important;
                     margin-right: auto !important;
                     width: 100% !important;
@@ -186,7 +186,6 @@
                     padding-right: 30px !important;
                 }
                 .template-campaign-page main .container {
-                    max-width: 1200px !important;
                     margin-left: auto !important;
                     margin-right: auto !important;
                     width: 100% !important;
