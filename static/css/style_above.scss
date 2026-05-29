@@ -7,7 +7,7 @@
 
         .js-modal-close {
             height: 6%;
-            padding: 0 24px !important;
+            padding: 0 24px 0 40px !important;
             display: flex !important;
             align-items: center !important;
 
@@ -53,7 +53,7 @@
                 min-height: 0; /* ensures proper flexbox scrolling on smaller devices */
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 0 24px; /* avoid content being hidden under scrollbar */
+                padding: 0 24px 0 40px !important; /* avoid content being hidden under scrollbar */
             }
 
             .cart-message {
@@ -83,6 +83,7 @@
                     background-color: #fff;
                     max-width: 100%;
                     padding: 15px 0 !important; /* padding left/right is managed by parent list container */
+                    margin: 0 !important; /* completely overrides Bootstrap row negative margins */
                     display: flex !important;
                     flex-direction: row !important;
                     flex-wrap: nowrap !important;
@@ -217,7 +218,7 @@
             }
 
             .cart-row {
-                padding: 30px 24px 20px;
+                padding: 30px 24px 20px 40px !important;
                 background-color: #f2f2f2;
                 /* keep totals visible at bottom inside modal */
                 position: sticky;
