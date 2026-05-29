@@ -128,7 +128,6 @@
             .container {
                 margin-left: auto !important;
                 margin-right: auto !important;
-                max-width: 100% !important;
             }
             /* Force row margins to match standard Bootstrap grid gutters, counteracting bad -3rem custom margins */
             .row {
@@ -274,7 +273,7 @@
             input, select, textarea, button, a {
                 touch-action: manipulation !important;
             }
-            img, iframe, video, .row, .container, .container-fluid {
+            img, iframe, video, .container, .container-fluid {
                 max-width: 100% !important;
             }
         </style>
