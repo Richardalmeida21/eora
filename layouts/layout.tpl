@@ -173,6 +173,55 @@
                 flex-direction: column !important;
                 gap: 0 !important;
             }
+
+            /* ==============================================================
+               EORA CAMPAIGN PAGES CENTERING & SYMMETRY OVERRIDES
+               ============================================================== */
+            @media (min-width: 992px) {
+                .template-campaign-page main .container-fluid:not(.desktop):not(.mobile) {
+                    max-width: 1200px !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    width: 100% !important;
+                    padding-left: 30px !important;
+                    padding-right: 30px !important;
+                }
+                .template-campaign-page main .container {
+                    max-width: 1200px !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    width: 100% !important;
+                }
+            }
+            @media (max-width: 991px) {
+                .template-campaign-page main .container-fluid:not(.desktop):not(.mobile) {
+                    padding-left: 15px !important;
+                    padding-right: 15px !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    width: 100% !important;
+                }
+            }
+            .template-campaign-page main .row {
+                margin-left: -15px !important;
+                margin-right: -15px !important;
+            }
+            @media (min-width: 768px) {
+                .template-campaign-page main .row {
+                    margin-left: -30px !important;
+                    margin-right: -30px !important;
+                }
+            }
+            .template-campaign-page main .row-grid {
+                margin-left: var(--gutter-half-negative) !important;
+                margin-right: var(--gutter-half-negative) !important;
+            }
+            .template-campaign-page main .section-title,
+            .template-campaign-page main .section-title-products-home {
+                text-align: center !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
         </style>
 
         {#/*============================================================================
@@ -230,7 +279,7 @@
             }
         </style>
     </head>
-    <body class="js-head-offset head-offset">
+    <body class="js-head-offset head-offset {% if is_on_campaign_page %}template-campaign-page{% endif %}">
 
         {# Theme icons #}
 
