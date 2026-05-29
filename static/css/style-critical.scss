@@ -9480,8 +9480,7 @@ main,
    FIXED/STICKY HEADER STYLING (EORA)
    ============================================================== */
 .head-main.position-sticky {
-  position: sticky !important;
-  position: -webkit-sticky !important;
+  position: fixed !important;
   top: 0;
   z-index: 1040;
 }
@@ -9494,8 +9493,7 @@ main,
 
 @media (min-width: 1200px) {
   .position-fixed-xl {
-    position: sticky !important;
-    position: -webkit-sticky !important;
+    position: fixed !important;
     top: 0;
     z-index: 1040;
   }
@@ -9503,9 +9501,44 @@ main,
     position: relative !important;
   }
   .position-sticky-xl {
-    position: sticky !important;
-    position: -webkit-sticky !important;
+    position: fixed !important;
+    top: 0;
+    z-index: 1040;
   }
+}
+
+/* Enforce body top padding when header is opaque/fixed to prevent content overlap */
+body.head-offset-active {
+  padding-top: 90px !important;
+}
+body.head-offset-active.has-ad-bar {
+  padding-top: 125px !important;
+}
+@media (max-width: 991px) {
+  body.head-offset-active {
+    padding-top: 70px !important;
+  }
+  body.head-offset-active.has-ad-bar {
+    padding-top: 105px !important;
+  }
+}
+
+/* ==============================================================
+   EORA HEADER OVERPLAY & TRANSPARENCY ON SCROLL OVERRIDES
+   ============================================================== */
+
+/* On all pages, when scrolling down, make the header background transparent */
+.head-main.compress {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+/* On non-home pages, when at the top (not scrolling), force the header to be solid/opaque */
+body:not(.template-home) .head-main:not(.compress) {
+  background-color: var(--header-background) !important;
+  background: var(--header-background) !important;
 }
 
 /* ==============================================================

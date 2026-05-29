@@ -7,6 +7,7 @@
 {% set head_transparent_type_on_section = template == 'home' and settings.head_transparent and settings.head_transparent_type == 'slider_and_video' and (has_slider or settings.video_embed) %}
 {% set head_transparent_type_always = settings.head_transparent and settings.head_transparent_type == 'all' %}
 {% set head_transparent = (head_transparent_type_on_section or head_transparent_type_always) %}
+{% set is_home_page = template == 'home' %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://opengraphprotocol.org/schema/" lang="{% for language in languages %}{% if language.active %}{{ language.lang }}{% endif %}{% endfor %}">
     <head>
@@ -230,6 +231,21 @@
                 margin-right: auto !important;
             }
 
+            /* Enforce body top padding when header is opaque/fixed to prevent content overlap */
+            body.head-offset-active {
+                padding-top: 90px !important;
+            }
+            body.head-offset-active.has-ad-bar {
+                padding-top: 125px !important;
+            }
+            @media (max-width: 991px) {
+                body.head-offset-active {
+                    padding-top: 70px !important;
+                }
+                body.head-offset-active.has-ad-bar {
+                    padding-top: 105px !important;
+                }
+            }
         </style>
 
         {#/*============================================================================
@@ -289,7 +305,7 @@
             }
         </style>
     </head>
-    <body class="js-head-offset {% if not head_transparent %}head-offset-active{% else %}head-offset-transparent{% endif %} {% if settings.ad_bar %}has-ad-bar{% endif %} {% if is_on_campaign_page %}template-campaign-page{% endif %}">
+    <body class="js-head-offset {% if not is_home_page %}head-offset-active{% else %}head-offset-transparent{% endif %} {% if settings.ad_bar %}has-ad-bar{% endif %} {% if is_on_campaign_page %}template-campaign-page{% endif %} template-{{ template }}">
 
         {# Theme icons #}
 
