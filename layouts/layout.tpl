@@ -120,10 +120,10 @@
         <style>
             /* Force container-fluid and container to stay within the viewport bounds without horizontal overflow */
             .container-fluid {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
                 width: 100% !important;
-                max-width: 100vw !important;
+                max-width: 100% !important;
                 overflow-x: hidden !important;
             }
             .container {
