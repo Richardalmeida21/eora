@@ -485,6 +485,24 @@ DOMContentLoaded.addEventOrExecute(() => {
                 $product_shipping_calculator.show();
             }
 
+            // Sync floating buy button (.eora-bolsa-float-buy) if it exists
+            var floatBuyBtn = jQueryNuvem('.eora-bolsa-float-buy');
+            if (floatBuyBtn.length) {
+                if (!variant.available) {
+                    floatBuyBtn.text('{{ "Sin stock" | translate }}'.toUpperCase()).addClass('nostock').attr('disabled', 'disabled');
+                } else if (variant.contact) {
+                    floatBuyBtn.text('{{ "Consultar precio" | translate }}'.toUpperCase()).removeClass('nostock').removeAttr('disabled');
+                } else {
+                    var priceText = parent.find('.js-price-display').text().trim();
+                    if (priceText) {
+                        floatBuyBtn.text('COMPRAR AGORA \u2013 ' + priceText);
+                    } else {
+                        floatBuyBtn.text('COMPRAR AGORA');
+                    }
+                    floatBuyBtn.removeClass('nostock').removeAttr('disabled');
+                }
+            }
+
         {% endif %}
 
         {% if template == 'product' %}

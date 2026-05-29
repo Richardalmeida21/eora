@@ -3530,6 +3530,7 @@
             'body.modal-open .eora-bolsa-float-bar,body.ajax-cart-open .eora-bolsa-float-bar,body.side-cart-open .eora-bolsa-float-bar{transform:translate(-50%,150%)!important;opacity:0!important;pointer-events:none!important;visibility:hidden!important}',
             '.eora-bolsa-float-buy{background:#000!important;color:#fff!important;border:none!important;height:40px!important;padding:0 28px!important;font-size:10px!important;font-weight:600!important;letter-spacing:2px!important;text-transform:uppercase!important;border-radius:3px!important;cursor:pointer!important;display:flex!important;align-items:center!important;white-space:nowrap!important}',
             '.eora-bolsa-float-buy:hover{background:#333!important}',
+            '.eora-bolsa-float-buy.nostock{background:#a7a7a7!important;color:#fff!important;cursor:not-allowed!important}',
             '@media(max-width:767px){.eora-bolsa-float-bar{max-width:90vw!important;bottom:64px!important}.eora-bolsa-float-buy{padding:0 18px!important}}',
             /* popup */
             '.eora-bolsa-pu{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,.5)!important;z-index:999999!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:0!important;pointer-events:none!important;transition:opacity .3s!important}',
@@ -3593,11 +3594,27 @@
             floatBtn = floatBar.querySelector('#eora-bolsa-float-buy, .eora-bolsa-float-buy');
         }
 
-        /* Atualiza preço quando o tema renderizar */
+        /* Atualiza preço e estoque quando o tema renderizar */
         function updatePrice() {
             var pe = document.querySelector('.js-price-display, .product-price, [class*="price"]');
             var pt = pe ? pe.textContent.trim() : '';
-            if (pt && floatBtn) floatBtn.textContent = 'COMPRAR AGORA \u2013 ' + pt;
+            var mainBtn = document.querySelector('input[type="submit"].js-addtocart, button.js-addtocart:not(.js-addtocart-placeholder)');
+            if (floatBtn) {
+                if (mainBtn && (mainBtn.disabled || mainBtn.classList.contains('nostock') || (mainBtn.value && mainBtn.value.toLowerCase().indexOf('esgotado') !== -1))) {
+                    var outOfStockText = mainBtn.value || 'ESGOTADO';
+                    floatBtn.textContent = outOfStockText.toUpperCase();
+                    floatBtn.classList.add('nostock');
+                    floatBtn.setAttribute('disabled', 'disabled');
+                } else {
+                    if (pt) {
+                        floatBtn.textContent = 'COMPRAR AGORA \u2013 ' + pt;
+                    } else {
+                        floatBtn.textContent = 'COMPRAR AGORA';
+                    }
+                    floatBtn.classList.remove('nostock');
+                    floatBtn.removeAttribute('disabled');
+                }
+            }
         }
         [500, 1000, 2000, 3500].forEach(function (t) { setTimeout(updatePrice, t); });
 
@@ -3801,7 +3818,14 @@
         }
 
         if (floatBtn) {
-            floatBtn.addEventListener('click', abrirPopup);
+            floatBtn.addEventListener('click', function (e) {
+                if (floatBtn.classList.contains('nostock') || floatBtn.hasAttribute('disabled')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                abrirPopup();
+            });
         }
 
         /* Mostra após rolar além do product-wrap */
