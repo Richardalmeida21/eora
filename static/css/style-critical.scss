@@ -9369,7 +9369,8 @@ html, body {
   width: 100% !important;
 }
 #single-product,
-.container-fluid,
+main,
+.category-body,
 .js-product-container,
 #single-product .row,
 .js-home-sections-container,
@@ -9377,16 +9378,20 @@ html, body {
 .campaign-featured-grid,
 .section-products-related,
 .js-related-products,
-.js-complementary-products {
+.js-complementary-products,
+.section-category-banners {
   max-width: 100vw !important;
 }
 #single-product,
+main,
+.category-body,
 .js-home-sections-container,
 .slider-container-best-sellers,
 .campaign-featured-grid,
 .section-products-related,
 .js-related-products,
-.js-complementary-products {
+.js-complementary-products,
+.section-category-banners {
   overflow-x: hidden !important;
 }
 .js-home-sections-container .swiper-container,
@@ -9394,7 +9399,8 @@ html, body {
 .campaign-featured-grid .swiper-container,
 .section-products-related .swiper-container,
 .js-related-products .swiper-container,
-.js-complementary-products .swiper-container {
+.js-complementary-products .swiper-container,
+.section-category-banners .swiper-container {
   overflow: visible !important;
 }
 .js-home-sections-container .swiper-button-prev,
@@ -9402,16 +9408,28 @@ html, body {
 .campaign-featured-grid .swiper-container .swiper-button-prev,
 .section-products-related .swiper-button-prev,
 .js-related-products .swiper-button-prev,
-.js-complementary-products .swiper-button-prev {
+.js-complementary-products .swiper-button-prev,
+.section-category-banners .swiper-button-prev,
+.js-swiper-featured-best-sellers-prev {
+  position: absolute !important;
   left: calc(50% - 50vw + 15px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
 }
 .js-home-sections-container .swiper-button-next,
 .slider-container-best-sellers .swiper-button-next,
 .campaign-featured-grid .swiper-container .swiper-button-next,
 .section-products-related .swiper-button-next,
 .js-related-products .swiper-button-next,
-.js-complementary-products .swiper-button-next {
+.js-complementary-products .swiper-button-next,
+.section-category-banners .swiper-button-next,
+.js-swiper-featured-best-sellers-next {
+  position: absolute !important;
   right: calc(50% - 50vw + 15px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
 }
 
 /* ==============================================================
