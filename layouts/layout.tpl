@@ -230,21 +230,6 @@
                 margin-right: auto !important;
             }
 
-            /* Enforce body top padding when header is opaque/fixed to prevent content overlap */
-            body.head-offset-active {
-                padding-top: 90px !important;
-            }
-            body.head-offset-active.has-ad-bar {
-                padding-top: 125px !important;
-            }
-            @media (max-width: 991px) {
-                body.head-offset-active {
-                    padding-top: 70px !important;
-                }
-                body.head-offset-active.has-ad-bar {
-                    padding-top: 105px !important;
-                }
-            }
         </style>
 
         {#/*============================================================================

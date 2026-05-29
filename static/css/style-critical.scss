@@ -9480,11 +9480,13 @@ main,
    FIXED/STICKY HEADER STYLING (EORA)
    ============================================================== */
 .head-main.position-sticky {
-  position: fixed !important;
+  position: sticky !important;
+  position: -webkit-sticky !important;
   top: 0;
   z-index: 1040;
 }
-.head-main.position-fixed {
+.head-main.position-fixed,
+.head-main.position-fixed-xl.position-fixed {
   position: fixed !important;
   top: 0;
   z-index: 1040;
@@ -9492,7 +9494,10 @@ main,
 
 @media (min-width: 1200px) {
   .position-fixed-xl {
-    position: fixed !important;
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0;
+    z-index: 1040;
   }
   .position-relative-xl {
     position: relative !important;
@@ -9550,21 +9555,4 @@ main,
   margin-left: auto !important;
   margin-right: auto !important;
 }
-
-/* ==============================================================
-   EORA HEADER OFFSET & OPAQUE TOP PADDING OVERRIDES
-   ============================================================== */
-body.head-offset-active {
-  padding-top: 90px !important;
-}
-body.head-offset-active.has-ad-bar {
-  padding-top: 125px !important;
-}
-@media (max-width: 991px) {
-  body.head-offset-active {
-    padding-top: 70px !important;
-  }
-  body.head-offset-active.has-ad-bar {
-    padding-top: 105px !important;
-  }
-}
+
