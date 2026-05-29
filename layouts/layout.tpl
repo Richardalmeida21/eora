@@ -124,7 +124,6 @@
                 margin-right: auto !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                overflow-x: hidden !important;
             }
             .container {
                 margin-left: auto !important;
@@ -141,6 +140,11 @@
                     margin-left: -30px !important;
                     margin-right: -30px !important;
                 }
+            }
+            /* Exclude product grids (.row-grid) from standard row overrides, restoring their native gutters */
+            .row-grid {
+                margin-left: var(--gutter-half-negative) !important;
+                margin-right: var(--gutter-half-negative) !important;
             }
             /* Override unconstrained margin filters bar */
             .category-controls {
