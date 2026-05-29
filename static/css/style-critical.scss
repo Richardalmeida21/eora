@@ -9524,8 +9524,20 @@ body.head-offset-active.has-ad-bar {
 }
 
 /* ==============================================================
-   EORA HEADER OVERPLAY & TRANSPARENCY ON SCROLL OVERRIDES
+   EORA HEADER OVERLAY & TRANSPARENCY ON SCROLL OVERRIDES
    ============================================================== */
+
+/* Push utility icons slightly to the left to prevent them from being cut off by the scrollbar/viewport edge */
+.desktop-utility-col,
+.js-utility-col {
+  padding-right: 25px !important;
+}
+@media (max-width: 767px) {
+  .desktop-utility-col,
+  .js-utility-col {
+    padding-right: 15px !important;
+  }
+}
 
 /* On all pages, when scrolling down, make the header background transparent */
 .head-main.compress {
@@ -9539,6 +9551,26 @@ body.head-offset-active.has-ad-bar {
 body:not(.template-home) .head-main:not(.compress) {
   background-color: var(--header-background) !important;
   background: var(--header-background) !important;
+}
+
+/* On non-home pages, force the header elements to have their normal dark colors (not white) and normal blend modes both at the top and on scroll */
+body:not(.template-home) .head-main {
+  mix-blend-mode: normal !important;
+  isolation: auto !important;
+}
+body:not(.template-home) .head-main * {
+  color: var(--header-foreground) !important;
+  fill: var(--header-foreground) !important;
+}
+body:not(.template-home) .head-main .logo-header-transparent {
+  opacity: 0 !important;
+}
+body:not(.template-home) .head-main .logo-img:not(.logo-header-transparent) {
+  opacity: 1 !important;
+}
+body:not(.template-home) .head-main .js-cart-widget-amount,
+body:not(.template-home) .head-main .badge {
+  color: #ffffff !important;
 }
 
 /* ==============================================================
