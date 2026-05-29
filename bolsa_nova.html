@@ -11,7 +11,8 @@
         '#single-product{display:none!important}',
 
         /* Container EORA que substitui */
-        '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box;margin-top:110px!important}',
+        '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box;margin-top:110px!important;opacity:0;transition:opacity .25s ease-in-out!important}',
+        '.eora-product-wrap.eora-loaded{opacity:1!important}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-wrap{grid-template-columns:55% 45%}}',
         '@media(max-width:768px){.eora-product-wrap{grid-template-columns:1fr;margin-top:80px!important}}',
         '.eora-product-info{padding-left:40px;box-sizing:border-box;display:flex!important;flex-direction:column!important}',
@@ -94,7 +95,23 @@
         '.eora-section-bloco.eora-banner-full-bloco{margin-top:40px!important}',
         '#cheguei-alert-div{display:none!important}',
         '.eora-cloned-product-form,.eora-cloned-product-form .row,.eora-cloned-product-form [class*="col-"]{margin-bottom:0px!important;padding-bottom:0px!important}',
-        '.eora-cloned-product-form .dropdown-wrapper,.eora-cloned-product-form .shipping-dropdown{margin-top:16px!important;margin-bottom:8px!important}'
+        '.eora-cloned-product-form .dropdown-wrapper,.eora-cloned-product-form .eora-shipping-dropdown,.eora-cloned-product-form .shipping-dropdown{margin-top:16px!important;margin-bottom:8px!important}',
+        '.eora-product-info .eora-shipping-dropdown,.eora-product-info .shipping-dropdown{width:100%!important;border:1px solid #e7e7e7!important;background:#fff!important;margin-bottom:16px!important;box-sizing:border-box!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-toggle,.eora-product-info .shipping-dropdown .dropdown-toggle{width:100%!important;display:flex!important;justify-content:space-between!important;align-items:center!important;padding:1rem 0.75rem!important;background:#fff!important;border:none!important;cursor:pointer!important;color:#000!important;opacity:0.8!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-toggle .caret,.eora-product-info .shipping-dropdown .dropdown-toggle .caret{transition:transform 0.3s ease!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-content,.eora-product-info .shipping-dropdown .dropdown-content{display:block!important;overflow:hidden!important;max-height:0px!important;opacity:0!important;visibility:hidden!important;padding:0 1.25rem!important;transition:max-height 0.35s ease,padding 0.35s ease,opacity 0.35s ease!important;box-sizing:border-box!important;background:#fff!important}',
+        '.eora-product-info .eora-shipping-dropdown.open .dropdown-content,.eora-product-info .shipping-dropdown.open .dropdown-content{display:block!important;max-height:2000px!important;opacity:1!important;visibility:visible!important;padding:1rem 1.25rem 1.25rem!important;overflow:visible!important}',
+        '.eora-product-info .eora-shipping-dropdown.open .dropdown-toggle .caret,.eora-product-info .shipping-dropdown.open .dropdown-toggle .caret{transform:rotate(180deg)!important}',
+        '.eora-product-info #product-shipping-container,.eora-product-info #product-shipping-container form,.eora-product-info .product-shipping-calculator{position:relative!important;height:auto!important;display:block!important;width:100%!important}',
+        '.eora-product-info .js-shipping-calculator-head,.eora-product-info .shipping-calculator-head{position:relative!important;height:auto!important;display:block!important;width:100%!important}',
+        '.eora-product-info .js-shipping-calculator-form.transition-up-active{position:relative!important;opacity:1!important;visibility:visible!important;display:block!important;height:auto!important}',
+        '.eora-product-info .js-shipping-calculator-with-zipcode.transition-up-active{position:relative!important;opacity:1!important;visibility:visible!important;display:block!important;height:auto!important}',
+        '.eora-product-info .js-shipping-calculator-form:not(.transition-up-active),.eora-product-info .js-shipping-calculator-with-zipcode:not(.transition-up-active){position:absolute!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;height:0!important;overflow:hidden!important}',
+        '.eora-product-info .js-shipping-calculator-form .form-row, .eora-product-info .js-shipping-calculator-form .row{position:relative!important;display:block!important;width:100%!important;margin:0!important;padding:0!important}',
+        '.eora-product-info .js-shipping-calculator-form [class*="col-"]{padding:0!important;margin:0!important;width:100%!important;max-width:100%!important;flex:none!important;display:block!important;position:static!important}',
+        '.eora-product-info .js-shipping-input{border-radius:0!important;border:1px solid #ccc!important;padding:0 56px 0 16px!important;font-size:14px!important;width:100%!important;box-sizing:border-box!important;height:46px!important;line-height:46px!important;background:#fff!important}',
+        '.eora-product-info .eora-calculate-shipping-btn{position:absolute!important;top:1px!important;right:1px!important;height:44px!important;width:44px!important;margin:0!important;box-sizing:border-box!important;background:#111!important;color:#fff!important;border:none!important;cursor:pointer!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;border-radius:0!important;z-index:99!important;font-size:20px!important;line-height:1!important;font-weight:300!important}',
+        '.eora-product-info .js-shipping-calculator-response{margin-top:1rem!important;display:block!important;width:100%!important;height:auto!important;position:relative!important}'
     ].join('');
 
     var styleEl = document.createElement('style');
@@ -152,6 +169,254 @@
             if (td) d[td.textContent.trim().toLowerCase()] = t;
         });
         return d;
+    }
+
+    function isBlankValue(val) {
+        if (!val) return true;
+        var clean = String(val)
+            .replace(/<[^>]*>/g, '') // Remove HTML tags
+            .replace(/&nbsp;/gi, '') // Remove &nbsp; entities
+            .replace(/[\u00a0\s]+/g, '') // Remove all non-breaking spaces and spaces
+            .trim();
+        return clean.length === 0;
+    }
+
+    function getVariationNameFromLS(doc, variantId) {
+        var parsedLS = null;
+        try {
+            if (doc === document && typeof LS !== 'undefined') {
+                var p = LS.product || (window.LS && window.LS.product);
+                var vars = LS.variants || (p && p.variants);
+                if (vars && vars.length) {
+                    var vIdEl = doc.querySelector('input[name="variant_id"]') || doc.querySelector('[name="variant_id"]');
+                    var vId = vIdEl ? vIdEl.value : variantId;
+                    if (vId) {
+                        var match = vars.find(function (v) { return String(v.id) === String(vId); });
+                        if (match) {
+                            var opts = [match.option0, match.option1, match.option2].filter(Boolean);
+                            if (opts.length) return opts.join(' / ');
+                        }
+                    }
+                    if (vars.length === 1) {
+                        var opts = [vars[0].option0, vars[0].option1, vars[0].option2].filter(Boolean);
+                        if (opts.length) return opts.join(' / ');
+                    }
+                }
+            }
+        } catch (e) {}
+
+        try {
+            var scripts = doc.querySelectorAll('script');
+            scripts.forEach(function (s) {
+                var txt = s.textContent || s.innerHTML || '';
+                if (txt.indexOf('LS.product') !== -1) {
+                    var m = txt.match(/LS\.product\s*=\s*({[\s\S]*?});/);
+                    if (m && m[1]) {
+                        try { parsedLS = (new Function('return (' + m[1] + ')'))(); } catch (e) {}
+                    }
+                }
+            });
+            if (parsedLS && parsedLS.variants && parsedLS.variants.length) {
+                var vIdEl = doc.querySelector('input[name="variant_id"]') || doc.querySelector('[name="variant_id"]');
+                var vId = vIdEl ? vIdEl.value : variantId;
+                if (vId) {
+                    var match = parsedLS.variants.find(function (v) { return String(v.id) === String(vId); });
+                    if (match) {
+                        var opts = [match.option0, match.option1, match.option2].filter(Boolean);
+                        if (opts.length) return opts.join(' / ');
+                    }
+                }
+                if (parsedLS.variants.length === 1) {
+                    var opts = [parsedLS.variants[0].option0, parsedLS.variants[0].option1, parsedLS.variants[0].option2].filter(Boolean);
+                    if (opts.length) return opts.join(' / ');
+                }
+            }
+        } catch (e) {}
+        return '';
+    }
+
+    function getVariationNameFromTags(tags) {
+        if (!tags || !tags.length) return '';
+        
+        // 1. First priority: look for a tag containing " / " (e.g. "Cinza / Rato")
+        for (var i = 0; i < tags.length; i++) {
+            var t = tags[i].trim();
+            if (t.indexOf('/') !== -1) {
+                var parts = t.split('/').map(function(p) { return p.trim(); }).filter(Boolean);
+                if (parts.length >= 2) {
+                    return t;
+                }
+            }
+        }
+        
+        // 2. Second priority: look for a tag containing " - " or en/em dashes (e.g. "Preto - Prata")
+        for (var i = 0; i < tags.length; i++) {
+            var t = tags[i].trim();
+            if (t.indexOf(' - ') !== -1 || t.indexOf('–') !== -1 || t.indexOf('—') !== -1) {
+                return t;
+            }
+        }
+        
+        // 3. Third priority: look for any tag that is NOT generic or a known base/linking tag
+        var genericTags = ['bolsa', 'vertice', 'prevenda', 'pre-venda', 'pre venda', 'sale', 'novo', 'lancamento', 'lançamento', 'eora', 'promocao', 'promoção', 'maxivertice', 'luar', 'bolsaluar'];
+        var cleanGeneric = genericTags.map(function(gt) { return gt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); });
+        
+        for (var i = 0; i < tags.length; i++) {
+            var t = tags[i].trim();
+            var lowerT = t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            
+            if (cleanGeneric.indexOf(lowerT) !== -1) continue;
+            if (lowerT.indexOf('produto-gradiente:') === 0 || lowerT.indexOf('card-produto-gradiente:') === 0) continue;
+            if (lowerT.indexOf(':') !== -1) continue;
+            
+            return t;
+        }
+        
+        return '';
+    }
+
+    function autoGetVariationName(doc) {
+        var root = doc || document;
+
+        // 1. Tenta extrair da tabela de configuração (nome_variacao / cor)
+        try {
+            var varName = '';
+            var possibleKeys = ['nome_variacao', 'nome variacao', 'nome da variacao', 'nome_variacao_produto', 'cor'];
+            var tables = root.querySelectorAll('.js-product-description-base table, table');
+            for (var i = 0; i < tables.length; i++) {
+                var rows = tables[i].querySelectorAll('tr');
+                for (var j = 0; j < rows.length; j++) {
+                    var cells = rows[j].querySelectorAll('td');
+                    if (cells.length >= 2) {
+                        var k = cells[0].textContent.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        if (possibleKeys.indexOf(k) !== -1) {
+                            varName = cells[1].textContent.trim();
+                            if (varName) break;
+                        }
+                    }
+                }
+                if (varName) break;
+            }
+            if (varName) return varName;
+        } catch (e) {}
+
+        // 2. Tenta extrair do nome do produto no DOM:
+        // O nome do produto segue o padrão "NOME BASE - Cor / Variacao"
+        // Se tiver " - ", o sufixo é o nome da variação.
+        // Busca dentro de #single-product (produto original) ou no root (quando é um newDoc de fetch).
+        var productRoot = root.querySelector('#single-product') || root;
+        var nameEl = productRoot.querySelector('.js-product-name, h1.product-name, .product-name h1, h1');
+        if (nameEl) {
+            var txt = (nameEl.textContent || '').trim();
+            var parts = txt.split(/\s+[-–—]\s+/);
+            if (parts.length > 1) {
+                return parts.slice(1).join(' / ').trim();
+            }
+        }
+
+        // Tenta extrair das tags do produto (útil para variações mapeadas como produtos separados)
+        var tagRoot = root.querySelector('#single-product') || root;
+        if (tagRoot) {
+            var rawTags = tagRoot.getAttribute('data-product-tags');
+            if (rawTags) {
+                try {
+                    var parsed = JSON.parse(rawTags);
+                    var productTags = parsed.map(function (item) {
+                        if (!item) return '';
+                        if (typeof item === 'string') return item;
+                        return item.tag || item.name || '';
+                    }).filter(Boolean);
+                    
+                    var nameFromTags = getVariationNameFromTags(productTags);
+                    if (nameFromTags) return nameFromTags;
+                } catch (e) {}
+            }
+        }
+
+        // Fallback: tenta LS.product.variants (funciona quando scripts Nuvemshop já rodaram)
+        var vIdInput = root.querySelector('input[name="variant_id"]') || root.querySelector('[name="variant_id"]');
+        var vId = vIdInput ? vIdInput.value : '';
+        var nameFromLS = getVariationNameFromLS(root, vId);
+        if (nameFromLS) return nameFromLS;
+
+        // Fallback: selects de variação renderizados
+        var selects = root.querySelectorAll('select.js-variation-option, select[name^="variation"]');
+        var selectedOpts = [];
+        selects.forEach(function (select) {
+            if (select.classList.contains('js-shipping-select')) return;
+            if ((select.id || '').toLowerCase().indexOf('shipping') !== -1) return;
+            var opt = select.options[select.selectedIndex];
+            if (opt && opt.value) {
+                var text = (opt.textContent || opt.text || '').trim();
+                if (text) selectedOpts.push(text);
+            }
+        });
+        if (selectedOpts.length > 0) return selectedOpts.join(' / ');
+
+        return '';
+    }
+
+    function updateVariationName(doc) {
+        var root = doc || document;
+        
+        // Se já temos o nome da variação ativa no cache global, prioriza ele para evitar que timeouts ou scripts nativos revertam
+        var nomeVariacao = window.eoraActiveVariationName || '';
+
+        if (!nomeVariacao) {
+            nomeVariacao = autoGetVariationName(root);
+        }
+
+        if (!nomeVariacao) {
+            var currentPath = normalizePathname(window.location.href);
+            var vg = document.querySelector('.eora-bolsa-vars');
+            if (vg) {
+                var ms = vg.querySelector('.eora-bolsa-var-item[data-href-path="' + currentPath + '"]');
+                if (ms) nomeVariacao = ms.getAttribute('data-name') || '';
+            }
+        }
+
+        if (!nomeVariacao) {
+            var rawTitle = (root.title || document.title || '').trim();
+            var productTitle = rawTitle.split(/\s*[|]\s*/)[0].trim();
+            var parts = productTitle.split(/\s+[-–—]\s+/);
+            if (parts.length > 1) {
+                nomeVariacao = parts.slice(1).join(' / ').trim();
+            }
+        }
+
+        if (nomeVariacao) {
+            window.eoraActiveVariationName = nomeVariacao;
+        }
+
+        var infoEl = document.querySelector('.eora-product-info');
+        if (infoEl) {
+            var h2 = infoEl.querySelector('.eora-product-name') || infoEl.querySelector('.js-product-name');
+            if (h2) {
+                var txt = h2.textContent || '';
+                if (txt.indexOf(' - ') !== -1) {
+                    h2.innerHTML = txt.split(' - ')[0].trim();
+                }
+            }
+            
+            var varTitleEl = infoEl.querySelector('.eora-nome-variacao');
+            if (varTitleEl) {
+                if (nomeVariacao) {
+                    varTitleEl.style.display = 'block';
+                    varTitleEl.innerHTML = nomeVariacao;
+                } else {
+                    varTitleEl.style.display = 'none';
+                }
+            } else if (nomeVariacao && h2) {
+                var div = document.createElement('div');
+                div.className = 'eora-nome-variacao';
+                div.style.marginTop = '-8px';
+                div.style.marginBottom = '16px';
+                div.style.fontSize = '12px';
+                div.style.color = '#666';
+                div.innerHTML = nomeVariacao;
+                h2.parentNode.insertBefore(div, h2.nextSibling);
+            }
+        }
     }
 
     function criarBlocoTitulo(titulo) {
@@ -231,45 +496,30 @@
     function buildCustomInstitutionalMessage() {
         var dados = getDados();
         var t = dados['texto_institucional'];
-        if (!t) return;
         var titulo = '';
         var texto = '';
-        var nomeVariacao = '';
-        t.querySelectorAll('tbody > tr').forEach(function(row) {
-            var cells = row.querySelectorAll('td');
-            if (cells.length < 2) return;
-            var key = (cells[0].textContent || '').trim().toLowerCase();
-            
-            var cleanHTML = function(html) {
-                return html.replace(/<br\s*\/?>/gi, ' ')
-                           .replace(/<\/p>\s*<p[^>]*>/gi, ' ')
-                           .replace(/<\/?p[^>]*>/gi, ' ')
-                           .replace(/\s+/g, ' ')
-                           .trim();
-            };
-            
-            if (key === 'titulo_institucional') titulo = cleanHTML(cells[1].innerHTML);
-            if (key === 'texto_institucional' && row.rowIndex > 0) texto = cleanHTML(cells[1].innerHTML);
-            if (key === 'nome_variacao' || key === 'nome_variação') nomeVariacao = cells[1].innerHTML || cells[1].textContent;
-        });
-
-        if (nomeVariacao) {
-            var infoEl = document.querySelector('.eora-product-info');
-            if (infoEl) {
-                var h2 = infoEl.querySelector('.js-product-name');
-                if (h2 && !infoEl.querySelector('.eora-nome-variacao')) {
-                    var div = document.createElement('div');
-                    div.className = 'eora-nome-variacao';
-                    div.style.marginTop = '-8px';
-                    div.style.marginBottom = '16px';
-                    div.style.fontSize = '12px';
-                    div.style.color = '#666';
-                    div.innerHTML = nomeVariacao;
-                    h2.parentNode.insertBefore(div, h2.nextSibling);
-                }
-            }
+        if (t) {
+            t.querySelectorAll('tbody > tr').forEach(function(row) {
+                var cells = row.querySelectorAll('td');
+                if (cells.length < 2) return;
+                var key = (cells[0].textContent || '').trim().toLowerCase();
+                
+                var cleanHTML = function(html) {
+                    return html.replace(/<br\s*\/?>/gi, ' ')
+                               .replace(/<\/p>\s*<p[^>]*>/gi, ' ')
+                               .replace(/<\/?p[^>]*>/gi, ' ')
+                               .replace(/\s+/g, ' ')
+                               .trim();
+                };
+                
+                if (key === 'titulo_institucional') titulo = cleanHTML(cells[1].innerHTML);
+                if (key === 'texto_institucional' && row.rowIndex > 0) texto = cleanHTML(cells[1].innerHTML);
+            });
         }
 
+        updateVariationName(document);
+
+        if (!t) return;
         if (!titulo && !texto) return;
 
         var anchor = findInstitutionalAnchor();
@@ -293,6 +543,23 @@
 
     function getOriginalProductRoot() {
         return document.querySelector('#single-product');
+    }
+
+    function getProductTagsFromRoot() {
+        var root = getOriginalProductRoot();
+        if (!root) return [];
+        var raw = root.getAttribute('data-product-tags');
+        if (!raw) return [];
+        try {
+            var parsed = JSON.parse(raw);
+            return parsed.map(function (item) {
+                if (!item) return '';
+                if (typeof item === 'string') return item;
+                return item.tag || item.name || '';
+            }).filter(Boolean);
+        } catch (e) {
+            return [];
+        }
     }
 
     function getOriginalProductForm() {
@@ -355,21 +622,44 @@
     }
 
     function bindShippingCalculator(infoEl, themeProd) {
-        var origShipping = themeProd.querySelector('.js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || themeProd.querySelector('input[name="zipcode"], .js-shipping-input')?.closest('div');
-        var clonedShipping = infoEl.querySelector('.js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || infoEl.querySelector('input[name="zipcode"], .js-shipping-input')?.closest('div');
+        var origShipping = themeProd.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
+                           (themeProd.querySelector('input[name="zipcode"], .js-shipping-input') ? themeProd.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
+        var clonedShipping = infoEl.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
+                             (infoEl.querySelector('input[name="zipcode"], .js-shipping-input') ? infoEl.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         
+        if (clonedShipping) {
+            // Garante que o calculador clonado não fique com display: none herdado de produtos sem estoque
+            clonedShipping.style.setProperty('display', 'block', 'important');
+            var innerCalculator = clonedShipping.querySelector('.product-shipping-calculator');
+            if (innerCalculator) {
+                innerCalculator.style.setProperty('display', 'block', 'important');
+            }
+            
+            // Garante que o form esteja com a classe transition-up-active de primeira para ficar visível
+            var clonedFormEl = clonedShipping.querySelector('.js-shipping-calculator-form');
+            if (clonedFormEl) {
+                clonedFormEl.classList.add('transition-up-active');
+            }
+        }
+
         if (origShipping && clonedShipping) {
             var origInput = origShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var origBtn = origShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"]');
+            var origBtn = origShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
             var origResponse = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
             
             var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"]');
+            var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
             var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
             
+            // Preenche o input clonado se o original já tiver valor (ex: CEP salvo)
+            if (origInput && clonedInput && origInput.value && !clonedInput.value) {
+                clonedInput.value = origInput.value;
+            }
+
             if (clonedBtn) {
                 clonedBtn.classList.remove('js-calculate-shipping', 'js-shipping-calculator-btn');
                 clonedBtn.classList.add('eora-calculate-shipping-btn');
+                clonedBtn.innerHTML = '<span>&rarr;</span>'; // Garante a seta para a direita de forma bonita
                 
                 var freshBtn = clonedBtn.cloneNode(true);
                 clonedBtn.parentNode.replaceChild(freshBtn, clonedBtn);
@@ -391,6 +681,12 @@
             if (clonedInput) {
                 var freshInput = clonedInput.cloneNode(true);
                 clonedInput.parentNode.replaceChild(freshInput, clonedInput);
+                
+                // Reaplica o valor
+                if (origInput) {
+                    freshInput.value = origInput.value;
+                }
+                
                 freshInput.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
@@ -399,30 +695,98 @@
                         if (btn) btn.click();
                     }
                 });
-            }
-            
-            if (origResponse && clonedResponse) {
-                var syncResponse = function () {
-                    clonedResponse.innerHTML = origResponse.innerHTML;
-                    clonedResponse.style.display = origResponse.style.display;
-                    clonedResponse.className = origResponse.className;
-                };
-                var observer = new MutationObserver(syncResponse);
-                observer.observe(origResponse, { childList: true, subtree: true, attributes: true });
-                syncResponse();
+                
+                // Mantém inputs em sincronia quando o usuário digita
+                freshInput.addEventListener('input', function () {
+                    if (origInput) {
+                        origInput.value = freshInput.value;
+                    }
+                });
             }
             
             var syncAllShipping = function () {
+                // 1. Sincroniza respostas de frete
                 var origResp = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
                 var clonedResp = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
                 if (origResp && clonedResp && clonedResp.innerHTML !== origResp.innerHTML) {
                     clonedResp.innerHTML = origResp.innerHTML;
                     clonedResp.style.display = origResp.style.display;
                 }
+
+                // 2. Sincroniza classes estruturais e de visibilidade do calculador
+                var origForm = origShipping.querySelector('.js-shipping-calculator-form');
+                var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
+                if (origForm && clonedForm) {
+                    if (origForm.classList.contains('transition-up-active')) {
+                        clonedForm.classList.add('transition-up-active');
+                    } else {
+                        // Mantém sempre visível no clone para evitar campos sumirem
+                        clonedForm.classList.add('transition-up-active');
+                    }
+                }
+                
+                var origZip = origShipping.querySelector('.js-shipping-calculator-with-zipcode');
+                var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
+                if (origZip && clonedZip) {
+                    if (origZip.classList.contains('transition-up-active')) {
+                        clonedZip.classList.add('transition-up-active');
+                    } else {
+                        clonedZip.classList.remove('transition-up-active');
+                    }
+                }
+
+                var origHead = origShipping.querySelector('.js-shipping-calculator-head');
+                var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
+                if (origHead && clonedHead) {
+                    if (origHead.classList.contains('with-zip')) {
+                        clonedHead.classList.add('with-zip');
+                    } else {
+                        clonedHead.classList.remove('with-zip');
+                    }
+                }
+
+                // 3. Sincroniza valor do CEP se mudou fora da digitação direta
+                if (origInput && clonedInput && origInput.value !== clonedInput.value) {
+                    if (document.activeElement !== clonedInput) {
+                        clonedInput.value = origInput.value;
+                    }
+                }
             };
-            var fallbackObserver = new MutationObserver(syncAllShipping);
-            fallbackObserver.observe(origShipping, { childList: true, subtree: true, attributes: true });
+
+            // Roda sincronização inicial
+            syncAllShipping();
+
+            // Configura observer no elemento original para reagir a qualquer mudança do JS nativo do tema
+            var observer = new MutationObserver(syncAllShipping);
+            observer.observe(origShipping, { childList: true, subtree: true, attributes: true });
         }
+    }
+
+    function bindShippingAccordion(infoEl) {
+        var drop = infoEl.querySelector('.eora-shipping-dropdown') || infoEl.querySelector('.shipping-dropdown');
+        if (!drop) return;
+        
+        if (drop.classList.contains('shipping-dropdown')) {
+            drop.classList.remove('shipping-dropdown');
+            drop.classList.add('eora-shipping-dropdown');
+        }
+        
+        var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+        if (!toggle) return;
+        var content = drop.querySelector('.dropdown-content');
+        if (!content) return;
+
+        // Remove estilos inline antigos para deixar o CSS robusto tomar controle absoluto
+        content.removeAttribute('style');
+
+        var freshToggle = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(freshToggle, toggle);
+
+        freshToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            drop.classList.toggle('open');
+        });
     }
 
     var eoraPageCache = {};
@@ -437,6 +801,27 @@
                     .then(function (r) { return r.text(); })
                     .then(function (html) {
                         eoraPageCache[path] = html;
+                        try {
+                            var parser = new DOMParser();
+                            var tempDoc = parser.parseFromString(html, 'text/html');
+                            var extractedName = autoGetVariationName(tempDoc);
+                            if (extractedName) {
+                                var swatch = document.querySelector('.eora-bolsa-var-item[data-href-path="' + path + '"]');
+                                if (swatch) {
+                                    swatch.setAttribute('data-name', extractedName);
+                                    if (swatch.classList.contains('eora-active')) {
+                                        window.eoraActiveVariationName = extractedName;
+                                        var varTitleEl = document.querySelector('.eora-nome-variacao');
+                                        if (varTitleEl) {
+                                            varTitleEl.style.display = 'block';
+                                            varTitleEl.innerHTML = extractedName;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Error post-processing prefetched variation page:', e);
+                        }
                     })
                     .catch(function () {});
             };
@@ -489,6 +874,12 @@
             });
         }
         
+        // 1. Efeito suave de Fade-out no container customizado
+        var wrapEl = document.querySelector('.eora-product-wrap');
+        if (wrapEl) {
+            wrapEl.classList.remove('eora-loaded');
+        }
+        
         var htmlPromise = eoraPageCache[path]
             ? Promise.resolve(eoraPageCache[path])
             : fetch(path).then(function (r) { return r.text(); });
@@ -499,14 +890,51 @@
             var parser = new DOMParser();
             var newDoc = parser.parseFromString(html, 'text/html');
             var newSP = newDoc.querySelector('#single-product');
+
+            // ── EXTRAI E ATUALIZA O WINDOW.LS IMEDIATAMENTE ────────────────────────
+            var parsedLS = null;
+            try {
+                var scripts = newDoc.querySelectorAll('script');
+                scripts.forEach(function (s) {
+                    var txt = s.textContent || s.innerHTML || '';
+                    
+                    // 1. Tenta casar LS.product = ... com ou sem ponto-e-vírgula e window. prefix
+                    var m = txt.match(/(?:window\.)?LS\.product\s*=\s*({[\s\S]*?})(?:;|\n|\r|$)/);
+                    if (m && m[1]) {
+                        try { parsedLS = (new Function('return (' + m[1] + ')'))(); } catch (e) {}
+                    }
+                    
+                    // 2. Tenta casar window.LS = ... ou LS = ... em blocos inteiros
+                    if (!parsedLS) {
+                        var m2 = txt.match(/(?:window\.)?LS\s*=\s*({[\s\S]*?})(?:;|\n|\r|$)/);
+                        if (m2 && m2[1]) {
+                            try {
+                                var fullLS = (new Function('return (' + m2[1] + ')'))();
+                                if (fullLS && fullLS.product) {
+                                    parsedLS = fullLS.product;
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                });
+                if (parsedLS) {
+                    if (typeof window.LS === 'undefined') {
+                        window.LS = {};
+                    }
+                    window.LS.product = parsedLS;
+                    if (parsedLS.variants) {
+                        window.LS.variants = parsedLS.variants;
+                    }
+                }
+            } catch (e) {}
+            // ────────────────────────────────────────────────────────────────────────
             
-            // Se o produto atual ou o destino estiver sem estoque, recarrega a página tradicionalmente para recriar o App Cheguei corretamente
-            var currentIsNoStock = document.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || document.getElementById('cheguei-alert-div');
-            var targetIsNoStock = newSP && (newSP.querySelector('.nostock, [disabled], .eora-buy-btn[disabled]') || newSP.querySelector('#cheguei-alert-div'));
-            if (currentIsNoStock || targetIsNoStock) {
-                window.location.href = fullUrl;
-                return;
-            }
+            // Só considera indisponível se o botão de compra realmente indicar falta de estoque
+            var currentBuyBtn = document.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
+            var currentIsNoStock = currentBuyBtn && (currentBuyBtn.disabled || currentBuyBtn.classList.contains('nostock') || currentBuyBtn.value === 'Esgotado' || currentBuyBtn.textContent.trim() === 'Esgotado');
+            
+            var targetBuyBtn = newSP && newSP.querySelector('.eora-buy-btn, input.js-addtocart, button.js-addtocart, .js-addtocart, [name="commit"]');
+            var targetIsNoStock = targetBuyBtn && (targetBuyBtn.disabled || targetBuyBtn.classList.contains('nostock') || targetBuyBtn.value === 'Esgotado' || targetBuyBtn.textContent.trim() === 'Esgotado');
             
             if (normalizePathname(window.location.href) !== path) {
                 history.pushState({ eoraPath: path }, '', fullUrl);
@@ -535,51 +963,47 @@
             var themeProd = document.querySelector('#single-product');
             
             if (infoEl && themeProd) {
-                var nameEl = infoEl.querySelector('.js-product-name');
+                var nameEl = infoEl.querySelector('.eora-product-name') || infoEl.querySelector('.js-product-name');
                 var newNameEl = newSP.querySelector('.js-product-name');
                 if (nameEl && newNameEl) nameEl.innerHTML = newNameEl.innerHTML;
                 
-                var priceEl = infoEl.querySelector('.js-price-display, .product-price');
+                var priceEl = infoEl.querySelector('.eora-price-display') || infoEl.querySelector('.js-price-display, .product-price');
                 var newPriceEl = newSP.querySelector('.js-price-display, .product-price');
                 if (priceEl && newPriceEl) priceEl.innerHTML = newPriceEl.innerHTML;
-                
                 var dados = {};
-                newDoc.querySelectorAll('.js-product-description-base table').forEach(function (t) {
-                    var td = t.querySelector('tbody > tr:first-child td:first-child');
-                    if (td) dados[td.textContent.trim().toLowerCase()] = t;
-                });
-                var t = dados['texto_institucional'];
-                var nomeVariacao = '';
-                if (t) {
-                    t.querySelectorAll('tbody > tr').forEach(function(row) {
-                        var cells = row.querySelectorAll('td');
-                        if (cells.length < 2) return;
-                        var key = (cells[0].textContent || '').trim().toLowerCase();
-                        if (key === 'nome_variacao' || key === 'nome_variação') nomeVariacao = cells[1].innerHTML || cells[1].textContent;
-                    });
-                }
                 
-                var varTitleEl = infoEl.querySelector('.eora-nome-variacao');
-                if (varTitleEl) {
-                    if (nomeVariacao) {
-                        varTitleEl.style.display = 'block';
-                        varTitleEl.innerHTML = nomeVariacao;
-                    } else {
-                        varTitleEl.style.display = 'none';
+                newDoc.querySelectorAll('.js-product-description-base table, table').forEach(function (t) {
+                    var td = t.querySelector('tbody > tr:first-child td:first-child');
+                    if (td) {
+                        var k = td.textContent.trim().toLowerCase();
+                        if (!dados[k]) dados[k] = t;
                     }
-                } else if (nomeVariacao) {
-                    var h2 = infoEl.querySelector('.js-product-name');
-                    if (h2) {
-                        var div = document.createElement('div');
-                        div.className = 'eora-nome-variacao';
-                        div.style.marginTop = '-8px';
-                        div.style.marginBottom = '16px';
-                        div.style.fontSize = '12px';
-                        div.style.color = '#666';
-                        div.innerHTML = nomeVariacao;
-                        h2.parentNode.insertBefore(div, h2.nextSibling);
+                });
+
+                var descInner = infoEl.querySelector('.eora-desc-inner');
+                var descAcc = infoEl.querySelector('.eora-desc-acc');
+                var newDescTable = dados['descricao_curta'];
+                if (newDescTable) {
+                    var newTd = newDescTable.querySelector('tbody > tr:first-child td:last-child');
+                    if (newTd && newTd.innerHTML.trim()) {
+                        if (descInner) {
+                            descInner.innerHTML = newTd.innerHTML;
+                        }
+                        if (descAcc) {
+                            descAcc.style.display = '';
+                        }
+                    } else if (descAcc) {
+                        descAcc.style.display = 'none';
                     }
+                } else if (descAcc) {
+                    descAcc.style.display = 'none';
                 }
+
+                // Reseta e atualiza o cache global com o nome extraído do novo documento (newDoc)
+                window.eoraActiveVariationName = autoGetVariationName(newDoc);
+
+                // Aplica dinamicamente o nome da variação usando a lógica unificada
+                updateVariationName(newDoc || document);
                 
                 var newPhotos = [];
                 var seenUrls = {};
@@ -593,17 +1017,6 @@
                     newPhotos.push(u);
                 }
                 try {
-                    var scripts = newDoc.querySelectorAll('script');
-                    var parsedLS = null;
-                    scripts.forEach(function (s) {
-                        var txt = s.textContent || '';
-                        if (txt.indexOf('LS.product') !== -1) {
-                            var m = txt.match(/LS\.product\s*=\s*({[\s\S]*?});/);
-                            if (m && m[1]) {
-                                try { parsedLS = JSON.parse(m[1]); } catch (e) {}
-                            }
-                        }
-                    });
                     if (parsedLS && parsedLS.images) {
                         parsedLS.images.forEach(function (img) { addPhoto(img.src || img.url || ''); });
                     }
@@ -652,6 +1065,9 @@
                     });
                     freshForm.querySelectorAll('button, input[type="submit"]').forEach(function (btn) {
                         if (btn.classList.contains('eora-buy-btn')) return;
+                        if (btn.classList.contains('dropdown-toggle') || btn.closest('.eora-shipping-dropdown') || btn.closest('.shipping-dropdown') || btn.closest('.dropdown-wrapper') || btn.closest('.js-shipping-calculator-wrapper')) return;
+                        if (btn.classList.contains('js-calculate-shipping') || btn.classList.contains('js-shipping-calculator-btn') || btn.classList.contains('eora-calculate-shipping-btn')) return;
+                        
                         btn.addEventListener('click', function (e) {
                             e.preventDefault();
                             e.stopPropagation();
@@ -660,8 +1076,62 @@
                     });
                 }
                 
+                infoEl.querySelectorAll('.shipping-dropdown').forEach(function (drop) {
+                    drop.classList.remove('shipping-dropdown');
+                    drop.classList.add('eora-shipping-dropdown');
+                });
                 bindShippingCalculator(infoEl, themeProd);
+                bindShippingAccordion(infoEl);
                 reorganizeEoraProductInfo(infoEl);
+
+                // Garante que o #cheguei-alert-div da nova variação esteja no DOM atual para que o widget seja renderizado
+                var newCheguei = newDoc.getElementById('cheguei-alert-div') || newDoc.querySelector('[id*="cheguei"]');
+                var oldCheguei = document.getElementById('cheguei-alert-div') || document.querySelector('[id*="cheguei"]');
+                if (newCheguei) {
+                    if (oldCheguei) {
+                        oldCheguei.parentNode.replaceChild(newCheguei.cloneNode(true), oldCheguei);
+                    } else {
+                        document.body.appendChild(newCheguei.cloneNode(true));
+                    }
+                } else if (oldCheguei) {
+                    oldCheguei.parentNode.removeChild(oldCheguei);
+                }
+
+                // Re-executa scripts de terceiros / scripts específicos de variação
+                newSP.querySelectorAll('script').forEach(function (s) {
+                    var freshScript = document.createElement('script');
+                    if (s.src) {
+                        freshScript.src = s.src;
+                    } else {
+                        freshScript.textContent = s.textContent;
+                    }
+                    document.body.appendChild(freshScript);
+                    setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
+                });
+
+                newDoc.querySelectorAll('script').forEach(function (s) {
+                    var txt = s.textContent || s.innerHTML || '';
+                    var src = s.getAttribute('src') || s.src || '';
+                    var isChegueiScript = (txt.indexOf('cheguei') !== -1 || txt.indexOf('empreender') !== -1 || src.indexOf('cheguei') !== -1 || src.indexOf('empreender') !== -1);
+                    if (isChegueiScript) {
+                        var freshScript = document.createElement('script');
+                        if (s.src) {
+                            freshScript.src = s.src;
+                        } else {
+                            freshScript.textContent = s.textContent;
+                        }
+                        document.body.appendChild(freshScript);
+                        setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
+                    }
+                });
+
+                // Soft fade-in of the new layout!
+                setTimeout(function () {
+                    var freshWrap = document.querySelector('.eora-product-wrap');
+                    if (freshWrap) {
+                        freshWrap.classList.add('eora-loaded');
+                    }
+                }, 50);
             }
         }).catch(function () {
             window.location.href = fullUrl;
@@ -880,13 +1350,15 @@
         if (!tag) return Promise.resolve([]);
         var baseSearchUrl = '/search/?q=' + encodeURIComponent(tag);
 
-        var cacheKey = 'eora_vars_v2_' + tag.toLowerCase().trim();
+        var cacheKey = 'eora_vars_v3_' + tag.toLowerCase().trim();
         var cached = sessionStorage.getItem(cacheKey);
         if (cached) {
             try {
                 var parsed = JSON.parse(cached);
-                if (parsed && parsed.length) {
-                    return Promise.resolve(parsed);
+                if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < 300000)) { // 5 minutos de cache
+                    if (parsed.items && parsed.items.length) {
+                        return Promise.resolve(parsed.items);
+                    }
                 }
             } catch (e) {}
         }
@@ -924,6 +1396,12 @@
                     if (altLink) {
                         name = (altLink.getAttribute('title') || altLink.getAttribute('aria-label') || altLink.textContent || '').trim();
                     }
+                }
+                
+                // Tenta também o elemento de nome do produto (tipico em temas Nuvemshop)
+                if (!name) {
+                    var nameNode = itemEl.querySelector('.item-name, .product-name, h2, h3');
+                    if (nameNode) name = (nameNode.textContent || '').trim();
                 }
                 
                 if (!name && img) {
@@ -1015,32 +1493,33 @@
             return urls;
         }
 
-        return fetch(baseSearchUrl + '&_=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' })
-            .then(function (response) { return response.text(); })
-            .then(function (html) {
-                var firstDoc = new DOMParser().parseFromString(html, 'text/html');
+        var pagesToFetch = [1, 2, 3, 4];
+        var pagesDocs = [];
+        
+        var fetchPromises = pagesToFetch.map(function (page, idx) {
+            var url = baseSearchUrl + '&page=' + page + '&_=' + Date.now();
+            return fetch(url, { credentials: 'same-origin', cache: 'no-store' })
+                .then(function (res) { return res.text(); })
+                .then(function (html) {
+                    pagesDocs[idx] = new DOMParser().parseFromString(html, 'text/html');
+                })
+                .catch(function () {});
+        });
+
+        return Promise.all(fetchPromises)
+            .then(function () {
                 var items = [];
                 var seen = {};
-
-                collectItemsFromDoc(firstDoc, items, seen);
-
-                var pageUrls = collectPageUrls(firstDoc).filter(function (url) {
-                    return normalizePathname(url).indexOf('/search') === 0;
+                
+                // Processa as páginas na ordem estrita de paginação (1, depois 2, depois 3, etc.)
+                // Isso garante que a ordem original do catálogo Nuvemshop seja mantida perfeitamente
+                pagesToFetch.forEach(function (page, idx) {
+                    var doc = pagesDocs[idx];
+                    if (doc) {
+                        collectItemsFromDoc(doc, items, seen);
+                    }
                 });
 
-                if (!pageUrls.length) return items;
-
-                return Promise.all(pageUrls.map(function (url) {
-                    return fetch(url, { credentials: 'same-origin', cache: 'no-store' })
-                        .then(function (res) { return res.text(); })
-                        .then(function (pageHtml) {
-                            var pageDoc = new DOMParser().parseFromString(pageHtml, 'text/html');
-                            collectItemsFromDoc(pageDoc, items, seen);
-                        })
-                        .catch(function () {});
-                })).then(function () { return items; });
-            })
-            .then(function (items) {
                 var unique = [];
                 var seenHref = {};
                 (items || []).forEach(function (it) {
@@ -1067,7 +1546,7 @@
                             currentImgSrc = imgEl.getAttribute('data-zoom-image') || imgEl.getAttribute('data-image') || imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
                         }
                         if (currentImgSrc) currentImgSrc = normalizeUrl(currentImgSrc);
-                        var currentTags = getCurrentProductTags().map(function (t) {
+                        var currentTags = getProductTagsFromRoot().map(function (t) {
                             return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                         });
                         var currentIsPreVenda = currentTags.some(function (t) {
@@ -1082,16 +1561,22 @@
                     }
                 }
 
-                // Ordenar alfabeticamente pelo nome para garantir ordem 100% idêntica em qualquer página
+                // Coloca as variações de pré-venda (isPreVenda) sempre por último (fim),
+                // preservando a ordem original do catálogo para as demais
                 unique.sort(function (a, b) {
-                    var nameA = String(a.name || '');
-                    var nameB = String(b.name || '');
-                    return nameA.localeCompare(nameB, 'pt', { sensitivity: 'base' });
+                    var aPre = !!a.isPreVenda;
+                    var bPre = !!b.isPreVenda;
+                    if (aPre && !bPre) return 1;
+                    if (!aPre && bPre) return -1;
+                    return 0;
                 });
 
-                // Armazenar no cache da sessão
+                // Armazenar no cache da sessão com timestamp
                 try {
-                    sessionStorage.setItem(cacheKey, JSON.stringify(unique));
+                    sessionStorage.setItem(cacheKey, JSON.stringify({
+                        timestamp: Date.now(),
+                        items: unique
+                    }));
                 } catch (e) {}
 
                 return unique;
@@ -1246,7 +1731,7 @@
             
             var isPreVenda = !!item.isPreVenda;
             if (isActive) {
-                var currentTags = getCurrentProductTags().map(function (t) {
+                var currentTags = getProductTagsFromRoot().map(function (t) {
                     return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 });
                 var currentIsPreVenda = currentTags.some(function (t) {
@@ -1260,6 +1745,26 @@
             var el = document.createElement('div');
             el.className = 'eora-bolsa-var-item' + (isActive ? ' eora-active' : '') + (isPreVenda ? ' eora-prevenda-item' : '');
             el.setAttribute('data-href-path', itemPath);
+            // Extrai a cor/variação do nome do produto de forma genérica.
+            // O Nuvemshop usa o padrão "NOME BASE - Cor / Variacao" para todas as variações.
+            // Se não tiver " - ", tenta extrair removendo o nome base do produto atual.
+            var varName = item.name || '';
+            var parts = varName.split(/\s+[-–—]\s+/);
+            if (parts.length > 1) {
+                varName = parts.slice(1).join(' / ').trim();
+            } else {
+                var currentH2 = document.querySelector('.eora-product-info .eora-product-name, .eora-product-info .js-product-name');
+                var baseName = currentH2 ? (currentH2.textContent || '').trim() : '';
+                if (baseName) {
+                    var cleanBase = baseName.split(/\s+[-–—]\s+/)[0].trim().toLowerCase();
+                    var lowerItemName = varName.toLowerCase();
+                    var idx = lowerItemName.indexOf(cleanBase);
+                    if (idx !== -1) {
+                        varName = varName.substring(idx + cleanBase.length).replace(/^[\s\-–—/]+/, '').trim();
+                    }
+                }
+            }
+            el.setAttribute('data-name', varName);
             var img = document.createElement('img');
             img.alt = item.name || ('variante ' + (i + 1));
             img.onerror = function () {
@@ -1645,39 +2150,7 @@
                     placeholder.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-
-                        var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
-                                             document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                                             document.querySelector('#cheguei-alert-div section') ||
-                                             document.querySelector('#cheguei-alert-div div') ||
-                                             document.getElementById('cheguei-alert-div');
-                        
-                        if (realChegueiBtn && realChegueiBtn !== placeholder && !placeholder.contains(realChegueiBtn)) {
-                            realChegueiBtn.click();
-                        } else {
-                            var txtNode = placeholder.querySelector('.placeholder-text');
-                            if (txtNode) txtNode.textContent = 'Carregando formulário...';
-
-                            var attempts = 0;
-                            var checkInterval = setInterval(function () {
-                                attempts++;
-                                var btn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
-                                          document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                                          document.querySelector('#cheguei-alert-div section') ||
-                                          document.querySelector('#cheguei-alert-div div') ||
-                                          document.getElementById('cheguei-alert-div');
-                                
-                                if (btn && btn !== placeholder && !placeholder.contains(btn)) {
-                                    clearInterval(checkInterval);
-                                    if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
-                                    btn.click();
-                                } else if (attempts > 80) {
-                                    clearInterval(checkInterval);
-                                    if (txtNode) txtNode.textContent = 'Avise-me quando chegar!';
-                                    alert('O formulário de aviso de estoque está demorando a carregar. Por favor, tente novamente em instantes.');
-                                }
-                            }, 100);
-                        }
+                        showCustomChegueiModal(handleCustomChegueiSubmit);
                     });
                 }
 
@@ -1687,10 +2160,12 @@
                 // Tenta localizar o elemento clicável real do Cheguei
                 var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
                                      document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
-                                     document.querySelector('#cheguei-alert-div section') ||
-                                     document.querySelector('#cheguei-alert-div form') ||
+                                     document.querySelector('#cheguei-alert-div button') ||
                                      document.querySelector('#cheguei-alert-div input[type="submit"]') ||
-                                     document.querySelector('#cheguei-alert-div button');
+                                     document.querySelector('#cheguei-alert-div input[type="button"]') ||
+                                     document.querySelector('#cheguei-alert-div a') ||
+                                     document.querySelector('#cheguei-alert-div section') ||
+                                     document.querySelector('#cheguei-alert-div form');
                 
                 // Oculta visualmente o botão real original para evitar duplicidade ou quebras,
                 // mas sem removê-lo ou dar display:none, para que o click() via JS funcione perfeitamente.
@@ -1735,8 +2210,283 @@
         updateChegueiState();
     }
 
+    var eoraCustomChegueiModalOpened = false;
+
+    function findRealChegueiModalInputs() {
+        var inputs = document.querySelectorAll('input, textarea');
+        var result = { name: null, email: null, phone: null };
+        inputs.forEach(function(input) {
+            if (input.closest('.eora-custom-cheguei-modal')) return;
+            
+            var placeholder = (input.getAttribute('placeholder') || '').toLowerCase();
+            var name = (input.getAttribute('name') || '').toLowerCase();
+            var id = (input.getAttribute('id') || '').toLowerCase();
+            var type = (input.getAttribute('type') || '').toLowerCase();
+            
+            if (placeholder.indexOf('nome') !== -1 || name === 'name' || name === 'nome' || id.indexOf('name') !== -1 || id.indexOf('nome') !== -1) {
+                result.name = input;
+            } else if (placeholder.indexOf('e-mail') !== -1 || placeholder.indexOf('email') !== -1 || name === 'email' || type === 'email' || id.indexOf('email') !== -1) {
+                result.email = input;
+            } else if (placeholder.indexOf('whatsapp') !== -1 || placeholder.indexOf('whats') !== -1 || placeholder.indexOf('celular') !== -1 || placeholder.indexOf('telefone') !== -1 || name === 'phone' || name === 'whatsapp' || type === 'tel' || id.indexOf('phone') !== -1 || id.indexOf('whats') !== -1) {
+                result.phone = input;
+            }
+        });
+        return result;
+    }
+
+    function findRealChegueiModalSubmit() {
+        var buttons = document.querySelectorAll('button, input[type="submit"], input[type="button"], div[style*="cursor"]');
+        for (var i = 0; i < buttons.length; i++) {
+            var btn = buttons[i];
+            if (btn.closest('.eora-custom-cheguei-modal')) continue;
+            if (btn.closest('#cheguei-alert-div') && !btn.classList.contains('placeholder-btn')) {
+                continue;
+            }
+            var txt = (btn.textContent || btn.value || '').trim().toLowerCase();
+            if (txt === 'confirmar' || txt === 'enviar' || txt === 'salvar' || txt.indexOf('avise') !== -1) {
+                return btn;
+            }
+        }
+        var modalOverlay = null;
+        document.querySelectorAll('div, section').forEach(function(el) {
+            if (el.textContent && el.textContent.indexOf('ENTRARMOS EM CONTATO') !== -1) {
+                modalOverlay = el;
+            }
+        });
+        if (modalOverlay) {
+            var btn = modalOverlay.querySelector('button, input[type="submit"], [class*="confirmar"], [class*="btn-submit"]');
+            if (btn) return btn;
+        }
+        return null;
+    }
+
+    function showCustomChegueiModal(onSubmitCallback) {
+        var modal = document.querySelector('.eora-custom-cheguei-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.className = 'eora-custom-cheguei-modal';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none;';
+            
+            var card = document.createElement('div');
+            card.style.cssText = 'background: #ffffff; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border-radius: 0px; position: relative; font-family: inherit; margin: 20px; box-sizing: border-box;';
+            
+            var closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = 'position: absolute; top: 12px; right: 18px; background: none; border: none; font-size: 28px; cursor: pointer; color: #333; line-height: 1; padding: 0; font-weight: 300; transition: color 0.2s;';
+            closeBtn.addEventListener('mouseover', function() { closeBtn.style.color = 'rgb(0, 9, 127)'; });
+            closeBtn.addEventListener('mouseout', function() { closeBtn.style.color = '#333'; });
+            closeBtn.addEventListener('click', hideCustomChegueiModal);
+            
+            var title = document.createElement('h3');
+            title.textContent = 'DEIXE SEUS DETALHES PARA ENTRARMOS EM CONTATO';
+            title.style.cssText = 'font-size: 13px; font-weight: 600; color: #000; margin-top: 0; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.4; text-align: center; font-family: inherit;';
+            
+            var form = document.createElement('form');
+            form.style.cssText = 'display: flex; flex-direction: column; gap: 16px; margin: 0;';
+            
+            function createInput(type, placeholder, name) {
+                var input = document.createElement('input');
+                input.type = type;
+                input.placeholder = placeholder;
+                input.required = true;
+                input.style.cssText = 'width: 100%; padding: 12px 16px; border: 1px solid #e0e0e0; background: #f9f9f9; font-size: 13px; border-radius: 0px; box-sizing: border-box; font-family: inherit; color: #333; transition: border-color 0.2s, background 0.2s;';
+                input.addEventListener('focus', function() {
+                    input.style.borderColor = 'rgb(0, 9, 127)';
+                    input.style.background = '#fff';
+                });
+                input.addEventListener('blur', function() {
+                    input.style.borderColor = '#e0e0e0';
+                    input.style.background = '#f9f9f9';
+                });
+                return input;
+            }
+            
+            var inputName = createInput('text', 'Nome', 'nome');
+            var inputEmail = createInput('email', 'E-mail', 'email');
+            var inputPhone = createInput('text', 'WhatsApp', 'phone');
+            
+            inputPhone.addEventListener('input', function(e) {
+                var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+            
+            var btnContainer = document.createElement('div');
+            btnContainer.style.cssText = 'display: flex; gap: 12px; margin-top: 12px;';
+            
+            var submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.textContent = 'Confirmar';
+            submitBtn.style.cssText = 'flex: 1; padding: 12px; background: rgb(0, 9, 127); color: #fff; border: none; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-radius: 0px; transition: opacity 0.2s;';
+            submitBtn.addEventListener('mouseover', function() { submitBtn.style.opacity = '0.9'; });
+            submitBtn.addEventListener('mouseout', function() { submitBtn.style.opacity = '1'; });
+            
+            var cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.style.cssText = 'flex: 1; padding: 12px; background: #fff; color: #333; border: 1px solid #ccc; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-radius: 0px; transition: background 0.2s;';
+            cancelBtn.addEventListener('click', hideCustomChegueiModal);
+            cancelBtn.addEventListener('mouseover', function() { cancelBtn.style.background = '#f5f5f5'; });
+            cancelBtn.addEventListener('mouseout', function() { cancelBtn.style.background = '#fff'; });
+            
+            btnContainer.appendChild(submitBtn);
+            btnContainer.appendChild(cancelBtn);
+            
+            form.appendChild(inputName);
+            form.appendChild(inputEmail);
+            form.appendChild(inputPhone);
+            form.appendChild(btnContainer);
+            
+            card.appendChild(closeBtn);
+            card.appendChild(title);
+            card.appendChild(form);
+            modal.appendChild(card);
+            document.body.appendChild(modal);
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando...';
+                
+                onSubmitCallback({
+                    name: inputName.value,
+                    email: inputEmail.value,
+                    phone: inputPhone.value
+                }, function(success, message) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirmar';
+                    if (success) {
+                        card.innerHTML = [
+                            '<div style="text-align: center; font-family: inherit; padding: 10px 0;">',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgb(0, 9, 127)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; display: inline-block;">',
+                            '<polyline points="20 6 9 17 4 12"></polyline>',
+                            '</svg>',
+                            '<h4 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; color: #000;">Obrigado!</h4>',
+                            '<p style="font-size: 13px; color: #666; margin: 0;">Você receberá um aviso assim que o produto estiver disponível.</p>',
+                            '</div>'
+                        ].join('');
+                        setTimeout(hideCustomChegueiModal, 2500);
+                    } else {
+                        alert(message || 'Ocorreu um erro ao enviar. Por favor, tente novamente.');
+                    }
+                });
+            });
+        } else {
+            var form = modal.querySelector('form');
+            if (form) {
+                form.reset();
+                var submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirmar';
+                }
+            }
+        }
+        
+        modal.style.display = 'flex';
+        modal.offsetWidth;
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        eoraCustomChegueiModalOpened = true;
+    }
+    
+    function hideCustomChegueiModal() {
+        var modal = document.querySelector('.eora-custom-cheguei-modal');
+        if (modal) {
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
+            setTimeout(function() {
+                modal.style.display = 'none';
+                eoraCustomChegueiModalOpened = false;
+            }, 300);
+        }
+    }
+
+    function handleCustomChegueiSubmit(data, callback) {
+        var name = data.name;
+        var email = data.email;
+        var phone = data.phone;
+        
+        var realChegueiBtn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                             document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                             document.querySelector('#cheguei-alert-div button') ||
+                             document.querySelector('#cheguei-alert-div input[type="submit"]') ||
+                             document.querySelector('#cheguei-alert-div input[type="button"]') ||
+                             document.querySelector('#cheguei-alert-div a') ||
+                             document.querySelector('#cheguei-alert-div section') ||
+                             document.querySelector('#cheguei-alert-div form');
+                             
+        if (realChegueiBtn) {
+            realChegueiBtn.click();
+            
+            var attempts = 0;
+            var fillInterval = setInterval(function() {
+                attempts++;
+                var realInputs = findRealChegueiModalInputs();
+                var realSubmit = findRealChegueiModalSubmit();
+                
+                if (realInputs.name && realInputs.email && realInputs.phone && realSubmit) {
+                    clearInterval(fillInterval);
+                    
+                    realInputs.name.value = name;
+                    realInputs.name.dispatchEvent(new Event('input', { bubbles: true }));
+                    realInputs.name.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    realInputs.email.value = email;
+                    realInputs.email.dispatchEvent(new Event('input', { bubbles: true }));
+                    realInputs.email.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    realInputs.phone.value = phone;
+                    realInputs.phone.dispatchEvent(new Event('input', { bubbles: true }));
+                    realInputs.phone.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    setTimeout(function() {
+                        realSubmit.click();
+                        callback(true);
+                    }, 100);
+                } else if (attempts > 30) {
+                    clearInterval(fillInterval);
+                    callback(false, 'Não foi possível enviar o formulário automaticamente. Por favor, tente novamente.');
+                }
+            }, 50);
+        } else {
+            var attempts = 0;
+            var loadInterval = setInterval(function() {
+                attempts++;
+                var btn = document.querySelector('#cheguei-alert-div div[style*="cursor"]') ||
+                          document.querySelector('#cheguei-alert-div [class*="sc-"]') ||
+                          document.querySelector('#cheguei-alert-div button') ||
+                          document.querySelector('#cheguei-alert-div input[type="submit"]') ||
+                          document.querySelector('#cheguei-alert-div input[type="button"]') ||
+                          document.querySelector('#cheguei-alert-div a') ||
+                          document.querySelector('#cheguei-alert-div section') ||
+                          document.querySelector('#cheguei-alert-div form');
+                          
+                if (btn) {
+                    clearInterval(loadInterval);
+                    handleCustomChegueiSubmit(data, callback);
+                } else if (attempts > 60) {
+                    clearInterval(loadInterval);
+                    callback(false, 'O serviço de aviso de estoque está temporariamente indisponível. Por favor, tente novamente em instantes.');
+                }
+            }, 100);
+            
+            document.querySelectorAll('script').forEach(function (s) {
+                var txt = s.textContent || s.innerHTML || '';
+                var src = s.getAttribute('src') || s.src || '';
+                var isChegueiScript = (txt.indexOf('cheguei') !== -1 || txt.indexOf('empreender') !== -1 || src.indexOf('cheguei') !== -1 || src.indexOf('empreender') !== -1);
+                if (isChegueiScript && src) {
+                    var freshScript = document.createElement('script');
+                    var separator = src.indexOf('?') === -1 ? '?' : '&';
+                    freshScript.src = src + separator + '_eora_cb=' + Date.now();
+                    document.body.appendChild(freshScript);
+                    setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
+                }
+            });
+        }
+    }
+
     function initChegueiPlaceholder(visibleInfoEl) {
-        // No-op - a lógica agora está integrada e autogerida dinamicamente no initChegueiObserver
+        // No-op
     }
 
     function init() {
@@ -1778,6 +2528,21 @@
         if (origInfo) {
             infoEl = origInfo.cloneNode(true);
             infoEl.className = 'eora-product-info';
+
+            // Remove as classes js- nativas dos elementos clonados visíveis
+            // para impedir que scripts nativos do tema interfiram neles
+            infoEl.querySelectorAll('.js-product-name').forEach(function (el) {
+                el.classList.remove('js-product-name');
+                el.classList.add('eora-product-name');
+            });
+            infoEl.querySelectorAll('.js-price-display').forEach(function (el) {
+                el.classList.remove('js-price-display');
+                el.classList.add('eora-price-display');
+            });
+            infoEl.querySelectorAll('.js-compare-price-display').forEach(function (el) {
+                el.classList.remove('js-compare-price-display');
+                el.classList.add('eora-compare-price-display');
+            });
 
             var clonedForm = infoEl.querySelector('#product_form, .js-product-form, form[action*="/cart"], form');
             if (clonedForm) {
@@ -1826,6 +2591,8 @@
                 
                 clonedForm.querySelectorAll('button, input[type="submit"]').forEach(function (btn) {
                     if (btn.classList.contains('eora-buy-btn')) return;
+                    if (btn.classList.contains('dropdown-toggle') || btn.closest('.eora-shipping-dropdown') || btn.closest('.shipping-dropdown') || btn.closest('.dropdown-wrapper') || btn.closest('.js-shipping-calculator-wrapper')) return;
+                    
                     btn.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -1835,7 +2602,12 @@
             }
 
             // Ponte do calculador de frete para evitar quebra no JS nativo
+            infoEl.querySelectorAll('.shipping-dropdown').forEach(function (drop) {
+                drop.classList.remove('shipping-dropdown');
+                drop.classList.add('eora-shipping-dropdown');
+            });
             bindShippingCalculator(infoEl, themeProd);
+            bindShippingAccordion(infoEl);
 
             /* Remove os seletores de cor nativos (substituidos pelos nossos swatches) */
             infoEl.querySelectorAll('.js-color-variants-container,.js-product-variants').forEach(function (el) {
@@ -1852,8 +2624,10 @@
                 if (el.querySelector('form,.js-addtocart,[name="commit"],[class*="price"]')) return;
                 el.parentNode && el.parentNode.removeChild(el);
             });
-            /* Remove tambem qualquer <table> que veio do conteudo da descricao do admin */
+            /* Remove tambem qualquer <table> que veio do conteudo da descricao do admin,
+               garantindo que NAO removemos tabelas do calculador de frete! */
             infoEl.querySelectorAll('table').forEach(function (t) {
+                if (t.closest('.shipping-dropdown') || t.closest('#product-shipping-container') || t.closest('.product-shipping-calculator') || t.closest('.js-shipping-calculator-container')) return;
                 t.parentNode && t.parentNode.removeChild(t);
             });
             /* Remove paragrafos longos soltos (descricao em texto plano) */
@@ -1928,6 +2702,9 @@
             themeProd.style.setProperty('pointer-events', 'none', 'important');
         }
         hideTheme();
+        setTimeout(function () {
+            wrap.classList.add('eora-loaded');
+        }, 30);
 
         /* Reaplica sempre que o tema reescrever o style attribute */
         var hideGuard = false;
@@ -3032,10 +3809,18 @@
 <table style="border-collapse: collapse; width: 100%;" border="1">
 <tbody>
 <tr>
+<td style="width: 48.057%;">nome_variacao</td>
+<td style="width: 48.057%;">Cinza / Rato</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
 <td style="width: 48.057%;">descricao_curta</td>
 <td style="width: 48.057%;">
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">(obs os envios acontecer&atilde;o a partir do dia 27)</p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>A&nbsp;Maxi V&eacute;rtice&nbsp;&eacute; a maior bolsa da fam&iacute;lia V&eacute;rtice, criada para quem precisa carregar o mundo sem abrir m&atilde;o de presen&ccedil;a. Inspirada no design da clutch, ela amplia o V caracter&iacute;stico da linha em uma constru&ccedil;&atilde;o imponente, funcional e extremamente elegante.</strong></p>
 <p class="p2" style="margin: 0px; font: 400 13px 'Helvetica Neue'; min-height: 16px;">&nbsp;</p>
 <p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><strong>Pensada para quem sai de manh&atilde; e volta tarde, para viagens, aeroporto e uma rotina intensa, a Maxi V&eacute;rtice une estrutura, capacidade e acabamento preciso em uma pe&ccedil;a de alto impacto. Conta com duas al&ccedil;as longas para uso no bra&ccedil;o ou ombro, al&ccedil;a transversal ajust&aacute;vel e remov&iacute;vel, compartimento para notebook, porta-chaves, porta-cart&atilde;o e porta EORA.</strong></p>
@@ -3288,10 +4073,6 @@
 <tr>
 <td>texto_institucional</td>
 <td>Marcela Carrasco, Co-Fundadora da EORA</td>
-</tr>
-<tr>
-<td>nome_variacao</td>
-<td>Cinza Rato / Prata</td>
 </tr>
 </tbody>
 </table>
