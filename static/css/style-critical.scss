@@ -9588,12 +9588,10 @@ body:not(.template-home) .head-main .badge {
   color: #ffffff !important;
 }
 
-/* Force show the normal logo (black) and force hide the transparent logo (white) on non-home pages */
-body:not(.template-home) .head-main .logo-img:not(.logo-header-transparent) {
-  opacity: 1 !important;
-}
+/* Force show both logo variations on non-home pages to prevent visibility bugs due to theme toggles */
+body:not(.template-home) .head-main .logo-img,
 body:not(.template-home) .head-main .logo-header-transparent {
-  opacity: 0 !important;
+  opacity: 1 !important;
 }
 
 /* ==============================================================
