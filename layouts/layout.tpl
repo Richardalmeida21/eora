@@ -116,6 +116,50 @@
             {{ settings.css_code | raw }}
         </style>
 
+        {# EORA BRAND CUSTOM FIXES FOR HORIZONTAL OVERFLOW AND FLOATING ELEMENTS #}
+        <style>
+            /* Force container-fluid and container to stay within the viewport bounds without horizontal overflow */
+            .container-fluid {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+            }
+            .container {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                max-width: 100% !important;
+            }
+            /* Override unconstrained margin filters bar */
+            .category-controls {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+                max-width: 100vw !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            @media (min-width: 768px) {
+                .category-controls {
+                    padding-left: 3rem !important;
+                    padding-right: 3rem !important;
+                }
+            }
+            /* Strictly anchor the floating social bar to the viewport boundaries */
+            .social-fixed-sidebar {
+                position: fixed !important;
+                right: 0 !important;
+                top: 85% !important;
+                transform: translateY(-50%) !important;
+                z-index: 1000 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0 !important;
+            }
+        </style>
+
         {#/*============================================================================
             #Javascript: Needed before HTML loads
         ==============================================================================*/#}
