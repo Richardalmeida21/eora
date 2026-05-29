@@ -9527,16 +9527,37 @@ body.head-offset-active.has-ad-bar {
    EORA HEADER OVERLAY & TRANSPARENCY ON SCROLL OVERRIDES
    ============================================================== */
 
-/* Push utility icons slightly to the left to prevent them from being cut off by the scrollbar/viewport edge */
+/* Push utility icons and cart group slightly to the left to prevent them from being cut off by the scrollbar/viewport edge */
 .desktop-utility-col,
 .js-utility-col {
   padding-right: 25px !important;
+}
+.cart-summary,
+#ajax-cart {
+  margin-right: 20px !important;
 }
 @media (max-width: 767px) {
   .desktop-utility-col,
   .js-utility-col {
     padding-right: 15px !important;
   }
+  .cart-summary,
+  #ajax-cart {
+    margin-right: 15px !important;
+  }
+}
+
+/* Ensure the cart badge is positioned relative to the cart icon anchor and adjust offset to prevent cutoff */
+.cart-summary,
+#ajax-cart,
+.cart-summary a,
+#ajax-cart a {
+  position: relative !important;
+}
+.head-main .badge,
+.head-main .js-cart-widget-amount {
+  right: -2px !important;
+  top: -2px !important;
 }
 
 /* On all pages, when scrolling down, make the header background transparent */
@@ -9562,15 +9583,17 @@ body:not(.template-home) .head-main * {
   color: var(--header-foreground) !important;
   fill: var(--header-foreground) !important;
 }
-body:not(.template-home) .head-main .logo-header-transparent {
-  opacity: 0 !important;
-}
-body:not(.template-home) .head-main .logo-img:not(.logo-header-transparent) {
-  opacity: 1 !important;
-}
 body:not(.template-home) .head-main .js-cart-widget-amount,
 body:not(.template-home) .head-main .badge {
   color: #ffffff !important;
+}
+
+/* Force show the normal logo (black) and force hide the transparent logo (white) on non-home pages */
+body:not(.template-home) .head-main .logo-img:not(.logo-header-transparent) {
+  opacity: 1 !important;
+}
+body:not(.template-home) .head-main .logo-header-transparent {
+  opacity: 0 !important;
 }
 
 /* ==============================================================
