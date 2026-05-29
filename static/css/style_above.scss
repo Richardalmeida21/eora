@@ -7,21 +7,34 @@
 
         .js-modal-close {
             height: 6%;
+            padding: 0 24px !important;
+            display: flex !important;
+            align-items: center !important;
 
-            .row .col.p-3 {
-                text-align: left !important;
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                padding: 20px !important;
-                gap: 10px;
-                p {
-                    font-weight: 500;
-                    font-size: 16px;
-                    line-height: 100%;
-                    letter-spacing: 2px;
-                    color: #000;
-                    margin-bottom: 0 !important;
+            .row {
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: center !important;
+
+                .col.p-3 {
+                    text-align: left !important;
+                    display: flex !important;
+                    justify-content: flex-start !important;
+                    align-items: center !important;
+                    padding: 0 !important;
+                    gap: 10px !important;
+                    p {
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: 2px;
+                        color: #000;
+                        margin-bottom: 0 !important;
+                    }
+                }
+
+                .col-auto {
+                    padding: 0 !important;
                 }
             }
         }
@@ -40,7 +53,7 @@
                 min-height: 0; /* ensures proper flexbox scrolling on smaller devices */
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 0 8px; /* avoid content being hidden under scrollbar */
+                padding: 0 24px; /* avoid content being hidden under scrollbar */
             }
 
             .cart-message {
@@ -69,11 +82,12 @@
                 .js-cart-item {
                     background-color: #fff;
                     max-width: 100%;
-                    padding: 15px 20px 15px 25px !important; /* pushes everything to the right from the left edge */
+                    padding: 15px 0 !important; /* padding left/right is managed by parent list container */
                     display: flex !important;
                     flex-direction: row !important;
                     flex-wrap: nowrap !important;
                     align-items: center !important;
+                    border-bottom: 1px solid #f2f2f2 !important;
 
                     /* First column: image */
                     > .col-auto {
