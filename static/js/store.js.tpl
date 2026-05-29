@@ -137,12 +137,15 @@ DOMContentLoaded.addEventOrExecute(() => {
     {# /* // Cart notification: Dismiss notification */ #}
 
     const totalEl = document.querySelector('.cart-total-price.subtotal-price');
-
-    {# const observerTotalCart = new MutationObserver(() => {
+    if (totalEl) {
         totalEl.textContent = totalEl.textContent.replace(/^Subtotal:\s*/i, '');
-    });
-
-    observerTotalCart.observe(totalEl, { characterData: true, childList: true, subtree: true }); #}
+        const observerTotalCart = new MutationObserver(() => {
+            if (totalEl.textContent.indexOf('Subtotal:') !== -1) {
+                totalEl.textContent = totalEl.textContent.replace(/^Subtotal:\s*/i, '');
+            }
+        });
+        observerTotalCart.observe(totalEl, { characterData: true, childList: true, subtree: true });
+    }
 
     jQueryNuvem(".js-cart-notification-close").on("click", function(){
         jQueryNuvem(".js-alert-added-to-cart").removeClass("notification-visible").addClass("notification-hidden");

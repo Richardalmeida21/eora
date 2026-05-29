@@ -587,20 +587,26 @@
             if (src.type === 'radio') {
                 if (!src.checked) return;
                 dstList.forEach(function (dst) {
+                    var changed = dst.checked !== (dst.value === src.value);
                     dst.checked = (dst.value === src.value);
+                    if (changed) dst.dispatchEvent(new Event('change'));
                 });
                 return;
             }
 
             if (src.type === 'checkbox') {
                 dstList.forEach(function (dst) {
+                    var changed = dst.checked !== src.checked;
                     dst.checked = src.checked;
+                    if (changed) dst.dispatchEvent(new Event('change'));
                 });
                 return;
             }
 
             dstList.forEach(function (dst) {
+                var changed = dst.value !== src.value;
                 dst.value = src.value;
+                if (changed) dst.dispatchEvent(new Event('change'));
             });
         });
     }
@@ -3518,8 +3524,6 @@
     }
 
     function buildFloatingBuyBtn() {
-        if (document.querySelector('.eora-bolsa-float-bar')) return;
-
         var css = [
             '.eora-bolsa-float-bar{position:fixed!important;bottom:20px!important;left:50%!important;transform:translateX(-50%)!important;background:#fff!important;border-radius:3px!important;box-shadow:0 2px 12px rgba(0,0,0,.12)!important;padding:4px!important;display:flex!important;align-items:center!important;z-index:9000!important;transition:transform .3s ease,opacity .3s ease!important}',
             '.eora-bolsa-float-bar.eora-hidden{transform:translate(-50%,150%)!important;opacity:0!important;pointer-events:none!important;visibility:hidden!important}',
@@ -3543,26 +3547,57 @@
             '.eora-bolsa-pu-select{background:#000!important;color:#fff!important;border:none!important;padding:10px 16px!important;font-size:10px!important;font-weight:600!important;letter-spacing:1px!important;text-transform:uppercase!important;cursor:pointer!important;border-radius:3px!important;white-space:nowrap!important}',
             '.eora-bolsa-pu-select:hover{background:#333!important}'
         ].join('');
-        var styleEl = document.createElement('style');
-        styleEl.textContent = css;
-        document.head.appendChild(styleEl);
+
+        if (!document.getElementById('eora-bolsa-pu-style')) {
+            var styleEl = document.createElement('style');
+            styleEl.id = 'eora-bolsa-pu-style';
+            styleEl.textContent = css;
+            document.head.appendChild(styleEl);
+        }
+
+        /* ── Popup de seleção de variante ── */
+        var popup = document.querySelector('.eora-bolsa-pu');
+        if (!popup) {
+            popup = document.createElement('div');
+            popup.className = 'eora-bolsa-pu';
+            popup.innerHTML =
+                '<div class="eora-bolsa-pu-box">' +
+                '<div class="eora-bolsa-pu-close" id="eora-bolsa-pu-close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 1L1 13M1 1l12 12"/></svg></div>' +
+                '<h3 class="eora-bolsa-pu-title">SELECIONE UMA VARIANTE</h3>' +
+                '<div id="eora-bolsa-pu-list" style="max-height:60vh;overflow-y:auto;padding-right:4px;"></div>' +
+                '</div>';
+            document.body.appendChild(popup);
+
+            document.getElementById('eora-bolsa-pu-close').addEventListener('click', function () {
+                popup.classList.remove('eora-pu-open');
+            });
+            popup.addEventListener('click', function (e) {
+                if (e.target === popup) popup.classList.remove('eora-pu-open');
+            });
+        }
 
         /* ── Barra flutuante ── */
-        var floatBar = document.createElement('div');
-        floatBar.className = 'eora-bolsa-float-bar eora-hidden';
+        var floatBar = document.querySelector('.eora-bolsa-float-bar');
+        var floatBtn;
+        if (!floatBar) {
+            floatBar = document.createElement('div');
+            floatBar.className = 'eora-bolsa-float-bar eora-hidden';
 
-        var floatBtn = document.createElement('button');
-        floatBtn.className = 'eora-bolsa-float-buy';
-        floatBtn.id = 'eora-bolsa-float-buy';
-        floatBtn.textContent = 'COMPRAR AGORA';
-        floatBar.appendChild(floatBtn);
-        document.body.appendChild(floatBar);
+            floatBtn = document.createElement('button');
+            floatBtn.className = 'eora-bolsa-float-buy';
+            floatBtn.id = 'eora-bolsa-float-buy';
+            floatBtn.textContent = 'COMPRAR AGORA';
+            floatBar.appendChild(floatBtn);
+            document.body.appendChild(floatBar);
+        } else {
+            floatBtn = floatBar.querySelector('#eora-bolsa-float-buy, .eora-bolsa-float-buy');
+        }
 
         /* Atualiza preço quando o tema renderizar */
         function updatePrice() {
             var pe = document.querySelector('.js-price-display, .product-price, [class*="price"]');
             var pt = pe ? pe.textContent.trim() : '';
-            if (pt) floatBtn.textContent = 'COMPRAR AGORA \u2013 ' + pt;
+            if (pt && floatBtn) floatBtn.textContent = 'COMPRAR AGORA \u2013 ' + pt;
         }
         [500, 1000, 2000, 3500].forEach(function (t) { setTimeout(updatePrice, t); });
 
@@ -3577,6 +3612,7 @@
             if (!raw) return [];
             try {
                 var parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) return [];
                 return parsed.map(function (item) {
                     if (!item) return '';
                     if (typeof item === 'string') return item;
@@ -3612,24 +3648,6 @@
             var currentPath = window.location.pathname.replace(/\/?$/, '/');
             return fetchTagProducts(tag, currentPath);
         }
-
-        /* ── Popup de seleção de variante ── */
-        var popup = document.createElement('div');
-        popup.className = 'eora-bolsa-pu';
-        popup.innerHTML =
-            '<div class="eora-bolsa-pu-box">' +
-            '<div class="eora-bolsa-pu-close" id="eora-bolsa-pu-close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 1L1 13M1 1l12 12"/></svg></div>' +
-            '<h3 class="eora-bolsa-pu-title">SELECIONE UMA VARIANTE</h3>' +
-            '<div id="eora-bolsa-pu-list" style="max-height:60vh;overflow-y:auto;padding-right:4px;"></div>' +
-            '</div>';
-        document.body.appendChild(popup);
-
-        document.getElementById('eora-bolsa-pu-close').addEventListener('click', function () {
-            popup.classList.remove('eora-pu-open');
-        });
-        popup.addEventListener('click', function (e) {
-            if (e.target === popup) popup.classList.remove('eora-pu-open');
-        });
 
         function submitVariant(combo, variants) {
             var originalForm = getOriginalProductForm();
@@ -3684,8 +3702,11 @@
 
             if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
                 LS.variants.forEach(function (v, i) {
+                    if (!v) return;
                     var opts = [v.option0, v.option1, v.option2].filter(Boolean);
-                    validOptions.push({ name: opts.join(' / '), lsIdx: i, price: v.price_short || basePrice, image_url: v.image_url || '', stock: v.stock });
+                    if (opts.length > 0) {
+                        validOptions.push({ name: opts.join(' / '), lsIdx: i, price: v.price_short || basePrice, image_url: v.image_url || '', stock: v.stock });
+                    }
                 });
             } else {
                 var sels = Array.from(document.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (s) {
@@ -3779,14 +3800,16 @@
             popup.classList.add('eora-pu-open');
         }
 
-        floatBtn.addEventListener('click', abrirPopup);
+        if (floatBtn) {
+            floatBtn.addEventListener('click', abrirPopup);
+        }
 
         /* Mostra após rolar além do product-wrap */
         var floatRef = document.querySelector('.eora-product-wrap') || document.querySelector('#product_form') || document.querySelector('#single-product');
         window.addEventListener('scroll', function () {
             var show = floatRef ? floatRef.getBoundingClientRect().bottom < 80 : window.scrollY > 400;
-            if (show) { floatBar.classList.remove('eora-hidden'); }
-            else { floatBar.classList.add('eora-hidden'); }
+            if (show && floatBar) { floatBar.classList.remove('eora-hidden'); }
+            else if (floatBar) { floatBar.classList.add('eora-hidden'); }
         }, { passive: true });
 
         /* Referência ao floatRef pode não existir ainda — re-tenta */

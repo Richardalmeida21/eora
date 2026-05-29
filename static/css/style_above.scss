@@ -74,6 +74,12 @@
                     /* vertical centering of elements inside the item row */
                     .row.justify-content-between {
                         align-items: center !important;
+                        height: auto !important;
+                        align-content: flex-start !important;
+                        row-gap: 8px !important;
+                    }
+                    .container.h-100 {
+                        height: auto !important;
                     }
 
                     .cart-item-quantity,
