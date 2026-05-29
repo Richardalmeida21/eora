@@ -453,7 +453,7 @@ DOMContentLoaded.addEventOrExecute(() => {
             parent.find('.js-compare-price-display').hide();
         }
 
-        var button = parent.find('.js-addtocart');
+        var button = parent.find('input[type="submit"].js-addtocart, button.js-addtocart:not(.js-addtocart-placeholder)');
         const quickshopButtonWording = parent.find('.js-open-quickshop-wording');
         const quickshopButtonIcon = parent.find('.js-open-quickshop-icon');
         button.removeClass('cart').removeClass('contact').removeClass('nostock');

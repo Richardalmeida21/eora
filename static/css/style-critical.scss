@@ -6575,7 +6575,14 @@ input[type=number] {
   z-index: 9;
   text-align: left;
   pointer-events: none;
+}
 
+/* Position the product labels (ESGOTADO, OFF, etc.) at the bottom-left on grid item images to balance layout and prevent overlap with heart and NOVO badges */
+.item-image .labels {
+  top: auto !important;
+  bottom: 12px !important;
+  left: 12px !important;
+  right: auto !important;
 }
 
 

@@ -3632,26 +3632,45 @@
         });
 
         function submitVariant(combo, variants) {
-            var selects = Array.from(document.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (s) {
-                return !s.classList.contains('js-shipping-select') && !!s.closest('#product_form, .js-product-form, #single-product');
-            });
-            if (typeof LS !== 'undefined' && LS.variants && combo.lsIdx !== undefined) {
-                var v = LS.variants[combo.lsIdx];
-                if (v) {
-                    if (v.option0 && selects[0]) { selects[0].value = v.option0; selects[0].dispatchEvent(new Event('change')); }
-                    if (v.option1 && selects[1]) { selects[1].value = v.option1; selects[1].dispatchEvent(new Event('change')); }
-                    if (v.option2 && selects[2]) { selects[2].value = v.option2; selects[2].dispatchEvent(new Event('change')); }
-                }
-            } else if (combo.refs && combo.values) {
-                combo.refs.forEach(function (sel, i) {
-                    sel.value = combo.values[i];
-                    sel.dispatchEvent(new Event('change'));
+            var originalForm = getOriginalProductForm();
+            var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
+            
+            function setFormVariants(formEl) {
+                if (!formEl) return;
+                var selects = Array.from(formEl.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (s) {
+                    return !s.classList.contains('js-shipping-select');
                 });
+                if (typeof LS !== 'undefined' && LS.variants && combo.lsIdx !== undefined) {
+                    var v = LS.variants[combo.lsIdx];
+                    if (v) {
+                        if (v.option0 && selects[0]) { selects[0].value = v.option0; selects[0].dispatchEvent(new Event('change')); }
+                        if (v.option1 && selects[1]) { selects[1].value = v.option1; selects[1].dispatchEvent(new Event('change')); }
+                        if (v.option2 && selects[2]) { selects[2].value = v.option2; selects[2].dispatchEvent(new Event('change')); }
+                    }
+                } else if (combo.refs && combo.values) {
+                    combo.values.forEach(function (val, i) {
+                        if (selects[i]) {
+                            selects[i].value = val;
+                            selects[i].dispatchEvent(new Event('change'));
+                        }
+                    });
+                }
             }
+            
+            setFormVariants(originalForm);
+            setFormVariants(customForm);
+            
             setTimeout(function () {
-                var form = document.querySelector('#product_form, .js-product-form');
-                var addBtn = form && form.querySelector('[name="commit"], input.js-addtocart, button.js-addtocart');
-                if (addBtn) addBtn.click();
+                var addBtn = getOriginalAddButton();
+                if (addBtn) {
+                    addBtn.click();
+                } else if (originalForm) {
+                    if (typeof originalForm.requestSubmit === 'function') {
+                        originalForm.requestSubmit();
+                    } else {
+                        originalForm.submit();
+                    }
+                }
             }, 200);
         }
 
@@ -3724,6 +3743,11 @@
             /* Se 1 variante ou nenhuma: vai direto */
             if (validOptions.length <= 1) {
                 if (validOptions.length === 1) { submitVariant(validOptions[0]); return; }
+                var clonedForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
+                var originalForm = getOriginalProductForm();
+                if (clonedForm && originalForm) {
+                    syncFormValues(clonedForm, originalForm);
+                }
                 if (triggerOriginalBuy()) return;
                 var wrapEl = document.querySelector('.eora-product-wrap');
                 if (wrapEl) wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
