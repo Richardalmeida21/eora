@@ -159,7 +159,7 @@
 
                 {# Fake add to cart CTA visible during add to cart event #}
 
-                {% include 'snipplets/placeholders/button-placeholder.tpl' with {custom_class: "btn-big"} %}
+                {% include 'snipplets/placeholders/button-placeholder.tpl' with {custom_class: "btn-big btn-add-to-cart"} %}
 
             </div>
 

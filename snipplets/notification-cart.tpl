@@ -33,7 +33,7 @@
 		</div>
 	</div>
 	{% if related_products %}
-		<div class="col-12 col-md-auto">
+		<div class="col-12 col-md-6">
 			<div class="mb-2 pb-1">
 				<div class="row text-primary h4 font-family-body">
 					<span class="col-auto text-left">
