@@ -1,6 +1,7 @@
 <!-- layout_coach -->
 <p>
 <script>
+<!--
 (function () {
     var css = [
         /* Proteção máxima de layout e viewport contra quebras e encolhimento (squishing) */
@@ -612,6 +613,10 @@
     }
 
     function triggerOriginalBuy() {
+        if (window.eoraIsSubmittingCart) return false;
+        window.eoraIsSubmittingCart = true;
+        setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
+
         var form = getOriginalProductForm();
         if (!form) return false;
         var addBtn = getOriginalAddButton();
@@ -3667,6 +3672,10 @@
         }
 
         function submitVariant(combo, variants) {
+            if (window.eoraIsSubmittingCart) return;
+            window.eoraIsSubmittingCart = true;
+            setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
+
             var originalForm = getOriginalProductForm();
             var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
             
@@ -3874,6 +3883,7 @@
         setup();
     }
 })();
+//-->
 </script>
 </p>
 <div>

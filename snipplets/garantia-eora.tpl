@@ -344,9 +344,9 @@
         
         /* Banner Reparos (antes do footer) */
         .ge-repair-banner {
-            min-height: 600px !important;
+            min-height: 500px !important;
             height: auto !important;
-            padding: 80px 40px !important;
+            padding: 60px 20px !important;
             background-size: cover !important;
             background-position: center !important;
             display: flex !important;
@@ -362,17 +362,17 @@
         }
         
         .ge-repair-content h2 {
-            font-size: 1.8rem !important;
+            font-size: 1.3rem !important;
             line-height: 1.3 !important;
-            margin-bottom: 25px !important;
+            margin-bottom: 20px !important;
             color: #fff !important;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.9) !important;
         }
         
         .ge-repair-content p {
-            font-size: 1rem !important;
-            line-height: 1.6 !important;
-            margin-bottom: 30px !important;
+            font-size: 0.85rem !important;
+            line-height: 1.5 !important;
+            margin-bottom: 25px !important;
             color: #fff !important;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.9) !important;
         }
@@ -380,9 +380,9 @@
         .ge-buttons {
             display: flex !important;
             flex-direction: column !important;
-            gap: 15px !important;
+            gap: 10px !important;
             width: 100% !important;
-            max-width: 300px !important;
+            max-width: 280px !important;
             margin: 0 auto !important;
         }
         
@@ -390,8 +390,8 @@
             width: 100% !important;
             display: block !important;
             text-align: center !important;
-            padding: 15px 30px !important;
-            font-size: 1rem !important;
+            padding: 12px 20px !important;
+            font-size: 0.85rem !important;
         }
     }
 </style>
