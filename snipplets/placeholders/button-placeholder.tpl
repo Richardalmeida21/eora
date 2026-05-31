@@ -1,3 +1,4 @@
+<style>.js-addtocart-placeholder { width: 100% !important; }</style>
 <div class="js-addtocart js-addtocart-placeholder btn {% if not direct_add %}btn-primary btn-block{% endif %} btn-transition {{ custom_class }} disabled" style="display: none;">
     <div class="d-inline-block w-100 position-relative" style="min-height: 24px;">
         <span class="js-addtocart-text">
