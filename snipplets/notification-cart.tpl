@@ -57,6 +57,10 @@
 </div>
 
 <style>
+#related-products-notification .row {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
 #related-products-notification .js-cart-total {
 	word-break: break-all;
 }
