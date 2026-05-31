@@ -1,7 +1,6 @@
-
 {% set notification_without_recommendations_classes = 'js-alert-added-to-cart notification-floating notification-cart-container notification-hidden notification-fixed position-absolute' %}
 {% set notification_wrapper_classes = 
-	related_products ? 'row' 
+	related_products ? 'row m-0' 
 	: not related_products and not settings.head_fix_desktop ? notification_without_recommendations_classes ~ ' position-fixed-md' 
 	: notification_without_recommendations_classes 
 %}
@@ -56,3 +55,17 @@
 		</div>
 	{% endif %}
 </div>
+
+<style>
+#related-products-notification .row {
+	max-width: 100%;
+	overflow: hidden;
+}
+#related-products-notification .js-cart-total {
+	word-break: break-all;
+}
+#related-products-notification .eora-cart-pix-line {
+	white-space: normal !important;
+	word-break: break-word;
+}
+</style>
