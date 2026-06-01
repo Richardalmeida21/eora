@@ -578,6 +578,43 @@
 
             // Interceptor 1: clique no botão do provador → abre mkfashion com SKU correto
             // Cards fake Luar usam o SKU real mapeado; demais produtos usam o próprio data-mkfashion-identifier
+            function getEoraProductNameForTracking() {
+                var el = document.querySelector('.js-product-name, .product-name, [data-store="product-name"], h1');
+                return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
+            }
+
+            function eoraTrackProvadorEvent(eventName, params) {
+                try {
+                    params = params || {};
+                    var identifier = params.mkfashion_identifier || params.product_sku || '';
+                    var payload = {
+                        event: eventName,
+                        event_category: 'provador_virtual',
+                        event_label: params.event_label || identifier,
+                        button_location: params.button_location || '',
+                        product_sku: params.product_sku || identifier,
+                        mkfashion_identifier: identifier,
+                        product_name: params.product_name || getEoraProductNameForTracking(),
+                        page_path: window.location.pathname,
+                        page_location: window.location.href,
+                        source: params.source || 'mkfashion'
+                    };
+
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push(payload);
+
+                    if (typeof window.gtag === 'function' && !window.google_tag_manager) {
+                        var gtagPayload = {};
+                        Object.keys(payload).forEach(function(key) {
+                            if (key !== 'event') gtagPayload[key] = payload[key];
+                        });
+                        window.gtag('event', eventName, gtagPayload);
+                    }
+                } catch (err) {}
+            }
+
+            window.eoraTrackProvadorEvent = eoraTrackProvadorEvent;
+
             document.addEventListener('click', function(e) {
                 var btn = e.target.closest('.js-btn-provador-virtual');
                 if (!btn) return;
@@ -599,6 +636,12 @@
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 if (typeof mkfashion !== 'undefined') {
+                    eoraTrackProvadorEvent('provador_virtual_click', {
+                        button_location: item ? 'grid_image_button' : 'pdp_image_button',
+                        product_sku: identifier,
+                        mkfashion_identifier: identifier,
+                        source: 'layout_interceptor'
+                    });
                     mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: identifier });
                 }
             }, true);
@@ -640,6 +683,12 @@
 
             mkfashion.addToCart(function(payload) {
                 console.log('Provador Virtual - Produto:', payload);
+                eoraTrackProvadorEvent('provador_virtual_add_to_cart', {
+                    button_location: 'mkfashion_callback',
+                    product_sku: payload && payload.mainIdentifier ? payload.mainIdentifier : '',
+                    mkfashion_identifier: payload && payload.mainIdentifier ? payload.mainIdentifier : '',
+                    source: 'mkfashion.addToCart'
+                });
                 luarFetchReady.then(function() {
                     try {
                         var identifier = (payload && payload.mainIdentifier ? payload.mainIdentifier : '').toUpperCase().trim();
@@ -706,6 +755,12 @@
                     btn.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
+                        eoraTrackProvadorEvent('provador_virtual_click', {
+                            button_location: item ? 'grid_image_button' : 'pdp_image_button',
+                            product_sku: identifier,
+                            mkfashion_identifier: identifier,
+                            source: 'layout_available_button'
+                        });
                         mkfashion.open({ projectId: PROJECT_ID, identifier: identifier });
                     });
                 });
@@ -736,6 +791,12 @@
                     btn.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
+                        eoraTrackProvadorEvent('provador_virtual_click', {
+                            button_location: 'pdp_tip_card',
+                            product_sku: identifier,
+                            mkfashion_identifier: identifier,
+                            source: 'layout_tip_card'
+                        });
                         mkfashion.open({ projectId: PROJECT_ID, identifier: identifier });
                     });
                 });

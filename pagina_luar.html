@@ -175,6 +175,38 @@
                 st.textContent = css;
                 document.head.appendChild(st);
             }
+
+            window.eoraTrackProvadorEvent = window.eoraTrackProvadorEvent || function(eventName, params) {
+                try {
+                    params = params || {};
+                    var identifier = params.mkfashion_identifier || params.product_sku || '';
+                    var productNameEl = document.querySelector('.js-product-name, .product-name, [data-store="product-name"], h1');
+                    var payload = {
+                        event: eventName,
+                        event_category: 'provador_virtual',
+                        event_label: params.event_label || identifier,
+                        button_location: params.button_location || '',
+                        product_sku: params.product_sku || identifier,
+                        mkfashion_identifier: identifier,
+                        product_name: params.product_name || (productNameEl ? productNameEl.textContent.replace(/\s+/g, ' ').trim() : ''),
+                        page_path: window.location.pathname,
+                        page_location: window.location.href,
+                        source: params.source || 'pagina_luar'
+                    };
+
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push(payload);
+
+                    if (typeof window.gtag === 'function' && !window.google_tag_manager) {
+                        var gtagPayload = {};
+                        Object.keys(payload).forEach(function(key) {
+                            if (key !== 'event') gtagPayload[key] = payload[key];
+                        });
+                        window.gtag('event', eventName, gtagPayload);
+                    }
+                } catch (err) {}
+            };
+
             function init() {
 
                 function getSrc(img) {
@@ -1441,6 +1473,14 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                 }
                 function abrirPopupChanel(mode) {
                     mode = mode || 'buy';
+                    if (mode === 'tryon') {
+                        window.eoraTrackProvadorEvent('provador_virtual_click', {
+                            button_location: 'luar_tryon_selector',
+                            product_sku: window.eoraCurrentSKU || '',
+                            mkfashion_identifier: window.eoraCurrentSKU || '',
+                            source: 'pagina_luar'
+                        });
+                    }
                     var listContainer = document.getElementById('eora-pu-list-container');
                     var titleEl = document.querySelector('.eora-pu-title');
                     if (titleEl) {
@@ -1601,6 +1641,13 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 
                                  if (mode === 'tryon') {
                                      if (typeof mkfashion !== 'undefined') {
+                                         window.eoraTrackProvadorEvent('provador_virtual_open', {
+                                             button_location: 'luar_variant_popup',
+                                             product_sku: combo.sku || '',
+                                             mkfashion_identifier: combo.sku || '',
+                                             product_name: (baseName ? baseName + ' (' : '') + combo.name + (baseName ? ')' : ''),
+                                             source: 'pagina_luar'
+                                         });
                                          mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: combo.sku || '' });
                                      }
                                      return;

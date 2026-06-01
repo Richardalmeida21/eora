@@ -2,6 +2,37 @@
     function init() {
         console.log('EORA: Inicializando Provador Virtual Nativo (v4 - Safe Isolation)...');
 
+        window.eoraTrackProvadorEvent = window.eoraTrackProvadorEvent || function(eventName, params) {
+            try {
+                params = params || {};
+                var identifier = params.mkfashion_identifier || params.product_sku || '';
+                var productNameEl = document.querySelector('.js-product-name, .product-name, [data-store="product-name"], h1');
+                var payload = {
+                    event: eventName,
+                    event_category: 'provador_virtual',
+                    event_label: params.event_label || identifier,
+                    button_location: params.button_location || '',
+                    product_sku: params.product_sku || identifier,
+                    mkfashion_identifier: identifier,
+                    product_name: params.product_name || (productNameEl ? productNameEl.textContent.replace(/\s+/g, ' ').trim() : ''),
+                    page_path: window.location.pathname,
+                    page_location: window.location.href,
+                    source: params.source || 'static_eora_mkfashion'
+                };
+
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push(payload);
+
+                if (typeof window.gtag === 'function' && !window.google_tag_manager) {
+                    var gtagPayload = {};
+                    Object.keys(payload).forEach(function(key) {
+                        if (key !== 'event') gtagPayload[key] = payload[key];
+                    });
+                    window.gtag('event', eventName, gtagPayload);
+                }
+            } catch (err) {}
+        };
+
         var ancora = document.querySelector('#single-product');
         
         // --- TRAVA DE SEGURANÇA PARA A PÁGINA DE PRODUTO ---
@@ -74,6 +105,12 @@
                             e.stopPropagation();
                             console.log('EORA: Abrindo provador para:', targetSku);
                             if (typeof mkfashion !== 'undefined') {
+                                window.eoraTrackProvadorEvent('provador_virtual_click', {
+                                    button_location: 'legacy_grid_icon',
+                                    product_sku: targetSku,
+                                    mkfashion_identifier: targetSku,
+                                    source: 'static_eora_mkfashion'
+                                });
                                 mkfashion.open('69bbd36a44b548ccd0f965f4', targetSku);
                             } else {
                                 console.error('EORA: SDK mkfashion não encontrado!');
@@ -230,6 +267,12 @@
                             provContainer.style.display = disponivel ? 'flex' : 'none';
                             var provBtn = provContainer.querySelector('.js-eora-static-btn');
                             if (provBtn) provBtn.onclick = function() {
+                                window.eoraTrackProvadorEvent('provador_virtual_click', {
+                                    button_location: 'legacy_static_button',
+                                    product_sku: targetSkuForTryon,
+                                    mkfashion_identifier: targetSkuForTryon,
+                                    source: 'static_eora_mkfashion'
+                                });
                                 if (isSatellite) {
                                     if (typeof mkfashion !== 'undefined') mkfashion.open('69bbd36a44b548ccd0f965f4', targetSkuForTryon);
                                 } else {
