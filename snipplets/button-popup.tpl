@@ -350,11 +350,19 @@
     function forceHidePopup() {
       var layer = getLayer();
       if (layer) {
-        layer.classList.remove('p-opened');
-        layer.classList.add('p-closed');
-        layer.style.display = 'none';
+        if (layer.classList.contains('p-opened')) {
+          layer.classList.remove('p-opened');
+        }
+        if (!layer.classList.contains('p-closed')) {
+          layer.classList.add('p-closed');
+        }
+        if (layer.style.display !== 'none') {
+          layer.style.display = 'none';
+        }
       }
-      document.body.classList.remove('p-popup-open');
+      if (document.body.classList.contains('p-popup-open')) {
+        document.body.classList.remove('p-popup-open');
+      }
     }
 
     function closePopup(event) {
@@ -453,9 +461,7 @@
         });
         observer.observe(document.body, {
           childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['class', 'style']
+          subtree: true
         });
       }
     }

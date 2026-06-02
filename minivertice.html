@@ -2,6 +2,8 @@
 <script>
 (function () {
     var familyTag = 'minivertice';
+    if (!/^\/produtos\//.test(window.location.pathname)) return;
+
     var productRoot = document.getElementById('single-product');
     if (!productRoot || window.__eoraMiniverticeVariantsLoaded) return;
     window.__eoraMiniverticeVariantsLoaded = true;
