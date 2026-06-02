@@ -300,6 +300,9 @@
 
 <script>
 (function () {
+  var PIX_DISCOUNT_PERCENT = 5;
+  var PIX_DISCOUNT_FACTOR = (100 - PIX_DISCOUNT_PERCENT) / 100;
+
   function fmtBRL(v) {
     return 'R$\u00a0' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
@@ -307,11 +310,11 @@
     if (!display) return;
     var newHTML = '';
     if (total > 0) {
-      var pix = total * 0.93;
+      var pix = total * PIX_DISCOUNT_FACTOR;
       var n = Math.max(1, Math.min(10, Math.floor(total / 110)));
       var inst = total / n;
       newHTML =
-        '<span class="eora-cart-pix-line">PIX: ' + fmtBRL(pix) + ' <span class="eora-cart-pix-badge">7% OFF</span></span>' +
+        '<span class="eora-cart-pix-line">PIX: ' + fmtBRL(pix) + ' <span class="eora-cart-pix-badge">' + PIX_DISCOUNT_PERCENT + '% OFF</span></span>' +
         (n > 1 ? '<span class="eora-cart-inst-line">ou ' + n + 'x de ' + fmtBRL(inst) + ' sem juros</span>' : '');
     }
     if (display.innerHTML !== newHTML) display.innerHTML = newHTML;
