@@ -4832,6 +4832,52 @@ let c_settings_name_04 = c_settings_name + '_04';
             }
         }, true);
 
+        function openPerfitPopup() {
+            var perfitApi = window.PerfitOptIn && window.PerfitOptIn.IIw6HlBv;
+            if (perfitApi && typeof perfitApi.open === 'function') {
+                perfitApi.open();
+                return true;
+            }
+
+            var nativeOpenButton = document.getElementById('p-open');
+            if (nativeOpenButton) {
+                nativeOpenButton.click();
+                return true;
+            }
+
+            var perfitWrapper = document.querySelector('.p-layer');
+            if (!perfitWrapper) {
+                var perfitForm = document.querySelector('form[action*="myperfit"], .p-optin');
+                if (perfitForm) {
+                    perfitWrapper = perfitForm.closest('.p-layer') || perfitForm;
+                }
+            }
+
+            if (!perfitWrapper) return false;
+
+            perfitWrapper.style.display = 'flex';
+            perfitWrapper.classList.remove('p-closed');
+            perfitWrapper.classList.add('p-opened');
+            document.body.classList.add('p-popup-open');
+            return true;
+        }
+
+        function openThemeNewsletterFallback() {
+            if (typeof jQueryNuvem !== 'undefined' && jQueryNuvem('#home-modal').length) {
+                if (typeof modalOpen === 'function') {
+                    modalOpen('#home-modal');
+                } else if (typeof jQueryNuvem('#home-modal').modal === 'function') {
+                    jQueryNuvem('#home-modal').modal('show');
+                } else {
+                    jQueryNuvem("#home-modal").show().addClass("modal-show");
+                }
+            } else if (window.jQuery && window.jQuery('#home-modal').length) {
+                window.jQuery('#home-modal').modal('show');
+            } else {
+                console.warn('No newsletter popup found. Unlocking automatically as fallback.');
+                window.unlockWishlist();
+            }
+        }
 
         // Use Capture Phase (true) to intercept before Selly's listeners
         window.addEventListener('click', function(e) {
@@ -4869,35 +4915,10 @@ let c_settings_name_04 = c_settings_name + '_04';
                 // Store the button to click later
                 pendingWishlistClick = wishlistBtn;
 
-                // 1. Try to open Perfit/Nuvem Marketing Popup
-                var perfitWrapper = document.querySelector('.p-layer');
-                if (!perfitWrapper) {
-                    var perfitForm = document.querySelector('form[action*="myperfit"], .p-optin');
-                    if (perfitForm) {
-                        perfitWrapper = perfitForm.closest('.p-layer');
-                        if (!perfitWrapper) perfitWrapper = perfitForm; 
-                    }
-                }
-
-                if (perfitWrapper) {
+                if (openPerfitPopup()) {
                     console.log('Perfit popup found. Opening...');
-                    perfitWrapper.style.display = 'flex'; // Force display
-                    perfitWrapper.classList.remove('p-closed');
-                    perfitWrapper.classList.add('p-opened');
                 } else {
-                    // 2. Fallback to theme modal (#home-modal)
-                    if (typeof jQueryNuvem !== 'undefined' && jQueryNuvem('#home-modal').length) {
-                         if (typeof modalOpen === 'function') {
-                            modalOpen('#home-modal');
-                        } else {
-                            jQueryNuvem('#home-modal').modal('show');
-                        }
-                    } else if (window.jQuery && window.jQuery('#home-modal').length) {
-                        window.jQuery('#home-modal').modal('show');
-                    } else {
-                        console.warn('No newsletter popup found. Unlocking automatically as fallback.');
-                        window.unlockWishlist();
-                    }
+                    openThemeNewsletterFallback();
                 }
                 
                 return false;

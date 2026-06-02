@@ -9,17 +9,106 @@
     display: none;
   }
 
+  .p-layer {
+    position: fixed;
+    inset: 0;
+    overflow: auto;
+    z-index: 20000;
+    background: transparent;
+  }
+
   .p-layer.p-opened {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;   /* Centraliza verticalmente */
-  justify-content: center; /* Centraliza horizontalmente */
-  background: rgba(0, 0, 0, 0.5); /* opcional, fundo escurecido */
-  z-index: 9999; /* garante que fique acima de tudo */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .p-layer .p-close-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .p-layer .p-optin {
+    position: relative;
+    z-index: 1;
+    width: calc(100vw - 32px);
+    max-width: 560px;
+    max-height: calc(100vh - 32px);
+    margin: auto;
+    overflow: auto;
+    border-radius: 7px;
+    background: #000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  }
+
+  #optin-form-IIw6HlBv {
+    color: #fff;
+  }
+
+  #optin-form-IIw6HlBv > .p-close,
+  #optin-form-IIw6HlBv .eora-perfit-fallback-close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 20 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    color: #000 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 26px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18) !important;
+  }
+
+  #optin-form-IIw6HlBv .p-body {
+    background: #000;
+    color: #fff;
+  }
+
+  #optin-form-IIw6HlBv.p-layout-topImage .p-grid {
+    display: grid;
+    grid-template-rows: minmax(140px, 220px) auto;
+  }
+
+  #optin-form-IIw6HlBv.p-layout-topImage .p-col-image {
+    display: block !important;
+    min-height: 140px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  #optin-form-IIw6HlBv.p-layout-topImage .p-col-form {
+    position: relative;
+    padding: 24px 22px 30px;
+  }
+
+  #optin-form-IIw6HlBv .p-success {
+    position: static !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    margin: 0 !important;
+    color: #fff !important;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
   }
 
   .notification-cart-reopen-container {
@@ -80,7 +169,8 @@
     display: none;
   }
 
-  .p-closed {
+  .p-closed,
+  .p-layer.p-closed {
     display: none !important;
   }
 </style>
@@ -169,14 +259,148 @@
 <!-- Optin - Fin -->
 
 <script>
-  window.onload = () => {
-    const button = document.querySelector("#notification-cart-reopen-container");
+  (function () {
+    var optinId = 'IIw6HlBv';
+    var formId = 'optin-form-' + optinId;
+    var reopenId = 'notification-cart-reopen-container';
+    var retryTimer = null;
+    var retryAttempts = 0;
 
-    function showPopup() {
-      const buttonHide = document.querySelector("#p-open");
-      buttonHide.click()
+    function getApi() {
+      return window.PerfitOptIn && window.PerfitOptIn[optinId];
     }
 
-    button.addEventListener("click", showPopup);
-  }
+    function getForm() {
+      return document.getElementById(formId);
+    }
+
+    function getLayer() {
+      var form = getForm();
+      return form ? form.closest('.p-layer') : document.querySelector('.p-layer');
+    }
+
+    function showPopupError() {
+      var error = document.getElementById('popup-error');
+      if (!error) return;
+
+      error.style.display = 'block';
+      setTimeout(function () {
+        error.style.display = 'none';
+      }, 3000);
+    }
+
+    function ensureCloseButton() {
+      var form = getForm();
+      var layer = getLayer();
+
+      if (!form) return;
+
+      if (!form.querySelector('.p-close')) {
+        var closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'p-close eora-perfit-fallback-close';
+        closeButton.setAttribute('aria-label', 'Fechar popup');
+        closeButton.textContent = '\u00d7';
+        form.insertBefore(closeButton, form.firstChild);
+      }
+
+      if (layer) {
+        layer.classList.add('eora-perfit-ready');
+      }
+    }
+
+    function closePopup(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        retryAttempts = 0;
+      }
+
+      var api = getApi();
+      if (api && typeof api.close === 'function') {
+        api.close(event || {});
+        return;
+      }
+
+      var layer = getLayer();
+      if (layer) {
+        layer.classList.remove('p-opened');
+        layer.classList.add('p-closed');
+        layer.style.display = 'none';
+      }
+      document.body.classList.remove('p-popup-open');
+    }
+
+    function openPopup(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      var api = getApi();
+      if (api && typeof api.open === 'function') {
+        api.open(event || {});
+        setTimeout(ensureCloseButton, 50);
+        return;
+      }
+
+      var nativeButton = document.getElementById('p-open');
+      if (nativeButton) {
+        nativeButton.click();
+        setTimeout(ensureCloseButton, 50);
+        return;
+      }
+
+      var layer = getLayer();
+      if (layer) {
+        layer.style.display = 'flex';
+        layer.classList.remove('p-closed');
+        layer.classList.add('p-opened');
+        document.body.classList.add('p-popup-open');
+        ensureCloseButton();
+        return;
+      }
+
+      if (retryAttempts < 10 && !retryTimer) {
+        retryAttempts += 1;
+        retryTimer = setTimeout(function () {
+          retryTimer = null;
+          openPopup();
+        }, 300);
+      } else {
+        showPopupError();
+      }
+    }
+
+    function bindPopupSafety() {
+      ensureCloseButton();
+
+      document.addEventListener('click', function (event) {
+        if (!event.target || !event.target.closest) return;
+
+        if (event.target.closest('#' + reopenId)) {
+          openPopup(event);
+          return;
+        }
+
+        if (event.target.closest('.p-layer .p-close, .p-layer .p-close-layer')) {
+          closePopup(event);
+        }
+      }, true);
+
+      if (window.MutationObserver && document.body) {
+        var observer = new MutationObserver(ensureCloseButton);
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindPopupSafety);
+    } else {
+      bindPopupSafety();
+    }
+  })();
 </script>
