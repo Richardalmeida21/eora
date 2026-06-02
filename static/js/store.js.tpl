@@ -4833,6 +4833,10 @@ let c_settings_name_04 = c_settings_name + '_04';
         }, true);
 
         function openPerfitPopup() {
+            if (typeof window.eoraAllowPerfitPopupOpen === 'function') {
+                window.eoraAllowPerfitPopupOpen();
+            }
+
             var perfitApi = window.PerfitOptIn && window.PerfitOptIn.IIw6HlBv;
             if (perfitApi && typeof perfitApi.open === 'function') {
                 perfitApi.open();

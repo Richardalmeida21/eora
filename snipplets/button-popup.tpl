@@ -263,8 +263,46 @@
     var optinId = 'IIw6HlBv';
     var formId = 'optin-form-' + optinId;
     var reopenId = 'notification-cart-reopen-container';
+    var dismissedKey = 'eora_perfit_optin_dismissed_' + optinId;
     var retryTimer = null;
     var retryAttempts = 0;
+
+    function safeSessionGet(key) {
+      try {
+        return window.sessionStorage ? window.sessionStorage.getItem(key) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function safeSessionSet(key, value) {
+      try {
+        if (window.sessionStorage) window.sessionStorage.setItem(key, value);
+      } catch (error) {}
+    }
+
+    function safeSessionRemove(key) {
+      try {
+        if (window.sessionStorage) window.sessionStorage.removeItem(key);
+      } catch (error) {}
+    }
+
+    function isDismissed() {
+      return safeSessionGet(dismissedKey) === '1';
+    }
+
+    function setDismissed(value) {
+      if (value) safeSessionSet(dismissedKey, '1');
+      else safeSessionRemove(dismissedKey);
+    }
+
+    function cancelRetries() {
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
+      }
+      retryAttempts = 0;
+    }
 
     function getApi() {
       return window.PerfitOptIn && window.PerfitOptIn[optinId];
@@ -309,19 +347,7 @@
       }
     }
 
-    function closePopup(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        retryAttempts = 0;
-      }
-
-      var api = getApi();
-      if (api && typeof api.close === 'function') {
-        api.close(event || {});
-        return;
-      }
-
+    function forceHidePopup() {
       var layer = getLayer();
       if (layer) {
         layer.classList.remove('p-opened');
@@ -331,10 +357,35 @@
       document.body.classList.remove('p-popup-open');
     }
 
+    function closePopup(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      setDismissed(true);
+      cancelRetries();
+
+      var api = getApi();
+      if (api && typeof api.close === 'function') {
+        try {
+          api.close(event || {});
+        } catch (error) {}
+      }
+
+      forceHidePopup();
+    }
+
     function openPopup(event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
+      }
+
+      if (!event && isDismissed()) {
+        cancelRetries();
+        forceHidePopup();
+        return;
       }
 
       var api = getApi();
@@ -372,6 +423,11 @@
       }
     }
 
+    window.eoraAllowPerfitPopupOpen = function () {
+      setDismissed(false);
+      cancelRetries();
+    };
+
     function bindPopupSafety() {
       ensureCloseButton();
 
@@ -379,6 +435,8 @@
         if (!event.target || !event.target.closest) return;
 
         if (event.target.closest('#' + reopenId)) {
+          setDismissed(false);
+          cancelRetries();
           openPopup(event);
           return;
         }
@@ -389,10 +447,15 @@
       }, true);
 
       if (window.MutationObserver && document.body) {
-        var observer = new MutationObserver(ensureCloseButton);
+        var observer = new MutationObserver(function () {
+          ensureCloseButton();
+          if (isDismissed()) forceHidePopup();
+        });
         observer.observe(document.body, {
           childList: true,
-          subtree: true
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class', 'style']
         });
       }
     }

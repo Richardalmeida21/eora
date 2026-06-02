@@ -63,6 +63,7 @@
                 '#eora-info-thumbs .eora-info-thumb{flex:1 1 0!important;min-width:0!important;aspect-ratio:1/1!important;border:1px solid transparent!important;border-radius:0!important;cursor:pointer!important;background:transparent!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;box-sizing:border-box!important;transition:border-color .2s ease!important}',
                 '#eora-info-thumbs .eora-info-thumb:hover, #eora-info-thumbs .eora-info-thumb.eora-active{border-color:#111!important}',
                 '#eora-info-thumbs .eora-info-thumb img{max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;object-fit:contain!important;display:block!important}',
+                '.eora-info-variant-name{display:block!important;font-size:13px!important;line-height:1.4!important;color:#444!important;margin:-10px 0 14px!important;font-weight:500!important;text-transform:uppercase!important;letter-spacing:.3px!important}',
                 '#eora-variant-desc{font-size:13px!important;line-height:1.8!important;color:#444!important;margin:0 0 12px!important;font-weight:400!important;font-family:var(--body-font,"Hanken Grotesk",sans-serif)!important;display:block!important}',
 
                 /* Galeria da .product-image-column (esquerda) quando uma variante é escolhida
@@ -175,38 +176,6 @@
                 st.textContent = css;
                 document.head.appendChild(st);
             }
-
-            window.eoraTrackProvadorEvent = window.eoraTrackProvadorEvent || function(eventName, params) {
-                try {
-                    params = params || {};
-                    var identifier = params.mkfashion_identifier || params.product_sku || '';
-                    var productNameEl = document.querySelector('.js-product-name, .product-name, [data-store="product-name"], h1');
-                    var payload = {
-                        event: eventName,
-                        event_category: 'provador_virtual',
-                        event_label: params.event_label || identifier,
-                        button_location: params.button_location || '',
-                        product_sku: params.product_sku || identifier,
-                        mkfashion_identifier: identifier,
-                        product_name: params.product_name || (productNameEl ? productNameEl.textContent.replace(/\s+/g, ' ').trim() : ''),
-                        page_path: window.location.pathname,
-                        page_location: window.location.href,
-                        source: params.source || 'pagina_luar'
-                    };
-
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push(payload);
-
-                    if (typeof window.gtag === 'function' && !window.google_tag_manager) {
-                        var gtagPayload = {};
-                        Object.keys(payload).forEach(function(key) {
-                            if (key !== 'event') gtagPayload[key] = payload[key];
-                        });
-                        window.gtag('event', eventName, gtagPayload);
-                    }
-                } catch (err) {}
-            };
-
             function init() {
 
                 function getSrc(img) {
@@ -215,6 +184,71 @@
                         img.getAttribute('data-original') ||
                         img.getAttribute('src') ||
                         img.src || '';
+                }
+                var EORA_BASE_PRODUCT_NAME = 'LUAR';
+                function eoraCleanVariantName(name) {
+                    name = String(name || '').replace(/\s+/g, ' ').trim();
+                    if (!name) return '';
+                    name = name.replace(/^LUAR\s*[-–—]\s*/i, '').trim();
+                    var paren = name.match(/\(([^()]+)\)\s*$/);
+                    if (paren && paren[1]) name = paren[1].trim();
+                    return name;
+                }
+                function eoraVariantNameFromVariant(v) {
+                    if (!v) return '';
+                    return eoraCleanVariantName([v.option0, v.option1, v.option2].filter(Boolean).join(' '));
+                }
+                function eoraVariantNameFromCell(cell) {
+                    if (!cell) return '';
+                    var text = (cell.textContent || '').replace(/\s+/g, ' ').trim();
+                    text = text.replace(/^galeria[_\s-]*esquerda\s*/i, '').trim();
+                    text = text.replace(/^fotos variante\s*\d+\s*/i, '').trim();
+                    text = text.replace(/^hover thumbnails\s*/i, '').trim();
+                    return eoraCleanVariantName(text);
+                }
+                function eoraVariantNameFromCustomIndex(idx) {
+                    var names = window.__eoraVariantNames || [];
+                    return names[idx] ? eoraCleanVariantName(names[idx]) : '';
+                }
+                function eoraSetVariantNameByIndex(idx) {
+                    var customName = eoraVariantNameFromCustomIndex(idx);
+                    if (customName) return eoraSetCurrentVariantName(customName);
+                    if (typeof LS !== 'undefined' && LS.variants && LS.variants[idx]) {
+                        return eoraSetCurrentVariantName(eoraVariantNameFromVariant(LS.variants[idx]));
+                    }
+                    return '';
+                }
+                function eoraGetInfoColumn() {
+                    return document.querySelector('#single-product .product-info-column') ||
+                        document.querySelector('.product-info-column') ||
+                        document.querySelector('.eora-product-info');
+                }
+                function eoraGetTitleElement(infoCol) {
+                    infoCol = infoCol || eoraGetInfoColumn();
+                    return infoCol ? infoCol.querySelector('h1, h2.js-product-name, h2.product-name, .eora-product-name, h2') : null;
+                }
+                function eoraUpdateVisibleVariantName(name) {
+                    var variantName = eoraCleanVariantName(name);
+                    var infoCol = eoraGetInfoColumn();
+                    var titleEl = eoraGetTitleElement(infoCol);
+                    if (titleEl) titleEl.textContent = EORA_BASE_PRODUCT_NAME;
+                    if (!infoCol || !titleEl) return variantName;
+
+                    var sub = infoCol.querySelector('.eora-info-variant-name');
+                    if (!sub) {
+                        sub = document.createElement('div');
+                        sub.className = 'eora-info-variant-name';
+                        titleEl.parentNode.insertBefore(sub, titleEl.nextSibling);
+                    }
+                    sub.textContent = variantName;
+                    sub.style.display = variantName ? 'block' : 'none';
+                    return variantName;
+                }
+                function eoraSetCurrentVariantName(name) {
+                    var variantName = eoraUpdateVisibleVariantName(name);
+                    window.eoraSelectedVariantName = variantName;
+                    window.eoraCurrentVariantName = variantName;
+                    return variantName;
                 }
                 function getDados() {
                     var d = {};
@@ -652,6 +686,7 @@
                 // Independente das fotos do painel central (fotoGroups / variantes_produto)
                 window.__eoraLeftGalleryPhotos = (function () {
                     var groups = [];
+                    window.__eoraVariantNames = [];
                     var galTable = dados['galeria_esquerda'] || null;
                     if (!galTable) {
                         // Fallback: busca em TODAS as tabelas do documento
@@ -667,6 +702,8 @@
                     var trs = galTable.querySelectorAll('tbody > tr');
                     for (var r = 0; r < trs.length; r++) {
                         var tds = trs[r].querySelectorAll('td');
+                        var variantLabel = eoraVariantNameFromCell(tds[0]);
+                        if (variantLabel) window.__eoraVariantNames[r] = variantLabel;
                         var fotos = [];
                         for (var c = 1; c < tds.length; c++) {
                             var fimg = tds[c].querySelector('img');
@@ -787,9 +824,13 @@
                                     var all = document.querySelectorAll('#eora-info-thumbs .eora-info-thumb');
                                     for (var k = 0; k < all.length; k++) all[k].classList.remove('eora-active');
                                     t.classList.add('eora-active');
-                                    // Memoriza a variante atualmente selecionada (índice da tabela
-                                    // variantes_produto = mesmo índice de LS.variants).
+                                    // Memoriza a variante atualmente selecionada na ordem das
+                                    // miniaturas customizadas.
                                     window.eoraSelectedThumbIdx = i;
+                                    if (!eoraSetVariantNameByIndex(i)) {
+                                        eoraUpdateVisibleVariantName(window.eoraCurrentVariantName || '');
+                                        setTimeout(function () { eoraSetVariantNameByIndex(i); }, 300);
+                                    }
                                     // Atualiza a coluna esquerda (.product-image-column) com as fotos desta variante
                                     var leftCol = document.querySelector('#single-product .product-image-column');
                                     // 1. Tenta cache pré-carregado
@@ -1176,9 +1217,7 @@
                                     if(v.option0) oList.push(v.option0);
                                     if(v.option1) oList.push(v.option1);
                                     if(v.option2) oList.push(v.option2);
-                                    var pNameEl = document.querySelector('.js-product-name, .product-name');
-                                    var bName = pNameEl ? pNameEl.textContent.trim() : '';
-                                    window.eoraSelectedVariantName = (bName ? bName + ' (' : '') + oList.join(' ') + (bName ? ')' : '');
+                                    eoraSetCurrentVariantName(eoraVariantNameFromCustomIndex(idx) || oList.join(' '));
                                 }
                                 if (!loadedFromLS) {
                                     var vimg = this.querySelector('img:not(.eora-img-hover)');
@@ -1287,9 +1326,7 @@ var c1 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             if(v0.option0) oList0.push(v0.option0);
                             if(v0.option1) oList0.push(v0.option1);
                             if(v0.option2) oList0.push(v0.option2);
-                            var pNameEl0 = document.querySelector('.js-product-name, .product-name');
-                            var bName0 = pNameEl0 ? pNameEl0.textContent.trim() : '';
-                            window.eoraSelectedVariantName = (bName0 ? bName0 + ' (' : '') + oList0.join(' ') + (bName0 ? ')' : '');
+                            eoraSetCurrentVariantName(eoraVariantNameFromCustomIndex(0) || oList0.join(' '));
                         }
                         if (!loadedFromLS0) {
                             var f0img = cards[0].querySelector('img:not(.eora-img-hover)');
@@ -1473,14 +1510,6 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                 }
                 function abrirPopupChanel(mode) {
                     mode = mode || 'buy';
-                    if (mode === 'tryon') {
-                        window.eoraTrackProvadorEvent('provador_virtual_click', {
-                            button_location: 'luar_tryon_selector',
-                            product_sku: window.eoraCurrentSKU || '',
-                            mkfashion_identifier: window.eoraCurrentSKU || '',
-                            source: 'pagina_luar'
-                        });
-                    }
                     var listContainer = document.getElementById('eora-pu-list-container');
                     var titleEl = document.querySelector('.eora-pu-title');
                     if (titleEl) {
@@ -1490,8 +1519,7 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 
                     var basePriceEl = ancora.querySelector('.js-price-display, .product-price');
                     var basePrice = basePriceEl ? basePriceEl.textContent.trim() : '';
-                    var prodNameEl = ancora.querySelector('.js-product-name, .product-name');
-                    var baseName = prodNameEl ? prodNameEl.textContent.trim() : 'Produto';
+                    var baseName = EORA_BASE_PRODUCT_NAME;
 
                     var validOptions = [];
                     // Prioridade 1: <select.js-variation-option> nativo do produto atual.
@@ -1591,12 +1619,11 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             return true;
                         });
                         validOptions.forEach(function (combo, idx) {
-                            var actImg = combo.image_url || '';
+                            var customImg = (window.__eoraVariantThumbs && window.__eoraVariantThumbs[idx]) ? window.__eoraVariantThumbs[idx] : '';
+                            var actImg = customImg || combo.image_url || '';
                             if (actImg && actImg.indexOf('//') === 0) actImg = 'https:' + actImg;
-                            // NÃO usa fallback para .eora-pp-variante-item nem .eora-hero-img,
-                            // pois esses elementos vêm da tabela "variantes_produto" do snippet
-                            // (que pode ter dados antigos de outro produto). Usamos apenas a
-                            // imagem oficial da variante do produto atual (LS.variants[i].image_url).
+                            // A miniatura customizada segue a ordem visual das variantes e evita
+                            // imagens trocadas quando a variante oficial aponta para outra cor.
 
                             var row = document.createElement('div');
                             row.className = 'eora-pu-card';
@@ -1635,19 +1662,12 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                                  var isAviseMe = this.getAttribute('data-out-of-stock') === '1';
                                  var actImgParam = btn.closest('.eora-pu-card').querySelector('img').src;
                                  window.eoraSelectedVariantImg = actImgParam;
-                                 window.eoraSelectedVariantName = (baseName ? baseName + ' (' : '') + combo.name + (baseName ? ')' : '');
+                                 eoraSetCurrentVariantName(combo.name);
 
                                  fecharPopupChanel();
 
                                  if (mode === 'tryon') {
                                      if (typeof mkfashion !== 'undefined') {
-                                         window.eoraTrackProvadorEvent('provador_virtual_open', {
-                                             button_location: 'luar_variant_popup',
-                                             product_sku: combo.sku || '',
-                                             mkfashion_identifier: combo.sku || '',
-                                             product_name: (baseName ? baseName + ' (' : '') + combo.name + (baseName ? ')' : ''),
-                                             source: 'pagina_luar'
-                                         });
                                          mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: combo.sku || '' });
                                      }
                                      return;
@@ -1703,12 +1723,14 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                                                 pImg.setAttribute('data-srcset', actImgParam + ' 100w');
                                             }
 
-                                            var pName = container.querySelector('.js-product-name');
+                                            var pName = container.querySelector('.eora-cart-product-name-helper');
                                             if (!pName) {
-                                                container.insertAdjacentHTML('beforeend', '<div class="js-product-name" style="display:none">' + (combo.name || baseName) + '</div>');
-                                            } else {
-                                                pName.textContent = combo.name || baseName;
+                                                pName = document.createElement('div');
+                                                pName.className = 'js-product-name eora-cart-product-name-helper';
+                                                pName.style.display = 'none';
+                                                container.appendChild(pName);
                                             }
+                                            pName.textContent = EORA_BASE_PRODUCT_NAME;
 
                                             var pPrice = container.querySelector('.js-price-display');
                                             if (!pPrice) {
@@ -2490,16 +2512,13 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 
             var imgN = nativeModal.querySelector('.js-cart-notification-item-img');
             if (imgN) {
-                var src = '';
+                var src = window.eoraSelectedVariantImg || '';
                 if (item.featured_image) {
-                    src = typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || '');
+                    src = src || (typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || ''));
                 } else if (item.image) {
-                    src = typeof item.image === 'string' ? item.image : (item.image.src || '');
+                    src = src || (typeof item.image === 'string' ? item.image : (item.image.src || ''));
                 } else {
-                    src = item.thumbnail_url || '';
-                }
-                if (!src && window.eoraSelectedVariantImg) {
-                    src = window.eoraSelectedVariantImg;
+                    src = src || item.thumbnail_url || '';
                 }
                 if (!src) {
                     var firstImg = document.querySelector('.js-product-slide-img img, .eora-hero-img');
@@ -2686,16 +2705,13 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
             var item = json.item || {};
             var imgNode = document.getElementById('eora-success-img');
             if (imgNode) {
-                var src = '';
+                var src = window.eoraSelectedVariantImg || '';
                 if (item.featured_image) {
-                    src = typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || '');
+                    src = src || (typeof item.featured_image === 'string' ? item.featured_image : (item.featured_image.src || ''));
                 } else if (item.image) {
-                    src = typeof item.image === 'string' ? item.image : (item.image.src || '');
+                    src = src || (typeof item.image === 'string' ? item.image : (item.image.src || ''));
                 } else {
-                    src = item.thumbnail_url || '';
-                }
-                if (!src && window.eoraSelectedVariantImg) {
-                    src = window.eoraSelectedVariantImg;
+                    src = src || item.thumbnail_url || '';
                 }
                 if (!src) {
                     var firstImg = document.querySelector('.js-product-slide-img img, .eora-hero-img');

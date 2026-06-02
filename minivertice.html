@@ -1,0 +1,409 @@
+<p>
+<script>
+(function () {
+    var familyTag = 'minivertice';
+    var productRoot = document.getElementById('single-product');
+    if (!productRoot || window.__eoraMiniverticeVariantsLoaded) return;
+    window.__eoraMiniverticeVariantsLoaded = true;
+
+    function normalizeText(value) {
+        return String(value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function normalizePath(href) {
+        try {
+            var path = new URL(href, window.location.origin).pathname;
+            return path.replace(/\/+$/, '') + '/';
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function normalizeUrl(url) {
+        if (!url || /^data:image\//i.test(url)) return '';
+        try {
+            return new URL(url, window.location.origin).href;
+        } catch (e) {
+            return url;
+        }
+    }
+
+    function readTags(raw) {
+        if (!raw) return [];
+        try {
+            var parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+                return parsed.map(function (item) {
+                    if (!item) return '';
+                    if (typeof item === 'string') return item;
+                    return item.tag || item.name || '';
+                }).filter(Boolean);
+            }
+        } catch (e) {}
+        return String(raw).split(',').map(function (tag) {
+            return tag.trim();
+        }).filter(Boolean);
+    }
+
+    function extractFromSrcset(srcset) {
+        if (!srcset) return '';
+        var parts = String(srcset).split(',').map(function (part) {
+            return part.trim();
+        }).filter(Boolean);
+        if (!parts.length) return '';
+        return parts[parts.length - 1].split(/\s+/)[0] || '';
+    }
+
+    function getImageUrl(img) {
+        if (!img) return '';
+        var values = [
+            img.getAttribute('data-srcset'),
+            img.getAttribute('srcset'),
+            img.getAttribute('data-zoom-image'),
+            img.getAttribute('data-image'),
+            img.getAttribute('data-src'),
+            img.getAttribute('data-lazy-src'),
+            img.getAttribute('data-original'),
+            img.getAttribute('src'),
+            img.src
+        ];
+        for (var i = 0; i < values.length; i++) {
+            var value = values[i];
+            if (!value) continue;
+            if (value.indexOf(',') !== -1 || /\s\d+w/.test(value)) {
+                value = extractFromSrcset(value);
+            }
+            value = normalizeUrl(value);
+            if (value) return value;
+        }
+        return '';
+    }
+
+    function makeFallbackThumb(name) {
+        var label = encodeURIComponent((name || 'Mini Vertice').slice(0, 18));
+        return 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22%3E%3Crect width=%22120%22 height=%22120%22 fill=%22%23f3f3f0%22/%3E%3Ctext x=%2260%22 y=%2265%22 font-size=%2211%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22Arial%22%3E' + label + '%3C/text%3E%3C/svg%3E';
+    }
+
+    function itemHasFamilyTag(itemEl) {
+        var tags = readTags(itemEl.getAttribute('data-product-tags')).map(normalizeText);
+        return tags.indexOf(familyTag) !== -1;
+    }
+
+    function itemIsPreSale(itemEl) {
+        var tags = readTags(itemEl.getAttribute('data-product-tags')).map(normalizeText);
+        return tags.some(function (tag) {
+            return tag === 'prevenda' || tag === 'pre-venda' || tag === 'pre venda' ||
+                tag.indexOf('prevenda') !== -1 || tag.indexOf('pre-venda') !== -1;
+        });
+    }
+
+    function collectProducts(doc, items, seen) {
+        doc.querySelectorAll('.item').forEach(function (itemEl) {
+            if (!itemHasFamilyTag(itemEl)) return;
+
+            var link = itemEl.querySelector('a[href*="/produtos/"]');
+            if (!link) return;
+
+            var href = normalizeUrl(link.getAttribute('href') || '');
+            var path = normalizePath(href);
+            if (!path || seen[path]) return;
+
+            var img = itemEl.querySelector('img.js-item-image, img.item-image-primary, img');
+            var name = (link.getAttribute('title') || link.getAttribute('aria-label') || '').trim();
+            if (!name) {
+                var nameNode = itemEl.querySelector('.item-name, .product-name, h2, h3');
+                if (nameNode) name = (nameNode.textContent || '').trim();
+            }
+            if (!name && img) name = (img.getAttribute('alt') || '').trim();
+
+            seen[path] = true;
+            items.push({
+                href: href,
+                name: name || 'Mini Vertice',
+                url: getImageUrl(img) || makeFallbackThumb(name),
+                isPreSale: itemIsPreSale(itemEl)
+            });
+        });
+    }
+
+    function getCurrentItem() {
+        var title = productRoot.querySelector('.js-product-name, h1, h2');
+        var img = productRoot.querySelector('.js-color-variants-container .btn-variant-thumb.selected img') ||
+            productRoot.querySelector('.product-image-column img, img.js-product-slide-img, img');
+        var name = title ? (title.textContent || '').trim() : 'Mini Vertice';
+        return {
+            href: window.location.href,
+            name: name,
+            url: getImageUrl(img) || makeFallbackThumb(name),
+            isPreSale: false
+        };
+    }
+
+    function getCachedItems() {
+        try {
+            var raw = window.sessionStorage && window.sessionStorage.getItem('eora_minivertice_variants_v1');
+            if (!raw) return null;
+            var parsed = JSON.parse(raw);
+            if (!parsed || !parsed.timestamp || Date.now() - parsed.timestamp > 300000) return null;
+            return Array.isArray(parsed.items) ? parsed.items : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function setCachedItems(items) {
+        try {
+            if (window.sessionStorage) {
+                window.sessionStorage.setItem('eora_minivertice_variants_v1', JSON.stringify({
+                    timestamp: Date.now(),
+                    items: items
+                }));
+            }
+        } catch (e) {}
+    }
+
+    function fetchProductsByTag() {
+        var cached = getCachedItems();
+        if (cached && cached.length) return Promise.resolve(cached);
+
+        var pages = [1, 2, 3, 4];
+        var docs = [];
+        return Promise.all(pages.map(function (page, index) {
+            var url = '/search/?q=' + encodeURIComponent(familyTag) + '&page=' + page + '&_=' + Date.now();
+            return fetch(url, { credentials: 'same-origin', cache: 'no-store' })
+                .then(function (response) { return response.text(); })
+                .then(function (html) {
+                    docs[index] = new DOMParser().parseFromString(html, 'text/html');
+                })
+                .catch(function () {});
+        })).then(function () {
+            var items = [];
+            var seen = {};
+            docs.forEach(function (doc) {
+                if (doc) collectProducts(doc, items, seen);
+            });
+
+            var currentPath = normalizePath(window.location.href);
+            if (currentPath && !seen[currentPath]) {
+                items.push(getCurrentItem());
+            }
+
+            items.sort(function (a, b) {
+                if (a.isPreSale && !b.isPreSale) return 1;
+                if (!a.isPreSale && b.isPreSale) return -1;
+                return 0;
+            });
+
+            setCachedItems(items);
+            return items;
+        });
+    }
+
+    function ensureStyle() {
+        if (document.getElementById('eora-minivertice-variants-style')) return;
+        var style = document.createElement('style');
+        style.id = 'eora-minivertice-variants-style';
+        style.textContent = [
+            '#single-product .js-color-variants-container.eora-minivertice-tag-vars{display:flex!important;flex-wrap:wrap!important;gap:8px!important;width:100%!important}',
+            '#single-product .eora-minivertice-tag-vars .btn-variant-thumb{margin:0!important}',
+            '#single-product .eora-minivertice-tag-vars .btn-variant-thumb.eora-presale-thumb{border-color:#d90429!important}',
+            '#single-product .eora-minivertice-tag-vars .btn-variant-thumb.eora-presale-thumb.selected,#single-product .eora-minivertice-tag-vars .btn-variant-thumb.eora-presale-thumb:hover{border-color:#d90429!important}'
+        ].join('');
+        document.head.appendChild(style);
+    }
+
+    function renderVariants(items) {
+        var container = productRoot.querySelector('.js-product-variants .js-color-variants-container');
+        if (!container || !items || !items.length) return false;
+
+        var currentCount = container.querySelectorAll('.btn-variant-thumb').length;
+        if (items.length <= currentCount && container.classList.contains('eora-minivertice-tag-vars')) return true;
+        if (items.length <= currentCount) return false;
+
+        var currentPath = normalizePath(window.location.href);
+        container.innerHTML = '';
+        container.classList.add('eora-minivertice-tag-vars');
+
+        items.forEach(function (item, index) {
+            var isActive = normalizePath(item.href) === currentPath;
+            var link = document.createElement('a');
+            link.href = item.href;
+            link.target = '_top';
+            link.className = 'btn btn-variant btn-variant-color btn-variant-thumb' +
+                (isActive ? ' selected' : '') +
+                (item.isPreSale ? ' eora-presale-thumb' : '');
+            link.title = item.name || ('Mini Vertice ' + (index + 1));
+
+            var span = document.createElement('span');
+            span.className = 'btn-variant-content btn-variant-content-thumb';
+            span.setAttribute('data-name', item.name || '');
+
+            var img = document.createElement('img');
+            img.src = item.url || makeFallbackThumb(item.name);
+            img.setAttribute('data-src', img.src);
+            img.setAttribute('data-sizes', 'auto');
+            img.className = 'lazyloaded';
+            img.alt = item.name || ('Mini Vertice ' + (index + 1));
+
+            span.appendChild(img);
+            link.appendChild(span);
+            container.appendChild(link);
+        });
+
+        return true;
+    }
+
+    function applyVariants(items) {
+        ensureStyle();
+        var tries = 0;
+        var timer = setInterval(function () {
+            tries++;
+            if (renderVariants(items) || tries > 25) {
+                clearInterval(timer);
+            }
+        }, 200);
+    }
+
+    fetchProductsByTag().then(applyVariants).catch(function () {});
+})();
+</script>
+</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 48.057%;">video_link</td>
+<td style="width: 48.057%;">&nbsp;https://vimeo.com/1145617487</td>
+</tr>
+<tr>
+<td style="width: 48.057%;">descricao_video</td>
+<td style="width: 48.057%;">
+<p style="text-align: center;" data-start="292" data-end="430">&lt;div style="text-align:center; font-size:14px; line-height:1.6; color:#000;"&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Feito &agrave; m&atilde;o no Brasil&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada pe&ccedil;a EORA &eacute; cuidadosamente esculpida por artes&atilde;os brasileiros,&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; unindo t&eacute;cnica e sensibilidade em um acabamento &uacute;nico.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Materiais de alta qualidade&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Utilizamos mat&eacute;rias-primas nobres e selecionadas,&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; garantindo leveza, conforto e durabilidade que atravessam o tempo.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;b&gt;Qualidade EORA&lt;/b&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; &lt;br&gt;&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Mais que um produto, um padr&atilde;o.&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; Cada cria&ccedil;&atilde;o EORA reflete autenticidade, precis&atilde;o&lt;br&gt;</p>
+<p style="text-align: center;" data-start="292" data-end="430">&nbsp; e o compromisso com a excel&ecirc;ncia.</p>
+<p style="text-align: center;" data-start="292" data-end="430">&lt;/div&gt;</p>
+<p style="text-align: center;">&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 48.057%;">descricao_curta</td>
+<td style="width: 48.057%;">
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">A <strong>MINI V&Eacute;RTICE</strong> nasceu para traduzir pot&ecirc;ncia em escala reduzida, uma <strong><em data-start="1273" data-end="1290">statement piece</em></strong> que concentra cor, textura e eleg&acirc;ncia em uma constru&ccedil;&atilde;o impec&aacute;vel.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">Feita &agrave; m&atilde;o no Brasil com o mesmo rigor de execu&ccedil;&atilde;o que define a linha V&Eacute;RTICE: couro premium, constru&ccedil;&atilde;o precisa e acabamentos impec&aacute;veis. Compacta, mas funcional, ela foi idealizada para quem busca presen&ccedil;a sem excessos.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Materiais</strong><br />Couro 100% bovino italiano croco embossed de alto padr&atilde;o, com estrutura firme em alto relevo e brilho sutil. Forro em tecido alfaiataria twill de alta qualidade. Metais banhados com verniz italiano e z&iacute;peres YKK. Puxador personalizado EORA.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Interior</strong><br />Compartimento interno espa&ccedil;oso, com bolso em z&iacute;per e porta-&oacute;culos exclusivo EORA.&nbsp;</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Exterior</strong><br />Fecho de tampa central com acabamento met&aacute;lico. Expansores laterais que permitem ajustar o tamanho da bolsa. Tag EORA costurada &agrave; m&atilde;o.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Al&ccedil;as</strong><br />Al&ccedil;a principal refor&ccedil;ada com corda. Al&ccedil;a transversal remov&iacute;vel com regulagem de at&eacute; 90 cm.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Capacidade e Cuidados</strong><br />A MINI V&Eacute;RTICE comporta com seguran&ccedil;a seus essenciais do dia a dia. Para maior conforto ao carregar peso, recomendamos o uso da al&ccedil;a transversal, que distribui melhor a carga e preserva a estrutura da pe&ccedil;a ao longo do tempo.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 48.057%;">medidas_do_oculos</td>
+<td style="width: 48.057%;">
+<ul>
+<li>Largura - 23cm</li>
+<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">Altura - 16cm</li>
+<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">Medida da altura total com al&ccedil;a - 30cm</li>
+<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">Al&ccedil;a ajust&aacute;vel transversal - 90cm</li>
+</ul>
+<h3 style="box-sizing: border-box; margin: 0px 0px 16px; padding: 0px; font-family: 'Proza Libre', sans-serif; font-weight: 500; letter-spacing: 1px; font-size: 22px; line-height: 25.74px; background-color: #ffffff;">&nbsp;</h3>
+</td>
+</tr>
+<tr>
+<td style="width: 48.057%;">titulo</td>
+<td style="width: 48.057%;">Medidas da Bolsa</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<p>&nbsp;</p>
+</div>
+<div>
+<table style="border-collapse: collapse; width: 362.041%;" border="1">
+<tbody>
+<tr>
+<td style="width: 0.526223%;">&nbsp;</td>
+<td style="width: 16.576%;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</td>
+<td style="width: 16.6136%;">&nbsp;</td>
+<td style="width: 16.576%;">&nbsp;</td>
+<td style="width: 16.576%;">&nbsp;</td>
+<td style="width: 16.6136%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Rectangle 97 (4).png" alt="" width="428" height="270" /></td>
+<td style="width: 16.576%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Rectangle 97 (5).png" alt="" width="427" height="270" /></td>
+</tr>
+<tr>
+<td style="width: 0.526223%;">
+<h2>&nbsp;</h2>
+</td>
+<td style="width: 16.576%;">&nbsp;</td>
+<td style="width: 16.6136%;">&nbsp;</td>
+<td style="width: 16.576%;">&nbsp;</td>
+<td style="width: 16.576%;">&nbsp;</td>
+<td style="width: 16.6136%;">&nbsp;</td>
+<td style="width: 16.576%;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<p>&nbsp;</p>
+</div>
+<div>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 23.091%;">banners_alternados</td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Design sem nome (7).png" alt="" width="720" height="426" /></td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA DE PRODUTO MINI VERTICE 2.jpg" alt="" width="720" height="426" /></td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/IMG PAGINA DE PRODUTO MINI VERTICE.jpg" alt="" width="720" height="426" /></td>
+</tr>
+<tr>
+<td style="width: 23.091%;">&nbsp;</td>
+<td style="width: 23.091%;">
+<h2>kit completo<br /><br /></h2>
+<p>Cada pe&ccedil;a do nosso kit foi cuidadosamente pensada para elevar sua experi&ecirc;ncia com a EORA. Da embalagem sofisticada aos acess&oacute;rios exclusivos, cada componente reflete a qualidade, o design e a ess&ecirc;ncia &uacute;nica da nossa marca.</p>
+</td>
+<td style="width: 23.091%;">
+<h2>Qualidade artesanal</h2>
+<p><span id="docs-internal-guid-79634c0d-7fff-1756-7f8f-77fb51b83a43"><span style="font-size: 11pt; font-family: Arial, sans-serif; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">Bolsas feitas &agrave; m&atilde;o no Brasil por artes&atilde;os qualificados, utilizando couro de origem selecionada e acabamento de alto padr&atilde;o.Cada pe&ccedil;a passa por um processo minucioso de montagem e controle de qualidade, garantindo estrutura, resist&ecirc;ncia e durabilidade superiores.</span></span></p>
+<p><span id="docs-internal-guid-79634c0d-7fff-1756-7f8f-77fb51b83a43"><span style="font-size: 11pt; font-family: Arial, sans-serif; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">Os metais s&atilde;o rigorosamente testados sob os mais altos padr&otilde;es e finalizados com verniz italiano, que protege e prolonga a vida da pe&ccedil;a.Design preciso, constru&ccedil;&atilde;o artesanal e materiais de excel&ecirc;ncia, a V&Eacute;RTICE &eacute; o encontro entre t&eacute;cnica e tempo.</span></span></p>
+<p>&nbsp;</p>
+</td>
+<td style="width: 23.091%;">
+<h2>Mat&eacute;ria-prima italiana</h2>
+<p dir="ltr" style="line-height: 1.38; margin-top: 12pt; margin-bottom: 12pt;"><span style="font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Produzida artesanalmente no Brasil, a V&Eacute;RTICE utiliza couro nobre de origem controlada, selecionado entre materiais de alta performance e textura superior. O processo manual segue os mais rigorosos padr&otilde;es de qualidade, resultando em um couro resistente, macio ao toque e com acabamento refinado.</span></p>
+<p><span id="docs-internal-guid-8d173842-7fff-234b-81e5-84eafd57aeab"></span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 12pt; margin-bottom: 12pt;"><span style="font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Cada pe&ccedil;a &eacute; cuidadosamente tratada para preservar sua estrutura e durabilidade, garantindo forma impec&aacute;vel e beleza que evolui com o tempo.</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
