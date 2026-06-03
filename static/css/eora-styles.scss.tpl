@@ -17,7 +17,9 @@ body.template-product:not(.eora-native-layout) [class*="favorite"] { display: no
 
 /* Ajustes globais de layout */
 html, body { overflow-x: hidden !important; width: 100%; }
-#single-product, .container-fluid { overflow-x: hidden; max-width: 100vw; }
+#single-product { overflow-x: hidden; max-width: 100vw; }
+body.template-product #single-product > .container-fluid { padding-left: 0 !important; padding-right: 0 !important; max-width: 100vw !important; overflow-x: hidden !important; }
+body.template-product #single-product > .container-fluid > .row { margin-left: 0 !important; margin-right: 0 !important; }
 
 /* Estilos do Hero EORA (Apenas Produto) */
 body.template-product:not(.eora-native-layout) #single-product .container-fluid { padding: 0 !important; max-width: 100% !important; overflow-x: hidden !important; }

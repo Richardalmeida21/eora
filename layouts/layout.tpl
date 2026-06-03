@@ -150,6 +150,16 @@
                     margin-right: -30px !important;
                 }
             }
+            body.template-product #single-product > .container-fluid {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+            }
+            body.template-product #single-product > .container-fluid > .row {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
             /* Exclude product grids (.row-grid) from standard row overrides, restoring their native gutters */
             .row-grid {
                 margin-left: var(--gutter-half-negative) !important;
