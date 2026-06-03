@@ -514,6 +514,14 @@
                 transition: background 0.2s, transform 0.15s;
                 box-shadow: 0 1px 4px rgba(0,0,0,0.10);
             }
+            .js-product-slide-link > .btn-provador-virtual {
+                top: 54px;
+            }
+            @media (max-width: 767px) {
+                .js-product-slide-link > .btn-provador-virtual {
+                    top: 64px;
+                }
+            }
             #tip-card-provador.eora-always-visible { display: block !important; }
             .btn-tip-card {
                 display: flex;

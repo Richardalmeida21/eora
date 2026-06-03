@@ -112,7 +112,13 @@
         '.eora-product-info .js-shipping-calculator-form [class*="col-"]{padding:0!important;margin:0!important;width:100%!important;max-width:100%!important;flex:none!important;display:block!important;position:static!important}',
         '.eora-product-info .js-shipping-input{border-radius:0!important;border:1px solid #ccc!important;padding:0 56px 0 16px!important;font-size:14px!important;width:100%!important;box-sizing:border-box!important;height:46px!important;line-height:46px!important;background:#fff!important}',
         '.eora-product-info .eora-calculate-shipping-btn{position:absolute!important;top:1px!important;right:1px!important;height:44px!important;width:44px!important;margin:0!important;box-sizing:border-box!important;background:#111!important;color:#fff!important;border:none!important;cursor:pointer!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;border-radius:0!important;z-index:99!important;font-size:20px!important;line-height:1!important;font-weight:300!important}',
-        '.eora-product-info .js-shipping-calculator-response{margin-top:1rem!important;display:block!important;width:100%!important;height:auto!important;position:relative!important}'
+        '.eora-product-info .js-shipping-calculator-response{margin-top:1rem!important;display:block!important;width:100%!important;height:auto!important;position:relative!important}',
+        '.eora-product-info .eora-measures-dropdown{width:100%!important;border:1px solid #e7e7e7!important;background:#fff!important;margin:16px 0!important;box-sizing:border-box!important}',
+        '.eora-product-info .eora-measures-dropdown .dropdown-toggle{width:100%!important;display:flex!important;justify-content:space-between!important;align-items:center!important;padding:1rem 0.75rem!important;background:#fff!important;border:none!important;cursor:pointer!important;color:#000!important;opacity:0.9!important;text-align:left!important}',
+        '.eora-product-info .eora-measures-dropdown .dropdown-toggle .caret{transition:transform 0.3s ease!important}',
+        '.eora-product-info .eora-measures-dropdown .dropdown-content{display:block!important;overflow:hidden!important;max-height:0px!important;opacity:0!important;visibility:hidden!important;padding:0 1.25rem!important;transition:max-height 0.35s ease,padding 0.35s ease,opacity 0.35s ease!important;box-sizing:border-box!important;background:#fff!important}',
+        '.eora-product-info .eora-measures-dropdown.open .dropdown-content{display:block!important;max-height:2000px!important;opacity:1!important;visibility:visible!important;padding:1rem 1.25rem 1.25rem!important;overflow:visible!important}',
+        '.eora-product-info .eora-measures-dropdown.open .dropdown-toggle .caret{transform:rotate(180deg)!important}'
     ].join('');
 
     var styleEl = document.createElement('style');
@@ -157,6 +163,14 @@
         // Substitui o sufixo numérico final (width-height) pela versão 1024x1024
         url = url.replace(/(-\d+-\d+)(\.[\w]{2,5})(\?.*)?$/, '-1024-1024$2');
         return url;
+    }
+
+    function normalizeText(value) {
+        return String(value || '')
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
     }
 
     function getDados() {
@@ -632,11 +646,23 @@
         return true;
     }
 
+    function dropdownLooksLikeMeasurements(drop) {
+        if (!drop) return false;
+        var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+        var text = normalizeText(toggle ? toggle.textContent : drop.textContent);
+        return text.indexOf('medidas') !== -1;
+    }
+
     function bindShippingCalculator(infoEl, themeProd) {
         var origShipping = themeProd.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
                            (themeProd.querySelector('input[name="zipcode"], .js-shipping-input') ? themeProd.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         var clonedShipping = infoEl.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
                              (infoEl.querySelector('input[name="zipcode"], .js-shipping-input') ? infoEl.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
+        if (clonedShipping && dropdownLooksLikeMeasurements(clonedShipping)) {
+            clonedShipping = Array.prototype.slice.call(infoEl.querySelectorAll('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator, .eora-shipping-dropdown, .shipping-dropdown')).filter(function (candidate) {
+                return !dropdownLooksLikeMeasurements(candidate) && (candidate.querySelector('input[name="zipcode"], .js-shipping-input') || normalizeText(candidate.textContent).indexOf('frete') !== -1);
+            })[0] || null;
+        }
         
         if (clonedShipping) {
             // Garante que o calculador clonado não fique com display: none herdado de produtos sem estoque
@@ -774,7 +800,9 @@
     }
 
     function bindShippingAccordion(infoEl) {
-        var drop = infoEl.querySelector('.eora-shipping-dropdown') || infoEl.querySelector('.shipping-dropdown');
+        var drop = Array.prototype.slice.call(infoEl.querySelectorAll('.eora-shipping-dropdown,.shipping-dropdown')).filter(function (candidate) {
+            return !dropdownLooksLikeMeasurements(candidate);
+        })[0];
         if (!drop) return;
         
         if (drop.classList.contains('shipping-dropdown')) {
@@ -798,6 +826,131 @@
             e.stopPropagation();
             drop.classList.toggle('open');
         });
+    }
+
+    function extractMeasurementsData(dados) {
+        dados = dados || {};
+        var table = dados['medidas_do_oculos'] || dados['medidas_do_oculo'] || dados['medidas_da_bolsa'];
+        if (!table) return null;
+
+        var title = 'Medidas da Bolsa';
+        var content = '';
+        table.querySelectorAll('tbody > tr, tr').forEach(function (row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length < 2) return;
+            var key = normalizeText(cells[0].textContent || '');
+            if (key === 'titulo') {
+                var titleText = (cells[cells.length - 1].textContent || '').trim();
+                if (titleText) title = titleText;
+            }
+            if (key === 'medidas_do_oculos' || key === 'medidas_do_oculo' || key === 'medidas_da_bolsa') {
+                content = cells[cells.length - 1].innerHTML || '';
+            }
+        });
+
+        if (isBlankValue(content)) return null;
+        return { title: title, content: content };
+    }
+
+    function findMeasurementsDropdown(infoEl) {
+        if (!infoEl) return null;
+        var existing = infoEl.querySelector('.eora-measures-dropdown');
+        if (existing) return existing;
+
+        var drops = Array.prototype.slice.call(infoEl.querySelectorAll('.dropdown-wrapper,.eora-shipping-dropdown,.shipping-dropdown'));
+        for (var i = 0; i < drops.length; i++) {
+            var toggle = drops[i].querySelector('.dropdown-toggle') || drops[i].querySelector('button');
+            var text = normalizeText(toggle ? toggle.textContent : drops[i].textContent);
+            if (text.indexOf('medidas') !== -1) return drops[i];
+        }
+        return null;
+    }
+
+    function bindMeasurementsAccordion(infoEl) {
+        var drop = findMeasurementsDropdown(infoEl);
+        if (!drop) return;
+        var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+        var content = drop.querySelector('.dropdown-content');
+        if (!toggle || !content) return;
+
+        content.removeAttribute('style');
+
+        var freshToggle = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(freshToggle, toggle);
+        freshToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            drop.classList.toggle('open');
+        });
+    }
+
+    function ensureMeasurementsAccordion(infoEl, dados) {
+        var data = extractMeasurementsData(dados) || extractMeasurementsData(getDados());
+        if (!infoEl || !data) return;
+
+        var form = infoEl.querySelector('.eora-cloned-product-form') || infoEl.querySelector('#product_form') || infoEl.querySelector('form');
+        var drop = findMeasurementsDropdown(infoEl);
+        var wasOpen = !drop || drop.classList.contains('open');
+
+        if (!drop) {
+            drop = document.createElement('div');
+            drop.className = 'dropdown-wrapper eora-measures-dropdown open';
+
+            var toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'dropdown-toggle';
+
+            var titleSpan = document.createElement('span');
+            titleSpan.className = 'eora-measures-title';
+            toggle.appendChild(titleSpan);
+
+            var caret = document.createElement('span');
+            caret.className = 'caret';
+            caret.innerHTML = '<svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7L6 2L11 7"></path></svg>';
+            toggle.appendChild(caret);
+
+            var content = document.createElement('div');
+            content.className = 'dropdown-content';
+
+            drop.appendChild(toggle);
+            drop.appendChild(content);
+
+            var shippingDrop = infoEl.querySelector('.eora-shipping-dropdown') || infoEl.querySelector('.shipping-dropdown');
+            if (shippingDrop && shippingDrop.parentNode) {
+                shippingDrop.parentNode.insertBefore(drop, shippingDrop);
+            } else if (form) {
+                form.appendChild(drop);
+            } else {
+                infoEl.appendChild(drop);
+            }
+        }
+
+        drop.classList.add('eora-measures-dropdown');
+        drop.classList.remove('eora-shipping-dropdown', 'shipping-dropdown');
+        if (wasOpen) drop.classList.add('open');
+
+        var titleEl = drop.querySelector('.eora-measures-title');
+        var toggleEl = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+        if (!titleEl && toggleEl) {
+            toggleEl.innerHTML = '';
+            titleEl = document.createElement('span');
+            titleEl.className = 'eora-measures-title';
+            toggleEl.appendChild(titleEl);
+            var newCaret = document.createElement('span');
+            newCaret.className = 'caret';
+            newCaret.innerHTML = '<svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7L6 2L11 7"></path></svg>';
+            toggleEl.appendChild(newCaret);
+        }
+        if (titleEl) titleEl.textContent = data.title;
+
+        var contentEl = drop.querySelector('.dropdown-content');
+        if (!contentEl) {
+            contentEl = document.createElement('div');
+            contentEl.className = 'dropdown-content';
+            drop.appendChild(contentEl);
+        }
+        contentEl.innerHTML = data.content;
+        bindMeasurementsAccordion(infoEl);
     }
 
     var eoraPageCache = {};
@@ -1088,11 +1241,13 @@
                 }
                 
                 infoEl.querySelectorAll('.shipping-dropdown').forEach(function (drop) {
+                    if (dropdownLooksLikeMeasurements(drop)) return;
                     drop.classList.remove('shipping-dropdown');
                     drop.classList.add('eora-shipping-dropdown');
                 });
                 bindShippingCalculator(infoEl, themeProd);
                 bindShippingAccordion(infoEl);
+                ensureMeasurementsAccordion(infoEl, dados);
                 reorganizeEoraProductInfo(infoEl);
 
                 // Garante que o #cheguei-alert-div da nova variação esteja no DOM atual para que o widget seja renderizado
@@ -2614,6 +2769,7 @@
 
             // Ponte do calculador de frete para evitar quebra no JS nativo
             infoEl.querySelectorAll('.shipping-dropdown').forEach(function (drop) {
+                if (dropdownLooksLikeMeasurements(drop)) return;
                 drop.classList.remove('shipping-dropdown');
                 drop.classList.add('eora-shipping-dropdown');
             });
@@ -2688,6 +2844,7 @@
             }
         })();
 
+        ensureMeasurementsAccordion(infoEl, getDados());
         reorganizeEoraProductInfo(infoEl);
 
         wrap.appendChild(infoEl);
