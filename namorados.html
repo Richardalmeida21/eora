@@ -14,7 +14,21 @@
 </tr>
 </tbody>
 </table>
-
+<!-- ============================================================
+     IMAGENS DO PRODUTO
+     Suba imagens pelo icone do editor ou cole URLs na celula abaixo.
+     A primeira imagem vira a principal; as demais viram thumbs.
+     ============================================================ -->
+<table class="eora-product-images-table" style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 30%;">imagens_produto</td>
+<td style="width: 70%;">
+<p><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/COMPACTADA BUNDLE ASTRA- MINI 1.png" alt="" width="100" height="136" /><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/COMPACTADA BUNDLE ASTRA- MINI 2.png" alt="" width="100" height="136" /><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/COMPACTADA BUNDLE ASTRA- MINI 3.png" alt="" width="100" height="136" />&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
 <p>
 <script>
 (function () {
@@ -29,10 +43,26 @@
         'html,body{max-width:100%!important;width:100%!important;overflow-x:hidden!important;margin:0!important;padding:0!important;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}',
         'input,select,textarea,button,a{touch-action:manipulation!important}',
         '#single-product{display:none!important}',
-        '.eora-kit-config-table{display:none!important}',
+        '.eora-kit-config-table,.eora-product-images-table{display:none!important}',
         '.eora-hide-native-video,.js-product-video,.product-video,.product-video-container,.product-video-iframe,[data-store="product-video"],[class*="product-video"]{display:none!important;height:0!important;min-height:0!important;max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}',
         '.eora-product-info .indicator-title,.eora-product-info .indicator-container,.eora-hide-native-indicator{display:none!important;height:0!important;min-height:0!important;max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}',
         '#modal-cart .eora-hide-cart-shipping,#modal-cart .cart-fulfillment-info,#modal-cart #cart-shipping-container,#modal-cart [data-store="shipping-calculator"],#modal-cart .js-shipping-calculator-container,#modal-cart .js-shipping-cost-table{display:none!important;height:0!important;min-height:0!important;max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}',
+        '.eora-product-info .eora-shipping-dropdown,.eora-product-info .shipping-dropdown{width:100%!important;border:1px solid #e7e7e7!important;background:#fff!important;margin:16px 0!important;box-sizing:border-box!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-toggle,.eora-product-info .shipping-dropdown .dropdown-toggle{width:100%!important;display:flex!important;justify-content:space-between!important;align-items:center!important;padding:1rem .75rem!important;background:#fff!important;border:none!important;cursor:pointer!important;color:#000!important;text-align:left!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-toggle .caret,.eora-product-info .shipping-dropdown .dropdown-toggle .caret{transition:transform .3s ease!important}',
+        '.eora-product-info .eora-shipping-dropdown .dropdown-content,.eora-product-info .shipping-dropdown .dropdown-content{display:block!important;overflow:hidden!important;max-height:0!important;opacity:0!important;visibility:hidden!important;padding:0 1.25rem!important;transition:max-height .35s ease,padding .35s ease,opacity .35s ease!important;box-sizing:border-box!important;background:#fff!important}',
+        '.eora-product-info .eora-shipping-dropdown.open .dropdown-content,.eora-product-info .shipping-dropdown.open .dropdown-content{display:block!important;max-height:2000px!important;opacity:1!important;visibility:visible!important;padding:1rem 1.25rem 1.25rem!important;overflow:visible!important}',
+        '.eora-product-info .eora-shipping-dropdown.open .dropdown-toggle .caret,.eora-product-info .shipping-dropdown.open .dropdown-toggle .caret{transform:rotate(180deg)!important}',
+        '.eora-product-info #product-shipping-container,.eora-product-info #product-shipping-container form,.eora-product-info .product-shipping-calculator{position:relative!important;height:auto!important;display:block!important;width:100%!important}',
+        '.eora-product-info .js-shipping-calculator-head,.eora-product-info .shipping-calculator-head{position:relative!important;height:auto!important;display:block!important;width:100%!important}',
+        '.eora-product-info .js-shipping-calculator-form.transition-up-active{position:relative!important;opacity:1!important;visibility:visible!important;display:block!important;height:auto!important}',
+        '.eora-product-info .js-shipping-calculator-with-zipcode.transition-up-active{position:relative!important;opacity:1!important;visibility:visible!important;display:block!important;height:auto!important}',
+        '.eora-product-info .js-shipping-calculator-form:not(.transition-up-active),.eora-product-info .js-shipping-calculator-with-zipcode:not(.transition-up-active){position:absolute!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;height:0!important;overflow:hidden!important}',
+        '.eora-product-info .js-shipping-calculator-form .form-row,.eora-product-info .js-shipping-calculator-form .row{position:relative!important;display:block!important;width:100%!important;margin:0!important;padding:0!important}',
+        '.eora-product-info .js-shipping-calculator-form [class*="col-"]{padding:0!important;margin:0!important;width:100%!important;max-width:100%!important;flex:none!important;display:block!important;position:static!important}',
+        '.eora-product-info .js-shipping-input{border-radius:0!important;border:1px solid #ccc!important;padding:0 56px 0 16px!important;font-size:14px!important;width:100%!important;box-sizing:border-box!important;height:46px!important;line-height:46px!important;background:#fff!important}',
+        '.eora-product-info .eora-calculate-shipping-btn{position:absolute!important;top:1px!important;right:1px!important;height:44px!important;width:44px!important;margin:0!important;box-sizing:border-box!important;background:#111!important;color:#fff!important;border:none!important;cursor:pointer!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;border-radius:0!important;z-index:3!important;font-size:20px!important;line-height:1!important;font-weight:300!important}',
+        '.eora-product-info .js-shipping-calculator-response{margin-top:1rem!important;display:block!important;width:100%!important;height:auto!important;position:relative!important}',
         '.eora-product-wrap{display:grid;grid-template-columns:60% 40%;align-items:start;max-width:1400px;margin:0 auto;padding:40px 20px;box-sizing:border-box;margin-top:110px!important;opacity:0;transition:opacity .25s ease-in-out!important}',
         '.eora-product-wrap.eora-loaded{opacity:1!important}',
         '@media(max-width:1024px) and (min-width:769px){.eora-product-wrap{grid-template-columns:55% 45%}}',
@@ -81,17 +111,18 @@
         '.eora-kit-row-head{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:12px!important;margin:0 0 9px!important}',
         '.eora-kit-label{font-size:11px!important;line-height:1.5!important;letter-spacing:1.6px!important;text-transform:uppercase!important;font-weight:600!important;color:#111!important}',
         '.eora-kit-selected{font-size:11px!important;line-height:1.4!important;color:#555!important;text-align:right!important;max-width:50%!important}',
-        '.eora-kit-choices{display:flex!important;flex-wrap:wrap!important;gap:12px!important;width:100%!important;min-height:220px!important}',
-        '.eora-kit-choice{width:110px!important;height:220px!important;border:1px solid #ecece8!important;background:#f3f3f1!important;padding:0!important;margin:0!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;position:relative!important;transition:border-color .2s ease!important}',
+        '.eora-kit-choices{display:flex!important;flex-wrap:nowrap!important;gap:10px!important;width:100%!important;min-height:176px!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;-ms-overflow-style:none!important}',
+        '.eora-kit-choices::-webkit-scrollbar{display:none!important}',
+        '.eora-kit-choice{width:118px!important;height:176px!important;flex:0 0 118px!important;border:1px solid #ecece8!important;background:transparent!important;padding:0!important;margin:0!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;position:relative!important;overflow:hidden!important;transition:border-color .2s ease!important}',
         '.eora-kit-choice:hover,.eora-kit-choice.eora-kit-active{border:2px solid #111!important}',
-        '.eora-kit-choice img{width:100%!important;height:100%!important;display:block!important;object-fit:contain!important;padding:4px!important;box-sizing:border-box!important}',
+        '.eora-kit-choice img{width:100%!important;height:100%!important;display:block!important;object-fit:contain!important;object-position:center!important;padding:0!important;box-sizing:border-box!important;transform:scale(1.12)!important;transform-origin:center!important}',
         '.eora-kit-choice.eora-kit-presale{border-color:#d90429!important}',
         '.eora-kit-presale-badge{position:absolute!important;bottom:0!important;left:0!important;right:0!important;background:#d90429!important;color:#fff!important;font-size:7px!important;font-weight:900!important;text-align:center!important;text-transform:uppercase!important;padding:2px 0!important;line-height:1!important;z-index:2!important}',
         '.eora-kit-status{font-size:12px!important;color:#777!important;line-height:56px!important}',
         '.eora-kit-add{width:100%!important;min-height:48px!important;border:1px solid #111!important;background:#000!important;color:#fff!important;font-size:12px!important;font-weight:700!important;letter-spacing:2px!important;text-transform:uppercase!important;cursor:pointer!important;border-radius:0!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:6px 0 14px!important}',
         '.eora-kit-add[disabled]{opacity:.45!important;cursor:not-allowed!important}',
         '.eora-kit-error{display:none;font-size:12px!important;line-height:1.6!important;color:#b80000!important;margin:8px 0 0!important}',
-        '@media(max-width:767px){.eora-kit-selected{max-width:46%!important}.eora-kit-choices{gap:10px!important;min-height:180px!important}.eora-kit-choice{width:90px!important;height:180px!important}.eora-kit-row-head{align-items:flex-start!important}.eora-kit-label{max-width:54%!important}}'
+        '@media(max-width:767px){.eora-kit-selected{max-width:46%!important}.eora-kit-choices{gap:8px!important;min-height:144px!important}.eora-kit-choice{width:96px!important;height:144px!important;flex:0 0 96px!important}.eora-kit-row-head{align-items:flex-start!important}.eora-kit-label{max-width:54%!important}}'
     ].join('');
 
     var style = document.createElement('style');
@@ -113,6 +144,9 @@
 
     function normalizeUrl(url) {
         if (!url || /^data:image\//i.test(url)) return '';
+        url = String(url || '').trim().replace(/^[^?#]*/, function (pathPart) {
+            return pathPart.replace(/\+/g, '%2B');
+        });
         try {
             return new URL(url, window.location.origin).href;
         } catch (e) {
@@ -126,6 +160,15 @@
         url = url.replace(/\/(thumbnail|small|medium|large|huge)\//g, '/original/');
         url = url.replace(/(-\d+-\d+)(\.[\w]{2,5})(\?.*)?$/, '-1024-1024$2');
         return url;
+    }
+
+    function looksLikeImageUrl(value) {
+        value = String(value || '').trim();
+        if (!value || /^data:image\//i.test(value)) return false;
+        if (/^\d+$/.test(value)) return false;
+        return /^(https?:)?\/\//i.test(value) ||
+            value.charAt(0) === '/' ||
+            /\.(jpe?g|png|webp|gif|avif)(\?|#|$)/i.test(value);
     }
 
     function extractFromSrcset(srcset) {
@@ -143,10 +186,13 @@
             img.getAttribute('data-srcset'),
             img.getAttribute('srcset'),
             img.getAttribute('data-zoom-image'),
-            img.getAttribute('data-image'),
             img.getAttribute('data-src'),
             img.getAttribute('data-lazy-src'),
             img.getAttribute('data-original'),
+            img.getAttribute('data-original-url'),
+            img.getAttribute('data-full-url'),
+            img.getAttribute('data-url'),
+            img.currentSrc,
             img.getAttribute('src'),
             img.src
         ];
@@ -154,6 +200,26 @@
             var value = values[i];
             if (!value) continue;
             if (value.indexOf(',') !== -1 || /\s\d+w/.test(value)) value = extractFromSrcset(value);
+            if (!looksLikeImageUrl(value)) continue;
+            value = normalizeImageUrl(value);
+            if (value) return value;
+        }
+        return '';
+    }
+
+    function getEditorImageUrl(img) {
+        if (!img) return '';
+        var values = [
+            img.getAttribute('src'),
+            img.src,
+            img.getAttribute('data-src'),
+            img.getAttribute('data-original'),
+            img.getAttribute('data-full-url'),
+            img.getAttribute('data-url')
+        ];
+        for (var i = 0; i < values.length; i++) {
+            var value = values[i];
+            if (!looksLikeImageUrl(value)) continue;
             value = normalizeImageUrl(value);
             if (value) return value;
         }
@@ -978,6 +1044,45 @@
         return photos;
     }
 
+    function getConfiguredProductImages() {
+        var table = document.querySelector('table.eora-product-images-table') || getDados()['imagens_produto'];
+        if (!table) return [];
+        var cell = table.querySelector('tbody > tr:first-child td:last-child') || table.querySelector('td:last-child');
+        if (!cell) return [];
+
+        var photos = [];
+        var seen = {};
+        function add(url) {
+            if (!looksLikeImageUrl(url)) return;
+            url = normalizeImageUrl(url);
+            if (!url || url.indexOf('data:') === 0) return;
+            var key = url.replace(/\?.*$/, '').toLowerCase();
+            if (seen[key]) return;
+            seen[key] = true;
+            photos.push(url);
+        }
+
+        cell.querySelectorAll('img').forEach(function (img) {
+            add(getEditorImageUrl(img));
+        });
+        cell.querySelectorAll('a[href]').forEach(function (link) {
+            add(link.getAttribute('href') || link.href);
+        });
+
+        var text = cell.textContent || '';
+        var matches = text.match(/(?:https?:)?\/\/[^\s"'<>]+/g) || [];
+        matches.forEach(function (url) {
+            if (url.indexOf('//') === 0) url = window.location.protocol + url;
+            add(url.replace(/[),.;]+$/, ''));
+        });
+
+        return photos;
+    }
+
+    function getProductGalleryPhotos() {
+        return getConfiguredProductImages();
+    }
+
     function buildGallery(galleryEl, photos) {
         var activeIdx = 0;
         var visStart = 0;
@@ -1021,6 +1126,21 @@
 
         var thumbEls = [];
         var dots = [];
+        var galleryPhotos = [];
+        var brokenPhotos = {};
+
+        function removeBrokenPhoto(url) {
+            url = normalizeImageUrl(url);
+            if (!url || brokenPhotos[url]) return;
+            brokenPhotos[url] = true;
+            setTimeout(function () {
+                var next = galleryPhotos.filter(function (photo) {
+                    return normalizeImageUrl(photo) !== url;
+                });
+                if (next.length === galleryPhotos.length) return;
+                populate(next.length ? next : [makeFallbackThumb('sem foto')]);
+            }, 0);
+        }
 
         function syncGallerySizes() {
             if (window.innerWidth <= 768) {
@@ -1053,12 +1173,22 @@
             dots.length = 0;
             activeIdx = 0;
             visStart = 0;
-            (list && list.length ? list : [makeFallbackThumb('sem foto')]).forEach(function (url, idx) {
+            var unique = [];
+            var uniqueSeen = {};
+            (list && list.length ? list : [makeFallbackThumb('sem foto')]).forEach(function (url) {
+                var key = normalizeImageUrl(url).replace(/\?.*$/, '').toLowerCase();
+                if (!key || uniqueSeen[key]) return;
+                uniqueSeen[key] = true;
+                unique.push(url);
+            });
+            galleryPhotos = unique.length ? unique : [makeFallbackThumb('sem foto')];
+            galleryPhotos.forEach(function (url, idx) {
                 var th = document.createElement('div');
                 th.className = 'eora-blg-thumb' + (idx === 0 ? ' eora-active' : '');
                 var tim = document.createElement('img');
                 tim.src = url;
                 tim.alt = 'foto ' + (idx + 1);
+                tim.onerror = function () { removeBrokenPhoto(url); };
                 th.appendChild(tim);
                 ttrack.appendChild(th);
                 thumbEls.push(th);
@@ -1068,6 +1198,7 @@
                 var sim = document.createElement('img');
                 sim.src = url;
                 sim.alt = 'EORA';
+                sim.onerror = function () { removeBrokenPhoto(url); };
                 slide.appendChild(sim);
                 mainTrack.appendChild(slide);
                 var dot = document.createElement('button');
@@ -1128,6 +1259,178 @@
         window.addEventListener('resize', setThumbWidths, { passive: true });
     }
 
+    function dropdownLooksLikeMeasurements(drop) {
+        if (!drop) return false;
+        var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+        var text = normalizeText(toggle ? toggle.textContent : drop.textContent);
+        return text.indexOf('medidas') !== -1;
+    }
+
+    function findShippingCalculator(root) {
+        if (!root || !root.querySelector) return null;
+        return root.querySelector('#product-shipping-container,.product-shipping-calculator,.js-shipping-calculator-container,.shipping-calculator-container,.js-shipping-calculator,.shipping-calculator') ||
+            (root.querySelector('input[name="zipcode"],.js-shipping-input') ? root.querySelector('input[name="zipcode"],.js-shipping-input').closest('.product-shipping-calculator,#product-shipping-container,div') : null);
+    }
+
+    function bindShippingCalculator(infoEl, themeProd) {
+        var clonedShipping = findShippingCalculator(infoEl);
+
+        if (clonedShipping && dropdownLooksLikeMeasurements(clonedShipping)) {
+            clonedShipping = Array.prototype.slice.call(infoEl.querySelectorAll('#product-shipping-container,.product-shipping-calculator,.js-shipping-calculator-container,.shipping-calculator-container,.js-shipping-calculator,.shipping-calculator,.eora-shipping-dropdown,.shipping-dropdown')).filter(function (candidate) {
+                return !dropdownLooksLikeMeasurements(candidate) && (candidate.querySelector('input[name="zipcode"],.js-shipping-input') || normalizeText(candidate.textContent).indexOf('frete') !== -1);
+            })[0] || null;
+        }
+
+        if (clonedShipping) {
+            clonedShipping.style.setProperty('display', 'block', 'important');
+            var innerCalculator = clonedShipping.querySelector('.product-shipping-calculator');
+            if (innerCalculator) innerCalculator.style.setProperty('display', 'block', 'important');
+            var clonedFormEl = clonedShipping.querySelector('.js-shipping-calculator-form');
+            if (clonedFormEl) clonedFormEl.classList.add('transition-up-active');
+        }
+
+        if (!clonedShipping) return;
+
+        if (infoEl.classList) {
+            infoEl.classList.add('js-has-new-shipping', 'js-product-detail', 'js-shipping-calculator-container');
+        }
+
+        var clonedInput = clonedShipping.querySelector('input[name="zipcode"],.js-shipping-input,input');
+        var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping,.js-shipping-calculator-btn,button,input[type="button"],.form-control-btn');
+        var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
+        var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
+        var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
+        var clonedCurrentZip = clonedShipping.querySelector('.js-shipping-calculator-current-zip');
+        var clonedSpinner = clonedShipping.querySelector('.js-shipping-calculator-spinner');
+        var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response,.shipping-calculator-response,.js-shipping-response');
+
+        function showShippingForm() {
+            if (clonedSpinner) clonedSpinner.style.display = 'none';
+            if (clonedResponse) clonedResponse.style.display = 'none';
+            if (clonedHead) {
+                clonedHead.classList.add('with-form');
+                clonedHead.classList.remove('with-zip', 'with-error');
+            }
+            if (clonedZip) clonedZip.classList.remove('transition-up-active');
+            if (clonedForm) clonedForm.classList.add('transition-up-active');
+        }
+
+        function showShippingError(message) {
+            if (clonedSpinner) clonedSpinner.style.display = 'none';
+            if (clonedResponse) {
+                clonedResponse.innerHTML = '<div class="alert alert-danger">' + escapeHtml(message || 'Nao foi possivel calcular o frete. Tente novamente.') + '</div>';
+                clonedResponse.style.display = 'block';
+            }
+            if (clonedHead) {
+                clonedHead.classList.add('with-form', 'with-error');
+                clonedHead.classList.remove('with-zip');
+            }
+            if (clonedForm) clonedForm.classList.add('transition-up-active');
+            if (clonedZip) clonedZip.classList.remove('transition-up-active');
+        }
+
+        function calculateVisibleShipping() {
+            var zip = clonedInput ? String(clonedInput.value || '').trim() : '';
+            if (!zip) {
+                showShippingError('Informe seu CEP para calcular o frete.');
+                return;
+            }
+
+            if (clonedCurrentZip) clonedCurrentZip.textContent = zip;
+            if (clonedHead) {
+                clonedHead.classList.add('with-zip');
+                clonedHead.classList.remove('with-form', 'with-error');
+            }
+            if (clonedZip) clonedZip.classList.add('transition-up-active');
+            if (clonedForm) clonedForm.classList.remove('transition-up-active');
+            if (clonedResponse) {
+                clonedResponse.innerHTML = '';
+                clonedResponse.style.display = 'none';
+            }
+            if (clonedSpinner) clonedSpinner.style.display = 'block';
+
+            var url = clonedShipping.getAttribute('data-shipping-url') || (window.urls && window.urls.shippingUrl) || '';
+            if (!window.LS || typeof window.LS.calculateShippingAjax !== 'function' || typeof window.jQueryNuvem === 'undefined' || !url) {
+                showShippingError('O calculador de frete ainda nao carregou. Tente novamente em alguns segundos.');
+                return;
+            }
+
+            try {
+                window.jQueryNuvem('.js-shipping-input').val(zip);
+                window.jQueryNuvem('.js-shipping-calculator-current-zip').html(zip);
+                window.LS.calculateShippingAjax(zip, url, window.jQueryNuvem(infoEl));
+            } catch (e) {
+                showShippingError('Nao foi possivel calcular o frete. Tente novamente.');
+                return;
+            }
+
+            setTimeout(function () {
+                var stillLoading = clonedSpinner && window.getComputedStyle(clonedSpinner).display !== 'none';
+                if (!stillLoading) return;
+                showShippingError('O frete demorou para responder. Tente novamente.');
+            }, 9000);
+        }
+
+        if (clonedBtn) {
+            clonedBtn.classList.remove('js-calculate-shipping', 'js-shipping-calculator-btn');
+            clonedBtn.classList.add('eora-calculate-shipping-btn');
+            clonedBtn.innerHTML = '<span>&rarr;</span>';
+            var freshBtn = clonedBtn.cloneNode(true);
+            clonedBtn.parentNode.replaceChild(freshBtn, clonedBtn);
+            freshBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                calculateVisibleShipping();
+            });
+        }
+
+        if (clonedInput) {
+            var freshInput = clonedInput.cloneNode(true);
+            clonedInput.parentNode.replaceChild(freshInput, clonedInput);
+            clonedInput = freshInput;
+            clonedInput.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                e.stopPropagation();
+                calculateVisibleShipping();
+            });
+        }
+
+        clonedShipping.querySelectorAll('.js-shipping-calculator-change-zipcode').forEach(function (changeBtn) {
+            changeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showShippingForm();
+            });
+        });
+
+        showShippingForm();
+    }
+
+    function bindShippingAccordion(infoEl) {
+        Array.prototype.slice.call(infoEl.querySelectorAll('.eora-shipping-dropdown,.shipping-dropdown')).filter(function (drop) {
+            return !dropdownLooksLikeMeasurements(drop);
+        }).forEach(function (drop) {
+            if (drop.classList.contains('shipping-dropdown')) {
+                drop.classList.remove('shipping-dropdown');
+                drop.classList.add('eora-shipping-dropdown');
+            }
+
+            var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
+            var content = drop.querySelector('.dropdown-content');
+            if (!toggle || !content) return;
+            content.removeAttribute('style');
+
+            var freshToggle = toggle.cloneNode(true);
+            toggle.parentNode.replaceChild(freshToggle, toggle);
+            freshToggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                drop.classList.toggle('open');
+            });
+        });
+    }
+
     function cleanupInfo(infoEl) {
         infoEl.querySelectorAll('.js-product-name').forEach(function (el) {
             el.classList.remove('js-product-name');
@@ -1149,10 +1452,11 @@
             if (el.parentNode) el.parentNode.removeChild(el);
         });
         infoEl.querySelectorAll('table').forEach(function (table) {
-            if (table.closest('#product-shipping-container,.product-shipping-calculator,.js-shipping-calculator-container')) return;
+            if (table.closest('.shipping-dropdown,.eora-shipping-dropdown,#product-shipping-container,.product-shipping-calculator,.js-shipping-calculator-container')) return;
             if (table.parentNode) table.parentNode.removeChild(table);
         });
         infoEl.querySelectorAll('p').forEach(function (p) {
+            if (p.closest('.shipping-dropdown,.eora-shipping-dropdown,#product-shipping-container,.product-shipping-calculator,.js-shipping-calculator-container')) return;
             if (p.closest('form')) return;
             if (p.closest('[class*="price"]')) return;
             if ((p.textContent || '').trim().length > 80 && p.parentNode) p.parentNode.removeChild(p);
@@ -1357,6 +1661,14 @@
         }
 
         mountKitBuilder(infoEl, configRows);
+        infoEl.querySelectorAll('.shipping-dropdown').forEach(function (drop) {
+            if (dropdownLooksLikeMeasurements(drop)) return;
+            drop.classList.remove('shipping-dropdown');
+            drop.classList.add('eora-shipping-dropdown');
+        });
+        bindShippingCalculator(infoEl, productRoot);
+        bindShippingAccordion(infoEl);
+
         wrap.appendChild(galleryEl);
         wrap.appendChild(infoEl);
         productRoot.parentNode.insertBefore(wrap, productRoot);
@@ -1368,7 +1680,7 @@
         productRoot.style.setProperty('position', 'absolute', 'important');
         productRoot.style.setProperty('left', '-99999px', 'important');
 
-        buildGallery(galleryEl, getNativePhotos());
+        buildGallery(galleryEl, getProductGalleryPhotos());
         hideNativeProductVideo();
         setTimeout(function () { wrap.classList.add('eora-loaded'); }, 30);
     }
@@ -1381,7 +1693,6 @@
 })();
 </script>
 </p>
-
 <!-- ============================================================
      DESCRICAO CURTA
      ============================================================ -->

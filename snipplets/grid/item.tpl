@@ -273,21 +273,22 @@
                         {% include 'snipplets/grid/item-colors.tpl' %} #}
                     {% endif %}
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="js-item-name item-name" data-store="product-item-name-{{ product.id }}">{{ product.name }}</div>
+                    <div class="mb-2">
+                        <div class="js-item-name item-name mb-1" data-store="product-item-name-{{ product.id }}">{{ product.name }}</div>
                         {% if product.display_price %}
                             <div class="item-price-container {% if settings.quick_shop %}mb-3{% endif %}" data-store="product-item-price-{{ product.id }}">
                                 <div class="item-price-block">
                                     <span class="js-price-display item-price" data-product-price="{{ product.price }}">
                                         {{ product.price | money }}
                                     </span>
-                                    {# {% if not reduced_item %}
+                                    {% if not reduced_item %}
                                         <span class="js-compare-price-display price-compare" {% if not product.compare_at_price or not product.display_price %}style="display:none;"{% else %}style="display:inline-block;"{% endif %}>
                                             {{ product.compare_at_price | money }}
                                         </span>
-                                    {% endif %} #}
+                                    {% endif %}
 
-                                    {# {% set product_can_show_installments = product.show_installments and product.display_price and product.get_max_installments.installment > 1 and settings.product_installments and not reduced_item %} #}
+                                    {% set show_product_installments = settings.product_installments is not defined or settings.product_installments %}
+                                    {% set product_can_show_installments = product.show_installments and product.display_price and product.get_max_installments.installment > 1 and show_product_installments and not reduced_item %}
 
                                     {# {% if settings.payment_discount_price %}
                                         <span class="discount-pix">
@@ -302,9 +303,9 @@
                                     {% endif %} #}
                                 </div>
 
-                                {# {% if product_can_show_installments %}
+                                {% if product_can_show_installments %}
                                     {{ component('installments', {'location' : 'product_item' , 'short_wording' : true, container_classes: { installment: "item-installments mt-2"}}) }}
-                                {% endif %} #}
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
