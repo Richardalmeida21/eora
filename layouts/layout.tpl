@@ -24,6 +24,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ page_title }}</title>
         <meta name="description" content="{{ page_description }}" />
+        <script>
+            (function () {
+                try {
+                    var url = new URL(window.location.href);
+                    if (url.pathname.replace(/\/$/, '') === '/kits' && url.searchParams.get('mpage') === '2') {
+                        document.documentElement.classList.add('eora-kits-campaign-2');
+                    }
+                } catch (e) {}
+            })();
+        </script>
         <link rel="preload" href="{{ 'css/style-critical.scss' | static_url }}" as="style" />
         <link rel="preload" href="{{ 'js/external-no-dependencies.js.tpl' | static_url }}" as="script" />
 

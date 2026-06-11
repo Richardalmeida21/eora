@@ -647,28 +647,41 @@ main {
 .item-product {
     .item-description {
         .item-price-block {
-            // display: grid;
-            // grid-template-columns: 1fr 1fr;
-            // align-items: flex-start;
-            // justify-content: flex-start;
-            // gap: 10px;
-            // margin-top: 5px;
-            // width: fit-content;
+            html.eora-kits-campaign-2 & {
+                display: flex;
+                align-items: baseline;
+                gap: 7px;
 
-            // @media screen and (min-width: 1280px) {
-            //     display: flex;
-            //     flex-direction: row;
-            //     align-items: center;
-            // }
+                .item-price {
+                    color: #128637;
+                    font-family: var(--heading-font);
+                    font-weight: 700;
+                    font-size: 14px;
+                    line-height: 100%;
+                    letter-spacing: 0.05rem;
+                    text-transform: uppercase;
 
-            // .item-price {
-            //     font-family: var(--heading-font);
-            //     font-weight: 600;
-            //     font-size: 15px;
-            //     line-height: 100%;
-            //     letter-spacing: 0.05rem;
-            //     text-transform: uppercase;
-            // }
+                    @media screen and (min-width: 1280px) {
+                        font-size: 16px;
+                    }
+                }
+
+                .price-compare {
+                    color: #b42318;
+                    font-family: var(--heading-font);
+                    font-weight: 500;
+                    font-size: 11px;
+                    line-height: 100%;
+                    letter-spacing: 0.04rem;
+                    margin-left: 0;
+                    opacity: 1;
+                    text-decoration: line-through;
+
+                    @media screen and (min-width: 1280px) {
+                        font-size: 12px;
+                    }
+                }
+            }
 
             .discount-pix {
                 display: flex;
@@ -712,6 +725,15 @@ main {
 
                 @media screen and (min-width: 1280px) {
                     font-size: 14px;
+                }
+
+                html.eora-kits-campaign-2 & {
+                    font-size: 10px;
+                    letter-spacing: 0.04rem;
+
+                    @media screen and (min-width: 1280px) {
+                        font-size: 11px;
+                    }
                 }
             }
         }
