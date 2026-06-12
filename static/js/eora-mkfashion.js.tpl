@@ -2,6 +2,25 @@
     function init() {
         console.log('EORA: Inicializando Provador Virtual Nativo (v4 - Safe Isolation)...');
 
+        function eoraSendProvadorGa4Event(eventName, payload) {
+            var attempts = 0;
+            var gtagPayload = {};
+            Object.keys(payload || {}).forEach(function(key) {
+                if (key !== 'event') gtagPayload[key] = payload[key];
+            });
+
+            function sendWhenReady() {
+                attempts++;
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', eventName, gtagPayload);
+                    return;
+                }
+                if (attempts < 20) setTimeout(sendWhenReady, 500);
+            }
+
+            sendWhenReady();
+        }
+
         window.eoraTrackProvadorEvent = window.eoraTrackProvadorEvent || function(eventName, params) {
             try {
                 params = params || {};
@@ -22,14 +41,7 @@
 
                 window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push(payload);
-
-                if (typeof window.gtag === 'function' && !window.google_tag_manager) {
-                    var gtagPayload = {};
-                    Object.keys(payload).forEach(function(key) {
-                        if (key !== 'event') gtagPayload[key] = payload[key];
-                    });
-                    window.gtag('event', eventName, gtagPayload);
-                }
+                eoraSendProvadorGa4Event(eventName, payload);
             } catch (err) {}
         };
 
