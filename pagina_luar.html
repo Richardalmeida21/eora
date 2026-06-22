@@ -3,8 +3,11 @@
      Cole este cÃ³digo no campo "CÃ³digo-Fonte" da descriÃ§Ã£o
      do produto na Nuvemshop.
      ============================================================ -->
-<p><!-- mKFashion SDK -->
-<script src="https://unpkg.com/mkfashion-sdk/src/mkfashion.js"></script>
+<p><!-- mKFashion SDK (GTM) -->
+<script>
+    window.__MK = window.__MK || { projectId: '69bbd36a44b548ccd0f965f4', product: 'mk-fashion' };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mk-sdk-git@latest/dist/mk-sdk.js" async></script>
 <script>
         (function () {
             var css = [
@@ -432,7 +435,7 @@
 
                                 var inStock = (v && (v.stock === null || v.stock === undefined || v.stock > 0)) ? true : false;
                                 var baseTxt = inStock ? 'COMPRAR AGORA' : 'PR\u00C9-VENDA';
-                                
+
                                 var buyBtn = document.getElementById('eora-fake-buy-btn');
                                 if (buyBtn) {
                                     buyBtn.style.display = 'block';
@@ -442,19 +445,12 @@
                                     };
                                 }
 
-                                var disponivel = true;
-                                if (typeof mkfashion !== 'undefined') {
-                                    var isAv = mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', v ? v.sku : '');
-                                    if (isAv === false) disponivel = false;
-                                }
-
+                                // Atualiza data-mkfashion-identifier no bot\u00E3o est\u00E1tico (novo SDK detecta e gerencia)
                                 var provContainer = document.getElementById('eora-static-provador-container');
                                 if (provContainer) {
-                                    provContainer.style.display = disponivel ? 'flex' : 'none';
+                                    provContainer.style.display = sku ? 'flex' : 'none';
                                     var provBtn = provContainer.querySelector('.js-eora-static-btn');
-                                    if (provBtn) provBtn.onclick = function() {
-                                        if (typeof abrirPopupChanel === 'function') abrirPopupChanel('tryon');
-                                    };
+                                    if (provBtn && sku) provBtn.setAttribute('data-mkfashion-identifier', sku);
                                 }
 
                                 var floatBuyBtn = document.getElementById('eora-float-buy-btn');
@@ -465,12 +461,11 @@
                                     if (floatBuyBtn.textContent !== floatTxt) floatBuyBtn.textContent = floatTxt;
                                 }
 
+                                // Atualiza data-mkfashion-identifier no bot\u00E3o flutuante (\u00EDcone do provador)
                                 var floatIconBtn = document.getElementById('eora-tryon-btn');
                                 if (floatIconBtn) {
-                                    floatIconBtn.style.display = disponivel ? 'flex' : 'none';
-                                    floatIconBtn.onclick = function() {
-                                        if (typeof abrirPopupChanel === 'function') abrirPopupChanel('tryon');
-                                    };
+                                    floatIconBtn.style.display = sku ? 'flex' : 'none';
+                                    if (sku) floatIconBtn.setAttribute('data-mkfashion-identifier', sku);
                                 }
                             } catch (e) {
                                 console.log('Eora error:', e);
@@ -935,14 +930,6 @@
                                 setTimeout(function () { initThumb.click(); }, 0);
                             }
                         }
-                        // Esconde duplicatas auto-injetadas pelo SDK mkfashion (sempre têm data-mkfashion-identifier)
-                        var dups = document.querySelectorAll('.btn-tip-card[data-mkfashion-identifier], .js-tip-card-btn[data-mkfashion-identifier]');
-                        for (var d = 0; d < dups.length; d++) {
-                            var holder = dups[d].closest('#tip-card-provador') || dups[d];
-                            if (holder && holder.id !== 'eora-static-provador-container') {
-                                holder.style.setProperty('display', 'none', 'important');
-                            }
-                        }
                         // Intercepta o botão Comprar nativo: usa direto a variante selecionada
                         // pela miniatura (sem popup). Fallback para o popup se não houver thumb.
                         if (!buyBtn.dataset.eoraBuyHooked) {
@@ -960,8 +947,7 @@
                             }, true);
                         }
                         // Substitui o botão flutuante "Provador Virtual" (canto da 1ª foto)
-                        // por um clone visual idêntico, sem listeners do SDK, que abre direto
-                        // o provador da variante atualmente selecionada na miniatura.
+                        // por um clone com data-mkfashion-identifier (novo SDK detecta e abre o provador)
                         var origs = document.querySelectorAll('.js-btn-provador-virtual:not(.eora-clone), .btn-provador-virtual:not(.eora-clone)');
                         for (var pp = 0; pp < origs.length; pp++) {
                             var orig = origs[pp];
@@ -972,15 +958,11 @@
                             newBtn.className = 'btn-provador-virtual eora-clone';
                             newBtn.setAttribute('aria-label', 'Provador Virtual');
                             newBtn.innerHTML = orig.innerHTML;
-                            newBtn.addEventListener('click', function (ev) {
-                                ev.preventDefault();
-                                ev.stopPropagation();
-                                if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
-                                    window.eoraQuickSelect('tryon');
-                                } else if (typeof abrirPopupChanel === 'function') {
-                                    abrirPopupChanel('tryon');
-                                }
-                            });
+                            // Copia o identificador do botão original para o clone (SDK vai interceptar)
+                            var origIdentifier = orig.getAttribute('data-mkfashion-identifier');
+                            if (origIdentifier) newBtn.setAttribute('data-mkfashion-identifier', origIdentifier);
+                            // Armazena referência para atualização dinâmica de SKU
+                            newBtn.classList.add('eora-dynamic-mk-id');
                             if (orig.parentNode) {
                                 if (orig.nextSibling) orig.parentNode.insertBefore(newBtn, orig.nextSibling);
                                 else orig.parentNode.appendChild(newBtn);
@@ -1004,22 +986,22 @@
                                     if (LS.variants[i].sku === sku) { v = LS.variants[i]; break; }
                                 }
                             }
-                            var disponivel = true;
-                            if (typeof mkfashion !== 'undefined') {
-                                var isAv = mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', v ? v.sku : '');
-                                if (isAv === false) disponivel = false;
-                            }
+                            // Atualiza data-mkfashion-identifier nos botões (novo SDK gerencia abertura)
                             var provContainer = document.getElementById('eora-static-provador-container');
                             if (provContainer) {
-                                provContainer.style.display = disponivel ? 'flex' : 'none';
+                                provContainer.style.display = sku ? 'flex' : 'none';
                                 var provBtn = provContainer.querySelector('.js-eora-static-btn');
-                                if (provBtn) provBtn.onclick = function () {
-                                    if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
-                                        window.eoraQuickSelect('tryon');
-                                    } else if (typeof abrirPopupChanel === 'function') {
-                                        abrirPopupChanel('tryon');
-                                    }
-                                };
+                                if (provBtn && sku) provBtn.setAttribute('data-mkfashion-identifier', sku);
+                            }
+                            var floatIconBtn = document.getElementById('eora-tryon-btn');
+                            if (floatIconBtn) {
+                                floatIconBtn.style.display = sku ? 'flex' : 'none';
+                                if (sku) floatIconBtn.setAttribute('data-mkfashion-identifier', sku);
+                            }
+                            // Atualiza clones do botão flutuante (canto da imagem)
+                            var cloneBtns = document.querySelectorAll('.btn-provador-virtual.eora-dynamic-mk-id');
+                            for (var cb = 0; cb < cloneBtns.length; cb++) {
+                                if (sku) cloneBtns[cb].setAttribute('data-mkfashion-identifier', sku);
                             }
                         } catch (e) { console.log('Eora static provador error:', e); }
                     }
@@ -1530,7 +1512,6 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                         // Garante que está dentro do formulário do produto (não em outros widgets)
                         return !!s.closest('#product_form, .js-product-form, #single-product');
                     });
-                    console.log('[EORA popup] selects nativos encontrados:', nativeSelects.length, nativeSelects);
                     if (nativeSelects.length > 0) {
                         function buildFromSelects(sels) {
                             var combos = [];
@@ -1629,18 +1610,16 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             row.className = 'eora-pu-card';
                             var variantOutOfStock = (combo.stock !== null && combo.stock !== undefined && combo.stock <= 0);
                             
-                            if (mode === 'tryon' && typeof mkfashion !== 'undefined') {
-                                if (!mkfashion.isAvailable('69bbd36a44b548ccd0f965f4', combo.sku || '')) return;
-                            }
-
                             var btnLabel = 'SELECIONAR';
                             if (mode === 'tryon') {
                                 btnLabel = 'PROVAR';
                             } else if (variantOutOfStock) {
                                 btnLabel = 'PR\u00C9-VENDA';
                             }
-                            
+
                             var btnStyle = (mode === 'buy' && variantOutOfStock) ? 'background:#000;color:#fff;border:none;padding:10px 16px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;opacity:0.75;' : '';
+                            // Novo SDK: bot\u00E3o com data-mkfashion-identifier para que o SDK intercepte o clique
+                            var mkAttr = (mode === 'tryon' && combo.sku) ? ' data-mkfashion-identifier="' + combo.sku + '"' : '';
                             row.innerHTML =
                                 '<div style="display:flex; align-items:center; flex:1;">' +
                                 '<img src="' + actImg + '" alt="' + combo.name + '">' +
@@ -1649,7 +1628,7 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                                 '<span>' + (combo.price || basePrice) + '</span>' +
                                 '</div>' +
                                 '</div>' +
-                                '<button class="eora-pu-select" data-idx="' + idx + '" data-out-of-stock="' + (variantOutOfStock ? '1' : '0') + '" style="' + btnStyle + '">' + btnLabel + '</button>';
+                                '<button class="eora-pu-select"' + mkAttr + ' data-idx="' + idx + '" data-out-of-stock="' + (variantOutOfStock ? '1' : '0') + '" style="' + btnStyle + '">' + btnLabel + '</button>';
 
                             listContainer.appendChild(row);
                         });
@@ -1666,12 +1645,9 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 
                                  fecharPopupChanel();
 
-                                 if (mode === 'tryon') {
-                                     if (typeof mkfashion !== 'undefined') {
-                                         mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: combo.sku || '' });
-                                     }
-                                     return;
-                                 }
+                                 // Modo tryon: o próprio botão já tem data-mkfashion-identifier,
+                                 // o SDK vai interceptar o clique e abrir o provador.
+                                 if (mode === 'tryon') return;
 
                                  setTimeout(function () {
                                     var formObj = document.getElementById('product_form') || document.querySelector('#eora-buy-form-container form');

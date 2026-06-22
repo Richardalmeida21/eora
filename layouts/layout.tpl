@@ -513,7 +513,10 @@
         {% endif %}
 
         {# mKFashion Provador Virtual #}
-        <script src="https://unpkg.com/mkfashion-sdk/src/mkfashion.js" async onload="window._eoraInitMkFashion&&window._eoraInitMkFashion()"></script>
+        <script>
+            window.__MK = { projectId: '69bbd36a44b548ccd0f965f4', product: 'mk-fashion' };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/mk-sdk-git@latest/dist/mk-sdk.js" async></script>
         <style>
             .btn-provador-virtual {
                 position: absolute;
@@ -604,89 +607,7 @@
                 'luar2':      'LUAPCF'   // Prata/Prata Fotocromática
             };
 
-            // Interceptor 1: clique no botão do provador → abre mkfashion com SKU correto
-            // Cards fake Luar usam o SKU real mapeado; demais produtos usam o próprio data-mkfashion-identifier
-            function getEoraProductNameForTracking() {
-                var el = document.querySelector('.js-product-name, .product-name, [data-store="product-name"], h1');
-                return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
-            }
-
-            function eoraSendProvadorGa4Event(eventName, payload) {
-                var attempts = 0;
-                var gtagPayload = {};
-                Object.keys(payload || {}).forEach(function(key) {
-                    if (key !== 'event') gtagPayload[key] = payload[key];
-                });
-
-                function sendWhenReady() {
-                    attempts++;
-                    if (typeof window.gtag === 'function') {
-                        window.gtag('event', eventName, gtagPayload);
-                        return;
-                    }
-                    if (attempts < 20) setTimeout(sendWhenReady, 500);
-                }
-
-                sendWhenReady();
-            }
-
-            function eoraTrackProvadorEvent(eventName, params) {
-                try {
-                    params = params || {};
-                    var identifier = params.mkfashion_identifier || params.product_sku || '';
-                    var payload = {
-                        event: eventName,
-                        event_category: 'provador_virtual',
-                        event_label: params.event_label || identifier,
-                        button_location: params.button_location || '',
-                        product_sku: params.product_sku || identifier,
-                        mkfashion_identifier: identifier,
-                        product_name: params.product_name || getEoraProductNameForTracking(),
-                        page_path: window.location.pathname,
-                        page_location: window.location.href,
-                        source: params.source || 'mkfashion'
-                    };
-
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push(payload);
-                    eoraSendProvadorGa4Event(eventName, payload);
-                } catch (err) {}
-            }
-
-            window.eoraTrackProvadorEvent = eoraTrackProvadorEvent;
-
-            document.addEventListener('click', function(e) {
-                var btn = e.target.closest('.js-btn-provador-virtual');
-                if (!btn) return;
-
-                var identifier = null;
-                var item = btn.closest('.js-item-product, .item-product');
-                if (item) {
-                    var link = item.querySelector('a[href]');
-                    if (link) {
-                        try {
-                            var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
-                            identifier = LUAR_SKU_MAP[slug] || null;
-                        } catch(err) {}
-                    }
-                }
-                if (!identifier) identifier = btn.getAttribute('data-mkfashion-identifier');
-                if (!identifier) return;
-
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                if (typeof mkfashion !== 'undefined') {
-                    eoraTrackProvadorEvent('provador_virtual_click', {
-                        button_location: item ? 'grid_image_button' : 'pdp_image_button',
-                        product_sku: identifier,
-                        mkfashion_identifier: identifier,
-                        source: 'layout_interceptor'
-                    });
-                    mkfashion.open({ projectId: '69bbd36a44b548ccd0f965f4', identifier: identifier });
-                }
-            }, true);
-
-            // Interceptor 2: cliques gerais nos cards fake Luar → redireciona para /produtos/luar/?vi=N
+            // Interceptor: cliques gerais nos cards fake Luar → redireciona para /produtos/luar/?vi=N
             document.addEventListener('click', function(e) {
                 if (e.target.closest('.js-btn-provador-virtual')) return; // tratado pelo interceptor acima
                 var item = e.target.closest('.js-item-product, .item-product');
@@ -704,144 +625,6 @@
                     }
                 } catch(err) {}
             }, true);
-
-            window._eoraInitMkFashion = function() {
-            var PROJECT_ID = '69bbd36a44b548ccd0f965f4';
-
-            // Pre-fetch real LUAR product variants (SKU → variant ID mapping)
-            var luarVariantMap = {};
-            var luarFetchReady = fetch('/produtos/luar.json')
-                .then(function(r) { return r.ok ? r.json() : Promise.reject('no json'); })
-                .then(function(data) {
-                    var variants = (data && data.variants) || (data && data.product && data.product.variants) || [];
-                    variants.forEach(function(v) {
-                        var sku = (v.sku || '').toUpperCase().trim();
-                        if (sku && v.id) luarVariantMap[sku] = v.id;
-                    });
-                })
-                .catch(function() {});
-
-            mkfashion.addToCart(function(payload) {
-                console.log('Provador Virtual - Produto:', payload);
-                eoraTrackProvadorEvent('provador_virtual_add_to_cart', {
-                    button_location: 'mkfashion_callback',
-                    product_sku: payload && payload.mainIdentifier ? payload.mainIdentifier : '',
-                    mkfashion_identifier: payload && payload.mainIdentifier ? payload.mainIdentifier : '',
-                    source: 'mkfashion.addToCart'
-                });
-                luarFetchReady.then(function() {
-                    try {
-                        var identifier = (payload && payload.mainIdentifier ? payload.mainIdentifier : '').toUpperCase().trim();
-                        var realVariantId = luarVariantMap[identifier];
-
-                        if (realVariantId && typeof jQueryNuvem !== 'undefined') {
-                            // Add the real LUAR variant to cart
-                            jQueryNuvem.post('/carrito', { add: 1, id: realVariantId, quantity: 1 }, function() {
-                                if (typeof modalOpen === 'function') modalOpen('#modal-cart');
-                            });
-                            return;
-                        }
-
-                        // Fallback: product detail page form (real LUAR product page)
-                        var form = null;
-                        if (identifier) {
-                            var btn = document.querySelector('.js-btn-provador-virtual[data-mkfashion-identifier="' + payload.mainIdentifier + '"], .js-tip-card-btn[data-mkfashion-identifier="' + payload.mainIdentifier + '"]');
-                            if (btn) {
-                                var pdpContainer = btn.closest('.js-product-container');
-                                if (pdpContainer) form = pdpContainer.querySelector('form');
-                                if (!form) {
-                                    var gridItem = btn.closest('.js-item-product');
-                                    if (gridItem) form = gridItem.querySelector('form');
-                                }
-                            }
-                        }
-                        if (!form) form = document.querySelector('.js-product-container form');
-                        if (!form || typeof LS === 'undefined' || typeof LS.addToCartEnhanced !== 'function') return;
-                        LS.addToCartEnhanced(
-                            jQueryNuvem(form),
-                            '{{ "Comprar" | translate }}',
-                            '{{ "Agregando..." | translate }}',
-                            '{{ "No hay más stock de este producto." | translate }}',
-                            {{ store.editable_ajax_cart_enabled ? 'true' : 'false' }},
-                            function() { if (typeof modalOpen === 'function') modalOpen('#modal-cart'); },
-                            function() {}
-                        );
-                    } catch(e) { console.error('Provador Virtual - erro ao adicionar:', e); }
-                });
-            });
-
-            document.querySelectorAll('.js-btn-provador-virtual').forEach(function(btn) {
-                var identifier = btn.getAttribute('data-mkfashion-identifier');
-                if (!identifier) return;
-
-                // Para cards fake Luar, usar o SKU real mapeado no isAvailable
-                var item = btn.closest('.js-item-product, .item-product');
-                if (item) {
-                    var link = item.querySelector('a[href]');
-                    if (link) {
-                        try {
-                            var slug = new URL(link.href, window.location.origin).pathname.toLowerCase().replace(/\/$/, '').replace('/produtos/', '');
-                            var mapped = LUAR_SKU_MAP[slug];
-                            if (mapped) identifier = mapped;
-                        } catch(ex) {}
-                    }
-                }
-
-                mkfashion.isAvailable(PROJECT_ID, identifier).then(function(disponivel) {
-                    if (!disponivel) return;
-
-                    btn.style.display = btn.classList.contains('btn-provador-virtual') ? 'flex' : 'block';
-
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        eoraTrackProvadorEvent('provador_virtual_click', {
-                            button_location: item ? 'grid_image_button' : 'pdp_image_button',
-                            product_sku: identifier,
-                            mkfashion_identifier: identifier,
-                            source: 'layout_available_button'
-                        });
-                        mkfashion.open({ projectId: PROJECT_ID, identifier: identifier });
-                    });
-                });
-            });
-
-            document.querySelectorAll('.js-tip-card-btn').forEach(function(btn) {
-                var identifier = btn.getAttribute('data-mkfashion-identifier');
-                if (!identifier) return;
-
-                mkfashion.isAvailable(PROJECT_ID, identifier).then(function(disponivel) {
-                    if (!disponivel) return;
-
-                    var tipCard = document.getElementById('tip-card-provador');
-                    if (tipCard) {
-                        tipCard.classList.add('eora-always-visible');
-                        tipCard.style.removeProperty('display');
-                    }
-
-                    // Garante que o botão permaneça visível mesmo após re-render
-                    setInterval(function() {
-                        var tc = document.getElementById('tip-card-provador');
-                        if (tc && !tc.classList.contains('eora-always-visible')) {
-                            tc.classList.add('eora-always-visible');
-                        }
-                        if (tc) tc.style.removeProperty('display');
-                    }, 500);
-
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        eoraTrackProvadorEvent('provador_virtual_click', {
-                            button_location: 'pdp_tip_card',
-                            product_sku: identifier,
-                            mkfashion_identifier: identifier,
-                            source: 'layout_tip_card'
-                        });
-                        mkfashion.open({ projectId: PROJECT_ID, identifier: identifier });
-                    });
-                });
-            });
-            }; // fim _eoraInitMkFashion
 
             /* ============================================================================
                EORA GLOBAL SPA-LIKE VARIATION NAVIGATION & PREFETCHING (0ms Swatches)
@@ -940,8 +723,6 @@
                         document.title = newDoc.title;
 
                         oldSP.parentNode.replaceChild(newSP, oldSP);
-
-                        if (window._eoraInitMkFashion) window._eoraInitMkFashion();
 
                         bindPrefetches();
 

@@ -1,3 +1,6 @@
 add_tags_teste.py
 add_tags.py
 _test.py
+.vscode/mcp.json
+.gitignore
+.claude/settings.json
