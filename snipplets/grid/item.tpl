@@ -120,9 +120,9 @@
                     {% endif %}
                     {% if product.sku and not reduced_item and 'luar' in product.url %}
                     <button
-                        class="js-btn-provador-virtual btn-provador-virtual"
+                        class="js-btn-provador-virtual btn-provador-virtual js-eora-provador-btn"
                         type="button"
-                        data-mkfashion-identifier="{{ product.sku }}"
+                        data-eora-sku="{{ product.sku }}"
                         aria-label="Provador Virtual"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

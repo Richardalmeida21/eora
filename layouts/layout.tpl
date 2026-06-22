@@ -324,6 +324,12 @@
                 max-width: 100% !important;
             }
         </style>
+
+        {# mKFashion Provador Virtual #}
+        <script>
+            window.__MK = { projectId: '69bbd36a44b548ccd0f965f4', product: 'mk-fashion' };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/mk-sdk-git@latest/dist/mk-sdk.js" async></script>
     </head>
     <body class="js-head-offset {% if not is_home_page %}head-offset-active{% else %}head-offset-transparent{% endif %} {% if settings.ad_bar %}has-ad-bar{% endif %} {% if is_on_campaign_page %}template-campaign-page{% endif %} template-{{ template }}">
 
@@ -512,11 +518,6 @@
             {% include 'snipplets/home/home-popup.tpl' %}
         {% endif %}
 
-        {# mKFashion Provador Virtual #}
-        <script>
-            window.__MK = { projectId: '69bbd36a44b548ccd0f965f4', product: 'mk-fashion' };
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/mk-sdk-git@latest/dist/mk-sdk.js" async></script>
         <style>
             .btn-provador-virtual {
                 position: absolute;
@@ -571,6 +572,42 @@
                 transform: scale(1.08);
             }
         </style>
+        <script>
+        // Handler universal dos botões do provador (nosso + SDK) — usa window.mk
+        (function() {
+            var PROJECT_ID = '69bbd36a44b548ccd0f965f4';
+            function openProvador(sku) {
+                if (!sku) return;
+                if (typeof mk !== 'undefined' && mk.open) {
+                    mk.open(PROJECT_ID, sku);
+                } else {
+                    console.warn('[EORA] mk.open não disponível — SDK ainda não carregou');
+                }
+            }
+            // Hook nos botões injetados pelos templates (data-eora-sku)
+            function hookEoraBtn(btn) {
+                if (btn.dataset.eoraHooked) return;
+                btn.dataset.eoraHooked = '1';
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    openProvador(btn.getAttribute('data-eora-sku'));
+                });
+            }
+            function hookAll() {
+                document.querySelectorAll('.js-eora-provador-btn').forEach(hookEoraBtn);
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', hookAll);
+            } else {
+                hookAll();
+            }
+            // Re-apply on DOM changes (SPA navigation, async content)
+            new MutationObserver(function() { hookAll(); })
+                .observe(document.documentElement, { childList: true, subtree: true });
+        })();
+        </script>
         <script>
         (function() {
             document.querySelectorAll('.item-link').forEach(function(link) {

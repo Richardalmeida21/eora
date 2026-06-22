@@ -163,6 +163,19 @@
 
             </div>
 
+            {# mKFashion Provador Virtual - Tip Card #}
+            {% if product.sku %}
+            <div id="tip-card-provador" class="col-12 pb-1 mb-2">
+                <button type="button" class="js-tip-card-btn btn-tip-card js-eora-provador-btn" data-eora-sku="{{ product.sku }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    EXPERIMENTE AGORA
+                </button>
+            </div>
+            {% endif %}
+
             {% if settings.ajax_cart %}
                 <div class="col-12">
                     <div class="js-added-to-cart-product-message font-small my-3">
