@@ -572,31 +572,6 @@
             }
         </style>
         <script>
-        // Impede que clique nos botões do provador abra o zoom da imagem
-        // Adiciona stopPropagation direto nos botões sem interferir no SDK
-        (function() {
-            function hookProvadorBtn(btn) {
-                if (btn.dataset.eoraClickHooked) return;
-                btn.dataset.eoraClickHooked = '1';
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-            function hookAllProvadorBtns() {
-                document.querySelectorAll('[data-mkfashion-identifier]').forEach(hookProvadorBtn);
-            }
-            // Roda no DOMContentLoaded e também observa novos botões
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', hookAllProvadorBtns);
-            } else {
-                hookAllProvadorBtns();
-            }
-            new MutationObserver(function() {
-                hookAllProvadorBtns();
-            }).observe(document.documentElement, { childList: true, subtree: true });
-        })();
-        </script>
-        <script>
         (function() {
             document.querySelectorAll('.item-link').forEach(function(link) {
                 if (!link.querySelector('.wrapper-variant-colors') && !link.querySelector('.item-colors')) {

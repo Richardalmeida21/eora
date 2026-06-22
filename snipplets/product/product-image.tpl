@@ -96,19 +96,6 @@
 					{% endif %}
 						<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{  image | product_image_url('large') }} 480w, {{  image | product_image_url('huge') }} 640w, {{  image | product_image_url('original') }} 1024w' data-sizes="auto" class="js-product-slide-img product-slider-image img-absolute img-absolute-centered lazyautosizes lazyload" {% if image.alt %}alt="{{image.alt}}"{% endif %} />
 						<img src="{{ image | product_image_url('tiny') }}" class="js-product-slide-img product-slider-image img-absolute img-absolute-centered blur-up" {% if image.alt %}alt="{{image.alt}}"{% endif %} />
-					{% if loop.first and product.sku and not home_main_product %}
-					<button
-						type="button"
-						class="js-btn-provador-virtual btn-provador-virtual"
-						data-mkfashion-identifier="{{ product.sku }}"
-						aria-label="Provador Virtual"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-							<circle cx="12" cy="13" r="4"/>
-						</svg>
-					</button>
-					{% endif %}
 				{% if home_main_product %}
 					</div>
 				{% else %}

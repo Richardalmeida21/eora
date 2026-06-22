@@ -87,12 +87,6 @@
                   '.eora-lg-dot{width:6px!important;height:6px!important;border-radius:50%!important;background:#ccc!important;border:none!important;padding:0!important;cursor:pointer!important;transition:background .2s!important}' +
                   '.eora-lg-dot.eora-lg-dot-active{background:#111!important}' +
                 '}',
-                /* Esconde APENAS o botão auto-injetado pelo SDK mkfashion (tem [data-mkfashion-identifier]) */
-                '.btn-tip-card[data-mkfashion-identifier], .js-tip-card-btn[data-mkfashion-identifier]{display:none!important}',
-                '#tip-card-provador:not(#eora-static-provador-container){display:none!important}',
-                /* Esconde o botão flutuante de provador (canto da 1ª foto) injetado pelo SDK; usamos um clone próprio */
-                '.js-btn-provador-virtual:not(.eora-clone), .btn-provador-virtual:not(.eora-clone){display:none!important}',
-                '.btn-provador-virtual.eora-clone{display:flex!important}',
                 /* Nosso botão "Experimente agora": mesma largura do Comprar + espaçamento */
                 '#eora-static-provador-container{display:block!important;width:100%!important;margin-top:10px!important;padding:0!important}',
                 '#eora-static-provador-container .btn-tip-card{display:flex!important;width:100%!important;align-items:center!important;justify-content:center!important;gap:8px!important;box-sizing:border-box!important}',
@@ -445,12 +439,19 @@
                                     };
                                 }
 
-                                // Atualiza data-mkfashion-identifier no bot\u00E3o est\u00E1tico (novo SDK detecta e gerencia)
+                                // Bot\u00E3o "Experimente agora" est\u00E1tico \u2014 abre provador via window.mk
                                 var provContainer = document.getElementById('eora-static-provador-container');
                                 if (provContainer) {
                                     provContainer.style.display = sku ? 'flex' : 'none';
                                     var provBtn = provContainer.querySelector('.js-eora-static-btn');
-                                    if (provBtn && sku) provBtn.setAttribute('data-mkfashion-identifier', sku);
+                                    if (provBtn && sku && !provBtn.dataset.eoraMkHooked) {
+                                        provBtn.dataset.eoraMkHooked = '1';
+                                        provBtn.addEventListener('click', function(ev) {
+                                            ev.preventDefault(); ev.stopPropagation();
+                                            var s = window.eoraCurrentSKU || '';
+                                            if (typeof mk !== 'undefined' && mk.open && s) mk.open('69bbd36a44b548ccd0f965f4', s);
+                                        });
+                                    }
                                 }
 
                                 var floatBuyBtn = document.getElementById('eora-float-buy-btn');
@@ -461,11 +462,18 @@
                                     if (floatBuyBtn.textContent !== floatTxt) floatBuyBtn.textContent = floatTxt;
                                 }
 
-                                // Atualiza data-mkfashion-identifier no bot\u00E3o flutuante (\u00EDcone do provador)
+                                // Bot\u00E3o flutuante do provador \u2014 abre via window.mk
                                 var floatIconBtn = document.getElementById('eora-tryon-btn');
                                 if (floatIconBtn) {
                                     floatIconBtn.style.display = sku ? 'flex' : 'none';
-                                    if (sku) floatIconBtn.setAttribute('data-mkfashion-identifier', sku);
+                                    if (sku && !floatIconBtn.dataset.eoraMkHooked) {
+                                        floatIconBtn.dataset.eoraMkHooked = '1';
+                                        floatIconBtn.addEventListener('click', function(ev) {
+                                            ev.preventDefault(); ev.stopPropagation();
+                                            var s = window.eoraCurrentSKU || '';
+                                            if (typeof mk !== 'undefined' && mk.open && s) mk.open('69bbd36a44b548ccd0f965f4', s);
+                                        });
+                                    }
                                 }
                             } catch (e) {
                                 console.log('Eora error:', e);
@@ -946,28 +954,6 @@
                                 }
                             }, true);
                         }
-                        // Substitui o botão flutuante "Provador Virtual" (canto da 1ª foto)
-                        // por um clone com data-mkfashion-identifier (novo SDK detecta e abre o provador)
-                        var origs = document.querySelectorAll('.js-btn-provador-virtual:not(.eora-clone), .btn-provador-virtual:not(.eora-clone)');
-                        for (var pp = 0; pp < origs.length; pp++) {
-                            var orig = origs[pp];
-                            if (orig.dataset.eoraReplaced) continue;
-                            orig.dataset.eoraReplaced = '1';
-                            var newBtn = document.createElement('button');
-                            newBtn.type = 'button';
-                            newBtn.className = 'btn-provador-virtual eora-clone';
-                            newBtn.setAttribute('aria-label', 'Provador Virtual');
-                            newBtn.innerHTML = orig.innerHTML;
-                            // Copia o identificador do botão original para o clone (SDK vai interceptar)
-                            var origIdentifier = orig.getAttribute('data-mkfashion-identifier');
-                            if (origIdentifier) newBtn.setAttribute('data-mkfashion-identifier', origIdentifier);
-                            // Armazena referência para atualização dinâmica de SKU
-                            newBtn.classList.add('eora-dynamic-mk-id');
-                            if (orig.parentNode) {
-                                if (orig.nextSibling) orig.parentNode.insertBefore(newBtn, orig.nextSibling);
-                                else orig.parentNode.appendChild(newBtn);
-                            }
-                        }
                         return true;
                     }
                     var tries = 0;
@@ -986,22 +972,14 @@
                                     if (LS.variants[i].sku === sku) { v = LS.variants[i]; break; }
                                 }
                             }
-                            // Atualiza data-mkfashion-identifier nos botões (novo SDK gerencia abertura)
+                            // Mostra/esconde botões conforme SKU disponível
                             var provContainer = document.getElementById('eora-static-provador-container');
                             if (provContainer) {
                                 provContainer.style.display = sku ? 'flex' : 'none';
-                                var provBtn = provContainer.querySelector('.js-eora-static-btn');
-                                if (provBtn && sku) provBtn.setAttribute('data-mkfashion-identifier', sku);
                             }
                             var floatIconBtn = document.getElementById('eora-tryon-btn');
                             if (floatIconBtn) {
                                 floatIconBtn.style.display = sku ? 'flex' : 'none';
-                                if (sku) floatIconBtn.setAttribute('data-mkfashion-identifier', sku);
-                            }
-                            // Atualiza clones do botão flutuante (canto da imagem)
-                            var cloneBtns = document.querySelectorAll('.btn-provador-virtual.eora-dynamic-mk-id');
-                            for (var cb = 0; cb < cloneBtns.length; cb++) {
-                                if (sku) cloneBtns[cb].setAttribute('data-mkfashion-identifier', sku);
                             }
                         } catch (e) { console.log('Eora static provador error:', e); }
                     }
@@ -1618,8 +1596,6 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             }
 
                             var btnStyle = (mode === 'buy' && variantOutOfStock) ? 'background:#000;color:#fff;border:none;padding:10px 16px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;opacity:0.75;' : '';
-                            // Novo SDK: bot\u00E3o com data-mkfashion-identifier para que o SDK intercepte o clique
-                            var mkAttr = (mode === 'tryon' && combo.sku) ? ' data-mkfashion-identifier="' + combo.sku + '"' : '';
                             row.innerHTML =
                                 '<div style="display:flex; align-items:center; flex:1;">' +
                                 '<img src="' + actImg + '" alt="' + combo.name + '">' +
@@ -1628,7 +1604,7 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                                 '<span>' + (combo.price || basePrice) + '</span>' +
                                 '</div>' +
                                 '</div>' +
-                                '<button class="eora-pu-select"' + mkAttr + ' data-idx="' + idx + '" data-out-of-stock="' + (variantOutOfStock ? '1' : '0') + '" style="' + btnStyle + '">' + btnLabel + '</button>';
+                                '<button class="eora-pu-select" data-idx="' + idx + '" data-out-of-stock="' + (variantOutOfStock ? '1' : '0') + '" style="' + btnStyle + '">' + btnLabel + '</button>';
 
                             listContainer.appendChild(row);
                         });
@@ -1645,9 +1621,12 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
 
                                  fecharPopupChanel();
 
-                                 // Modo tryon: o próprio botão já tem data-mkfashion-identifier,
-                                 // o SDK vai interceptar o clique e abrir o provador.
-                                 if (mode === 'tryon') return;
+                                 if (mode === 'tryon') {
+                                     if (typeof mk !== 'undefined' && mk.open && combo.sku) {
+                                         mk.open('69bbd36a44b548ccd0f965f4', combo.sku);
+                                     }
+                                     return;
+                                 }
 
                                  setTimeout(function () {
                                     var formObj = document.getElementById('product_form') || document.querySelector('#eora-buy-form-container form');
