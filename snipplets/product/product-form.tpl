@@ -165,7 +165,7 @@
 
             {# mKFashion Provador Virtual - Tip Card #}
             {% if product.sku %}
-            <div id="tip-card-provador" class="col-12 pb-1 mb-2" style="display: none;">
+            <div id="tip-card-provador" class="col-12 pb-1 mb-2">
                 <button
                     type="button"
                     class="js-tip-card-btn btn-tip-card"
