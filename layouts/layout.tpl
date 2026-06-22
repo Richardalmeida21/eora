@@ -324,12 +324,6 @@
                 max-width: 100% !important;
             }
         </style>
-
-        {# mKFashion Provador Virtual — SDK auto-detecta produtos, cria botões, gerencia carrinho #}
-        <script src="https://cdn.jsdelivr.net/npm/mk-sdk-git@latest/dist/mk-sdk.js"
-                data-mk-project="69bbd36a44b548ccd0f965f4"
-                data-mk-product="mk-fashion"
-                async></script>
     </head>
     <body class="js-head-offset {% if not is_home_page %}head-offset-active{% else %}head-offset-transparent{% endif %} {% if settings.ad_bar %}has-ad-bar{% endif %} {% if is_on_campaign_page %}template-campaign-page{% endif %} template-{{ template }}">
 
