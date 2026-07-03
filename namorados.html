@@ -1599,10 +1599,14 @@
             if (!group || isNaN(choiceIndex)) return;
             group.selectedIndex = choiceIndex;
             renderGroup(group);
+            // TikTok ViewContent
+            eoraTrackTikTok('ViewContent');
         });
 
         addButton.addEventListener('click', function () {
             if (addButton.disabled) return;
+            // TikTok AddToCart
+            eoraTrackAddToCart();
             error.style.display = 'none';
             error.textContent = '';
             addButton.disabled = true;
@@ -1638,6 +1642,58 @@
 
         updateButton();
     }
+
+    // --- TikTok Pixel helper ---
+    function eoraGetKitSku() {
+        try {
+            if (typeof LS !== 'undefined' && LS.variants && LS.variants[0] && LS.variants[0].sku) {
+                return LS.variants[0].sku;
+            }
+            var variantIdEl = document.querySelector('input[name="variant_id"]');
+            return variantIdEl ? variantIdEl.value : '';
+        } catch (e) { return ''; }
+    }
+    function eoraGetKitPrice() {
+        try {
+            var priceEl = document.querySelector('.js-price-display, .product-price');
+            if (!priceEl) return 0;
+            var priceText = priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
+            return parseFloat(priceText) || 0;
+        } catch (e) { return 0; }
+    }
+    function eoraGetKitName() {
+        try {
+            var titleEl = document.querySelector('#single-product .js-product-name, #single-product h1, #single-product h2');
+            return titleEl ? titleEl.textContent.trim() : 'Kit';
+        } catch (e) { return 'Kit'; }
+    }
+    function eoraTrackTikTok(eventName) {
+        try {
+            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+            window.ttq.track(eventName, {
+                content_type: 'product',
+                content_id: eoraGetKitSku(),
+                content_name: eoraGetKitName(),
+                currency: 'BRL',
+                value: eoraGetKitPrice(),
+                content_category: 'Kit'
+            });
+        } catch (e) {}
+    }
+    function eoraTrackAddToCart() {
+        try {
+            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+            window.ttq.track('AddToCart', {
+                content_type: 'product',
+                content_id: eoraGetKitSku(),
+                content_name: eoraGetKitName(),
+                currency: 'BRL',
+                value: eoraGetKitPrice(),
+                quantity: 1
+            });
+        } catch (e) {}
+    }
+    // --- Fim TikTok Pixel helper ---
 
     function init() {
         watchNativeProductVideo();
@@ -1683,6 +1739,8 @@
         buildGallery(galleryEl, getProductGalleryPhotos());
         hideNativeProductVideo();
         setTimeout(function () { wrap.classList.add('eora-loaded'); }, 30);
+        // TikTok ViewContent (initial)
+        setTimeout(function () { eoraTrackTikTok('ViewContent'); }, 60);
     }
 
     if (document.readyState === 'loading') {

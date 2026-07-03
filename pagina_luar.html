@@ -83,9 +83,6 @@
                   '.eora-lg-dot{width:6px!important;height:6px!important;border-radius:50%!important;background:#ccc!important;border:none!important;padding:0!important;cursor:pointer!important;transition:background .2s!important}' +
                   '.eora-lg-dot.eora-lg-dot-active{background:#111!important}' +
                 '}',
-                /* Nosso botão "Experimente agora": mesma largura do Comprar + espaçamento */
-                '#eora-static-provador-container{display:block!important;width:100%!important;margin-top:10px!important;padding:0!important}',
-                '#eora-static-provador-container .btn-tip-card{display:flex!important;width:100%!important;align-items:center!important;justify-content:center!important;gap:8px!important;box-sizing:border-box!important}',
                 '#eora-hero-actions{display:flex!important;width:100%!important;flex-direction:column!important;align-items:center!important;gap:10px!important}',
                 '#eora-fake-buy-btn{display:block!important;width:100%!important;max-width:300px!important;z-index:20!important}',
                 '#eora-hero-desc-content, #eora-hero-desc-content *{background-color:transparent!important;color:#111!important;font-weight:700!important}',
@@ -170,6 +167,53 @@
                 document.head.appendChild(st);
             }
             function init() {
+
+                // --- TikTok Pixel helper ---
+                function eoraTrackTikTok(eventName) {
+                    try {
+                        if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+                        var idx = (typeof window.eoraSelectedThumbIdx === 'number') ? window.eoraSelectedThumbIdx : 0;
+                        var v = (typeof LS !== 'undefined' && LS.variants && LS.variants[idx]) ? LS.variants[idx] : null;
+                        var sku = (v && v.sku) ? v.sku : (window.eoraCurrentSKU || '');
+                        var name = EORA_BASE_PRODUCT_NAME;
+                        var variantName = window.eoraCurrentVariantName || '';
+                        if (variantName) name += ' - ' + variantName;
+                        var priceEl = document.querySelector('.js-price-display, .product-price');
+                        var priceText = priceEl ? priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.') : '0';
+                        var price = parseFloat(priceText) || 0;
+                        window.ttq.track(eventName, {
+                            content_type: 'product',
+                            content_id: sku,
+                            content_name: name,
+                            currency: 'BRL',
+                            value: price,
+                            content_category: 'Óculos'
+                        });
+                    } catch (e) {}
+                }
+                function eoraTrackAddToCart() {
+                    try {
+                        if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+                        var idx = (typeof window.eoraSelectedThumbIdx === 'number') ? window.eoraSelectedThumbIdx : 0;
+                        var v = (typeof LS !== 'undefined' && LS.variants && LS.variants[idx]) ? LS.variants[idx] : null;
+                        var sku = (v && v.sku) ? v.sku : (window.eoraCurrentSKU || '');
+                        var name = EORA_BASE_PRODUCT_NAME;
+                        var variantName = window.eoraCurrentVariantName || '';
+                        if (variantName) name += ' - ' + variantName;
+                        var priceEl = document.querySelector('.js-price-display, .product-price');
+                        var priceText = priceEl ? priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.') : '0';
+                        var price = parseFloat(priceText) || 0;
+                        window.ttq.track('AddToCart', {
+                            content_type: 'product',
+                            content_id: sku,
+                            content_name: name,
+                            currency: 'BRL',
+                            value: price,
+                            quantity: 1
+                        });
+                    } catch (e) {}
+                }
+                // --- Fim TikTok Pixel helper ---
 
                 function getSrc(img) {
                     return img.getAttribute('data-src') ||
@@ -714,23 +758,8 @@
                     }
                     return groups;
                 })();
-                // Layout padrão: injeta o botão "Experimente agora" logo abaixo do
-                // botão Comprar nativo (.product-info-column), preservando a lógica
-                // antiga de popups (abrirPopupChanel('tryon' | 'buy')).
+                // Layout padrão: miniaturas das variantes + interceptação do botão Comprar
                 (function injectStaticProvadorInInfoColumn() {
-                    function buildProvadorMarkup() {
-                        // Replica o mesmo estilo/espaçamento do botão original do tema
-                        // (.btn-tip-card dentro de .col-12.pb-1.mb-2) que vinha do SDK mkfashion.
-                        return '<div id="eora-static-provador-container" class="col-12 pb-1 mb-2 eora-always-visible">' +
-                            '  <button type="button" class="js-tip-card-btn btn-tip-card js-eora-static-btn">' +
-                            '    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                            '      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>' +
-                            '      <circle cx="12" cy="13" r="4"></circle>' +
-                            '    </svg>' +
-                            '    EXPERIMENTE AGORA' +
-                            '  </button>' +
-                            '</div>';
-                    }
                     function eoraInitLgCarousel(gallery) {
                         gallery.dataset.lgCarousel = '1';
                         // Pega os filhos originais (cada <div> com uma img)
@@ -799,17 +828,11 @@
                         goTo(0);
                     }
                     function place() {
-                        if (document.getElementById('eora-static-provador-container')) return true;
                         var infoCol = document.querySelector('#single-product .product-info-column');
                         if (!infoCol) return false;
-                        // Âncora: botão Comprar nativo (input.js-addtocart submit). Inserimos LOGO APÓS ele.
+                        // Âncora: botão Comprar nativo (input.js-addtocart submit).
                         var buyBtn = infoCol.querySelector('input.js-addtocart, button.js-addtocart, .js-addtocart, .js-add-to-cart, [name="commit"], button[type="submit"], .btn-add-to-cart, .product-buy');
                         if (!buyBtn || !buyBtn.parentNode) return false;
-                        var wrapper = document.createElement('div');
-                        wrapper.innerHTML = buildProvadorMarkup();
-                        var node = wrapper.firstChild;
-                        if (buyBtn.nextSibling) buyBtn.parentNode.insertBefore(node, buyBtn.nextSibling);
-                        else buyBtn.parentNode.appendChild(node);
                         // Insere strip de miniaturas das variantes LUAR acima do botão Comprar
                         if (!document.getElementById('eora-info-thumbs') && window.__eoraVariantThumbs && window.__eoraVariantThumbs.length) {
                             var strip = document.createElement('div');
@@ -828,7 +851,10 @@
                                     window.eoraSelectedThumbIdx = i;
                                     if (!eoraSetVariantNameByIndex(i)) {
                                         eoraUpdateVisibleVariantName(window.eoraCurrentVariantName || '');
-                                        setTimeout(function () { eoraSetVariantNameByIndex(i); }, 300);
+                                        setTimeout(function () { eoraSetVariantNameByIndex(i); eoraTrackTikTok('ViewContent'); }, 300);
+                                    } else {
+                                        // TikTok ViewContent
+                                        eoraTrackTikTok('ViewContent');
                                     }
                                     // Atualiza a coluna esquerda (.product-image-column) com as fotos desta variante
                                     var leftCol = document.querySelector('#single-product .product-image-column');
@@ -939,6 +965,8 @@
                         if (!buyBtn.dataset.eoraBuyHooked) {
                             buyBtn.dataset.eoraBuyHooked = '1';
                             buyBtn.addEventListener('click', function (ev) {
+                                // TikTok AddToCart
+                                eoraTrackAddToCart();
                                 if (typeof window.eoraQuickSelect === 'function' && typeof window.eoraSelectedThumbIdx === 'number') {
                                     ev.preventDefault();
                                     ev.stopImmediatePropagation();
@@ -958,37 +986,11 @@
                     }, 250);
                     place();
 
-                    // Religa a lógica original (popups + checagem de disponibilidade)
-                    function eoraStaticActions() {
-                        try {
-                            var v = (typeof LS !== 'undefined' && LS.variants && LS.variants[0]) ? LS.variants[0] : null;
-                            var sku = window.eoraCurrentSKU || (v ? v.sku : '');
-                            if (typeof LS !== 'undefined' && LS.variants) {
-                                for (var i = 0; i < LS.variants.length; i++) {
-                                    if (LS.variants[i].sku === sku) { v = LS.variants[i]; break; }
-                                }
-                            }
-                            // Mostra/esconde botões conforme SKU disponível
-                            var provContainer = document.getElementById('eora-static-provador-container');
-                            if (provContainer) {
-                                provContainer.style.display = sku ? 'flex' : 'none';
-                            }
-                            var floatIconBtn = document.getElementById('eora-tryon-btn');
-                            if (floatIconBtn) {
-                                floatIconBtn.style.display = sku ? 'flex' : 'none';
-                            }
-                        } catch (e) { console.log('Eora static provador error:', e); }
-                    }
+                    // SKU tracking mantido como no-op; o Provador Virtual gerencia
+                    // seu próprio botão "Experimente agora" via SDK.
                     window.eoraUpdateProvadorSku = function (newSku) {
                         window.eoraCurrentSKU = newSku;
-                        eoraStaticActions();
                     };
-                    var c2 = 0;
-                    var iv2 = setInterval(function () {
-                        eoraStaticActions();
-                        if (++c2 > 100) clearInterval(iv2);
-                    }, 800);
-                    eoraStaticActions();
                 })();
                 var afterEl = ancora;
                 function inserirApos(el) {
@@ -1174,6 +1176,8 @@
                                     if(v.option1) oList.push(v.option1);
                                     if(v.option2) oList.push(v.option2);
                                     eoraSetCurrentVariantName(eoraVariantNameFromCustomIndex(idx) || oList.join(' '));
+                                    // TikTok ViewContent
+                                    eoraTrackTikTok('ViewContent');
                                 }
                                 if (!loadedFromLS) {
                                     var vimg = this.querySelector('img:not(.eora-img-hover)');
@@ -1283,6 +1287,8 @@ var c1 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                             if(v0.option1) oList0.push(v0.option1);
                             if(v0.option2) oList0.push(v0.option2);
                             eoraSetCurrentVariantName(eoraVariantNameFromCustomIndex(0) || oList0.join(' '));
+                            // TikTok ViewContent initial
+                            eoraTrackTikTok('ViewContent');
                         }
                         if (!loadedFromLS0) {
                             var f0img = cards[0].querySelector('img:not(.eora-img-hover)');
@@ -1445,9 +1451,6 @@ var c10 = '<div class="eora-pp-vf-wrapper"><div class="eora-pp-vf-grid">';
                 var floatBar = document.createElement('div');
                 floatBar.className = 'eora-floating-bar eora-hidden';
                 floatBar.innerHTML =
-                    '<div class="eora-float-icon" id="eora-tryon-btn" title="Provador Virtual">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="3.5"></circle><path d="M20 2v4m-2-2h4" stroke-width="2"></path></svg>' +
-                    '</div>' +
                     '<button class="eora-float-buy" id="eora-float-buy-btn">COMPRAR AGORA' + (priceText ? ' - ' + priceText : '') + '</button>';
                 document.body.appendChild(floatBar);
                 var popupLayer = document.createElement('div');

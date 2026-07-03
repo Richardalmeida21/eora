@@ -726,6 +726,9 @@
         window.eoraIsSubmittingCart = true;
         setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
 
+        // TikTok AddToCart
+        eoraTrackAddToCart();
+
         var form = getOriginalProductForm();
         if (!form) return false;
         var addBtn = getOriginalAddButton();
@@ -1429,6 +1432,8 @@
                     if (freshWrap) {
                         freshWrap.classList.add('eora-loaded');
                     }
+                    // TikTok ViewContent
+                    eoraTrackTikTok('ViewContent');
                 }, 50);
             }
         }).catch(function () {
@@ -2842,6 +2847,64 @@
         // No-op
     }
 
+    // --- TikTok Pixel helper ---
+    function eoraGetCurrentSku() {
+        try {
+            var variantIdEl = document.querySelector('input[name="variant_id"]');
+            var variantId = variantIdEl ? variantIdEl.value : '';
+            if (typeof LS !== 'undefined' && LS.variants) {
+                for (var i = 0; i < LS.variants.length; i++) {
+                    if (LS.variants[i].id == variantId) return LS.variants[i].sku || '';
+                }
+                if (LS.variants[0] && LS.variants[0].sku) return LS.variants[0].sku;
+            }
+            return variantId;
+        } catch (e) { return ''; }
+    }
+    function eoraGetCurrentPrice() {
+        try {
+            var priceEl = document.querySelector('.js-price-display, .product-price, .eora-price');
+            if (!priceEl) return 0;
+            var priceText = priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
+            return parseFloat(priceText) || 0;
+        } catch (e) { return 0; }
+    }
+    function eoraTrackTikTok(eventName) {
+        try {
+            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+            var sku = eoraGetCurrentSku();
+            var name = 'Cinto Vértice';
+            var variantName = window.eoraActiveVariationName || '';
+            if (variantName) name += ' - ' + variantName;
+            window.ttq.track(eventName, {
+                content_type: 'product',
+                content_id: sku,
+                content_name: name,
+                currency: 'BRL',
+                value: eoraGetCurrentPrice(),
+                content_category: 'Cinto'
+            });
+        } catch (e) {}
+    }
+    function eoraTrackAddToCart() {
+        try {
+            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
+            var sku = eoraGetCurrentSku();
+            var name = 'Cinto Vértice';
+            var variantName = window.eoraActiveVariationName || '';
+            if (variantName) name += ' - ' + variantName;
+            window.ttq.track('AddToCart', {
+                content_type: 'product',
+                content_id: sku,
+                content_name: name,
+                currency: 'BRL',
+                value: eoraGetCurrentPrice(),
+                quantity: 1
+            });
+        } catch (e) {}
+    }
+    // --- Fim TikTok Pixel helper ---
+
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
@@ -4028,6 +4091,9 @@
             if (window.eoraIsSubmittingCart) return;
             window.eoraIsSubmittingCart = true;
             setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
+
+            // TikTok AddToCart
+            eoraTrackAddToCart();
 
             var originalForm = getOriginalProductForm();
             var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
