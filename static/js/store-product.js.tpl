@@ -694,7 +694,11 @@ DOMContentLoaded.addEventOrExecute(() => {
                                 if (window.innerWidth < 768) {
                             {% endif %}
                                 {# Update position of the slider #}
-                                productSwiper.slideTo( fancybox.getSlide().index, 0 );
+                                var fancyboxSlide = fancybox.getSlide();
+                                var fancyboxSlideIndex = fancyboxSlide ? parseInt(fancyboxSlide.index, 10) : NaN;
+                                if (productSwiper && !productSwiper.destroyed && typeof productSwiper.slideTo === 'function' && !isNaN(fancyboxSlideIndex)) {
+                                    productSwiper.slideTo(fancyboxSlideIndex, 0);
+                                }
                             {% if settings.product_image_format != 'slider' %}
                                 }
                             {% endif %}
@@ -768,7 +772,12 @@ DOMContentLoaded.addEventOrExecute(() => {
                     var liImage = jQueryNuvem('.js-swiper-product').find("[data-image='"+variant.image+"']");
                     var selectedPosition = liImage.data('imagePosition');
                     var slideToGo = parseInt(selectedPosition);
-                    productSwiper.slideTo(slideToGo);
+                    // The native gallery can remain uninitialized when a custom product
+                    // layout (such as LUAR) hides it. Variant selection and purchase must
+                    // continue even when there is no Swiper instance to synchronize.
+                    if (productSwiper && !productSwiper.destroyed && typeof productSwiper.slideTo === 'function' && !isNaN(slideToGo)) {
+                        productSwiper.slideTo(slideToGo);
+                    }
                     jQueryNuvem(".js-product-slide-img").removeClass("js-active-variant");
                     liImage.find(".js-product-slide-img").addClass("js-active-variant");
                 });

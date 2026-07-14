@@ -210,7 +210,10 @@
                 var currentGallery = document.querySelector('#single-product .js-swiper-product');
                 var slide = currentGallery && currentGallery.querySelector('[data-image="' + variant.image + '"]');
                 var position = slide && parseInt(slide.getAttribute('data-image-position'), 10);
-                if (window.__eoraCurrentProductSwiper && !isNaN(position)) {
+                if (window.__eoraCurrentProductSwiper &&
+                    !window.__eoraCurrentProductSwiper.destroyed &&
+                    typeof window.__eoraCurrentProductSwiper.slideTo === 'function' &&
+                    !isNaN(position)) {
                     window.__eoraCurrentProductSwiper.slideTo(position);
                 }
             });
