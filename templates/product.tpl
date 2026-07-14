@@ -79,7 +79,6 @@
 
 {% include 'snipplets/product/product-faq.tpl' %}
 
-{% include 'snipplets/product/eora-variations.tpl' %}
 
 <style>
 .product-video-container {

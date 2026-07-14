@@ -684,6 +684,43 @@
                     });
                 }
 
+                // Helper: preload a limited set of images with timeout
+                function preloadImagesFromDoc(doc, limit, timeout) {
+                    limit = limit || 6; timeout = timeout || 500;
+                    try {
+                        var urls = [];
+                        (doc.querySelectorAll('img') || []).forEach(function (img) {
+                            var src = img.getAttribute('data-zoom-image') || img.getAttribute('data-image') || img.getAttribute('data-src') || img.getAttribute('src') || img.src;
+                            if (src && urls.indexOf(src) === -1) urls.push(src);
+                        });
+                        urls = urls.filter(Boolean).slice(0, limit);
+                        if (!urls.length) return Promise.resolve();
+
+                        var loaders = urls.map(function (u) {
+                            return new Promise(function (res) {
+                                var i = new Image();
+                                i.onload = i.onerror = function () { res(u); };
+                                try { i.src = u; } catch (e) { res(u); }
+                            });
+                        });
+
+                        return Promise.race([Promise.allSettled(loaders), new Promise(function (r) { setTimeout(r, timeout); })]);
+                    } catch (e) { return Promise.resolve(); }
+                }
+
+                // Intercept pointerdown early to avoid theme's loading overlay where possible
+                document.addEventListener('pointerdown', function (ev) {
+                    try {
+                        var a = ev.target && ev.target.closest && ev.target.closest('a.btn-variant-thumb, a.btn-variant, a.js-insta-variant, .js-color-variants-container a');
+                        if (!a) return;
+                        var href = a.getAttribute('href');
+                        if (!href || href.indexOf('/produtos/') === -1) return;
+                        // Prevent other handlers (that show full-page loader) from running
+                        ev.preventDefault();
+                        ev.stopImmediatePropagation();
+                    } catch (e) {}
+                }, { passive: false, capture: true });
+
                 document.addEventListener('click', function (e) {
                     var a = e.target.closest('a.btn-variant-thumb, a.btn-variant, a.js-insta-variant, .js-color-variants-container a');
                     if (!a) return;
@@ -736,23 +773,45 @@
                             return;
                         }
 
-                        history.pushState({ eoraGlobalPath: path }, '', href);
-                        document.title = newDoc.title;
+                        // Preload a few images from newDoc, but don't block long: timeout 500ms
+                        preloadImagesFromDoc(newDoc, 6, 500).then(function () {
+                            try {
+                                history.pushState({ eoraGlobalPath: path }, '', href);
+                                document.title = newDoc.title;
 
-                        oldSP.parentNode.replaceChild(newSP, oldSP);
+                                // crossfade: fade out oldSP, replace, then fade in
+                                try {
+                                    var parent = oldSP.parentNode;
+                                    oldSP.style.transition = 'opacity 180ms ease';
+                                    oldSP.style.opacity = '0.45';
 
-                        bindPrefetches();
+                                    setTimeout(function () {
+                                        parent.replaceChild(newSP, oldSP);
+                                        bindPrefetches();
 
-                        newSP.querySelectorAll('script').forEach(function (s) {
-                            var freshScript = document.createElement('script');
-                            if (s.src) {
-                                freshScript.src = s.src;
-                            } else {
-                                freshScript.textContent = s.textContent;
+                                        newSP.querySelectorAll('script').forEach(function (s) {
+                                            var freshScript = document.createElement('script');
+                                            if (s.src) {
+                                                freshScript.src = s.src;
+                                            } else {
+                                                freshScript.textContent = s.textContent;
+                                            }
+                                            document.body.appendChild(freshScript);
+                                            setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
+                                        });
+
+                                        // small fade-in on the replaced block
+                                        try { newSP.style.transition = 'opacity 220ms ease'; newSP.style.opacity = '1'; } catch (e) {}
+                                    }, 180);
+                                } catch (e) {
+                                    // fallback replace immediately
+                                    oldSP.parentNode.replaceChild(newSP, oldSP);
+                                    bindPrefetches();
+                                }
+                            } catch (e) {
+                                window.location.href = href;
                             }
-                            document.body.appendChild(freshScript);
-                            setTimeout(function () { freshScript.parentNode && freshScript.parentNode.removeChild(freshScript); }, 150);
-                        });
+                        }).catch(function () { window.location.href = href; });
 
                     }).catch(function () {
                         window.location.href = href;
