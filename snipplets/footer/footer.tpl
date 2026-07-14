@@ -247,7 +247,7 @@
 	{% if footer_video_link and settings.footer_video_show %}
 		<section class="js-section-footer-video-horizontal section-footer-video-horizontal position-relative section-home" data-store="footer-video-horizontal" data-transition="fade-in-up">
 			<div class="footer-video-horizontal {% if settings.footer_video_size_option == 'zoom' %}-video-zoom{% else %}-video-original{% endif %}">
-				<figure class="image -custom d-none d-md-block">
+				<figure class="image -custom d-none d-md-block" style="aspect-ratio: 10 / 3;">
 					<div class="js-video home-video embed-responsive embed-responsive-30by9 position-relative">
 						{% if settings.footer_video_type == 'sound' %}
 							<a href="javascript:void(0)" class="js-play-button video-player">
@@ -285,7 +285,7 @@
 								{% set video_image_src = 'https://vumbnail.com/' ~ video_id ~ '.jpg' %}
 							{% endif %}
 							
-							<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="{{ video_image_src }}" class="lazyload video-image fade-in" alt="{{ 'Video de' | translate }} {{ store.name }}" />
+							<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="{{ video_image_src }}" class="lazyload video-image fade-in" alt="{{ 'Video de' | translate }} {{ store.name }}" width="1200" height="360" />
 							<div class="placeholder-fade"></div>
 						</div>
 
@@ -309,7 +309,7 @@
 					</div>
 				</figure>
 
-				<figure class="image -custom d-md-none">
+				<figure class="image -custom d-md-none" style="aspect-ratio: 5 / 2;">
 					<div class="js-video home-video embed-responsive embed-responsive-30by9 position-relative">
 						{% if settings.footer_video_type == 'sound' %}
 							<a href="javascript:void(0)" class="js-play-button video-player">
@@ -476,10 +476,22 @@
 								}
 							}
 							
-							// Se for autoplay, carregar automaticamente
+							// Autoplay so precisa do iframe quando o rodape estiver proximo.
+							// A thumbnail permanece visivel e o video ja chega tocando ao viewport.
 							if (videoType === 'autoplay') {
-								// Carregar IMEDIATAMENTE sem esperar scroll ou delay
-								loadVideo(true);
+								if ('IntersectionObserver' in window) {
+									var videoObserver = new IntersectionObserver(function(entries, observer) {
+										entries.forEach(function(entry) {
+											if (entry.isIntersecting) {
+												loadVideo(true);
+												observer.unobserve(videoContainer);
+											}
+										});
+									}, { rootMargin: '600px 0px', threshold: 0.01 });
+									videoObserver.observe(videoContainer);
+								} else {
+									loadVideo(true);
+								}
 							}
 							
 							// Se for sound, carregar quando clicar no play

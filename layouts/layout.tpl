@@ -297,6 +297,24 @@
         {{ component('structured-data') }}
 
         <script type="text/javascript">
+            window.eoraLoadWhenIdle = window.eoraLoadWhenIdle || function(callback, timeout) {
+                var scheduled = false;
+                function schedule() {
+                    if (scheduled) return;
+                    scheduled = true;
+                    if ('requestIdleCallback' in window) {
+                        window.requestIdleCallback(callback, { timeout: timeout || 3000 });
+                    } else {
+                        window.setTimeout(callback, 0);
+                    }
+                }
+                if (document.readyState === 'complete') {
+                    schedule();
+                } else {
+                    window.addEventListener('load', schedule, { once: true });
+                }
+            };
+
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -321,8 +339,10 @@
                     var a = document.getElementsByTagName("script")[0];
                     a.parentNode.insertBefore(o, a);
                 };
-                ttq.load('D6DGMURC77U3L7SPB6C0');
                 ttq.page();
+                window.eoraLoadWhenIdle(function() {
+                    ttq.load('D6DGMURC77U3L7SPB6C0');
+                }, 3000);
             }(window, document, 'ttq');
         </script>
 

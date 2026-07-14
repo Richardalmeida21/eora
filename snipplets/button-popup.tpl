@@ -255,7 +255,7 @@
 <!-- Optin - Inicio -->
 <div id="optin-IIw6HlBv" data-type="button"></div>
 <link rel="stylesheet" type="text/css" href="https://optin.myperfit.com/res/css/eoraeyewear/IIw6HlBv.css"/>
-<script type="text/javascript" src="https://optin.myperfit.com/res/js/eoraeyewear/IIw6HlBv.js" charset="UTF-8"></script>
+<script type="text/javascript" src="https://optin.myperfit.com/res/js/eoraeyewear/IIw6HlBv.js" charset="UTF-8" defer></script>
 <!-- Optin - Fin -->
 
 <script>

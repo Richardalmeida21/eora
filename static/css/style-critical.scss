@@ -3519,6 +3519,12 @@ body {
   opacity: 0;
 }
 
+/* O banner principal e o LCP da home precisam aparecer com o HTML inicial.
+   As demais secoes continuam usando a animacao ao entrar na viewport. */
+[data-store="home-slider"][data-transition="fade-in"] {
+  opacity: 1;
+}
+
 [data-transition="fade-in"].is-inViewport,
 .swiper-slide-duplicate [data-transition="fade-in"],
 [data-transition="fade-in-image"].is-inViewport img,
