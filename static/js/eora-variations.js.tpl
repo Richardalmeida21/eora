@@ -6,6 +6,8 @@
     var variantSelector = '#single-product .js-color-variants-container > a.btn-variant-thumb[href]';
     var pageCache = {};
     var pendingFetches = {};
+    var knownVariantNodes = {};
+    var knownVariantOrder = [];
     var navigationId = 0;
 
     function normalizePath(url) {
@@ -29,6 +31,56 @@
         return link;
     }
 
+    function rememberVariants(root) {
+        if (!root || !root.querySelectorAll) return [];
+        var newHrefs = [];
+        root.querySelectorAll(variantSelector).forEach(function (link) {
+            var path = normalizePath(link.href);
+            if (!path || knownVariantNodes[path]) return;
+            var clone = link.cloneNode(true);
+            clone.removeAttribute('data-eora-prefetched');
+            knownVariantNodes[path] = clone;
+            knownVariantOrder.push(path);
+            newHrefs.push(link.href);
+        });
+        return newHrefs;
+    }
+
+    function renderKnownVariants(root, activePath) {
+        if (!root || !root.querySelector) return;
+        var container = root.querySelector('#single-product .js-color-variants-container');
+        if (!container || !knownVariantOrder.length) return;
+
+        var fragment = document.createDocumentFragment();
+        knownVariantOrder.forEach(function (path) {
+            var source = knownVariantNodes[path];
+            if (!source) return;
+            var link = source.cloneNode(true);
+            link.classList.toggle('selected', path === activePath);
+            link.removeAttribute('data-eora-prefetched');
+            link.querySelectorAll('img[data-src]').forEach(function (image) {
+                image.src = image.getAttribute('data-src');
+                image.removeAttribute('data-src');
+                image.classList.remove('lazyload');
+            });
+            fragment.appendChild(link);
+        });
+        container.replaceChildren(fragment);
+    }
+
+    function discoverVariantsFromHtml(html) {
+        var parsed = new DOMParser().parseFromString(html, 'text/html');
+        var discovered = rememberVariants(parsed);
+        var mainImage = parsed.querySelector('#single-product .product-image-column .js-product-slide-img[data-srcset]');
+        if (mainImage) {
+            var candidates = mainImage.getAttribute('data-srcset').split(',');
+            var imageUrl = candidates[candidates.length - 1].trim().split(/\s+/)[0];
+            if (imageUrl) (new Image()).src = imageUrl;
+        }
+        renderKnownVariants(document, normalizePath(window.location.href));
+        discovered.forEach(function (href) { prefetchPage(href); });
+    }
+
     function fetchPage(href) {
         var path = normalizePath(href);
         if (!path) return Promise.reject(new Error('invalid-product-url'));
@@ -43,6 +95,7 @@
             .then(function (html) {
                 pageCache[path] = html;
                 delete pendingFetches[path];
+                discoverVariantsFromHtml(html);
                 return html;
             })
             .catch(function (error) {
@@ -58,6 +111,8 @@
 
     function bindPrefetches() {
         if (isCustomProduct()) return;
+        rememberVariants(document);
+        renderKnownVariants(document, normalizePath(window.location.href));
         document.querySelectorAll(variantSelector).forEach(function (link) {
             if (!link.dataset.eoraPrefetched) {
                 link.dataset.eoraPrefetched = 'true';
@@ -66,28 +121,53 @@
         });
     }
 
-    function getMainImageUrl(product) {
-        var image = product && product.querySelector('.product-image-column .js-product-slide-img[data-srcset], .product-image-column img[data-src], .product-image-column img[src]');
-        if (!image) return '';
-        var srcset = image.getAttribute('data-srcset') || image.getAttribute('srcset') || '';
-        if (srcset) {
-            var candidates = srcset.split(',');
-            return candidates[candidates.length - 1].trim().split(/\s+/)[0];
-        }
-        return image.getAttribute('data-src') || image.getAttribute('src') || '';
+    function findDescriptionTable(doc, key) {
+        var result = null;
+        doc.querySelectorAll('.js-product-description-base table').forEach(function (table) {
+            if (result) return;
+            var firstCell = table.querySelector('tbody > tr:first-child > td:first-child, tr:first-child > td:first-child');
+            if (firstCell && firstCell.textContent.trim().toLowerCase() === key) result = table;
+        });
+        return result;
     }
 
-    function preloadMainImage(product) {
-        var url = getMainImageUrl(product);
-        if (!url) return Promise.resolve();
-        return Promise.race([
-            new Promise(function (resolve) {
-                var image = new Image();
-                image.onload = image.onerror = resolve;
-                image.src = url;
-            }),
-            new Promise(function (resolve) { setTimeout(resolve, 250); })
-        ]);
+    function normalizeDescriptionFont(root) {
+        if (!root) return;
+        [root].concat(Array.prototype.slice.call(root.querySelectorAll('*'))).forEach(function (element) {
+            element.style.removeProperty('font-size');
+            element.style.removeProperty('line-height');
+        });
+    }
+
+    function hydrateProductDescription(newDoc, newProduct) {
+        var shortDescription = newProduct.querySelector('.js-product-description-short');
+        var descriptionTable = findDescriptionTable(newDoc, 'descricao_curta');
+        if (shortDescription) {
+            var descriptionCell = descriptionTable && descriptionTable.querySelector('tr:first-child td:nth-child(2)');
+            var currentDescription = document.querySelector('#single-product .js-product-description-short');
+            shortDescription.innerHTML = descriptionCell
+                ? descriptionCell.innerHTML
+                : (currentDescription ? currentDescription.innerHTML : '');
+            normalizeDescriptionFont(shortDescription);
+        }
+
+        var measurementsTable = findDescriptionTable(newDoc, 'medidas_do_oculos');
+        var measurements = newProduct.querySelector('.js-glasses-measurements');
+        var measurementsWrapper = newProduct.querySelector('.js-glasses-measurements-wrapper');
+        if (measurements) {
+            var measurementsCell = measurementsTable && measurementsTable.querySelector('tr:first-child td:nth-child(2)');
+            measurements.innerHTML = measurementsCell ? measurementsCell.innerHTML : '';
+            if (measurementsWrapper) measurementsWrapper.style.display = measurementsCell ? '' : 'none';
+        }
+        if (measurementsTable && measurementsWrapper) {
+            var titleRow = measurementsTable.querySelector('tr:nth-child(2)');
+            var titleKey = titleRow && titleRow.querySelector('td:first-child');
+            var titleValue = titleRow && titleRow.querySelector('td:nth-child(2)');
+            var titleTarget = measurementsWrapper.querySelector('.js-title-dropdown');
+            if (titleKey && titleValue && titleTarget && titleKey.textContent.trim().toLowerCase() === 'titulo') {
+                titleTarget.innerHTML = titleValue.innerHTML;
+            }
+        }
     }
 
     function initProductGallery(product) {
@@ -137,12 +217,6 @@
         }
     }
 
-    function isSoldOut(product) {
-        if (!product) return false;
-        var button = product.querySelector('input.js-addtocart, button.js-addtocart, .eora-buy-btn');
-        return !!(button && (button.disabled || button.classList.contains('nostock')));
-    }
-
     function replaceProduct(html, href, path, historyMode, expectedNavigationId) {
         var newDoc = new DOMParser().parseFromString(html, 'text/html');
         var newProduct = newDoc.querySelector('#single-product');
@@ -153,37 +227,26 @@
         var targetUsesCustomLayout = newDoc.querySelector('.eora-product-wrap') ||
             (newProduct && newProduct.innerHTML.indexOf('eora-product-wrap') !== -1);
         if (!newProduct || !oldProduct || targetUsesCustomLayout || isCustomProduct()) return false;
-        if (isSoldOut(oldProduct) || isSoldOut(newProduct)) return false;
 
-        preloadMainImage(newProduct).then(function () {
-            if (expectedNavigationId !== navigationId) return;
+        if (expectedNavigationId !== navigationId) return true;
+        hydrateProductDescription(newDoc, newProduct);
+        rememberVariants(newDoc);
+        renderKnownVariants(newDoc, path);
 
-            var currentProduct = document.querySelector('#single-product');
-            if (!currentProduct || isCustomProduct()) return;
+        var currentProduct = document.querySelector('#single-product');
+        if (!currentProduct || isCustomProduct()) return true;
+        currentProduct.parentNode.replaceChild(newProduct, currentProduct);
 
-            newProduct.style.opacity = '0.72';
-            newProduct.style.transition = 'opacity 140ms ease';
-            currentProduct.parentNode.replaceChild(newProduct, currentProduct);
+        document.title = newDoc.title || document.title;
+        if (historyMode === 'push') {
+            history.pushState({ eoraGlobalPath: path }, '', href);
+        } else if (historyMode === 'replace') {
+            history.replaceState({ eoraGlobalPath: path }, '', href);
+        }
 
-            document.title = newDoc.title || document.title;
-            if (historyMode === 'push') {
-                history.pushState({ eoraGlobalPath: path }, '', href);
-            } else if (historyMode === 'replace') {
-                history.replaceState({ eoraGlobalPath: path }, '', href);
-            }
-
-            initProductGallery(newProduct);
-            bindPrefetches();
-            if (window.lazySizes && window.lazySizes.loader) window.lazySizes.loader.checkElems();
-
-            requestAnimationFrame(function () {
-                newProduct.style.opacity = '1';
-                setTimeout(function () {
-                    newProduct.style.removeProperty('transition');
-                    newProduct.style.removeProperty('opacity');
-                }, 160);
-            });
-        });
+        initProductGallery(newProduct);
+        bindPrefetches();
+        if (window.lazySizes && window.lazySizes.loader) window.lazySizes.loader.checkElems();
         return true;
     }
 
@@ -236,7 +299,6 @@
 
     if (!isCustomProduct()) {
         history.replaceState({ eoraGlobalPath: normalizePath(window.location.href) }, '', window.location.href);
-        if (document.readyState === 'complete') bindPrefetches();
-        else window.addEventListener('load', bindPrefetches, { once: true });
+        bindPrefetches();
     }
 })();
