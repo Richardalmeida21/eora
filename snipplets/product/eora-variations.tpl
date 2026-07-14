@@ -72,34 +72,47 @@
 
             if (!newImageCol || !newInfoCol || !curImageCol || !curInfoCol) return false;
 
-            // Fade-out small
-            var wrap = document.querySelector('.eora-product-wrap') || document.querySelector('#single-product');
-            if (wrap) wrap.style.opacity = '0.35';
+            // Preload main images from the new content (short wait) to avoid flicker
+            var imgs = [];
+            newImageCol.querySelectorAll('img').forEach(function(i){ if (i && i.src) imgs.push(i.src); });
+            newInfoCol.querySelectorAll('img').forEach(function(i){ if (i && i.src) imgs.push(i.src); });
+            imgs = imgs.filter(Boolean).slice(0,6); // limit
 
-            // Replace innerHTML (lightweight)
-            curImageCol.innerHTML = newImageCol.innerHTML;
-            curInfoCol.innerHTML = newInfoCol.innerHTML;
-
-            // Re-bind minimal behaviors on fresh form
-            var freshForm = curInfoCol.querySelector('#product_form, .js-product-form, form[action*="/cart"]');
-            if (freshForm) {
-                freshForm.classList.add('eora-cloned-product-form');
-                // intercept submit / buy buttons
-                freshForm.addEventListener('submit', function (e) { e.preventDefault(); e.stopPropagation(); forwardToOriginal(freshForm); });
-                freshForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
-                    btn.classList.remove('js-addtocart','js-addtocart-btn');
-                    btn.classList.add('eora-buy-btn');
-                    btn.addEventListener('click', function (ev) { ev.preventDefault(); ev.stopPropagation(); forwardToOriginal(freshForm); });
-                });
+            function preloadImages(urls, timeout) {
+                if (!urls.length) return Promise.resolve();
+                var loaders = urls.map(function(u){ return new Promise(function(res){ var img=new Image(); img.onload = img.onerror = function(){ res(u); }; img.src = u; }); });
+                return Promise.race([ Promise.allSettled(loaders), new Promise(function(res){ setTimeout(res, timeout); }) ]);
             }
 
-            // Update title and history
-            document.title = doc.title || document.title;
-            if (normalizePathname(window.location.href) !== path) history.pushState({ eoraPath: path }, '', fullUrl);
+            var wrap = document.querySelector('.eora-product-wrap') || document.querySelector('#single-product');
+            if (wrap) wrap.style.transition = 'opacity 180ms ease';
+            if (wrap) wrap.style.opacity = '0.45';
 
-            // small fade-in
-            setTimeout(function () { if (wrap) wrap.style.opacity = ''; }, 60);
+            // Wait briefly for images (non-blocking long)
+            preloadImages(imgs, 450).then(function(){
+                // Replace innerHTML (lightweight)
+                try { curImageCol.innerHTML = newImageCol.innerHTML; curInfoCol.innerHTML = newInfoCol.innerHTML; } catch(e){}
 
+                // Re-bind minimal behaviors on fresh form
+                var freshForm = curInfoCol.querySelector('#product_form, .js-product-form, form[action*="/cart"]');
+                if (freshForm) {
+                    freshForm.classList.add('eora-cloned-product-form');
+                    // intercept submit / buy buttons
+                    freshForm.addEventListener('submit', function (e) { e.preventDefault(); e.stopPropagation(); forwardToOriginal(freshForm); });
+                    freshForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
+                        btn.classList.remove('js-addtocart','js-addtocart-btn');
+                        btn.classList.add('eora-buy-btn');
+                        btn.addEventListener('click', function (ev) { ev.preventDefault(); ev.stopPropagation(); forwardToOriginal(freshForm); });
+                    });
+                }
+
+                // Update title and history
+                document.title = doc.title || document.title;
+                if (normalizePathname(window.location.href) !== path) history.pushState({ eoraPath: path }, '', fullUrl);
+
+                // small fade-in
+                setTimeout(function () { if (wrap) wrap.style.opacity = ''; }, 60);
+            });
             return true;
         } catch (e) { return false; }
     }
@@ -137,13 +150,33 @@
         if (href) prefetchVariation(href);
     });
 
-    // Click handler: navigate via AJAX + partial swap
+    // Intercept navigation early to avoid theme's native loading overlay.
+    function isVariantEl(node) {
+        return node && node.closest && !!node.closest('.eora-bolsa-var-item, .variante-item, a.variante-link');
+    }
+
+    // Prevent native navigation as early as possible (pointerdown / touchstart)
+    ['pointerdown', 'touchstart'].forEach(function (evName) {
+        document.addEventListener(evName, function (ev) {
+            try {
+                var el = ev.target && ev.target.closest && ev.target.closest('.eora-bolsa-var-item, .variante-item, a.variante-link');
+                if (!el) return;
+                var href = el.getAttribute('href') || el.getAttribute('data-href') || el.getAttribute('data-href-path');
+                if (!href) return;
+                // Prevent other handlers (theme overlays) from running
+                ev.preventDefault();
+                ev.stopImmediatePropagation();
+            } catch (e) {}
+        }, { passive: false, capture: true });
+    });
+
+    // Click handler: navigate via AJAX + partial swap (capture to run before theme handlers)
     document.addEventListener('click', function (e) {
         var el = e.target && e.target.closest && e.target.closest('.eora-bolsa-var-item, .variante-item, a.variante-link');
         if (!el) return;
         var href = el.getAttribute('href') || el.getAttribute('data-href') || el.getAttribute('data-href-path');
         if (!href) return;
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault(); e.stopImmediatePropagation();
         navigateToVariation(href);
     }, true);
 
