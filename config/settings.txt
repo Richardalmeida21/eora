@@ -6917,7 +6917,7 @@ Página de campanha 6
 		original = campaign_page_06_banner_topo_img.jpg
 		width = 1920
 		height = 500
-	checkbox 
+	checkbox
 		name = campaign_page_06_banner_topo_mobile
 		description = Mostrar outra imagem em dispositivos mobile
 	image
