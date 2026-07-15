@@ -6923,8 +6923,8 @@ Página de campanha 6
 	image
 		title = Cargar imagen (JPG, GIF, PNG)
 		original = campaign_page_06_banner_topo_mobile_img.jpg
-		width = 375
-		height = 350
+		width = 750
+		height = 700
 	collapse
 		title = Primeiro carrossel de produtos
 	checkbox
