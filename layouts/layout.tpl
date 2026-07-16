@@ -292,6 +292,9 @@
 
         {% head_content %}
 
+        {# Martz must load after the GTM/GA4 integrations injected above. #}
+        {% include "snipplets/martz-data-layer.tpl" %}
+
         {# Structured data to provide information for Google about the page content #}
 
         {{ component('structured-data') }}
