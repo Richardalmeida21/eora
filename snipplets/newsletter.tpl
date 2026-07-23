@@ -13,7 +13,7 @@
             {% if settings.news_description %}
                 <div class="title-newsletter mb-3">{{ settings.news_description }}</div>
             {% endif %}
-            <form class="js-newsletter-form w-100" method="post" action="/winnie-pooh" onsubmit="this.setAttribute('action', '');" data-store="newsletter-form">
+            <form class="js-newsletter-form w-100" method="post" action="{{ store.contact_url }}" data-store="newsletter-form">
                 <div class="newsletter-form input-append d-flex flex-column w-100" style="gap:16px;">
                         <div class="input-group w-100 position-relative">
                             {% embed "snipplets/forms/form-input.tpl" with{
@@ -27,17 +27,18 @@
                                 input_aria_label: 'Endereço de e-mail para newsletter'
                             } %}
                             {% endembed %}
-                            <button type="submit" name="contact"
+                            <button type="submit" name="contact" value="{{ 'Enviar' | translate }}"
                                 class="btn position-absolute"
                                 style="background:none; border:none; color: #000; font-size:15px; font-weight:700; text-decoration:underline; right:15px; top:50%; transform:translateY(-50%); z-index:10; margin:0; cursor:pointer; min-width:48px; min-height:48px;">
                                 Inscrever-se
                             </button>
                         </div>
                     <!-- Checkbox de política de privacidade removido conforme solicitado -->
-                    <div class="winnie-pooh" style="display: none;>
+                    <div class="winnie-pooh" style="display: none;">
                         <label for="winnie-pooh-newsletter">{{ "No completar este campo" | translate }}</label>
                         <input id="winnie-pooh-newsletter" type="text" name="winnie-pooh"/>
                     </div>
+                    <input type="hidden" name="name" value="{{ 'Sin nombre' | translate }}" />
                     <input type="hidden" name="message" value="{{ "Pedido de inscripción a newsletter" | translate }}" />
                     <input type="hidden" name="type" value="newsletter" />
                 </div>
