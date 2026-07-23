@@ -2839,10 +2839,16 @@ body:not(.is-using-mouse) .fancybox__container :focus {
 }
 
 .contact-page-standard .contact-info [class*="col-"] {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.contact-page-standard .contact-info .d-flex {
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .contact-page-standard .contact-info a {
+  padding-left: 0 !important;
   color: #fff !important;
   font-size: 14px;
   line-height: 1.5;

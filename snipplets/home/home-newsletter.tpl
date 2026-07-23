@@ -1,6 +1,6 @@
 {% set newsletter_contact_error = contact.type == 'newsletter' and not contact.success %}
 
-<section class="section-newsletter-home {% if settings.home_news_colors %}section-newsletter-home-colors{% endif %} position-relative overflow-none" data-store="home-newsletter">
+<section id="home-newsletter" class="section-newsletter-home {% if settings.home_news_colors %}section-newsletter-home-colors{% endif %} position-relative overflow-none" data-store="home-newsletter">
 	<div class="container-fluid newsletter-content">
 		<div class="row align-items-end">
 			<div class="col-md">
@@ -11,7 +11,7 @@
 			</div>
 			<div class="col-md-auto">
 				<div class="js-newsletter newsletter mt-md-1 mb-md-3 ml-md-auto pb-md-1">
-					<form method="post" action="{{ store.contact_url }}" data-store="home-newsletter-form">
+					<form method="post" action="/winnie-pooh" onsubmit="this.setAttribute('action', window.location.pathname + window.location.search + '#home-newsletter');" data-store="home-newsletter-form">
 						<div class="input-append">
 							{% embed "snipplets/forms/form-input.tpl" with{input_for: 'email', type_email: true, input_name: 'email', input_id: 'email', input_placeholder: 'Email' | translate, input_custom_class: 'form-control-line font-md-big', input_group_custom_class: "mb-0",  input_aria_label: 'Email' | translate } %}
 							{% endembed %}
