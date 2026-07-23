@@ -9,17 +9,22 @@
 
 {% set has_contact_info = store.whatsapp or store.phone or store.email or store.address or store.blog or store.contact_intro %}
 {% set is_order_cancellation_without_id = params.order_cancellation_without_id == 'true' %}
-<section class="contact-page visible-when-content-ready mb-4">
-	<div class="container">
-		<div class="row">
+<section class="contact-page {% if not is_order_cancellation %}contact-page-standard{% endif %} visible-when-content-ready mb-4">
+	<div class="container contact-page-container">
+		<div class="row contact-page-layout">
 
 			{% if has_contact_info and not is_order_cancellation %}
-				<div class="col-md-4 mb-3">
+				<aside class="col-md-4 mb-3 contact-page-sidebar">
+					<div class="contact-page-eyebrow">{{ 'Atendimento' | translate }}</div>
+					<h2 class="contact-page-sidebar-title">{{ 'Fale com a EORA' | translate }}</h2>
 					{% if store.contact_intro %}
-						<p class="mb-4">{{ store.contact_intro }}</p>
+						<p class="contact-page-sidebar-text">{{ store.contact_intro }}</p>
+					{% else %}
+						<p class="contact-page-sidebar-text">{{ 'Nossa equipe está pronta para ajudar. Entre em contato pelos canais abaixo ou envie uma mensagem.' | translate }}</p>
 					{% endif %}
 					{% include "snipplets/contact-links.tpl" with {with_icons: true} %}
-				</div>
+					<p class="contact-page-response-time">{{ 'Respondemos em horário comercial.' | translate }}</p>
+				</aside>
 			{% endif %}
 			{% if is_order_cancellation %}
 				<div class="col-md-4 mb-3">
@@ -37,7 +42,14 @@
 					{% endif %}
 				</div>	
 			{% endif %}
-			<div class="col-md-5">
+			<div class="{% if is_order_cancellation %}col-md-5{% else %}col-md-7{% endif %} contact-page-form-column">
+				{% if not is_order_cancellation %}
+					<div class="contact-page-form-heading">
+						<div class="contact-page-eyebrow">{{ 'Contato' | translate }}</div>
+						<h2>{{ 'Envie uma mensagem' | translate }}</h2>
+						<p>{{ 'Preencha os dados abaixo e retornaremos o mais breve possível.' | translate }}</p>
+					</div>
+				{% endif %}
 				{% if product %}  
 					<div class="row align-items-center mb-4">
 						<div class="col-auto">
@@ -68,7 +80,7 @@
 					<p class="mb-3" data-component="order-cancellation-disclaimer">{{ "Si te arrepentiste de una compra, podés pedir la cancelación enviando este formulario <strong>con tu número de orden.</strong> Tenés como máximo hasta 10 días corridos desde que recibiste el producto." | translate }}</p>
 				{% endif %}
 				
-				{% embed "snipplets/forms/form.tpl" with{form_id: 'contact-form', form_custom_class: 'js-winnie-pooh-form', form_action: '/winnie-pooh', submit_custom_class: 'btn-block', submit_name: 'contact', submit_text: 'Enviar' | translate, data_store: 'contact-form' }  %}
+				{% embed "snipplets/forms/form.tpl" with{form_id: 'contact-form', form_custom_class: 'js-winnie-pooh-form contact-page-form', form_action: '/winnie-pooh', submit_custom_class: 'btn-block', submit_name: 'contact', submit_text: 'Enviar mensagem' | translate, data_store: 'contact-form' }  %}
 					{% block form_body %}
 
 						{# Hidden inputs used to send attributes #}
@@ -85,26 +97,28 @@
 							<input type="hidden" name="type" value="contact" />
 						{% endif %}
 
-						{# Name input #}
+						<div class="contact-page-fields-grid">
+							{# Name input #}
 
-						{% embed "snipplets/forms/form-input.tpl" with{input_for: 'name', type_text: true, input_name: 'name', input_id: 'name', input_label_text: 'Nombre' | translate, input_placeholder: 'ej.: María Perez' | translate } %}
-						{% endembed %}
+							{% embed "snipplets/forms/form-input.tpl" with{input_for: 'name', type_text: true, input_name: 'name', input_id: 'name', input_label_text: 'Nome' | translate, input_placeholder: 'Seu nome completo' | translate, input_required: true, input_autocomplete: 'name' } %}
+							{% endembed %}
 
-						{# Email input #}
+							{# Email input #}
 
-						{% embed "snipplets/forms/form-input.tpl" with{input_for: 'email', type_email: true, input_name: 'email', input_id: 'email', input_label_text: 'Email' | translate, input_placeholder: 'ej.: tuemail@email.com' | translate } %}
-						{% endembed %}
+							{% embed "snipplets/forms/form-input.tpl" with{input_for: 'email', type_email: true, input_name: 'email', input_id: 'email', input_label_text: 'E-mail' | translate, input_placeholder: 'seuemail@email.com.br' | translate, input_required: true, input_autocomplete: 'email' } %}
+							{% endembed %}
+						</div>
 
 						{% if not is_order_cancellation %}
 
 							{# Phone input #}
 
-							{% embed "snipplets/forms/form-input.tpl" with{input_for: 'phone', type_tel: true, input_name: 'phone', input_id: 'phone', input_label_text: 'Teléfono' | translate, input_placeholder: 'ej.: 1123445567' | translate } %}
+							{% embed "snipplets/forms/form-input.tpl" with{input_for: 'phone', type_tel: true, input_name: 'phone', input_id: 'phone', input_label_text: 'Telefone' | translate, input_placeholder: '(00) 00000-0000' | translate, input_autocomplete: 'tel' } %}
 							{% endembed %}
 
 							{# Message textarea #}
 
-							{% embed "snipplets/forms/form-input.tpl" with{text_area: true, input_for: 'message', input_name: 'message', input_id: 'message', input_rows: '7', input_label_text: 'Mensaje' | translate, input_placeholder: 'ej.: Tu mensaje' | translate } %}
+							{% embed "snipplets/forms/form-input.tpl" with{text_area: true, input_for: 'message', input_name: 'message', input_id: 'message', input_rows: '6', input_label_text: 'Mensagem' | translate, input_placeholder: 'Como podemos ajudar?' | translate, input_required: true } %}
 							{% endembed %}
 
 						{% endif %}

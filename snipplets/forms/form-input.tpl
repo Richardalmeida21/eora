@@ -53,7 +53,8 @@
             {% if input_value %}value="{{ input_value }}"{% endif %}
             {% if input_rows %}rows="{{ input_rows }}"{% endif %}
             {% if input_placeholder %}placeholder="{{ input_placeholder }}"{% endif %}
-            {% if input_data_attr %}data-{{ input_data_attr }}="{{ input_data_val }}"{% endif %}></textarea>
+            {% if input_data_attr %}data-{{ input_data_attr }}="{{ input_data_val }}"{% endif %}
+            {% if input_required %}required{% endif %}></textarea>
     {% else %}
         <input 
             type="{% if type_text %}text{% elseif type_number %}number{% elseif type_tel %}tel{% elseif type_password %}password{% elseif type_hidden %}hidden{% elseif type_email %}email{% endif %}"
@@ -61,7 +62,7 @@
             class="{% if type_password %}js-password-input{% endif %} form-control {{ input_custom_class }} {% if input_append_content %}form-control-inline{% endif %}" 
             autocorrect="off" 
             autocapitalize="off" 
-            {% if type_password %}autocomplete="off"{% endif %}
+            {% if type_password %}autocomplete="off"{% elseif input_autocomplete %}autocomplete="{{ input_autocomplete }}"{% endif %}
             {% if type_number %}pattern="\d*"{% endif %}
             {% if input_name %}name="{{ input_name }}"{% endif %}
             {% if input_value %}value="{{ input_value }}"{% endif %}
