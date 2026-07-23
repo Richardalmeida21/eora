@@ -2772,13 +2772,29 @@ body:not(.is-using-mouse) .fancybox__container :focus {
 }
 
 .contact-page-standard .contact-page-container {
-  max-width: 1180px;
+  width: 100%;
+  max-width: 1120px;
+  padding-right: 20px;
+  padding-left: 20px;
   margin-right: auto;
   margin-left: auto;
 }
 
 .contact-page-standard .contact-page-layout {
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  align-items: stretch;
+  width: 100%;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.contact-page-standard .contact-page-layout > .contact-page-sidebar,
+.contact-page-standard .contact-page-layout > .contact-page-form-column {
+  width: 100% !important;
+  max-width: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
 }
 
 .contact-page-standard .contact-page-sidebar,
@@ -2934,7 +2950,11 @@ body:not(.is-using-mouse) .fancybox__container :focus {
   }
 
   .contact-page-standard .contact-page-sidebar {
-    min-height: 390px;
+    min-height: 360px;
+  }
+
+  .contact-page-standard .contact-page-layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .contact-page-standard .contact-page-form-column {
