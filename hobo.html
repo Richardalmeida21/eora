@@ -3,6 +3,67 @@
 <script>
 <!--
 (function () {
+    /*
+     * Configuração exclusiva da família HOBO VÉRTICE.
+     * Todos os produtos que funcionam como variações devem receber a tag
+     * "hobovertice" no painel da Nuvemshop.
+     */
+    var EORA_PRODUCT_DISPLAY_NAME = 'HOBO VÉRTICE';
+    var EORA_VARIANT_GROUP_TAG = 'hobovertice';
+
+    function normalizeHoboVariation(value) {
+        return String(value || '')
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[\/_-]+/g, ' ')
+            .replace(/\s+/g, ' ');
+    }
+
+    function upperFirst(value) {
+        value = String(value || '').trim();
+        return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
+    }
+
+    function inferHoboVariationFromProductName(productName) {
+        var rawName = String(productName || '').trim();
+        if (!rawName) return '';
+
+        var variation = rawName
+            .replace(/^\s*hobo\s+v[ée]rtice/i, '')
+            .replace(/^\s*(?:[-–—]\s*)?pr[ée][-\s]*venda\b/i, '')
+            .replace(/^[\s\-–—/:]+/, '')
+            .trim();
+
+        if (!variation || variation === rawName) return '';
+
+        var aliases = {
+            'camurca prata': 'Camurça marrom / Prata',
+            'camurca marrom prata': 'Camurça marrom / Prata',
+            'camurca dourado': 'Camurça marrom / Dourado',
+            'camurca marrom dourado': 'Camurça marrom / Dourado',
+            'prero prata': 'Preto / Prata',
+            'preto prata': 'Preto / Prata',
+            'preto dourado': 'Preto / Dourado',
+            'berinjela prata': 'Berinjela / Prata',
+            'alcaparra prata': 'Alcaparra / Prata',
+            'piton prata': 'Piton / Prata',
+            'rosa prata': 'Rosa Candy / Prata',
+            'rosa candy prata': 'Rosa Candy / Prata'
+        };
+        var normalized = normalizeHoboVariation(variation);
+        if (aliases[normalized]) return aliases[normalized];
+
+        var parts = variation.replace(/\s*\/\s*/g, ' / ').split(/\s+/).filter(Boolean);
+        var metal = normalizeHoboVariation(parts[parts.length - 1]);
+        if (parts.length > 1 && (metal === 'prata' || metal === 'dourado')) {
+            return upperFirst(parts.slice(0, -1).join(' ')) + ' / ' + upperFirst(parts[parts.length - 1]);
+        }
+
+        return upperFirst(variation);
+    }
+
     var css = [
         /* Proteção máxima de layout e viewport contra quebras e encolhimento (squishing) */
         'html,body{max-width:100%!important;width:100%!important;overflow-x:hidden!important;margin:0!important;padding:0!important;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}',
@@ -25,21 +86,21 @@
         /* ── Galeria vertical ── */
         '.eora-blg-wrap{display:flex!important;flex-direction:row!important;width:100%!important;gap:16px!important;align-items:stretch!important}',
         '.eora-product-gallery{width:100%!important;min-width:0!important;display:block!important}',
-        '.eora-blg-strip{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;position:relative!important;width:var(--eora-gallery-thumb-size,180px)!important;height:var(--eora-gallery-main-height,auto)!important;max-height:var(--eora-gallery-main-height,none)!important;overflow:visible!important;box-sizing:border-box!important;align-self:flex-start!important;flex-shrink:0!important}',
+        '.eora-blg-strip{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;position:relative!important;width:var(--eora-gallery-thumb-width,144px)!important;height:var(--eora-gallery-main-height,auto)!important;max-height:var(--eora-gallery-main-height,none)!important;overflow:visible!important;box-sizing:border-box!important;align-self:flex-start!important;flex-shrink:0!important}',
         '.eora-blg-arrow{position:absolute!important;left:50%!important;transform:translateX(-50%)!important;background:none!important;border:none!important;padding:6px!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:0.5!important;transition:opacity .2s!important;flex-shrink:0!important;z-index:2!important}',
         '.eora-blg-strip .eora-blg-arrow:first-child{top:-28px!important}',
         '.eora-blg-strip .eora-blg-arrow:last-child{bottom:-28px!important}',
         '.eora-blg-arrow:hover{opacity:1!important}',
         '.eora-blg-arrow svg{width:14px!important;height:14px!important;fill:none!important;stroke:#111!important;stroke-width:2px!important;stroke-linecap:round!important;stroke-linejoin:round!important;display:block!important}',
-        '.eora-blg-tvp{overflow:hidden!important;width:var(--eora-gallery-thumb-size,180px)!important;height:100%!important;flex:0 0 100%!important;min-height:0!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;padding:0!important}',
+        '.eora-blg-tvp{overflow:hidden!important;width:var(--eora-gallery-thumb-width,144px)!important;height:100%!important;flex:0 0 100%!important;min-height:0!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;padding:0!important}',
         '.eora-blg-ttrack{display:flex!important;flex-direction:column!important;gap:14px!important;transition:transform .3s ease!important;width:100%!important}',
-        '.eora-blg-thumb{width:var(--eora-gallery-thumb-size,180px)!important;height:var(--eora-gallery-thumb-size,180px)!important;cursor:pointer!important;border:1px solid transparent!important;box-sizing:border-box!important;flex-shrink:0!important;transition:border-color .2s!important}',
-        '.eora-blg-thumb img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}',
+        '.eora-blg-thumb{width:var(--eora-gallery-thumb-width,144px)!important;height:var(--eora-gallery-thumb-height,180px)!important;cursor:pointer!important;border:1px solid transparent!important;box-sizing:border-box!important;flex-shrink:0!important;transition:border-color .2s!important;overflow:hidden!important}',
+        '.eora-blg-thumb img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;display:block!important}',
         '.eora-blg-thumb.eora-active{border-color:#111!important}',
-        '.eora-blg-main-wrap{flex:1 1 auto!important;width:100%!important;min-width:0!important;overflow:hidden!important;position:relative!important;aspect-ratio:1/1!important;align-self:flex-start!important}',
+        '.eora-blg-main-wrap{flex:1 1 auto!important;width:100%!important;min-width:0!important;overflow:hidden!important;position:relative!important;aspect-ratio:4/5!important;align-self:flex-start!important}',
         '.eora-blg-track{display:flex!important;transition:transform .35s ease!important;will-change:transform!important}',
-        '.eora-blg-slide{flex:0 0 100%!important;width:100%!important;box-sizing:border-box!important;aspect-ratio:1/1!important;overflow:hidden!important}',
-        '.eora-blg-slide img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important}',
+        '.eora-blg-slide{flex:0 0 100%!important;width:100%!important;box-sizing:border-box!important;aspect-ratio:4/5!important;overflow:hidden!important}',
+        '.eora-blg-slide img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center center!important}',
         '.eora-blg-mdots{display:none!important;justify-content:center!important;gap:8px!important;padding:14px 0 6px!important}',
         '.eora-blg-dot{width:7px!important;height:7px!important;border-radius:50%!important;background:#ccc!important;border:none!important;padding:0!important;cursor:pointer!important;transition:background .2s!important}',
         '.eora-blg-dot.eora-active{background:#111!important}',
@@ -53,12 +114,12 @@
         /* mobile: strip horizontal abaixo da imagem principal */
         '@media(max-width:768px){' +
             '.eora-blg-wrap{flex-direction:column!important;gap:0!important;position:static!important}' +
-            '.eora-blg-main-wrap{order:1!important}' +
+            '.eora-blg-main-wrap{order:1!important;aspect-ratio:4/5!important}' +
             '.eora-blg-strip{order:2!important;display:flex!important;position:static!important;width:100%!important;height:auto!important;max-height:none!important;background:transparent!important;flex-direction:row!important;align-items:center!important;padding:8px 0 0!important;flex-shrink:0!important}' +
             '.eora-blg-strip .eora-blg-arrow{display:none!important}' +
-            '.eora-blg-strip .eora-blg-tvp{width:100%!important;padding:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;-ms-overflow-style:none!important;scroll-snap-type:x mandatory!important}' +
+            '.eora-blg-strip .eora-blg-tvp{width:100%!important;height:auto!important;flex:0 0 auto!important;padding:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;-ms-overflow-style:none!important;scroll-snap-type:x mandatory!important}' +
             '.eora-blg-strip .eora-blg-tvp::-webkit-scrollbar{display:none!important}' +
-            '.eora-blg-strip .eora-blg-ttrack{flex-direction:row!important;gap:6px!important;width:auto!important;transform:none!important}' +
+            '.eora-blg-strip .eora-blg-ttrack{flex-direction:row!important;align-items:flex-start!important;gap:6px!important;width:auto!important;height:auto!important;transform:none!important}' +
             '.eora-blg-strip .eora-blg-thumb{border:1px solid transparent!important;box-shadow:none!important;scroll-snap-align:start!important;flex-shrink:0!important}' +
             '.eora-blg-strip .eora-blg-thumb.eora-active{border-color:#111!important;outline:none!important}' +
             '.eora-blg-mdots{display:none!important}' +
@@ -67,7 +128,7 @@
 
         /* ── Swatches de variante ── */
         '.eora-bolsa-vars{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:12px 0 16px!important;width:100%!important;max-width:100%!important}',
-        '.eora-bolsa-var-item{border:1px solid #ecece8!important;cursor:pointer!important;width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;overflow:hidden!important;transition:border-color .2s!important;box-sizing:border-box!important;background:#f5f5f3!important;position:relative!important}',
+        '.eora-bolsa-var-item{border:1px solid #ecece8!important;cursor:pointer!important;width:56px!important;height:75px!important;min-width:56px!important;min-height:75px!important;overflow:hidden!important;transition:border-color .2s!important;box-sizing:border-box!important;background:#f5f5f3!important;position:relative!important}',
         '.eora-bolsa-var-item:hover,.eora-bolsa-var-item.eora-active{border:2px solid #111!important}',
         '.eora-bolsa-var-item.eora-prevenda-item{border-color:#d90429!important}',
         '.eora-bolsa-var-item.eora-prevenda-item:hover,.eora-bolsa-var-item.eora-prevenda-item.eora-active{border:2px solid #d90429!important}',
@@ -76,7 +137,7 @@
 
         /* mobile: miniaturas levemente menores */
         '@media(max-width:480px){' +
-            '.eora-bolsa-var-item{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important}' +
+            '.eora-bolsa-var-item{width:52px!important;height:69px!important;min-width:52px!important;min-height:69px!important}' +
         '}',
 
         /* ── Descrição com "ver mais" ── */
@@ -175,14 +236,16 @@
 
     function getDados() {
         var d = {};
-        document.querySelectorAll('.js-product-description-base table').forEach(function (t) {
-            var td = t.querySelector('tbody > tr:first-child td:first-child');
-            if (td) d[td.textContent.trim().toLowerCase()] = t;
-        });
-        eoraConfigTableCache.forEach(function (t) {
-            var td = t.querySelector('tbody > tr:first-child td:first-child');
-            if (td) d[td.textContent.trim().toLowerCase()] = t;
-        });
+        function indexTable(t) {
+            t.querySelectorAll('tbody > tr, tr').forEach(function (row) {
+                var td = row.querySelector('td:first-child');
+                if (!td) return;
+                var key = td.textContent.trim().toLowerCase();
+                if (key) d[key] = t;
+            });
+        }
+        document.querySelectorAll('.js-product-description-base table').forEach(indexTable);
+        eoraConfigTableCache.forEach(indexTable);
         return d;
     }
 
@@ -273,7 +336,7 @@
         }
         
         // 3. Third priority: look for any tag that is NOT generic or a known base/linking tag
-        var genericTags = ['bolsa', 'vertice', 'prevenda', 'pre-venda', 'pre venda', 'sale', 'novo', 'lancamento', 'lançamento', 'eora', 'promocao', 'promoção', 'maxivertice', 'luar', 'bolsaluar'];
+        var genericTags = ['bolsa', 'vertice', 'prevenda', 'pre-venda', 'pre venda', 'sale', 'novo', 'lancamento', 'lançamento', 'eora', 'promocao', 'promoção', 'hobo', 'hobovertice', 'luar', 'bolsaluar'];
         var cleanGeneric = genericTags.map(function(gt) { return gt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); });
         
         for (var i = 0; i < tags.length; i++) {
@@ -290,40 +353,8 @@
         return '';
     }
 
-    function readVariationNameFromConfig(root) {
-        var possibleKeys = ['nome_variacao', 'nome variacao', 'nome da variacao', 'nome_variacao_produto', 'cor'];
-        var tables = [];
-        root = root || document;
-
-        try {
-            if (root.querySelectorAll) {
-                tables = tables.concat(Array.prototype.slice.call(root.querySelectorAll('.js-product-description-base table, table')));
-            }
-        } catch (e) {}
-
-        if (root === document || root.nodeType === 9) {
-            tables = tables.concat(eoraConfigTableCache || []);
-        }
-
-        for (var i = 0; i < tables.length; i++) {
-            var rows = tables[i].querySelectorAll('tr');
-            for (var j = 0; j < rows.length; j++) {
-                var cells = rows[j].querySelectorAll('td');
-                if (cells.length < 2) continue;
-                var k = normalizeText(cells[0].textContent || '').replace(/[_-]+/g, ' ');
-                if (possibleKeys.indexOf(k) === -1 && possibleKeys.indexOf(k.replace(/\s+/g, '_')) === -1) continue;
-                var value = cells[1].textContent.replace(/[\u00a0\s]+/g, ' ').trim();
-                if (value) return value;
-            }
-        }
-
-        return '';
-    }
-
     function autoGetVariationName(doc) {
         var root = doc || document;
-        var configuredVarName = readVariationNameFromConfig(root);
-        if (configuredVarName) return configuredVarName;
 
         // 1. Tenta extrair da tabela de configuração (nome_variacao / cor)
         try {
@@ -355,6 +386,8 @@
         var nameEl = productRoot.querySelector('.js-product-name, h1.product-name, .product-name h1, h1');
         if (nameEl) {
             var txt = (nameEl.textContent || '').trim();
+            var hoboVariation = inferHoboVariationFromProductName(txt);
+            if (hoboVariation) return hoboVariation;
             var parts = txt.split(/\s+[-–—]\s+/);
             if (parts.length > 1) {
                 return parts.slice(1).join(' / ').trim();
@@ -407,8 +440,7 @@
         var root = doc || document;
         
         // Se já temos o nome da variação ativa no cache global, prioriza ele para evitar que timeouts ou scripts nativos revertam
-        var configuredVariationName = readVariationNameFromConfig(root);
-        var nomeVariacao = configuredVariationName || window.eoraActiveVariationName || '';
+        var nomeVariacao = window.eoraActiveVariationName || '';
 
         if (!nomeVariacao) {
             nomeVariacao = autoGetVariationName(root);
@@ -440,10 +472,7 @@
         if (infoEl) {
             var h2 = infoEl.querySelector('.eora-product-name') || infoEl.querySelector('.js-product-name');
             if (h2) {
-                var txt = h2.textContent || '';
-                if (txt.indexOf(' - ') !== -1) {
-                    h2.innerHTML = txt.split(' - ')[0].trim();
-                }
+                h2.textContent = EORA_PRODUCT_DISPLAY_NAME;
             }
             
             var varTitleEl = infoEl.querySelector('.eora-nome-variacao');
@@ -503,68 +532,6 @@
             title = cells[1].textContent.replace(/[\u00a0\s]+/g, ' ').trim();
         });
         return title;
-    }
-
-    function getConfigTextByKeys(keys) {
-        keys = (Array.isArray(keys) ? keys : [keys]).map(normalizeConfigKey).filter(Boolean);
-        if (!keys.length) return '';
-        var table = findConfigTable(keys);
-        if (!table) return '';
-        var value = '';
-        table.querySelectorAll('tbody > tr').forEach(function (row) {
-            if (value) return;
-            var cells = row.querySelectorAll('td');
-            if (cells.length < 2) return;
-            if (keys.indexOf(normalizeConfigKey(cells[0].textContent)) === -1) return;
-            value = cells[1].textContent.replace(/[\u00a0\s]+/g, ' ').trim();
-        });
-        return value;
-    }
-
-    function getVariantProductsSetting() {
-        return getConfigTextByKeys([
-            'variantes_produto',
-            'variacoes_produto',
-            'mostrar_variantes',
-            'mostrar_variacoes',
-            'exibir_variantes',
-            'exibir_variacoes'
-        ]);
-    }
-
-    function getVariantProductsTagFromSetting() {
-        var raw = getVariantProductsSetting();
-        var setting = normalizeConfigKey(raw);
-        if (!setting) return '';
-        if (/^(ocultar|esconder|nao|no|off|false|0|sem|desativar|desativado|mostrar|exibir|sim|yes|on|true|1|ativar|ativado)$/.test(setting)) return '';
-        return raw.replace(/[\u00a0\s]+/g, ' ').trim();
-    }
-
-    function shouldHideVariantControls() {
-        var setting = normalizeConfigKey(getVariantProductsSetting() || getConfigTextByKeys([
-            'variantes_produto',
-            'variacoes_produto',
-            'mostrar_variantes',
-            'mostrar_variacoes',
-            'exibir_variantes',
-            'exibir_variacoes'
-        ]));
-        var configuredTag = getVariantProductsTagFromSetting();
-
-        var tags = getProductTagsFromRoot().map(normalizeText);
-        var hideTags = ['sem_variacoes', 'sem-variacoes', 'sem variacoes', 'sem_variantes', 'sem-variantes', 'sem variantes', 'ocultar_variacoes', 'ocultar variacoes', 'ocultar_variantes', 'ocultar variantes'];
-        if (configuredTag) return false;
-        if (/^(ocultar|esconder|nao|não|no|off|false|0|sem|desativar|desativado)$/.test(setting)) return true;
-        for (var i = 0; i < hideTags.length; i++) {
-            if (tags.indexOf(hideTags[i]) !== -1) return true;
-        }
-
-        var nameEl = document.querySelector('.js-product-name,.product-name,[data-store="product-name"],h1,h2');
-        var identity = normalizeText(window.location.pathname + ' ' + (nameEl ? nameEl.textContent : ''));
-        if (identity.indexOf('cinto') !== -1 && tags.indexOf('maxivertice') !== -1) return true;
-
-        if (/^(mostrar|exibir|sim|yes|on|true|1|ativar|ativado)$/.test(setting)) return false;
-        return false;
     }
 
     function syncSectionTitleBefore(target, title, className) {
@@ -726,9 +693,6 @@
         window.eoraIsSubmittingCart = true;
         setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
 
-        // TikTok AddToCart
-        eoraTrackAddToCart();
-
         var form = getOriginalProductForm();
         if (!form) return false;
         var addBtn = getOriginalAddButton();
@@ -744,24 +708,6 @@
         return true;
     }
 
-    function shouldOpenVariantPopupForBuy() {
-        try {
-            if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 1) return true;
-            if (typeof LS !== 'undefined' && LS.product && LS.product.variants && LS.product.variants.length > 1) return true;
-        } catch (e) {}
-
-        var form = getOriginalProductForm();
-        if (!form) return false;
-        var selects = Array.prototype.slice.call(form.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (select) {
-            return !select.classList.contains('js-shipping-select') && normalizeText((select.id || '') + ' ' + (select.name || '')).indexOf('shipping') === -1;
-        });
-        return selects.some(function (select) {
-            return Array.prototype.slice.call(select.querySelectorAll('option')).filter(function (option) {
-                return option.value;
-            }).length > 1;
-        });
-    }
-
     function dropdownLooksLikeMeasurements(drop) {
         if (!drop) return false;
         var toggle = drop.querySelector('.dropdown-toggle') || drop.querySelector('button');
@@ -769,9 +715,21 @@
         return text.indexOf('medidas') !== -1;
     }
 
+    if (!window.eoraShippingClickBridgeBound) {
+        window.eoraShippingClickBridgeBound = true;
+        document.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.eora-calculate-shipping-btn') : null;
+            if (!btn) return;
+            var calculator = btn.closest('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator, .eora-shipping-dropdown, .shipping-dropdown');
+            if (!calculator || typeof calculator._eoraCalculateShipping !== 'function') return;
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            calculator._eoraCalculateShipping();
+        }, true);
+    }
+
     function bindShippingCalculator(infoEl, themeProd) {
-        var origShipping = themeProd.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
-                           (themeProd.querySelector('input[name="zipcode"], .js-shipping-input') ? themeProd.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         var clonedShipping = infoEl.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
                              (infoEl.querySelector('input[name="zipcode"], .js-shipping-input') ? infoEl.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         if (clonedShipping && dropdownLooksLikeMeasurements(clonedShipping)) {
@@ -795,19 +753,99 @@
             }
         }
 
-        if (origShipping && clonedShipping) {
-            var origInput = origShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var origBtn = origShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
-            var origResponse = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-            
-            var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
-            var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-            
-            // Preenche o input clonado se o original já tiver valor (ex: CEP salvo)
-            if (origInput && clonedInput && origInput.value && !clonedInput.value) {
-                clonedInput.value = origInput.value;
+        if (clonedShipping) {
+            if (infoEl.classList) {
+                infoEl.classList.add('js-has-new-shipping', 'js-product-detail', 'js-shipping-calculator-container');
             }
+
+            var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+            var clonedBtn = clonedShipping.querySelector('.eora-calculate-shipping-btn, .js-calculate-shipping, .js-shipping-calculator-btn, .form-control-btn, button[type="submit"], input[type="submit"], input[type="button"], button:not(.dropdown-toggle)');
+            var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+            var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
+            var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
+            var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
+            var clonedCurrentZip = clonedShipping.querySelector('.js-shipping-calculator-current-zip');
+            var clonedSpinner = clonedShipping.querySelector('.js-shipping-calculator-spinner');
+
+            function escapeShippingHtml(value) {
+                return String(value || '').replace(/[&<>"']/g, function (chr) {
+                    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[chr];
+                });
+            }
+
+            function showShippingForm() {
+                if (clonedSpinner) clonedSpinner.style.display = 'none';
+                if (clonedResponse) clonedResponse.style.display = 'none';
+                if (clonedHead) {
+                    clonedHead.classList.add('with-form');
+                    clonedHead.classList.remove('with-zip', 'with-error');
+                }
+                if (clonedZip) clonedZip.classList.remove('transition-up-active');
+                if (clonedForm) clonedForm.classList.add('transition-up-active');
+            }
+
+            function showShippingError(message) {
+                if (clonedSpinner) clonedSpinner.style.display = 'none';
+                if (clonedResponse) {
+                    clonedResponse.innerHTML = '<div class="alert alert-danger">' + escapeShippingHtml(message || 'Nao foi possivel calcular o frete. Tente novamente.') + '</div>';
+                    clonedResponse.style.display = 'block';
+                }
+                if (clonedHead) {
+                    clonedHead.classList.add('with-form', 'with-error');
+                    clonedHead.classList.remove('with-zip');
+                }
+                if (clonedForm) clonedForm.classList.add('transition-up-active');
+                if (clonedZip) clonedZip.classList.remove('transition-up-active');
+            }
+
+            function calculateVisibleShipping() {
+                var currentInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+                var zip = currentInput ? String(currentInput.value || '').replace(/\D/g, '') : '';
+                if (!zip) {
+                    showShippingError('Informe seu CEP para calcular o frete.');
+                    return;
+                }
+
+                if (currentInput) currentInput.value = zip;
+                if (clonedCurrentZip) clonedCurrentZip.textContent = zip;
+                if (clonedHead) {
+                    clonedHead.classList.add('with-zip');
+                    clonedHead.classList.remove('with-form', 'with-error');
+                }
+                if (clonedZip) clonedZip.classList.add('transition-up-active');
+                if (clonedForm) clonedForm.classList.remove('transition-up-active');
+                if (clonedResponse) {
+                    clonedResponse.innerHTML = '';
+                    clonedResponse.style.display = 'none';
+                }
+                if (clonedSpinner) clonedSpinner.style.display = 'block';
+
+                var url = clonedShipping.getAttribute('data-shipping-url') ||
+                    (themeProd && themeProd.querySelector('#product-shipping-container') && themeProd.querySelector('#product-shipping-container').getAttribute('data-shipping-url')) ||
+                    (window.urls && window.urls.shippingUrl) ||
+                    '';
+
+                if (!window.LS || typeof window.LS.calculateShippingAjax !== 'function' || typeof window.jQueryNuvem === 'undefined' || !url) {
+                    showShippingError('O calculador de frete ainda nao carregou. Tente novamente em alguns segundos.');
+                    return;
+                }
+
+                try {
+                    window.jQueryNuvem('.js-shipping-input').val(zip);
+                    window.jQueryNuvem('.js-shipping-calculator-current-zip').html(zip);
+                    window.LS.calculateShippingAjax(zip, url, window.jQueryNuvem(infoEl));
+                } catch (e) {
+                    showShippingError('Nao foi possivel calcular o frete. Tente novamente.');
+                    return;
+                }
+
+                setTimeout(function () {
+                    var stillLoading = clonedSpinner && window.getComputedStyle(clonedSpinner).display !== 'none';
+                    if (stillLoading) showShippingError('O frete demorou para responder. Tente novamente.');
+                }, 9000);
+            }
+
+            clonedShipping._eoraCalculateShipping = calculateVisibleShipping;
 
             if (clonedBtn) {
                 clonedBtn.classList.remove('js-calculate-shipping', 'js-shipping-calculator-btn');
@@ -820,98 +858,42 @@
                 freshBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (clonedInput && origInput) {
-                        origInput.value = clonedInput.value;
-                        origInput.dispatchEvent(new Event('input', { bubbles: true }));
-                        origInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                    if (origBtn) {
-                        origBtn.click();
-                    }
+                    calculateVisibleShipping();
                 });
+                freshBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    calculateVisibleShipping();
+                    return false;
+                };
+                clonedBtn = freshBtn;
             }
             
             if (clonedInput) {
+                var currentInputValue = clonedInput.value || '';
                 var freshInput = clonedInput.cloneNode(true);
                 clonedInput.parentNode.replaceChild(freshInput, clonedInput);
-                
-                // Reaplica o valor
-                if (origInput) {
-                    freshInput.value = origInput.value;
-                }
-                
+                freshInput.value = currentInputValue;
+
                 freshInput.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         e.stopPropagation();
-                        var btn = clonedShipping.querySelector('.eora-calculate-shipping-btn');
-                        if (btn) btn.click();
+                        calculateVisibleShipping();
                     }
                 });
-                
-                // Mantém inputs em sincronia quando o usuário digita
-                freshInput.addEventListener('input', function () {
-                    if (origInput) {
-                        origInput.value = freshInput.value;
-                    }
-                });
+                clonedInput = freshInput;
             }
-            
-            var syncAllShipping = function () {
-                // 1. Sincroniza respostas de frete
-                var origResp = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-                var clonedResp = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-                if (origResp && clonedResp && clonedResp.innerHTML !== origResp.innerHTML) {
-                    clonedResp.innerHTML = origResp.innerHTML;
-                    clonedResp.style.display = origResp.style.display;
-                }
 
-                // 2. Sincroniza classes estruturais e de visibilidade do calculador
-                var origForm = origShipping.querySelector('.js-shipping-calculator-form');
-                var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
-                if (origForm && clonedForm) {
-                    if (origForm.classList.contains('transition-up-active')) {
-                        clonedForm.classList.add('transition-up-active');
-                    } else {
-                        // Mantém sempre visível no clone para evitar campos sumirem
-                        clonedForm.classList.add('transition-up-active');
-                    }
-                }
-                
-                var origZip = origShipping.querySelector('.js-shipping-calculator-with-zipcode');
-                var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
-                if (origZip && clonedZip) {
-                    if (origZip.classList.contains('transition-up-active')) {
-                        clonedZip.classList.add('transition-up-active');
-                    } else {
-                        clonedZip.classList.remove('transition-up-active');
-                    }
-                }
+            clonedShipping.querySelectorAll('.js-shipping-calculator-change-zipcode').forEach(function (changeBtn) {
+                changeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showShippingForm();
+                });
+            });
 
-                var origHead = origShipping.querySelector('.js-shipping-calculator-head');
-                var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
-                if (origHead && clonedHead) {
-                    if (origHead.classList.contains('with-zip')) {
-                        clonedHead.classList.add('with-zip');
-                    } else {
-                        clonedHead.classList.remove('with-zip');
-                    }
-                }
-
-                // 3. Sincroniza valor do CEP se mudou fora da digitação direta
-                if (origInput && clonedInput && origInput.value !== clonedInput.value) {
-                    if (document.activeElement !== clonedInput) {
-                        clonedInput.value = origInput.value;
-                    }
-                }
-            };
-
-            // Roda sincronização inicial
-            syncAllShipping();
-
-            // Configura observer no elemento original para reagir a qualquer mudança do JS nativo do tema
-            var observer = new MutationObserver(syncAllShipping);
-            observer.observe(origShipping, { childList: true, subtree: true, attributes: true });
+            showShippingForm();
         }
     }
 
@@ -964,7 +946,7 @@
             }
         });
 
-        if (isBlankValue(content)) return null;
+        if (isBlankValue(content)) content = '';
         return { title: title, content: content };
     }
 
@@ -1006,11 +988,11 @@
 
         var form = infoEl.querySelector('.eora-cloned-product-form') || infoEl.querySelector('#product_form') || infoEl.querySelector('form');
         var drop = findMeasurementsDropdown(infoEl);
-        var wasOpen = !drop || drop.classList.contains('open');
+        var wasOpen = !!drop && drop.classList.contains('open');
 
         if (!drop) {
             drop = document.createElement('div');
-            drop.className = 'dropdown-wrapper eora-measures-dropdown open';
+            drop.className = 'dropdown-wrapper eora-measures-dropdown';
 
             var toggle = document.createElement('button');
             toggle.type = 'button';
@@ -1173,29 +1155,14 @@
 
             // ── EXTRAI E ATUALIZA O WINDOW.LS IMEDIATAMENTE ────────────────────────
             var parsedLS = null;
-            var parsedVariants = null;
             try {
                 var scripts = newDoc.querySelectorAll('script');
                 scripts.forEach(function (s) {
                     var txt = s.textContent || s.innerHTML || '';
-
-                    if (!parsedLS) {
-                        var productExpr = extractAssignedExpression(txt, /(?:window\.)?LS\.product\s*=/);
-                        if (productExpr) {
-                            try { parsedLS = (new Function('return (' + productExpr + ')'))(); } catch (e) {}
-                        }
-                    }
-
-                    if (!parsedVariants) {
-                        var variantsExpr = extractAssignedExpression(txt, /(?:window\.)?LS\.variants\s*=/);
-                        if (variantsExpr) {
-                            try { parsedVariants = (new Function('return (' + variantsExpr + ')'))(); } catch (e) {}
-                        }
-                    }
                     
                     // 1. Tenta casar LS.product = ... com ou sem ponto-e-vírgula e window. prefix
-                    var m = !parsedLS ? txt.match(/(?:window\.)?LS\.product\s*=\s*({[\s\S]*?})(?:;|\n|\r|$)/) : null;
-                    if (!parsedLS && m && m[1]) {
+                    var m = txt.match(/(?:window\.)?LS\.product\s*=\s*({[\s\S]*?})(?:;|\n|\r|$)/);
+                    if (m && m[1]) {
                         try { parsedLS = (new Function('return (' + m[1] + ')'))(); } catch (e) {}
                     }
                     
@@ -1217,13 +1184,9 @@
                         window.LS = {};
                     }
                     window.LS.product = parsedLS;
-                }
-                if (parsedVariants && parsedVariants.length) {
-                    if (typeof window.LS === 'undefined') window.LS = {};
-                    window.LS.variants = parsedVariants;
-                } else if (parsedLS && parsedLS.variants) {
-                    if (typeof window.LS === 'undefined') window.LS = {};
-                    window.LS.variants = parsedLS.variants;
+                    if (parsedLS.variants) {
+                        window.LS.variants = parsedLS.variants;
+                    }
                 }
             } catch (e) {}
             // ────────────────────────────────────────────────────────────────────────
@@ -1324,6 +1287,7 @@
                     newSP.querySelectorAll('.product-image-column img').forEach(function (img) { addPhoto(getSrc(img)); });
                 }
                 if (galleryEl && galleryEl._eoraSetPhotos && newPhotos.length) {
+                    window.eoraCurrentPrimaryImage = newPhotos[0];
                     galleryEl._eoraSetPhotos(newPhotos);
                 }
                 
@@ -1432,8 +1396,6 @@
                     if (freshWrap) {
                         freshWrap.classList.add('eora-loaded');
                     }
-                    // TikTok ViewContent
-                    eoraTrackTikTok('ViewContent');
                 }, 50);
             }
         }).catch(function () {
@@ -1466,6 +1428,55 @@
         return !!url && (/\.(jpg|jpeg|png|webp|avif)(\?|$)/i.test(url) || /^data:image\//i.test(url));
     }
 
+    function isPlaceholderThumbUrl(url) {
+        if (!url) return true;
+        var value = String(url).toLowerCase();
+        try {
+            value = decodeURIComponent(value);
+        } catch (e) {}
+        return value.indexOf('empty-placeholder') !== -1 ||
+            value.indexOf('product-image-placeholder') !== -1 ||
+            (/^data:image\/svg/i.test(value) && value.indexOf('eora') !== -1);
+    }
+
+    function isUsableProductThumbUrl(url) {
+        return isRenderableThumbUrl(url) &&
+            !isPlaceholderThumbUrl(url) &&
+            !/^data:image\//i.test(String(url));
+    }
+
+    function getCurrentProductPrimaryImage() {
+        var mainImage = document.querySelector('.eora-product-gallery .eora-blg-slide img');
+        if (mainImage) {
+            var loadedSrc = mainImage.currentSrc || mainImage.src || mainImage.getAttribute('src') || '';
+            if (isUsableProductThumbUrl(loadedSrc)) {
+                window.eoraCurrentPrimaryImage = loadedSrc;
+                return loadedSrc;
+            }
+        }
+        return isUsableProductThumbUrl(window.eoraCurrentPrimaryImage) ? window.eoraCurrentPrimaryImage : '';
+    }
+
+    function keepActiveVariationThumbSynced() {
+        var currentPath = normalizePathname(window.location.href);
+        var active = document.querySelector('.eora-bolsa-var-item[data-href-path="' + currentPath + '"]') ||
+            document.querySelector('.eora-bolsa-var-item.eora-active');
+        var img = active && active.querySelector('img');
+        var realSrc = getCurrentProductPrimaryImage();
+        if (!img || !realSrc) return;
+        var currentSrc = img.currentSrc || img.src || img.getAttribute('src') || '';
+        if (currentSrc !== realSrc) img.src = realSrc;
+    }
+
+    function startActiveVariationThumbGuard() {
+        if (!window.eoraVariationThumbGuardInterval) {
+            window.eoraVariationThumbGuardInterval = setInterval(keepActiveVariationThumbSynced, 1000);
+        }
+        setTimeout(keepActiveVariationThumbSynced, 0);
+        setTimeout(keepActiveVariationThumbSynced, 250);
+        setTimeout(keepActiveVariationThumbSynced, 800);
+    }
+
     function normalizeCompareText(value) {
         return String(value || '')
             .toLowerCase()
@@ -1473,47 +1484,6 @@
             .replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9]+/g, ' ')
             .trim();
-    }
-
-    function extractAssignedExpression(scriptText, assignmentPattern) {
-        var match = assignmentPattern.exec(scriptText || '');
-        if (!match) return '';
-        var start = match.index + match[0].length;
-        while (start < scriptText.length && /\s/.test(scriptText.charAt(start))) start++;
-
-        var opener = scriptText.charAt(start);
-        var closer = opener === '{' ? '}' : opener === '[' ? ']' : '';
-        if (!closer) return '';
-
-        var depth = 0;
-        var quote = '';
-        var escape = false;
-        for (var i = start; i < scriptText.length; i++) {
-            var ch = scriptText.charAt(i);
-
-            if (quote) {
-                if (escape) {
-                    escape = false;
-                } else if (ch === '\\') {
-                    escape = true;
-                } else if (ch === quote) {
-                    quote = '';
-                }
-                continue;
-            }
-
-            if (ch === '"' || ch === "'") {
-                quote = ch;
-                continue;
-            }
-            if (ch === opener) depth++;
-            if (ch === closer) {
-                depth--;
-                if (depth === 0) return scriptText.slice(start, i + 1);
-            }
-        }
-
-        return '';
     }
 
     var eoraProductVisibilityCache = {};
@@ -1625,7 +1595,7 @@
                                     c = new URL(c, window.location.origin).href;
                                 } catch (e) {}
                                 c = normalizeUrl(c);
-                                if (isRenderableThumbUrl(c) && !/^data:image\//i.test(c)) return finish(c);
+                                if (isUsableProductThumbUrl(c)) return finish(c);
                             }
 
                             if (Date.now() - startedAt > 5000) return finish('');
@@ -1678,7 +1648,7 @@
                         c = new URL(c, window.location.origin).href;
                     } catch (e) {}
                     c = normalizeUrl(c);
-                    if (isRenderableThumbUrl(c) && !/^data:image\//i.test(c)) return c;
+                    if (isUsableProductThumbUrl(c)) return c;
                 }
 
                 return '';
@@ -1694,13 +1664,21 @@
         if (!tag) return Promise.resolve([]);
         var baseSearchUrl = '/search/?q=' + encodeURIComponent(tag);
 
-        var cacheKey = 'eora_vars_v4_' + tag.toLowerCase().trim();
+        var cacheKey = 'eora_vars_v7_' + tag.toLowerCase().trim();
         var cached = sessionStorage.getItem(cacheKey);
         if (cached) {
             try {
                 var parsed = JSON.parse(cached);
                 if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < 300000)) { // 5 minutos de cache
                     if (parsed.items && parsed.items.length) {
+                        var cachedCurrentImage = getCurrentProductPrimaryImage();
+                        if (cachedCurrentImage) {
+                            parsed.items.forEach(function (item) {
+                                if (normalizePathname(item.href) === normalizePathname(currentPath)) {
+                                    item.url = cachedCurrentImage;
+                                }
+                            });
+                        }
                         return Promise.resolve(parsed.items);
                     }
                 }
@@ -1753,23 +1731,9 @@
                 }
 
                 var tagsAttr = itemEl.getAttribute('data-product-tags') || '';
-                var rawTags = [];
-                try {
-                    var parsedTags = JSON.parse(tagsAttr);
-                    if (Array.isArray(parsedTags)) {
-                        rawTags = parsedTags.map(function (item) {
-                            if (!item) return '';
-                            if (typeof item === 'string') return item;
-                            return item.tag || item.name || '';
-                        });
-                    }
-                } catch (e) {}
-                if (!rawTags.length) rawTags = tagsAttr.split(',');
-                var tags = rawTags.map(function (t) {
+                var tags = tagsAttr.split(',').map(function (t) {
                     return t.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                }).filter(Boolean);
-                var targetTag = normalizeCompareText(tag);
-                if (targetTag && tags.length && tags.indexOf(targetTag) === -1) return;
+                });
                 var isPreVenda = tags.some(function (t) {
                     return t === 'prevenda' || t === 'pre-venda' || t === 'pre venda' || t.indexOf('prevenda') !== -1 || t.indexOf('pre-venda') !== -1;
                 });
@@ -1808,7 +1772,7 @@
                         try {
                             candidate = new URL(candidate, window.location.origin).href;
                         } catch (e) {}
-                        if (isRenderableThumbUrl(candidate)) {
+                        if (isUsableProductThumbUrl(candidate)) {
                             imgUrl = normalizeUrl(candidate);
                             break;
                         }
@@ -1894,16 +1858,18 @@
                 var hasCurrent = unique.some(function (it) {
                     return normalizePathname(it.href) === currentPathNormalized;
                 });
+                var currentImgSrc = getCurrentProductPrimaryImage();
+                if (hasCurrent && currentImgSrc) {
+                    unique.forEach(function (it) {
+                        if (normalizePathname(it.href) === currentPathNormalized) {
+                            it.url = currentImgSrc;
+                        }
+                    });
+                }
                 if (!hasCurrent) {
                     var nameEl = document.querySelector('.js-product-name');
-                    var imgEl = document.querySelector('.eora-blg-slide img, .product-image-column img, img');
                     if (nameEl) {
                         var currentName = nameEl.textContent.trim();
-                        var currentImgSrc = '';
-                        if (imgEl) {
-                            currentImgSrc = imgEl.getAttribute('data-zoom-image') || imgEl.getAttribute('data-image') || imgEl.getAttribute('data-src') || imgEl.getAttribute('src') || '';
-                        }
-                        if (currentImgSrc) currentImgSrc = normalizeUrl(currentImgSrc);
                         var currentTags = getProductTagsFromRoot().map(function (t) {
                             return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                         });
@@ -1980,26 +1946,36 @@
         function syncGallerySizes() {
             if (window.innerWidth <= 768) {
                 wrap.style.removeProperty('--eora-gallery-main-height');
-                wrap.style.removeProperty('--eora-gallery-thumb-size');
+                wrap.style.removeProperty('--eora-gallery-thumb-width');
+                wrap.style.removeProperty('--eora-gallery-thumb-height');
                 thumbStep = 0;
                 return;
             }
 
-            var mainH = mainWrap.offsetHeight;
-            if (!mainH) return;
-
-            wrap.style.setProperty('--eora-gallery-main-height', mainH + 'px');
-
+            tvp.style.removeProperty('height');
+            tvp.style.removeProperty('flex-basis');
+            ttrack.style.removeProperty('height');
+            var wrapW = wrap.clientWidth;
+            if (!wrapW) return;
             var visibleCount = Math.min(VISIBLE, thumbEls.length || VISIBLE);
-            var gap = 14;
-            var available = Math.max(120, mainH - (gap * Math.max(0, visibleCount - 1)));
-            var size = available / visibleCount;
-            thumbStep = size + gap;
-            wrap.style.setProperty('--eora-gallery-thumb-size', size + 'px');
+            var thumbGap = 14;
+            var galleryGap = 16;
+            var mainHeightPerWidth = 5 / 4;
+            var thumbWidthPerHeight = 4 / 5;
+            var totalThumbGaps = thumbGap * Math.max(0, visibleCount - 1);
+            var mainH = mainHeightPerWidth *
+                (wrapW - galleryGap + (thumbWidthPerHeight * totalThumbGaps / visibleCount)) /
+                (1 + (mainHeightPerWidth * thumbWidthPerHeight / visibleCount));
+            var thumbHeight = Math.max(1, (mainH - totalThumbGaps) / visibleCount);
+            var thumbWidth = thumbHeight * thumbWidthPerHeight;
+            thumbStep = thumbHeight + thumbGap;
+            wrap.style.setProperty('--eora-gallery-main-height', mainH + 'px');
+            wrap.style.setProperty('--eora-gallery-thumb-width', thumbWidth + 'px');
+            wrap.style.setProperty('--eora-gallery-thumb-height', thumbHeight + 'px');
             thumbEls.forEach(function (th) {
-                th.style.setProperty('flex', '0 0 ' + size + 'px', 'important');
-                th.style.setProperty('width', size + 'px', 'important');
-                th.style.setProperty('height', size + 'px', 'important');
+                th.style.setProperty('flex', '0 0 ' + thumbHeight + 'px', 'important');
+                th.style.setProperty('width', thumbWidth + 'px', 'important');
+                th.style.setProperty('height', thumbHeight + 'px', 'important');
             });
             goTo(activeIdx);
         }
@@ -2070,7 +2046,11 @@
             thumbEls.forEach(function (th) {
                 th.style.setProperty('flex', '0 0 ' + w + 'px', 'important');
                 th.style.setProperty('width', w + 'px', 'important');
-                th.style.setProperty('height', w + 'px', 'important');
+                var mobileThumbHeight = Math.round(w * 4 / 3);
+                tvp.style.setProperty('height', mobileThumbHeight + 'px', 'important');
+                tvp.style.setProperty('flex-basis', mobileThumbHeight + 'px', 'important');
+                ttrack.style.setProperty('height', mobileThumbHeight + 'px', 'important');
+                th.style.setProperty('height', mobileThumbHeight + 'px', 'important');
             });
         }
 
@@ -2089,6 +2069,8 @@
             
             var isPreVenda = !!item.isPreVenda;
             if (isActive) {
+                var liveCurrentImage = getCurrentProductPrimaryImage();
+                if (liveCurrentImage) item.url = liveCurrentImage;
                 var currentTags = getProductTagsFromRoot().map(function (t) {
                     return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 });
@@ -2106,7 +2088,7 @@
             // Extrai a cor/variação do nome do produto de forma genérica.
             // O Nuvemshop usa o padrão "NOME BASE - Cor / Variacao" para todas as variações.
             // Se não tiver " - ", tenta extrair removendo o nome base do produto atual.
-            var varName = item.name || '';
+            var varName = inferHoboVariationFromProductName(item.name) || item.name || '';
             var parts = varName.split(/\s+[-–—]\s+/);
             if (parts.length > 1) {
                 varName = parts.slice(1).join(' / ').trim();
@@ -2126,6 +2108,13 @@
             var img = document.createElement('img');
             img.alt = item.name || ('variante ' + (i + 1));
             img.onerror = function () {
+                if (isActive) {
+                    var liveImage = getCurrentProductPrimaryImage();
+                    if (liveImage && img.src !== liveImage) {
+                        img.src = liveImage;
+                        return;
+                    }
+                }
                 if (img._fallback) return; img._fallback = true;
                 if (item.url && !/^data:image\//i.test(item.url)) {
                     var altTry = item.url.replace(/(-\d+-\d+)(\.[\w]{2,5})(\?.*)?$/, '-480-480$2');
@@ -2160,6 +2149,7 @@
             }
             grid.appendChild(el);
         });
+        startActiveVariationThumbGuard();
 
         /* Tenta inserir ANTES do botao comprar (form) */
         var buyBtn = infoEl.querySelector('input.js-addtocart,button.js-addtocart,.js-addtocart,[name="commit"]');
@@ -2326,8 +2316,8 @@
             '.eora-banner-prod-video{position:absolute;inset:0;width:100%;height:100%;border:0;overflow:hidden}',
             '.eora-banner-prod-img,.eora-banner-prod-img img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}',
             '.eora-banner-prod-video{overflow:hidden}',
-            '.eora-banner-prod-video iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-width:150%;min-height:150%;transform:translate(-50%,-50%) scale(1.24);border:0;pointer-events:none}',
-            '@media(max-width:767px){.eora-banner-prod-wrap::before{padding-bottom:100%}.eora-banner-prod-video iframe{width:177.78vh;height:100vh;min-width:220%;min-height:124%;transform:translate(-50%,-50%) scale(1.24)}}',
+            '.eora-banner-prod-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}',
+            '@media(max-width:767px){.eora-banner-prod-wrap::before{padding-bottom:100%}}',
             '.eora-banner-prod-btn{position:absolute!important;bottom:20px!important;left:20px!important;z-index:2!important}'
         ].join('');
         var styleEl = document.createElement('style');
@@ -2847,64 +2837,6 @@
         // No-op
     }
 
-    // --- TikTok Pixel helper ---
-    function eoraGetCurrentSku() {
-        try {
-            var variantIdEl = document.querySelector('input[name="variant_id"]');
-            var variantId = variantIdEl ? variantIdEl.value : '';
-            if (typeof LS !== 'undefined' && LS.variants) {
-                for (var i = 0; i < LS.variants.length; i++) {
-                    if (LS.variants[i].id == variantId) return LS.variants[i].sku || '';
-                }
-                if (LS.variants[0] && LS.variants[0].sku) return LS.variants[0].sku;
-            }
-            return variantId;
-        } catch (e) { return ''; }
-    }
-    function eoraGetCurrentPrice() {
-        try {
-            var priceEl = document.querySelector('.js-price-display, .product-price, .eora-price');
-            if (!priceEl) return 0;
-            var priceText = priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
-            return parseFloat(priceText) || 0;
-        } catch (e) { return 0; }
-    }
-    function eoraTrackTikTok(eventName) {
-        try {
-            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
-            var sku = eoraGetCurrentSku();
-            var name = 'Cinto Vértice';
-            var variantName = window.eoraActiveVariationName || '';
-            if (variantName) name += ' - ' + variantName;
-            window.ttq.track(eventName, {
-                content_type: 'product',
-                content_id: sku,
-                content_name: name,
-                currency: 'BRL',
-                value: eoraGetCurrentPrice(),
-                content_category: 'Cinto'
-            });
-        } catch (e) {}
-    }
-    function eoraTrackAddToCart() {
-        try {
-            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
-            var sku = eoraGetCurrentSku();
-            var name = 'Cinto Vértice';
-            var variantName = window.eoraActiveVariationName || '';
-            if (variantName) name += ' - ' + variantName;
-            window.ttq.track('AddToCart', {
-                content_type: 'product',
-                content_id: sku,
-                content_name: name,
-                currency: 'BRL',
-                value: eoraGetCurrentPrice(),
-                quantity: 1
-            });
-        } catch (e) {}
-    }
-    // --- Fim TikTok Pixel helper ---
-
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
@@ -2929,6 +2861,7 @@
         if (!photos.length) {
             themeProd.querySelectorAll('.product-image-column img').forEach(function (img) { addPhoto(getSrc(img)); });
         }
+        if (photos.length) window.eoraCurrentPrimaryImage = photos[0];
         /* ── Cria container externo ao #single-product ── */
         var wrap = document.createElement('div');
         wrap.className = 'eora-product-wrap';
@@ -3172,19 +3105,7 @@
         }
 
         function getVariantSearchTag() {
-            var configuredTag = getVariantProductsTagFromSetting();
-            if (configuredTag) return configuredTag;
-            var tags = getCurrentProductTags().map(function (tag) { return String(tag || '').trim().toLowerCase(); });
-            if (tags.indexOf('cinto') !== -1) return 'cinto';
-            if (tags.indexOf('maxivertice') !== -1) return 'maxivertice';
-            for (var i = 0; i < tags.length; i++) {
-                var tag = tags[i];
-                if (!tag || tag === 'bolsa' || tag === 'vertice' || tag === 'preto' || tag === 'preta') continue;
-                if (tag.indexOf('produto-gradiente:') === 0 || tag.indexOf('card-produto-gradiente:') === 0) continue;
-                if (tag.indexOf(':') !== -1) continue;
-                return tag;
-            }
-            return 'maxivertice';
+            return EORA_VARIANT_GROUP_TAG;
         }
 
         function fetchVariantsFromTag(tag) {
@@ -3236,7 +3157,6 @@
         }
 
         function collectRelatedFromAnySource() {
-            if (shouldHideVariantControls()) return Promise.resolve([]);
             var tag = getVariantSearchTag();
             if (!tag) return Promise.resolve([]);
             return fetchVariantsFromTag(tag);
@@ -3245,7 +3165,6 @@
         function applyVariants(items) {
             var old = infoEl.querySelector('.eora-bolsa-vars');
             if (old) old.parentNode.removeChild(old);
-            if (shouldHideVariantControls()) return;
             items = items || [];
             if (!items.length) return;
             buildVariantSwatches(infoEl, items);
@@ -4058,27 +3977,7 @@
         }
 
         function getVariantGroupTag() {
-            if (shouldHideVariantControls()) return '';
-            var configuredTag = getVariantProductsTagFromSetting();
-            if (configuredTag) return configuredTag;
-            var tags = getCurrentProductTags().map(normalizeTagValue);
-            if (tags.indexOf('cinto') !== -1) return 'cinto';
-            if (tags.indexOf('maxivertice') !== -1) return 'maxivertice';
-            var blocked = {
-                bolsa: true,
-                preto: true,
-                preta: true,
-                vertice: true,
-                maxivertice: true
-            };
-            for (var i = 0; i < tags.length; i++) {
-                var tag = tags[i];
-                if (!tag || blocked[tag]) continue;
-                if (tag.indexOf('produto-gradiente:') === 0 || tag.indexOf('card-produto-gradiente:') === 0) continue;
-                if (tag.indexOf(':') !== -1) continue;
-                return tag;
-            }
-            return 'maxivertice';
+            return EORA_VARIANT_GROUP_TAG;
         }
 
         function fetchProductsFromTag(tag) {
@@ -4092,9 +3991,6 @@
             window.eoraIsSubmittingCart = true;
             setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
 
-            // TikTok AddToCart
-            eoraTrackAddToCart();
-
             var originalForm = getOriginalProductForm();
             var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
             
@@ -4106,21 +4002,9 @@
                 if (typeof LS !== 'undefined' && LS.variants && combo.lsIdx !== undefined) {
                     var v = LS.variants[combo.lsIdx];
                     if (v) {
-                        if (v.id) {
-                            formEl.querySelectorAll('input[name="variant_id"], [name="variant_id"]').forEach(function (field) {
-                                field.value = v.id;
-                                field.dispatchEvent(new Event('change'));
-                            });
-                        }
                         if (v.option0 && selects[0]) { selects[0].value = v.option0; selects[0].dispatchEvent(new Event('change')); }
                         if (v.option1 && selects[1]) { selects[1].value = v.option1; selects[1].dispatchEvent(new Event('change')); }
                         if (v.option2 && selects[2]) { selects[2].value = v.option2; selects[2].dispatchEvent(new Event('change')); }
-                        if (v.id) {
-                            formEl.querySelectorAll('input[name="variant_id"], [name="variant_id"]').forEach(function (field) {
-                                field.value = v.id;
-                                field.dispatchEvent(new Event('change'));
-                            });
-                        }
                     }
                 } else if (combo.refs && combo.values) {
                     combo.values.forEach(function (val, i) {
@@ -4156,18 +4040,6 @@
             var basePrice = priceEl2 ? priceEl2.textContent.trim() : '';
             var validOptions = [];
             var groupTag = getVariantGroupTag();
-
-            if (shouldHideVariantControls()) {
-                var clonedForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
-                var originalForm = getOriginalProductForm();
-                if (clonedForm && originalForm) {
-                    syncFormValues(clonedForm, originalForm);
-                }
-                if (triggerOriginalBuy()) return;
-                var wrapElNoVariants = document.querySelector('.eora-product-wrap');
-                if (wrapElNoVariants) wrapElNoVariants.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                return;
-            }
 
             if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
                 LS.variants.forEach(function (v, i) {
@@ -4256,7 +4128,7 @@
                     (imgSrc ? '<img src="' + imgSrc + '" alt="' + combo.name + '">' : '') +
                     '<div class="eora-bolsa-pu-info"><strong>' + combo.name + '</strong><span>' + (combo.price || basePrice) + '</span></div>' +
                     '</div>' +
-                    '<button class="eora-bolsa-pu-select" data-idx="' + idx + '">' + (outOfStock ? 'PR\u00C9-VENDA' : 'COMPRAR') + '</button>';
+                    '<button class="eora-bolsa-pu-select" data-idx="' + idx + '">' + (outOfStock ? 'PR\u00C9-VENDA' : 'SELECIONAR') + '</button>';
                 list.appendChild(card);
             });
 
@@ -4267,31 +4139,6 @@
                 });
             });
             popup.classList.add('eora-pu-open');
-        }
-
-        window.eoraOpenVariantBuyPopup = abrirPopup;
-
-        if (!window.__eoraMainBuyVariantPopupBound) {
-            window.__eoraMainBuyVariantPopupBound = true;
-            document.addEventListener('click', function (e) {
-                var target = e.target;
-                var btn = target && target.closest ? target.closest('.eora-product-info .eora-buy-btn, .eora-product-info input[type="submit"], .eora-product-info button[type="submit"]') : null;
-                if (!btn || btn.closest('.eora-bolsa-pu')) return;
-                if (!shouldOpenVariantPopupForBuy()) return;
-                e.preventDefault();
-                e.stopPropagation();
-                if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-                abrirPopup();
-            }, true);
-            document.addEventListener('submit', function (e) {
-                var form = e.target;
-                if (!form || !form.closest || !form.closest('.eora-product-info')) return;
-                if (!shouldOpenVariantPopupForBuy()) return;
-                e.preventDefault();
-                e.stopPropagation();
-                if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-                abrirPopup();
-            }, true);
         }
 
         if (floatBtn) {
@@ -4359,11 +4206,9 @@
 <tbody>
 <tr>
 <td style="width: 48.057%;">nome_variacao</td>
-<td style="width: 48.057%;">Cinto Bord&ocirc;</td>
-</tr>
-<tr>
-<td style="width: 48.057%;">variantes_produto</td>
-<td style="width: 48.057%;">cinto</td>
+<td style="width: 48.057%;">
+<p><strong>Berinjela / Prata</strong></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -4374,11 +4219,16 @@
 <tr>
 <td style="width: 48.057%;">descricao_curta</td>
 <td style="width: 48.057%;">
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><span style="font-family: Helvetica Neue;"><span style="font-size: 13px;"><strong>O Cinto V&eacute;rtice concentra a ess&ecirc;ncia da linha em uma constru&ccedil;&atilde;o mais delicada e vers&aacute;til. Produzido nos mesmos couros da fam&iacute;lia V&eacute;rtice, foi desenvolvido para complementar o look com eleg&acirc;ncia, equil&iacute;brio e defini&ccedil;&atilde;o.</strong></span></span></p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><span style="font-family: Helvetica Neue;"><span style="font-size: 13px;"><strong>&nbsp;</strong></span></span></p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><span style="font-family: Helvetica Neue;"><span style="font-size: 13px;"><strong>Seu desenho limpo permite diferentes formas de uso, funcionando como um elemento de acabamento capaz de valorizar a silhueta e refor&ccedil;ar a identidade da composi&ccedil;&atilde;o.</strong></span></span></p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><span style="font-family: Helvetica Neue;"><span style="font-size: 13px;"><strong>&nbsp;</strong></span></span></p>
-<p class="p1" style="margin: 0px; font: 400 13px 'Helvetica Neue';"><span style="font-family: Helvetica Neue;"><span style="font-size: 13px;"><strong>Confeccionado em couro 100% bovino de flor integral e finalizado com metais selecionados, o Cinto V&eacute;rtice foi pensado para atravessar tend&ecirc;ncias e acompanhar diferentes momentos com naturalidade.</strong></span></span></p>
+<p class="PDq2pG_selectionAnchorContainer" data-start="123" data-end="394">A<strong> </strong>Hobo V&eacute;rtice &eacute; a interpreta&ccedil;&atilde;o mais fluida da fam&iacute;lia V&eacute;rtice. Criada para quem busca uma bolsa despojada sem abrir m&atilde;o de sofistica&ccedil;&atilde;o, ela transforma um shape cl&aacute;ssico em uma pe&ccedil;a que acompanha o corpo, muda conforme o uso e ganha personalidade ao longo do tempo.</p>
+<p data-start="396" data-end="715">Inspirada nas tradicionais hobo bags, a Hobo V&eacute;rtice preserva os c&oacute;digos da cole&ccedil;&atilde;o atrav&eacute;s do V nas laterais, da lingueta frontal e do acabamento preciso. Sua constru&ccedil;&atilde;o une leveza, funcionalidade e eleg&acirc;ncia em uma bolsa pensada para acompanhar diferentes momentos do dia, do trabalho ao jantar, da rotina &agrave;s viagens.</p>
+<p data-section-id="15b8vq3" data-start="977" data-end="990"><strong>Materiais</strong></p>
+<p data-start="992" data-end="1156">Couro 100% bovino de flor integral. Forro em tecido de alfaiataria de alta qualidade. Metais banhados com verniz italiano e z&iacute;peres YKK. Puxador personalizado EORA.</p>
+<p data-section-id="18f30mu" data-start="1163" data-end="1175"><strong>Interior</strong></p>
+<p data-start="1177" data-end="1260">Compartimento principal espa&ccedil;oso, porta-cart&atilde;o embutido, porta-chaves e porta EORA. Comporta notebooks de at&eacute; 15 polegadas.</p>
+<p data-section-id="1oloxnw" data-start="1267" data-end="1279"><strong>Exterior</strong></p>
+<p data-start="1281" data-end="1455">Fechamento duplo com lingueta frontal e bo&atilde;o magn&eacute;tico. V caracter&iacute;stico da cole&ccedil;&atilde;o nas laterais, fivelas laterais ajust&aacute;veis e logo EORA em hot stamp.</p>
+<p data-section-id="70stz2" data-start="1462" data-end="1471"><strong>Al&ccedil;as</strong></p>
+<p data-start="1473" data-end="1612">Al&ccedil;a de ombro fixa com regulagem atrav&eacute;s das fivelas laterais, proporciona diferentes formas de caimento e maior conforto durante o uso.</p>
 </td>
 </tr>
 </tbody>
@@ -4390,22 +4240,13 @@
 <tr>
 <td style="width: 48.057%;">medidas_do_oculos</td>
 <td style="width: 48.057%;">
-<p>Cinto</p>
-<ul>
-<li>Largura - 34mm.</li>
-<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">Comprimento 95 e 100 cm.</li>
-</ul>
-<p>Maxi cinto</p>
-<ul>
-<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">largura - 57.5mm.</li>
-<li style="box-sizing: border-box; margin: 0px; padding: 0px; line-height: 1.6;">Comprimento - 95 e 100cm.</li>
-</ul>
-<h3 style="box-sizing: border-box; margin: 0px 0px 16px; padding: 0px; font-family: 'Proza Libre', sans-serif; font-weight: 500; letter-spacing: 1px; font-size: 22px; line-height: 25.74px; background-color: #ffffff;">&nbsp;</h3>
+<p>52 cm de comprimento.</p>
+<p>55 cm de altura.</p>
 </td>
 </tr>
 <tr>
 <td style="width: 48.057%;">titulo</td>
-<td style="width: 48.057%;">Medidas do cinto</td>
+<td style="width: 48.057%;">Medidas da Bolsa</td>
 </tr>
 </tbody>
 </table>
@@ -4457,11 +4298,11 @@
 </tr>
 <tr>
 <td>video</td>
-<td>&nbsp;</td>
+<td>https://vimeo.com/1214398060</td>
 </tr>
 <tr>
 <td>video_mobile</td>
-<td>&nbsp;</td>
+<td>https://vimeo.com/1214398562</td>
 </tr>
 <tr>
 <td>imagem</td>
@@ -4542,7 +4383,7 @@
 </tr>
 <tr>
 <td>video_1 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL CINTO MENOR LIZARD FRONTAL 2.jpg" alt="" width="100" height="125" /></td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>video_1_mobile</td>
@@ -4550,7 +4391,7 @@
 </tr>
 <tr>
 <td>video_2 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL CINTO MENOR CROCO BURGUNDY FRONTAL 2.jpg" alt="" width="100" height="125" /></td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>video_2_mobile</td>
@@ -4558,7 +4399,7 @@
 </tr>
 <tr>
 <td>video_3 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Design sem nome (3) 2.png" alt="" width="100" height="125" /></td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>video_3_mobile</td>
@@ -4577,8 +4418,8 @@
 <tr>
 <td style="width: 23.091%;">banners_alternados</td>
 <td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Design sem nome (7).png" alt="" width="100" height="59" /></td>
-<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA DE PRODUTO CINTO.jpg" alt="" width="100" height="59" /></td>
-<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA PRODUTO MATERIA PRIMA.jpg" alt="" width="100" height="59" /></td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA PRODUTO hobo QUALIDADE.jpg" alt="" width="100" height="59" /></td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA PRODUTO hobo MATERIA PRIMA.jpg" alt="" width="100" height="59" /></td>
 </tr>
 <tr>
 <td style="width: 23.091%;">&nbsp;</td>
@@ -4588,13 +4429,15 @@
 </td>
 <td style="width: 23.091%;">
 <h2>Qualidade artesanal</h2>
-<p><span id="docs-internal-guid-79634c0d-7fff-1756-7f8f-77fb51b83a43"><span style="font-size: 11pt; font-family: Arial, sans-serif; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">Bolsas feitas &agrave; m&atilde;o no Brasil por artes&atilde;os qualificados, utilizando couro de origem nacional selecionada e acabamento de alto padr&atilde;o.Cada pe&ccedil;a passa por um processo minucioso de montagem e controle de qualidade, garantindo estrutura, resist&ecirc;ncia e durabilidade superiores.</span></span></p>
+<p><span id="docs-internal-guid-79634c0d-7fff-1756-7f8f-77fb51b83a43"><span style="font-size: 11pt; font-family: Arial, sans-serif; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">Bolsas feitas &agrave; m&atilde;o no Brasil por artes&atilde;os qualificados, utilizando couro de origem nacional selecionada e acabamento de alto padr&atilde;o. Cada pe&ccedil;a passa por um processo minucioso de montagem e controle de qualidade, garantindo estrutura, resist&ecirc;ncia e durabilidade superiores.</span></span></p>
 <p><span id="docs-internal-guid-79634c0d-7fff-1756-7f8f-77fb51b83a43"><span style="font-size: 11pt; font-family: Arial, sans-serif; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">Os metais s&atilde;o rigorosamente testados sob os mais altos padr&otilde;es e finalizados com verniz italiano, que protege e prolonga a vida da pe&ccedil;a.Design preciso, constru&ccedil;&atilde;o artesanal e materiais de excel&ecirc;ncia, a V&Eacute;RTICE &eacute; o encontro entre t&eacute;cnica e tempo.</span></span></p>
 <p>&nbsp;</p>
 </td>
 <td style="width: 23.091%;">
 <h2>Mat&eacute;ria-prima Nacional</h2>
-<p dir="ltr" style="line-height: 1.38; margin-top: 12pt; margin-bottom: 12pt;"><span style="font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Produzidos artesanalmente no Brasil, os cintos EORA sao desenvolvidos em c</span>ouro 100% bovino de flor integral, selecionado pela riqueza de textura, resist&ecirc;ncia e acabamento refinado. Metais de alta durabilidade com acabamento desenvolvido para preservar a apar&ecirc;ncia da pe&ccedil;a ao longo do tempo.</p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 12pt; margin-bottom: 12pt;"><span style="font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Produzida artesanalmente no Brasil, a HOBO V&Eacute;RTICE utiliza couro nobre de origem controlada, selecionado entre materiais de alta performance e textura superior. O processo manual segue os mais rigorosos padr&otilde;es de qualidade, resultando em um couro resistente, macio ao toque e com acabamento refinado.</span></p>
+<p><span id="docs-internal-guid-8d173842-7fff-234b-81e5-84eafd57aeab"></span></p>
+<p dir="ltr" style="line-height: 1.38; margin-top: 12pt; margin-bottom: 12pt;"><span style="font-size: 11pt; font-family: Arial,sans-serif; color: #000000; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Cada pe&ccedil;a &eacute; cuidadosamente tratada para preservar sua estrutura e durabilidade, garantindo forma impec&aacute;vel e beleza que evolui com o tempo.</span></p>
 </td>
 </tr>
 </tbody>
@@ -4610,9 +4453,10 @@
 <tr>
 <td>titulo_institucional</td>
 <td>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">Na EORA, cada detalhe &eacute; criado para entregar mais do que uma produto: um objeto de desejo.</span></p>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">Couros nobres, design autoral e um shape que transforma qualquer look em presen&ccedil;a.</span></p>
-<p class="_aupe copyable-text x15bjb6t x1n2onr6"><span class="_aupe copyable-text xkrh14z" style="white-space: pre-wrap;">&Eacute; aquela pe&ccedil;a que chama aten&ccedil;&atilde;o sem esfor&ccedil;o, eleva a confian&ccedil;a e faz voc&ecirc; entender por que quem entra no universo EORA sempre quer o pr&oacute;ximo.</span></p>
+<p class="PDq2pG_selectionAnchorContainer" data-start="75" data-end="205">Na EORA, acreditamos que uma bolsa n&atilde;o precisa ser r&iacute;gida para transmitir presen&ccedil;a. Foi dessa ideia que nasceu a Hobo V&eacute;rtice.</p>
+<p data-start="210" data-end="461">Um shape que acompanha o corpo, muda conforme o movimento e ganha personalidade com o uso. Cada detalhe, do V nas laterais &agrave; lingueta frontal e &agrave;s fivelas ajust&aacute;veis, foram pensados para criar uma pe&ccedil;a descomplicada, mas desenhada nos m&iacute;nimos detalhes.</p>
+<p class="_aupe copyable-text x15bjb6t x1n2onr6">&nbsp;</p>
+<p data-start="466" data-end="625">A Hobo V&eacute;rtice &eacute; a nossa interpreta&ccedil;&atilde;o de um luxo mais contempor&acirc;neo: uma bolsa feita para acompanhar a vida real, sem abrir m&atilde;o da sofistica&ccedil;&atilde;o e da presen&ccedil;a.</p>
 </td>
 </tr>
 <tr>

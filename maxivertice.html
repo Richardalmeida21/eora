@@ -631,9 +631,6 @@
         window.eoraIsSubmittingCart = true;
         setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
 
-        // TikTok AddToCart
-        eoraTrackAddToCart();
-
         var form = getOriginalProductForm();
         if (!form) return false;
         var addBtn = getOriginalAddButton();
@@ -656,9 +653,21 @@
         return text.indexOf('medidas') !== -1;
     }
 
+    if (!window.eoraShippingClickBridgeBound) {
+        window.eoraShippingClickBridgeBound = true;
+        document.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.eora-calculate-shipping-btn') : null;
+            if (!btn) return;
+            var calculator = btn.closest('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator, .eora-shipping-dropdown, .shipping-dropdown');
+            if (!calculator || typeof calculator._eoraCalculateShipping !== 'function') return;
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            calculator._eoraCalculateShipping();
+        }, true);
+    }
+
     function bindShippingCalculator(infoEl, themeProd) {
-        var origShipping = themeProd.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
-                           (themeProd.querySelector('input[name="zipcode"], .js-shipping-input') ? themeProd.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         var clonedShipping = infoEl.querySelector('#product-shipping-container, .product-shipping-calculator, .js-shipping-calculator-container, .shipping-calculator-container, .js-shipping-calculator, .shipping-calculator') || 
                              (infoEl.querySelector('input[name="zipcode"], .js-shipping-input') ? infoEl.querySelector('input[name="zipcode"], .js-shipping-input').closest('.product-shipping-calculator, #product-shipping-container, div') : null);
         if (clonedShipping && dropdownLooksLikeMeasurements(clonedShipping)) {
@@ -682,19 +691,99 @@
             }
         }
 
-        if (origShipping && clonedShipping) {
-            var origInput = origShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var origBtn = origShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
-            var origResponse = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-            
-            var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
-            var clonedBtn = clonedShipping.querySelector('.js-calculate-shipping, .js-shipping-calculator-btn, button, input[type="button"], .form-control-btn');
-            var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-            
-            // Preenche o input clonado se o original já tiver valor (ex: CEP salvo)
-            if (origInput && clonedInput && origInput.value && !clonedInput.value) {
-                clonedInput.value = origInput.value;
+        if (clonedShipping) {
+            if (infoEl.classList) {
+                infoEl.classList.add('js-has-new-shipping', 'js-product-detail', 'js-shipping-calculator-container');
             }
+
+            var clonedInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+            var clonedBtn = clonedShipping.querySelector('.eora-calculate-shipping-btn, .js-calculate-shipping, .js-shipping-calculator-btn, .form-control-btn, button[type="submit"], input[type="submit"], input[type="button"], button:not(.dropdown-toggle)');
+            var clonedResponse = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
+            var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
+            var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
+            var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
+            var clonedCurrentZip = clonedShipping.querySelector('.js-shipping-calculator-current-zip');
+            var clonedSpinner = clonedShipping.querySelector('.js-shipping-calculator-spinner');
+
+            function escapeShippingHtml(value) {
+                return String(value || '').replace(/[&<>"']/g, function (chr) {
+                    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[chr];
+                });
+            }
+
+            function showShippingForm() {
+                if (clonedSpinner) clonedSpinner.style.display = 'none';
+                if (clonedResponse) clonedResponse.style.display = 'none';
+                if (clonedHead) {
+                    clonedHead.classList.add('with-form');
+                    clonedHead.classList.remove('with-zip', 'with-error');
+                }
+                if (clonedZip) clonedZip.classList.remove('transition-up-active');
+                if (clonedForm) clonedForm.classList.add('transition-up-active');
+            }
+
+            function showShippingError(message) {
+                if (clonedSpinner) clonedSpinner.style.display = 'none';
+                if (clonedResponse) {
+                    clonedResponse.innerHTML = '<div class="alert alert-danger">' + escapeShippingHtml(message || 'Nao foi possivel calcular o frete. Tente novamente.') + '</div>';
+                    clonedResponse.style.display = 'block';
+                }
+                if (clonedHead) {
+                    clonedHead.classList.add('with-form', 'with-error');
+                    clonedHead.classList.remove('with-zip');
+                }
+                if (clonedForm) clonedForm.classList.add('transition-up-active');
+                if (clonedZip) clonedZip.classList.remove('transition-up-active');
+            }
+
+            function calculateVisibleShipping() {
+                var currentInput = clonedShipping.querySelector('input[name="zipcode"], .js-shipping-input, input');
+                var zip = currentInput ? String(currentInput.value || '').replace(/\D/g, '') : '';
+                if (!zip) {
+                    showShippingError('Informe seu CEP para calcular o frete.');
+                    return;
+                }
+
+                if (currentInput) currentInput.value = zip;
+                if (clonedCurrentZip) clonedCurrentZip.textContent = zip;
+                if (clonedHead) {
+                    clonedHead.classList.add('with-zip');
+                    clonedHead.classList.remove('with-form', 'with-error');
+                }
+                if (clonedZip) clonedZip.classList.add('transition-up-active');
+                if (clonedForm) clonedForm.classList.remove('transition-up-active');
+                if (clonedResponse) {
+                    clonedResponse.innerHTML = '';
+                    clonedResponse.style.display = 'none';
+                }
+                if (clonedSpinner) clonedSpinner.style.display = 'block';
+
+                var url = clonedShipping.getAttribute('data-shipping-url') ||
+                    (themeProd && themeProd.querySelector('#product-shipping-container') && themeProd.querySelector('#product-shipping-container').getAttribute('data-shipping-url')) ||
+                    (window.urls && window.urls.shippingUrl) ||
+                    '';
+
+                if (!window.LS || typeof window.LS.calculateShippingAjax !== 'function' || typeof window.jQueryNuvem === 'undefined' || !url) {
+                    showShippingError('O calculador de frete ainda nao carregou. Tente novamente em alguns segundos.');
+                    return;
+                }
+
+                try {
+                    window.jQueryNuvem('.js-shipping-input').val(zip);
+                    window.jQueryNuvem('.js-shipping-calculator-current-zip').html(zip);
+                    window.LS.calculateShippingAjax(zip, url, window.jQueryNuvem(infoEl));
+                } catch (e) {
+                    showShippingError('Nao foi possivel calcular o frete. Tente novamente.');
+                    return;
+                }
+
+                setTimeout(function () {
+                    var stillLoading = clonedSpinner && window.getComputedStyle(clonedSpinner).display !== 'none';
+                    if (stillLoading) showShippingError('O frete demorou para responder. Tente novamente.');
+                }, 9000);
+            }
+
+            clonedShipping._eoraCalculateShipping = calculateVisibleShipping;
 
             if (clonedBtn) {
                 clonedBtn.classList.remove('js-calculate-shipping', 'js-shipping-calculator-btn');
@@ -707,98 +796,42 @@
                 freshBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (clonedInput && origInput) {
-                        origInput.value = clonedInput.value;
-                        origInput.dispatchEvent(new Event('input', { bubbles: true }));
-                        origInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                    if (origBtn) {
-                        origBtn.click();
-                    }
+                    calculateVisibleShipping();
                 });
+                freshBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    calculateVisibleShipping();
+                    return false;
+                };
+                clonedBtn = freshBtn;
             }
             
             if (clonedInput) {
+                var currentInputValue = clonedInput.value || '';
                 var freshInput = clonedInput.cloneNode(true);
                 clonedInput.parentNode.replaceChild(freshInput, clonedInput);
-                
-                // Reaplica o valor
-                if (origInput) {
-                    freshInput.value = origInput.value;
-                }
-                
+                freshInput.value = currentInputValue;
+
                 freshInput.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         e.stopPropagation();
-                        var btn = clonedShipping.querySelector('.eora-calculate-shipping-btn');
-                        if (btn) btn.click();
+                        calculateVisibleShipping();
                     }
                 });
-                
-                // Mantém inputs em sincronia quando o usuário digita
-                freshInput.addEventListener('input', function () {
-                    if (origInput) {
-                        origInput.value = freshInput.value;
-                    }
-                });
+                clonedInput = freshInput;
             }
-            
-            var syncAllShipping = function () {
-                // 1. Sincroniza respostas de frete
-                var origResp = origShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-                var clonedResp = clonedShipping.querySelector('.js-shipping-calculator-response, .shipping-calculator-response, .js-shipping-response');
-                if (origResp && clonedResp && clonedResp.innerHTML !== origResp.innerHTML) {
-                    clonedResp.innerHTML = origResp.innerHTML;
-                    clonedResp.style.display = origResp.style.display;
-                }
 
-                // 2. Sincroniza classes estruturais e de visibilidade do calculador
-                var origForm = origShipping.querySelector('.js-shipping-calculator-form');
-                var clonedForm = clonedShipping.querySelector('.js-shipping-calculator-form');
-                if (origForm && clonedForm) {
-                    if (origForm.classList.contains('transition-up-active')) {
-                        clonedForm.classList.add('transition-up-active');
-                    } else {
-                        // Mantém sempre visível no clone para evitar campos sumirem
-                        clonedForm.classList.add('transition-up-active');
-                    }
-                }
-                
-                var origZip = origShipping.querySelector('.js-shipping-calculator-with-zipcode');
-                var clonedZip = clonedShipping.querySelector('.js-shipping-calculator-with-zipcode');
-                if (origZip && clonedZip) {
-                    if (origZip.classList.contains('transition-up-active')) {
-                        clonedZip.classList.add('transition-up-active');
-                    } else {
-                        clonedZip.classList.remove('transition-up-active');
-                    }
-                }
+            clonedShipping.querySelectorAll('.js-shipping-calculator-change-zipcode').forEach(function (changeBtn) {
+                changeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showShippingForm();
+                });
+            });
 
-                var origHead = origShipping.querySelector('.js-shipping-calculator-head');
-                var clonedHead = clonedShipping.querySelector('.js-shipping-calculator-head');
-                if (origHead && clonedHead) {
-                    if (origHead.classList.contains('with-zip')) {
-                        clonedHead.classList.add('with-zip');
-                    } else {
-                        clonedHead.classList.remove('with-zip');
-                    }
-                }
-
-                // 3. Sincroniza valor do CEP se mudou fora da digitação direta
-                if (origInput && clonedInput && origInput.value !== clonedInput.value) {
-                    if (document.activeElement !== clonedInput) {
-                        clonedInput.value = origInput.value;
-                    }
-                }
-            };
-
-            // Roda sincronização inicial
-            syncAllShipping();
-
-            // Configura observer no elemento original para reagir a qualquer mudança do JS nativo do tema
-            var observer = new MutationObserver(syncAllShipping);
-            observer.observe(origShipping, { childList: true, subtree: true, attributes: true });
+            showShippingForm();
         }
     }
 
@@ -1300,8 +1333,6 @@
                     if (freshWrap) {
                         freshWrap.classList.add('eora-loaded');
                     }
-                    // TikTok ViewContent
-                    eoraTrackTikTok('ViewContent');
                 }, 50);
             }
         }).catch(function () {
@@ -2660,64 +2691,6 @@
         // No-op
     }
 
-    // --- TikTok Pixel helper ---
-    function eoraGetCurrentSku() {
-        try {
-            var variantIdEl = document.querySelector('input[name="variant_id"]');
-            var variantId = variantIdEl ? variantIdEl.value : '';
-            if (typeof LS !== 'undefined' && LS.variants) {
-                for (var i = 0; i < LS.variants.length; i++) {
-                    if (LS.variants[i].id == variantId) return LS.variants[i].sku || '';
-                }
-                if (LS.variants[0] && LS.variants[0].sku) return LS.variants[0].sku;
-            }
-            return variantId;
-        } catch (e) { return ''; }
-    }
-    function eoraGetCurrentPrice() {
-        try {
-            var priceEl = document.querySelector('.js-price-display, .product-price, .eora-price');
-            if (!priceEl) return 0;
-            var priceText = priceEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
-            return parseFloat(priceText) || 0;
-        } catch (e) { return 0; }
-    }
-    function eoraTrackTikTok(eventName) {
-        try {
-            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
-            var sku = eoraGetCurrentSku();
-            var name = 'Maxi Vértice';
-            var variantName = window.eoraActiveVariationName || '';
-            if (variantName) name += ' - ' + variantName;
-            window.ttq.track(eventName, {
-                content_type: 'product',
-                content_id: sku,
-                content_name: name,
-                currency: 'BRL',
-                value: eoraGetCurrentPrice(),
-                content_category: 'Bolsa'
-            });
-        } catch (e) {}
-    }
-    function eoraTrackAddToCart() {
-        try {
-            if (typeof window.ttq === 'undefined' || !window.ttq.track) return;
-            var sku = eoraGetCurrentSku();
-            var name = 'Maxi Vértice';
-            var variantName = window.eoraActiveVariationName || '';
-            if (variantName) name += ' - ' + variantName;
-            window.ttq.track('AddToCart', {
-                content_type: 'product',
-                content_id: sku,
-                content_name: name,
-                currency: 'BRL',
-                value: eoraGetCurrentPrice(),
-                quantity: 1
-            });
-        } catch (e) {}
-    }
-    // --- Fim TikTok Pixel helper ---
-
     function init() {
         var themeProd = document.querySelector('#single-product');
         if (!themeProd) return;
@@ -3896,9 +3869,6 @@
             window.eoraIsSubmittingCart = true;
             setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
 
-            // TikTok AddToCart
-            eoraTrackAddToCart();
-
             var originalForm = getOriginalProductForm();
             var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
             
@@ -4114,7 +4084,7 @@
 <tbody>
 <tr>
 <td style="width: 48.057%;">nome_variacao</td>
-<td style="width: 48.057%;">Cinza / Rato</td>
+<td style="width: 48.057%;">Lizard / Verde</td>
 </tr>
 </tbody>
 </table>
