@@ -93,6 +93,13 @@
         var container = root.querySelector('#single-product .js-color-variants-container');
         if (!container || !knownVariantOrder.length) return;
 
+        // A Mini Vertice descobre a familia completa pela tag e preserva uma
+        // ordem canonica na sessao. Nao sobrescrever essa lista com a ordem
+        // parcial recebida de outra pagina durante o prefetch global.
+        if (container.classList.contains('eora-minivertice-tag-vars') ||
+            container.closest('.eora-minivertice-product') ||
+            window.__eoraMiniverticeVariantsLoaded) return;
+
         var fragment = document.createDocumentFragment();
         knownVariantOrder.forEach(function (path) {
             var source = knownVariantNodes[path];

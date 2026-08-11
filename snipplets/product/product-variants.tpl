@@ -50,6 +50,7 @@
                 'product': current_product,
                 'colors': current_product_colors,
                 'first_color': current_first_color,
+                'sort_key': current_first_color ~ '|' ~ current_product.name ~ '|' ~ current_product.id,
                 'is_current': true
             }]) %}
             
@@ -70,12 +71,17 @@
                     'product': product,
                     'colors': product_colors,
                     'first_color': first_color,
+                    'sort_key': first_color ~ '|' ~ product.name ~ '|' ~ product.id,
                     'is_current': false
                 }]) %}
             {% endfor %}
-            
-            {# Ordenar a lista completa (produto atual + complementares) pela primeira cor #}
-            {% set sortedList = newList|sort(item => item.first_color) %}
+
+            {#
+                A primeira cor pode estar vazia (por exemplo, nas Mini Vertice que
+                usam foto como variante). Nome e ID formam um desempate estavel,
+                impedindo que o produto atual seja movido para o inicio a cada clique.
+            #}
+            {% set sortedList = newList|sort(item => item.sort_key) %}
             
             {# Usar a lista ordenada para renderizar todos os produtos #}
             {% for item in sortedList %}

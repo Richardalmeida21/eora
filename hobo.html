@@ -155,7 +155,6 @@
         '@media(max-width:767px){.eora-section-titulo{font-size:26px!important;margin-bottom:24px!important}}',
         '.eora-section-bloco{margin-top:80px!important;width:100%!important;box-sizing:border-box!important}',
         '.eora-section-bloco.eora-banner-full-bloco{margin-top:40px!important}',
-        '#cheguei-alert-div{display:none!important}',
         '.eora-cloned-product-form,.eora-cloned-product-form .row,.eora-cloned-product-form [class*="col-"]{margin-bottom:0px!important;padding-bottom:0px!important}',
         '.eora-cloned-product-form .dropdown-wrapper,.eora-cloned-product-form .eora-shipping-dropdown,.eora-cloned-product-form .shipping-dropdown{margin-top:16px!important;margin-bottom:8px!important}',
         '.eora-product-info .eora-shipping-dropdown,.eora-product-info .shipping-dropdown{width:100%!important;border:1px solid #e7e7e7!important;background:#fff!important;margin-bottom:16px!important;box-sizing:border-box!important}',
@@ -1141,6 +1140,17 @@
         if (wrapEl) {
             wrapEl.classList.remove('eora-loaded');
         }
+
+        // Cada cor da HOBO e um produto separado na Nuvemshop. A navegacao
+        // completa reinicializa estoque, SKU, formulario e aplicativos como o
+        // Cheguei, enquanto o fade preserva a sensacao de troca suave.
+        try {
+            window.sessionStorage.setItem('eora-hobo-product-transition', '1');
+        } catch (e) {}
+        window.setTimeout(function () {
+            window.location.assign(fullUrl);
+        }, 120);
+        return;
         
         var htmlPromise = eoraPageCache[path]
             ? Promise.resolve(eoraPageCache[path])
@@ -1317,7 +1327,7 @@
                         forwardToOriginal();
                     });
                     freshForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
-                        btn.classList.remove('js-addtocart', 'js-addtocart-btn');
+                        btn.classList.remove('js-addtocart-btn');
                         btn.removeAttribute('name');
                         btn.classList.add('eora-buy-btn');
                         btn.addEventListener('click', function (e) {
@@ -1402,12 +1412,6 @@
             window.location.href = fullUrl;
         });
     }
-
-    window.addEventListener('popstate', function (e) {
-        if (e.state && e.state.eoraPath) {
-            navigateToVariation(e.state.eoraPath, window.location.href);
-        }
-    });
 
     function makePlaceholderThumb(label) {
         var safeLabel = String(label || 'EORA').trim().slice(0, 18) || 'EORA';
@@ -2926,8 +2930,9 @@
                 });
 
                 clonedForm.querySelectorAll('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart').forEach(function (btn) {
-                    // Remove classes de gatilho nativas do botão clonado para que listeners nativos delegados ao body/document não rodem nele
-                    btn.classList.remove('js-addtocart', 'js-addtocart-btn');
+                    // Mantém js-addtocart/js-prod-submit-form para o Cheguei reconhecer
+                    // este botão visível. O listener abaixo bloqueia o submit duplicado.
+                    btn.classList.remove('js-addtocart-btn');
                     btn.removeAttribute('name');
                     btn.classList.add('eora-buy-btn');
                     
@@ -3035,9 +3040,7 @@
         /* Insere o container logo antes do #single-product */
         themeProd.parentNode.insertBefore(wrap, themeProd);
 
-        /* Inicializa o observador do app Cheguei para não sumir o Avise-me */
-        initChegueiObserver(infoEl);
-        initChegueiPlaceholder(infoEl);
+        /* O Cheguei monta o widget oficial ao lado do botão clonado visível. */
 
         /* Esconde via inline style com !important — bate qualquer CSS do tema */
         function hideTheme() {
@@ -3191,11 +3194,6 @@
             }
             setTimeout(retryVariants, 500);
         });
-
-        try {
-            var initialPath = normalizePathname(window.location.href);
-            history.replaceState({ eoraPath: initialPath }, '', window.location.href);
-        } catch (e) {}
 
     }
 
