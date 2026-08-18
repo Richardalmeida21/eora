@@ -27,7 +27,7 @@
         {# Shipping Calculator #}
 
         {% if store.has_shipping %}
-          {% include "snipplets/shipping/shipping-calculator.tpl" with { 'product_detail': false} %}
+          {% include "snipplets/shipping/shipping-calculator.tpl" with { 'product_detail': false, 'cart_page': cart_page} %}
         {% endif %}
 
         {# Store branches #}

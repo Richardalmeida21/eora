@@ -78,6 +78,13 @@
                 }
             }
 
+            /* Keep saved delivery options compact when the cart drawer opens. */
+            [data-store="shipping-calculator"].shipping-options-hidden {
+                .js-shipping-calculator-response {
+                    display: none !important;
+                }
+            }
+
             .js-ajax-cart-list {
                 .js-cart-item {
                     background-color: #fff;
@@ -126,6 +133,10 @@
                     .row.justify-content-between {
                         display: flex !important;
                         flex-direction: row !important;
+                        /* Product details use a full-width first row, followed by
+                           quantity and remove controls. Keeping this row nowrap
+                           pushes both controls outside the mobile cart viewport. */
+                        flex-wrap: wrap !important;
                         justify-content: space-between !important;
                         align-items: center !important;
                         height: auto !important;

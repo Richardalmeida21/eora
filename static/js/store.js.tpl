@@ -3671,6 +3671,13 @@ DOMContentLoaded.addEventOrExecute(() => {
     jQueryNuvem(".js-calculate-shipping").on("click", function (e) {
 	    e.preventDefault();
 
+        {# A manually requested calculation must reveal the returned options #}
+
+        var $shippingCalculator = jQueryNuvem(e.currentTarget).closest('[data-store="shipping-calculator"]');
+        $shippingCalculator.removeClass("shipping-options-hidden");
+        $shippingCalculator.find(".js-toggle-shipping-options").attr("aria-expanded", "true");
+        $shippingCalculator.find(".js-shipping-chevron").css("transform", "rotate(0deg)");
+
         {# Take the Zip code to all shipping calculators on screen #}
         let shipping_input_val = jQueryNuvem(e.currentTarget).closest(".js-shipping-calculator-form").find(".js-shipping-input").val();
 
@@ -3733,10 +3740,12 @@ DOMContentLoaded.addEventOrExecute(() => {
             $container.removeClass("shipping-options-hidden");
             $response.slideDown(300);
             $chevron.css("transform", "rotate(0deg)");
+            jQueryNuvem(this).attr("aria-expanded", "true");
         } else {
             $container.addClass("shipping-options-hidden");
             $response.slideUp(300);
             $chevron.css("transform", "rotate(180deg)");
+            jQueryNuvem(this).attr("aria-expanded", "false");
         }
     });
 

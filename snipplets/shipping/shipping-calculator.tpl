@@ -4,7 +4,7 @@
 	{% set cart_zipcode = cart.shipping_zipcode %}
 {% endif %}
 
-<div data-store="shipping-calculator">
+<div data-store="shipping-calculator"{% if not product_detail and not cart_page %} class="shipping-options-hidden"{% endif %}>
 	<div class="js-shipping-calculator-head shipping-calculator-head position-relative transition-soft {% if cart_zipcode %}with-zip{% else %}with-form{% endif %}">
 		<div class="js-shipping-calculator-with-zipcode {% if cart_zipcode %}js-cart-saved-zipcode transition-up-active{% endif %} mt-1 w-100 transition-up position-absolute">
 			<div class="d-flex justify-content-between align-items-center">
@@ -21,8 +21,8 @@
 							<path d="M1.79346 7H1.54346C1.10596 7 0.793457 6.6875 0.793457 6.25V2.25C0.793457 1.96875 0.949707 1.6875 1.23096 1.5625C1.51221 1.46875 1.85596 1.53125 2.07471 1.71875L3.35596 3.03125C6.10596 0.34375 10.5122 0.34375 13.231 3.0625C15.9497 5.8125 15.9497 10.2188 13.231 12.9688C10.481 15.6875 6.07471 15.6875 3.32471 12.9688C2.94971 12.5625 2.94971 11.9375 3.32471 11.5625C3.73096 11.1562 4.35596 11.1562 4.73096 11.5625C6.69971 13.5 9.85596 13.5 11.8247 11.5625C13.7622 9.59375 13.7622 6.4375 11.8247 4.46875C9.88721 2.53125 6.73096 2.53125 4.76221 4.4375L6.07471 5.71875C6.26221 5.9375 6.32471 6.28125 6.23096 6.5625C6.10596 6.84375 5.82471 7 5.54346 7H1.79346Z" fill="black"/>
 						</svg>
 					</a>
-					<a href="#" class="js-toggle-shipping-options btn btn-link font-small" title="Mostrar/ocultar fretes" style="padding:4px 6px; line-height:1;">
-						<svg class="js-shipping-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition:transform .3s ease;">
+					<a href="#" class="js-toggle-shipping-options btn btn-link font-small" title="Mostrar/ocultar fretes" aria-label="Mostrar ou ocultar opções de entrega" aria-expanded="{% if not product_detail and not cart_page %}false{% else %}true{% endif %}" style="padding:4px 6px; line-height:1;">
+						<svg class="js-shipping-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="transition:transform .3s ease;{% if not product_detail and not cart_page %} transform:rotate(180deg);{% endif %}">
 							<path d="M2 4L6 8L10 4" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
 					</a>
