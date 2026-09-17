@@ -155,22 +155,19 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('Franqueados video script iniciado');
     var videoContainers = document.querySelectorAll('.section-franqueados .js-video');
     var videoUrlDesktop = '{{ video_link }}';
     var videoUrlMobile = '{{ video_link_mobile }}';
     var videoType = '{{ settings.franqueados_gallery_video_type }}';
     
-    console.log('Franqueados URLs:', { desktop: videoUrlDesktop, mobile: videoUrlMobile, type: videoType });
-    
     if (videoContainers.length && (videoUrlDesktop || videoUrlMobile)) {
       videoContainers.forEach(function(videoContainer) {
+        if (videoContainer.dataset.videoInitialized) return;
+        videoContainer.dataset.videoInitialized = '1';
         var iframeContainer = videoContainer.querySelector('.js-video-iframe');
         var videoImage = videoContainer.querySelector('.js-video-image');
         var playButton = videoContainer.querySelector('.js-play-button');
         var videoDevice = videoContainer.getAttribute('data-video-type');
-        
-        console.log('Processando container franqueados:', videoDevice, videoContainer);
         
         // Escolher URL baseado no dispositivo
         var currentVideoUrl = '';
@@ -180,10 +177,7 @@
           currentVideoUrl = videoUrlMobile;
         }
         
-        console.log('URL escolhida para franqueados', videoDevice + ':', currentVideoUrl);
-        
         if (!currentVideoUrl) {
-          console.log('Nenhuma URL encontrada para franqueados', videoDevice);
           return;
         }
         
@@ -205,13 +199,12 @@
           videoPlatform = 'vimeo';
         }
         
-        console.log('Franqueados Video ID:', videoId, 'Platform:', videoPlatform);
-        
-        if (videoId && videoPlatform) {
+        if (iframeContainer && videoId && videoPlatform) {
+          var videoLoaded = false;
           // Função para criar e carregar iframe
           function loadVideo(autoplay) {
-            console.log('Carregando video franqueados:', { id: videoId, platform: videoPlatform, autoplay: autoplay });
-            
+            if (videoLoaded || !videoContainer.isConnected || !videoContainer.getClientRects().length) return;
+            videoLoaded = true;
             var iframe = document.createElement('iframe');
             var params = [];
             var embedUrl = '';
@@ -264,8 +257,6 @@
               iframe.style.pointerEvents = 'none';
             }
             
-            console.log('Iframe franqueados criado:', iframe.src);
-            
             // Limpar container e adicionar iframe
             iframeContainer.innerHTML = '';
             iframeContainer.appendChild(iframe);
@@ -302,14 +293,37 @@
               playButton.style.display = 'none';
             }
             
-            console.log('Video franqueados carregado com sucesso');
           }
           
           // Se for autoplay, carregar automaticamente
           if (videoType === 'autoplay') {
-            setTimeout(function() {
-              loadVideo(true);
-            }, 500);
+            if ('IntersectionObserver' in window) {
+              var loadTimer;
+              var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                  clearTimeout(loadTimer);
+                  if (entry.isIntersecting) {
+                    loadTimer = setTimeout(function() {
+                      loadVideo(true);
+                      if (videoLoaded) observer.disconnect();
+                    }, 500);
+                  }
+                });
+              }, { rootMargin: '0px' });
+              observer.observe(videoContainer);
+            } else {
+              function loadVisibleVideo() {
+                var bounds = videoContainer.getBoundingClientRect();
+                if (bounds.bottom > 0 && bounds.top < window.innerHeight) loadVideo(true);
+                if (videoLoaded) {
+                  window.removeEventListener('scroll', loadVisibleVideo);
+                  window.removeEventListener('resize', loadVisibleVideo);
+                }
+              }
+              window.addEventListener('scroll', loadVisibleVideo, {passive: true});
+              window.addEventListener('resize', loadVisibleVideo, {passive: true});
+              setTimeout(loadVisibleVideo, 500);
+            }
           }
           
           // Se for sound, carregar quando clicar no play
@@ -319,8 +333,6 @@
               loadVideo(true);
             });
           }
-        } else {
-          console.log('Erro: não foi possível extrair ID do vídeo franqueados');
         }
       });
     }

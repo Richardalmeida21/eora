@@ -159,22 +159,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Video banner script iniciado');
             var videoContainers = document.querySelectorAll('.js-section-banner-video-horizontal .js-video');
             var videoUrlDesktop = '{{ video_link }}';
             var videoUrlMobile = '{{ video_link_mobile }}';
             var videoType = '{{ settings.banner_video_horizontal_type }}';
             
-            console.log('URLs:', { desktop: videoUrlDesktop, mobile: videoUrlMobile, type: videoType });
-            
             if (videoContainers.length && (videoUrlDesktop || videoUrlMobile)) {
                 videoContainers.forEach(function(videoContainer) {
+                    if (videoContainer.dataset.videoInitialized) return;
+                    videoContainer.dataset.videoInitialized = '1';
                     var iframeContainer = videoContainer.querySelector('.js-video-iframe');
                     var videoImage = videoContainer.querySelector('.js-video-image');
                     var playButton = videoContainer.querySelector('.js-play-button');
                     var videoDevice = videoContainer.getAttribute('data-video-type');
-                    
-                    console.log('Processando container:', videoDevice, videoContainer);
                     
                     // Escolher URL baseado no dispositivo
                     var currentVideoUrl = '';
@@ -184,10 +181,7 @@
                         currentVideoUrl = videoUrlMobile;
                     }
                     
-                    console.log('URL escolhida para', videoDevice + ':', currentVideoUrl);
-                    
                     if (!currentVideoUrl) {
-                        console.log('Nenhuma URL encontrada para', videoDevice);
                         return;
                     }
                     
@@ -209,13 +203,12 @@
                         videoPlatform = 'vimeo';
                     }
                     
-                    console.log('Video ID:', videoId, 'Platform:', videoPlatform);
-                    
-                    if (videoId && videoPlatform) {
+                    if (iframeContainer && videoId && videoPlatform) {
+                        var videoLoaded = false;
                         // Função para criar e carregar iframe
                         function loadVideo(autoplay) {
-                            console.log('Carregando video:', { id: videoId, platform: videoPlatform, autoplay: autoplay });
-                            
+                            if (videoLoaded || !videoContainer.isConnected || !videoContainer.getClientRects().length) return;
+                            videoLoaded = true;
                             var iframe = document.createElement('iframe');
                             var params = [];
                             var embedUrl = '';
@@ -268,8 +261,6 @@
                                 iframe.style.pointerEvents = 'none';
                             }
                             
-                            console.log('Iframe criado:', iframe.src);
-                            
                             // Limpar container e adicionar iframe
                             iframeContainer.innerHTML = '';
                             iframeContainer.appendChild(iframe);
@@ -306,28 +297,37 @@
                                 playButton.style.display = 'none';
                             }
                             
-                            console.log('Video carregado com sucesso');
                         }
                         
                         // Se for autoplay, carregar automaticamente
                         if (videoType === 'autoplay') {
                             if ('IntersectionObserver' in window) {
+                                var loadTimer;
                                 var observer = new IntersectionObserver(function(entries) {
                                     entries.forEach(function(entry) {
+                                        clearTimeout(loadTimer);
                                         if (entry.isIntersecting) {
                                             // Delay loading to save main thread for LCP
-                                            setTimeout(function() {
+                                            loadTimer = setTimeout(function() {
                                                 loadVideo(true);
-                                            }, 1000); 
-                                            observer.unobserve(videoContainer);
+                                                if (videoLoaded) observer.disconnect();
+                                            }, 1000);
                                         }
                                     });
                                 }, { rootMargin: '0px' });
                                 observer.observe(videoContainer);
                             } else {
-                                setTimeout(function() {
-                                    loadVideo(true);
-                                }, 3000);
+                                function loadVisibleVideo() {
+                                    var bounds = videoContainer.getBoundingClientRect();
+                                    if (bounds.bottom > 0 && bounds.top < window.innerHeight) loadVideo(true);
+                                    if (videoLoaded) {
+                                        window.removeEventListener('scroll', loadVisibleVideo);
+                                        window.removeEventListener('resize', loadVisibleVideo);
+                                    }
+                                }
+                                window.addEventListener('scroll', loadVisibleVideo, {passive: true});
+                                window.addEventListener('resize', loadVisibleVideo, {passive: true});
+                                setTimeout(loadVisibleVideo, 3000);
                             }
                         }
                         
@@ -338,8 +338,6 @@
                                 loadVideo(true);
                             });
                         }
-                    } else {
-                        console.log('Erro: não foi possível extrair ID do vídeo');
                     }
                 });
             }

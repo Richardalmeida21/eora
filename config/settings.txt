@@ -10905,7 +10905,7 @@ Bolsas Eora
 		gallery_link = Tag do produto (ex.: maxivertice)
 		gallery_width = 400
 		gallery_height = 400
-		gallery_more_info = false
+		gallery_more_info = true
 	checkbox
 		name = bolsas_eora_filters_enabled
 		description = Mostrar botão flutuante de filtros

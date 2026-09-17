@@ -14,7 +14,7 @@ Implementação local baseada no PDF **BRIEFING DE ESTRUTURA PARA PÁGINA DE BOL
 ## Configuração no painel
 
 1. Crie uma página de conteúdo chamada **Bolsas Eora**, com a URL `/bolsas-eora/`.
-2. Em **Personalizar layout → configurações avançadas → Bolsas Eora → Filtros por modelo**, adicione imagens. O segundo campo, **Tag do produto**, recebe somente a tag: `maxivertice`, por exemplo. A imagem com tag vazia não aparece. Use uma tag por imagem, sem URL ou aspas. Arraste para ordenar e exclua para remover.
+2. Em **Personalizar layout → configurações avançadas → Bolsas Eora → Filtros por modelo**, adicione imagens e clique no lápis de cada imagem. Nos detalhes, o campo **Tag do produto** (a plataforma pode exibir **Link ao clicar na imagem**) recebe somente a tag: `maxivertice`, por exemplo. A imagem com tag vazia não aparece. Use uma tag por imagem, sem URL ou aspas. Arraste para ordenar e exclua para remover. A galeria exige `gallery_more_info = true` para abrir os campos adicionais.
 3. No cadastro dos produtos, associe somente a tag específica de cada modelo. A seleção verifica a tag inteira, sem exigir categoria ou tag geral.
 4. Em **Catálogo e banner 1–10**, ative os blocos desejados. Em **Organização dos produtos em destaque**, selecione e ordene os produtos nas seções **Bolsas Eora — Catálogo N** e **Bolsas Eora — Dividido N**. Os blocos divididos usam os primeiros quatro produtos selecionados.
 5. Envie a imagem desktop de cada banner ativado; a versão mobile é opcional. Preencha título, subtítulo e link. Um bloco dividido sem imagem desktop fica oculto. Se não houver produtos selecionados, o banner ocupa a largura disponível.
@@ -53,7 +53,7 @@ As grades possuem navegação quando houver mais de 12 produtos no desktop ou 6 
 
 - Arquivos novos: `snipplets/bolsas-eora/*.tpl`, `static/css/bolsas-eora.css`, `static/js/bolsas-eora.js`.
 - Integrações: uma condição em `templates/page.tpl` e sua cópia em `snipplets/templates/page.tpl`; um include condicional em `templates/search.tpl`; configurações exclusivas em `settings.txt`, `defaults.txt` e `sections.txt`.
-- CSS/JS carregam somente na página nova. Layout global, arquivos de produto/categoria, scripts globais e componentes das campanhas antigas não foram editados.
+- CSS/JS da campanha carregam somente na página nova. As otimizacoes da previa estao nos dois snippets de video da home e na integracao de favoritos de `store.js.tpl`, descritas abaixo.
 - **Um push na `main` dispara o FTP de produção**, conforme `.github/workflows/deploy.yml`. Não usar esse caminho para testar.
 - Antes da publicação: verificar no editor que a galeria aceita e conserva a tag textual no segundo campo; testar o TPL real, as imagens configuradas, mais de uma página de resultados e os filtros habilitados na loja.
 - Em envio manual, enviar primeiro os novos snippets/assets, depois configurações e por último os templates de entrada. Não ativar durante envio parcial.
@@ -68,6 +68,7 @@ npm.cmd install --prefix C:/Temp/eora-bolsas-validation --no-audit --no-fund twi
 $env:NODE_PATH = 'C:/Temp/eora-bolsas-validation/node_modules'
 node .github/tests/bolsas-eora-harness.cjs --check
 node --check static/js/bolsas-eora.js
+node .github/tests/theme-editor-performance.cjs
 git diff --check
 ```
 
@@ -82,3 +83,11 @@ node .github/tests/bolsas-eora-browser.cjs
 ```
 
 Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, tag exata versus prefixo/nome, seis páginas de resultados, deduplicação, filtros cor/preço, ordenação, histórico, zero resultados, erro/retry, páginas iniciais sem correspondências, troca rápida de modelo, fechamento por Escape, foco e ausência de overflow horizontal/erros JavaScript.
+
+## Desempenho da previa do editor
+
+Os videos dos snippets `home-franqueados.tpl` e `home-banner-video-horizontal.tpl` carregam o player quando ficam visiveis. A versao oculta por CSS nao carrega antecipadamente, e a reinicializacao nao duplica o player. Autoplay e reproducao por clique continuam disponiveis. Ha fallback por scroll/resize para navegadores sem IntersectionObserver.
+
+Em `store.js.tpl`, a integracao dos favoritos passa a reagir a mudancas no DOM. A busca do modal a cada 100 ms e a busca do widget a cada segundo foram substituidas por observadores; o modo tela cheia, o reposicionamento no cabecalho e novas insercoes do aplicativo continuam atendidos.
+
+Essas alteracoes reduzem o trabalho do tema dentro da previa. Nao controlam o codigo interno do painel da Nuvemshop, os aplicativos externos ou o filtro de rede. O teste local nao comprova a resolucao de um Out of Memory no painel autenticado.

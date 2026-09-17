@@ -4683,29 +4683,19 @@ let c_settings_name_04 = c_settings_name + '_04';
             processWidget(existingWidget);
         }
 
-        // 2. Observe body for incoming widget
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes) {
-                    mutation.addedNodes.forEach(function(node) {
-                        if (node.id === 'selly-wishlist-widget') {
-                            processWidget(jQueryNuvem(node));
-                            // Optional: observer.disconnect(); // Keep observing if widget re-renders
-                        }
-                    });
-                }
+        // Also handles a widget inserted inside another element or before the header.
+        var widgetCheckPending = false;
+        var observer = new MutationObserver(function() {
+            if (widgetCheckPending) return;
+            widgetCheckPending = true;
+            window.requestAnimationFrame(function() {
+                widgetCheckPending = false;
+                var widget = document.querySelector('#selly-wishlist-widget:not(.wishlist-header-moved)');
+                if (widget) processWidget(jQueryNuvem(widget));
             });
         });
 
-        observer.observe(document.body, { childList: true, subtree: true });
-        
-        // 3. Fallback interval for safety (in case observer misses or partial load)
-        var fallbackInterval = setInterval(function(){
-             var widget = jQueryNuvem('#selly-wishlist-widget');
-             if(widget.length && !widget.hasClass('wishlist-header-moved')) {
-                 processWidget(widget);
-             }
-        }, 1000);
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['id'] });
     }
     
     // Nested Mega Menu Toggle (Desktop)
@@ -4738,7 +4728,7 @@ let c_settings_name_04 = c_settings_name + '_04';
        Targets #main-modal parent and overrides its inner card.
     */
     function forceSellyFullscreen() {
-        setInterval(function() {
+        function updateWishlistModal() {
             var found = false;
             
             // Priority Check: Does #main-modal exist?
@@ -4783,7 +4773,42 @@ let c_settings_name_04 = c_settings_name + '_04';
                 if (found) break;
             }
             
-        }, 100); 
+        }
+
+        var checkPending = false;
+        var observerOptions = {childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class', 'style', 'id']};
+        function containsWishlistHeading(node) {
+            if (node.nodeType !== 1) return false;
+            if (node.matches('h3') && node.textContent.trim() === 'Lista de desejos') return true;
+            return Array.from(node.querySelectorAll('h3')).some(function(heading) {
+                return heading.textContent.trim() === 'Lista de desejos';
+            });
+        }
+        var observer = new MutationObserver(function(mutations) {
+            if (checkPending) return;
+            var relevant = mutations.some(function(mutation) {
+                var target = mutation.target.nodeType === 1 ? mutation.target : mutation.target.parentElement;
+                if (target && target.closest('#main-modal')) return true;
+                if (mutation.type === 'childList') {
+                    return Array.from(mutation.addedNodes).some(function(node) {
+                        return node.nodeType === 1 && (node.id === 'main-modal' || node.querySelector('#main-modal') || containsWishlistHeading(node));
+                    });
+                }
+                if (target && target !== document.body && target !== document.documentElement) return containsWishlistHeading(target);
+                return false;
+            });
+            if (!relevant) return;
+            checkPending = true;
+            window.requestAnimationFrame(function() {
+                checkPending = false;
+                // Ignore our own style writes so they cannot schedule another scan.
+                observer.disconnect();
+                try { updateWishlistModal(); }
+                finally { observer.observe(document.body, observerOptions); }
+            });
+        });
+        updateWishlistModal();
+        observer.observe(document.body, observerOptions);
     }
 
     function applyFullscreen(el) {
