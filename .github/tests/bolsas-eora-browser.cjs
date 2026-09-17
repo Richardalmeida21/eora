@@ -58,6 +58,33 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(cards()).toHaveCount(12);
         console.log('PASS tags: 6 paginas, correspondencia exata, sem duplicados, troca e voltar.');
 
+        // Response shape observed in production before normalizing tags in the TPL.
+        await page.route('**/search/**', async route => {
+            const html = render('snipplets/bolsas-eora/search-feed.tpl', {
+                ...context(), query: '"maxivertice"', products: [product(301), product(302), product(303)],
+                pages: {current: 1, is_last: true, next: ''},
+            });
+            const body = await page.evaluate(html => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const feed = doc.querySelector('template');
+                const cards = feed.content.querySelectorAll('[data-be-product]');
+                cards[0].dataset.beTags = JSON.stringify([{attributes: {tag: 'maxivertice'}}, {attributes: {tag: 'novo'}}]);
+                cards[1].dataset.beTags = JSON.stringify([{attributes: {tag: 'maxivertice-extra'}}]);
+                cards[2].dataset.beTags = JSON.stringify([null, {}]);
+                return feed.outerHTML;
+            }, html);
+            await route.fulfill({contentType: 'text/html', body});
+        });
+        await page.goto(base + '/?tag=maxivertice');
+        await idle();
+        await expect(cards()).toHaveCount(1);
+        await expect(cards().first()).toHaveAttribute('data-be-product', '301');
+        await page.unroute('**/search/**');
+        await page.goto(base + '/?tag=maxivertice');
+        await idle();
+        await expect(cards()).toHaveCount(12);
+        console.log('PASS tags da plataforma: attributes.tag, correspondencia exata, dados vazios e TPL normalizado.');
+
         await page.locator('[data-be-open-filters]').click();
         await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
         await page.locator('input[name="Cor"][value="Preto"]').check();

@@ -1,5 +1,9 @@
 {# Card exclusivo desta campanha; nenhuma dependencia de quickshop ou sliders globais. #}
-<article class="be-product" data-be-product="{{ product.id }}" data-be-tags="{{ product.tags | json_encode | escape }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
+{% set be_product_tags = [] %}
+{% for product_tag in product.tags %}
+    {% set be_product_tags = be_product_tags | merge([product_tag.tag | default(product_tag)]) %}
+{% endfor %}
+<article class="be-product" data-be-product="{{ product.id }}" data-be-tags="{{ be_product_tags | json_encode | escape }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
     <a class="be-product__image" href="{{ product.url | escape }}" aria-label="{{ product.name | escape }}" data-store="product-item-image-{{ product.id }}">
         {% if product.featured_image %}
             <img src="{{ product.featured_image | product_image_url('large') }}" srcset="{{ product.featured_image | product_image_url('medium') }} 320w, {{ product.featured_image | product_image_url('large') }} 480w, {{ product.featured_image | product_image_url('huge') }} 640w" sizes="(max-width: 767px) 50vw, 25vw" alt="{{ product.featured_image.alt | default(product.name) | escape }}" loading="lazy" decoding="async" width="{{ product.featured_image.dimensions.width | default(600) }}" height="{{ product.featured_image.dimensions.height | default(800) }}">

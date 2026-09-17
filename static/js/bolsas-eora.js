@@ -149,7 +149,9 @@
             try { tags = JSON.parse(card.dataset.beTags || '[]'); } catch (_) { return []; }
             if (typeof tags === 'string') tags = tags.split(',');
             if (!Array.isArray(tags)) tags = Object.values(tags || {});
-            return tags.map(function (tag) { return normalize(typeof tag === 'string' ? tag : tag.tag); });
+            return tags.map(function (tag) {
+                return normalize(typeof tag === 'string' ? tag : tag && (tag.tag || (tag.attributes && tag.attributes.tag)));
+            });
         }
         function remember() {
             var url = new URL(window.location.href);

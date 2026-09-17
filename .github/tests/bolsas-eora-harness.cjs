@@ -31,11 +31,16 @@ for (const file of fs.readdirSync(path.join(root, 'snipplets/bolsas-eora'))) {
     compile(id, fs.readFileSync(path.join(root, id), 'utf8'));
 }
 function render(id, data) { return templates.get(id).render(data); }
+function platformTag(tag) {
+    const value = {attributes: {tag}, eager_where: null, dirty_attributes: []};
+    Object.defineProperty(value, 'tag', {value: tag, enumerable: false});
+    return value;
+}
 function product(id, tag = 'maxivertice', overrides = {}) {
     return {
         id, name: 'Bolsa Maxi Vértice ' + id, url: '/produto/' + id,
         available: true, display_price: true, price: 174900 + id * 100, compare_at_price: 0,
-        tags: id % 2 ? [{tag}, {tag: 'bolsa'}] : [tag, 'bolsa'],
+        tags: id % 3 === 0 ? [platformTag(tag), platformTag('bolsa')] : id % 2 ? [{tag}, {tag: 'bolsa'}] : [tag, 'bolsa'],
         featured_image: {url: asset(id), alt: 'Bolsa Eora', dimensions: {width: 600, height: 800}},
         other_images: [{url: asset(id + 1)}], brand: 'Eora', color: id % 2 ? 'Preto' : 'Marrom',
         ...overrides,
@@ -103,6 +108,7 @@ function validate() {
     const response = feed(new URL('http://localhost/search/?q=%22maxivertice%22'));
     assert.match(response, /data-be-search-feed/);
     assert.match(response, /data-next=.*page=2/);
+    assert(!response.includes('eager_where'), 'feed serializa os textos das tags sem os detalhes internos da plataforma');
     assert.equal(render('snipplets/bolsas-eora/search-feed.tpl', {...context(), query: 'oculos'}).trim(), '', 'busca comum sem feed');
     assert.match(feed(new URL('http://localhost/search/?q=%22modelo-3%22')), /data-last="1"/);
     // Mesmo template anterior e mesmas rotas quando a campanha estiver desligada.

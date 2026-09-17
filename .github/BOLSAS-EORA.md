@@ -42,6 +42,7 @@ As grades possuem navegação quando houver mais de 12 produtos no desktop ou 6 
 
 - O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção.
 - A consulta usa `store.search_url` com o termo entre aspas. A busca nativa pode incluir correspondências em outros campos; por isso, cada resultado é conferido contra `product.tags`, comparando a tag inteira (sem diferenciar maiúsculas/minúsculas; acentos são preservados).
+- O card transforma as tags em um array JSON de textos no Twig, acessando `product_tag.tag`. A serializacao direta de `product.tags` na plataforma inclui detalhes internos e guarda o valor em `attributes.tag`, que tambem e aceito pelo JS para respostas anteriores mantidas em cache.
 - Um `<template>` inerte, sem scripts, é acrescentado ao resultado da busca somente quando a consulta corresponde à tag de um modelo configurado. A apresentação e a paginação da busca normal permanecem intactas.
 - O carregamento usa as URLs de paginação fornecidas pela plataforma, elimina IDs repetidos e limita cada ação a três requisições sequenciais. Se ainda houver páginas, o botão permite continuar; não existe um corte na primeira página de produtos.
 - A página cancela consultas anteriores ao trocar de modelo, apresenta erro com opção de tentar novamente e só informa ausência definitiva de resultados depois de terminar a busca.
