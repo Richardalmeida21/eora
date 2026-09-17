@@ -72,6 +72,8 @@
 	<main>
 		{% include 'snipplets/garantia-eora.tpl' %}
 	</main>
+{% elseif page.handle == 'bolsas-eora' %}
+	{% include 'snipplets/bolsas-eora/index.tpl' %}
 {% else %}
 	
 	<section class="user-content pb-5 pagina-institucional">

@@ -1,0 +1,81 @@
+# Bolsas Eora
+
+Implementação local baseada no PDF **BRIEFING DE ESTRUTURA PARA PÁGINA DE BOLSAS DO SITE EORA — SET 2026**, com as alterações solicitadas: filtros por tag e galeria Quem usa sem 15 posições fixas.
+
+## Estado
+
+- Código implementado para a página fixa `/bolsas-eora/`.
+- Nenhum envio FTP, push ou alteração no painel foi realizado.
+- Validação local com Twig.js e Chromium. Isso não substitui o teste do parser e do editor da Nuvemshop.
+- A prévia usa produtos e configurações demonstrativos, com imagens públicas de produtos da Eora. Nenhum dado de demonstração foi colocado no tema publicado.
+
+## Configuração no painel
+
+1. Crie uma página de conteúdo chamada **Bolsas Eora**, com a URL `/bolsas-eora/`.
+2. Em **Personalizar layout → configurações avançadas → Bolsas Eora → Filtros por modelo**, adicione imagens. O segundo campo, **Tag do produto**, recebe somente a tag: `maxivertice`, por exemplo. A imagem com tag vazia não aparece. Use uma tag por imagem, sem URL ou aspas. Arraste para ordenar e exclua para remover.
+3. No cadastro dos produtos, associe somente a tag específica de cada modelo. A seleção verifica a tag inteira, sem exigir categoria ou tag geral.
+4. Em **Catálogo e banner 1–10**, ative os blocos desejados. Em **Organização dos produtos em destaque**, selecione e ordene os produtos nas seções **Bolsas Eora — Catálogo N** e **Bolsas Eora — Dividido N**. Os blocos divididos usam os primeiros quatro produtos selecionados.
+5. Envie a imagem desktop de cada banner ativado; a versão mobile é opcional. Preencha título, subtítulo e link. Um bloco dividido sem imagem desktop fica oculto. Se não houver produtos selecionados, o banner ocupa a largura disponível.
+6. Configure **Best sellers** e seus produtos na seção de destaque **Bolsas Eora — Best sellers**.
+7. Em **Quem usa**, edite título, subtítulo e link geral. Adicione, reordene ou exclua fotos. Cada foto pode ter seu próprio link; sem link próprio, utiliza o link geral.
+8. Em **Banners de categorias**, configure imagens, título, descrição, botão e link no editor da galeria, como na home.
+9. Confira o conteúdo completo na prévia da Nuvemshop antes de publicar o tema.
+
+As galerias de modelos, Quem usa e categorias não declaram `gallery_max` nem cortam a lista no TPL. Eventuais limites do editor/plataforma continuam sendo aplicáveis. As seções de produtos também respeitam o limite nativo de produtos destacados.
+
+## Layout
+
+| Bloco | Computador | Celular |
+|---|---|---|
+| Modelos | 4 visíveis; rolagem e gradientes quando há mais de 4 | 3 visíveis; rolagem sem gradiente |
+| Catálogo | 4 colunas × 3 linhas | 2 colunas × 3 linhas |
+| Dividido | 2 × 2 produtos + banner com a mesma altura | Somente banner |
+| Best sellers | 4 produtos visíveis | 2 produtos visíveis |
+| Quem usa | 5 fotos visíveis; fundo branco | 1 foto visível |
+| Categorias | 4 banners visíveis | 1 banner visível |
+
+As grades possuem navegação quando houver mais de 12 produtos no desktop ou 6 no mobile. Assim os produtos adicionais permanecem acessíveis. Os dez pares catálogo/banner são independentes e desativáveis.
+
+## Consulta por tag e filtros gerais
+
+- O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção.
+- A consulta usa `store.search_url` com o termo entre aspas. A busca nativa pode incluir correspondências em outros campos; por isso, cada resultado é conferido contra `product.tags`, comparando a tag inteira (sem diferenciar maiúsculas/minúsculas; acentos são preservados).
+- Um `<template>` inerte, sem scripts, é acrescentado ao resultado da busca somente quando a consulta corresponde à tag de um modelo configurado. A apresentação e a paginação da busca normal permanecem intactas.
+- O carregamento usa as URLs de paginação fornecidas pela plataforma, elimina IDs repetidos e limita cada ação a três requisições sequenciais. Se ainda houver páginas, o botão permite continuar; não existe um corte na primeira página de produtos.
+- A página cancela consultas anteriores ao trocar de modelo, apresenta erro com opção de tentar novamente e só informa ausência definitiva de resultados depois de terminar a busca.
+- O botão flutuante **Filtros** carrega `product_filters` da busca: preço, marca, variações e campos personalizados habilitados no administrador. Envia os parâmetros de filtro de volta ao servidor, preserva a tag e confere novamente a correspondência exata. Os modelos também aparecem nesse painel.
+- As opções de filtros nativos vêm da busca ampla; uma opção pode ficar sem resultados após a conferência exata da tag. Contagens dessa busca ampla não são apresentadas como totais da campanha.
+- O código usa somente consultas públicas da própria loja. Não exige token privado, backend externo ou download de todo o catálogo.
+
+## Isolamento e publicação
+
+- Arquivos novos: `snipplets/bolsas-eora/*.tpl`, `static/css/bolsas-eora.css`, `static/js/bolsas-eora.js`.
+- Integrações: uma condição em `templates/page.tpl` e sua cópia em `snipplets/templates/page.tpl`; um include condicional em `templates/search.tpl`; configurações exclusivas em `settings.txt`, `defaults.txt` e `sections.txt`.
+- CSS/JS carregam somente na página nova. Layout global, arquivos de produto/categoria, scripts globais e componentes das campanhas antigas não foram editados.
+- **Um push na `main` dispara o FTP de produção**, conforme `.github/workflows/deploy.yml`. Não usar esse caminho para testar.
+- Antes da publicação: verificar no editor que a galeria aceita e conserva a tag textual no segundo campo; testar o TPL real, as imagens configuradas, mais de uma página de resultados e os filtros habilitados na loja.
+- Em envio manual, enviar primeiro os novos snippets/assets, depois configurações e por último os templates de entrada. Não ativar durante envio parcial.
+
+## Verificações locais
+
+Arquivos de teste ficam dentro de `.github/`, pasta excluída do envio FTP atual. Dependências e imagens de teste ficam fora do tema.
+
+```powershell
+npm.cmd install --prefix C:/Temp/eora-bolsas-validation --no-audit --no-fund twig @playwright/test
+$env:NODE_PATH = 'C:/Temp/eora-bolsas-validation/node_modules'
+node .github/tests/bolsas-eora-harness.cjs --check
+node --check static/js/bolsas-eora.js
+git diff --check
+```
+
+O harness verifica a compilação/renderização dos novos TPLs, galerias com 20 itens, busca comum, paginação e 32 comparações de rotas anteriores/precedência. Não altera arquivos da loja.
+
+Para repetir os testes visuais, o harness `--serve` usa seis imagens locais de demonstração em `C:/Temp/eora-bolsas-validation/assets/image-0.webp` até `image-5.webp`. Use imagens locais próprias nesse diretório. Configure `BE_VALIDATION_DIR` para outro diretório e `BE_BROWSER` para o executável Chromium de teste, se necessário.
+
+```powershell
+node .github/tests/bolsas-eora-harness.cjs --serve
+# Em outro terminal com NODE_PATH configurado:
+node .github/tests/bolsas-eora-browser.cjs
+```
+
+Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, tag exata versus prefixo/nome, seis páginas de resultados, deduplicação, filtros cor/preço, ordenação, histórico, zero resultados, erro/retry, páginas iniciais sem correspondências, troca rápida de modelo, fechamento por Escape, foco e ausência de overflow horizontal/erros JavaScript.

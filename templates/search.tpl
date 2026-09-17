@@ -37,3 +37,5 @@
 		{% endif %}
 	</div>
 </section>
+
+{% include 'snipplets/bolsas-eora/search-feed.tpl' %}
