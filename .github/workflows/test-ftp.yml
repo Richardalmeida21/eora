@@ -8,19 +8,29 @@ permissions: {}
 jobs:
   autenticar:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 4
     steps:
       - name: Testar login sem enviar arquivos
+        continue-on-error: true
         env:
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         shell: bash
         run: |
-          python3 - <<'PY'
+          python3 -u - <<'PY'
           import ftplib
           import os
+          import signal
           import ssl
           import sys
+
+          phase = 'preparacao'
+          def deadline_expired(signum, frame):
+              print(f'::error::Limite total de 45 segundos excedido na etapa {phase}.')
+              sys.exit(1)
+
+          signal.signal(signal.SIGALRM, deadline_expired)
+          signal.alarm(45)
 
           username = os.environ.get('FTP_USER', '')
           password = os.environ.get('FTP_PASSWORD', '')
@@ -64,5 +74,79 @@ jobs:
               print(f'::error::Falha na etapa {phase}; tipo: {type(error).__name__}.')
               sys.exit(1)
           finally:
+              signal.alarm(0)
               ftp.close()
           PY
+      - name: Preparar Node 24 para comparar os clientes
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar somente a biblioteca usada pela action
+        shell: bash
+        run: npm install --prefix "$RUNNER_TEMP/eora-ftp-auth" --no-audit --no-fund --ignore-scripts basic-ftp@5.0.5
+      - name: Comparar login da action com as variacoes TLS
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        shell: bash
+        run: |
+          node <<'JS'
+          const path = require('node:path');
+          const { Client } = require(path.join(process.env.RUNNER_TEMP, 'eora-ftp-auth/node_modules/basic-ftp'));
+          const host = 'ftp.nuvemshop.com.br';
+          const user = process.env.FTP_USER;
+          const password = process.env.FTP_PASSWORD;
+          if (!user || !password || [user, password].some(value => value !== value.trim() || /[\r\n]/.test(value))) {
+            console.log('::error::Secrets ausentes ou com espacos/quebras de linha.');
+            process.exit(1);
+          }
+          console.log('Node:', process.version);
+          let activeClient;
+          const deadline = setTimeout(() => {
+            console.log('::error::Comparacao encerrada apos 60 segundos.');
+            activeClient?.close();
+            process.exit(1);
+          }, 60000);
+          async function test(label, mode) {
+            const client = new Client(15000);
+            activeClient = client;
+            client.ftp.verbose = false;
+            console.log('Iniciando:', label);
+            try {
+              if (mode === 'python') {
+                await client.connect(host, 21);
+                await client.useTLS({ host, servername: host, rejectUnauthorized: true });
+                await client.login(user, password);
+              } else {
+                const secureOptions = mode === 'sni'
+                  ? { servername: host, rejectUnauthorized: true }
+                  : { rejectUnauthorized: false };
+                await client.access({ host, port: 21, user, password, secure: true, secureOptions });
+              }
+              console.log(label + ': login confirmado.');
+              return true;
+            } catch (error) {
+              const code = Number.isInteger(error.code) ? error.code : 'indisponivel';
+              console.log('::warning::' + label + ': falhou; codigo FTP ' + code + '.');
+              return false;
+            } finally {
+              client.close();
+              activeClient = undefined;
+            }
+          }
+          (async () => {
+            try {
+              const results = [];
+              results.push(await test('Configuracao original da action', 'action'));
+              results.push(await test('Action identificando o host no TLS (SNI)', 'sni'));
+              results.push(await test('Node com a ordem de login do Python', 'python'));
+              console.log('Comparacao concluida. Nenhum arquivo foi enviado, excluido ou alterado.');
+              if (!results.some(Boolean)) process.exitCode = 1;
+            } finally {
+              clearTimeout(deadline);
+            }
+          })().catch(() => {
+            console.log('::error::Falha inesperada na comparacao.');
+            process.exitCode = 1;
+          });
+          JS
