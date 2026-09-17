@@ -1,0 +1,68 @@
+name: Testar acesso FTP
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  autenticar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Testar login sem enviar arquivos
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import ftplib
+          import os
+          import ssl
+          import sys
+
+          username = os.environ.get('FTP_USER', '')
+          password = os.environ.get('FTP_PASSWORD', '')
+          for name, value in [('FTP_USER', username), ('FTP_PASSWORD', password)]:
+              if not value:
+                  print(f'::error::{name} ausente ou vazio nesta execucao.')
+                  sys.exit(1)
+              if value != value.strip() or '\r' in value or '\n' in value:
+                  print(f'::error::{name} contem espacos nas extremidades ou quebra de linha.')
+                  sys.exit(1)
+
+          print('Os dois secrets estao presentes e sem espacos nas extremidades.')
+          print('FTP_USER corresponde a eoraeyewear:', username == 'eoraeyewear')
+          phase = 'conexao'
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=15)
+          try:
+              ftp.connect('ftp.nuvemshop.com.br', 21)
+              print('Conexao na porta 21 estabelecida.')
+              phase = 'TLS'
+              ftp.auth()
+              print('FTPS explicito estabelecido.')
+              phase = 'usuario (USER)'
+              reply = ftp.sendcmd('USER ' + username)
+              code = reply[:3]
+              print('Resposta ao usuario:', code)
+              if code == '331':
+                  phase = 'senha (PASS)'
+                  reply = ftp.sendcmd('PASS ' + password)
+                  code = reply[:3]
+                  print('Resposta a senha:', code)
+              if code != '230':
+                  print('::error::O servidor nao confirmou a autenticacao com codigo 230.')
+                  sys.exit(1)
+              print('Login confirmado. Nenhum arquivo foi enviado, excluido ou alterado.')
+          except ftplib.Error as error:
+              raw_code = str(error)[:3]
+              code = raw_code if raw_code.isdigit() else 'indisponivel'
+              print(f'::error::Falha na etapa {phase}; codigo FTP: {code}.')
+              sys.exit(1)
+          except (OSError, ssl.SSLError, EOFError) as error:
+              print(f'::error::Falha na etapa {phase}; tipo: {type(error).__name__}.')
+              sys.exit(1)
+          finally:
+              ftp.close()
+          PY
