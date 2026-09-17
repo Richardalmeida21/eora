@@ -8,6 +8,8 @@ Implementação local baseada no PDF **BRIEFING DE ESTRUTURA PARA PÁGINA DE BOL
 - Nenhum envio FTP, push ou alteração no painel foi realizado.
 - Validação local com Twig.js e Chromium. Isso não substitui o teste do parser e do editor da Nuvemshop.
 - A prévia usa produtos e configurações demonstrativos, com imagens públicas de produtos da Eora. Nenhum dado de demonstração foi colocado no tema publicado.
+- Os 20 arquivos `static/bolsas_eora_*_banner*.jpg` são imagens-base brancas de 1 pixel para registrar os campos de imagem do editor. Não são fotos de demonstração e não exibem banners: o TPL exige `has_custom_image` após um upload do administrador.
+- `static/js/instatheme.js` restaura a integração já existente no arquivo com sufixo `instatheme-e17831ac275d2a8bf565d85c4d93021230.js`, usando o nome solicitado pelo editor da Nuvemshop.
 
 ## Configuração no painel
 
@@ -55,6 +57,7 @@ As grades possuem navegação quando houver mais de 12 produtos no desktop ou 6 
 - **Um push na `main` dispara o FTP de produção**, conforme `.github/workflows/deploy.yml`. Não usar esse caminho para testar.
 - Antes da publicação: verificar no editor que a galeria aceita e conserva a tag textual no segundo campo; testar o TPL real, as imagens configuradas, mais de uma página de resultados e os filtros habilitados na loja.
 - Em envio manual, enviar primeiro os novos snippets/assets, depois configurações e por último os templates de entrada. Não ativar durante envio parcial.
+- Para a correção do editor, enviar também `static/js/instatheme.js` e os 20 JPEGs-base, recarregar o painel e conferir se o 403 desse script desapareceu. Os testes locais não comprovam que o travamento do editor foi resolvido; a validação deve ser feita no painel real.
 
 ## Verificações locais
 

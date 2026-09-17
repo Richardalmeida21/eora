@@ -109,7 +109,7 @@ function validate() {
     const currentSource = fs.readFileSync(path.join(root, 'templates/page.tpl'), 'utf8');
     const oldSource = execFileSync('git', ['show', 'HEAD:templates/page.tpl'], {cwd: root, encoding: 'utf8'});
     const includes = [...new Set([...oldSource.matchAll(/include\s+'([^']+)'/g)].map(m => m[1]))];
-    includes.forEach(id => compile(id, 'LEGACY:' + id));
+    includes.filter(id => !id.startsWith('snipplets/bolsas-eora/')).forEach(id => compile(id, 'LEGACY:' + id));
     const old = compile('legacy-page', oldSource);
     const current = compile('current-page', currentSource);
     const configured = {gift_guide_page_url: 'presentes', behind_lens_page_url: 'lentes'};
@@ -133,6 +133,18 @@ function validate() {
     const names = [...newConfig.matchAll(/name = (bolsas_eora_\w+)/g)].map(m => m[1]);
     assert(names.length > 60);
     assert.equal(new Set(names).size, names.length, 'chaves exclusivas');
+    const bannerOriginals = [...newConfig.matchAll(/original = (bolsas_eora_\w+\.jpg)/g)].map(m => m[1]);
+    assert.equal(bannerOriginals.length, 20);
+    bannerOriginals.forEach(name => {
+        const bytes = fs.readFileSync(path.join(root, 'static', name));
+        assert.equal(bytes.readUInt16BE(0), 0xffd8, name + ' possui arquivo JPEG base valido');
+    });
+    const configuredImages = [...customImages];
+    customImages.clear();
+    const withoutUploads = render('snipplets/bolsas-eora/index.tpl', context());
+    configuredImages.forEach(name => customImages.add(name));
+    assert(!withoutUploads.includes('class="be-split'), 'imagens-base nao exibem banners sem upload');
+    assert(fs.existsSync(path.join(root, 'static/js/instatheme.js')), 'script no caminho esperado pelo editor');
     console.log('PASS: Twig parse/render, 20 modelos, 20 fotos, feed/paginacao, 32 rotas legadas, precedencia e configuracao.');
 }
 
