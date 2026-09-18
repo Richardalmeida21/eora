@@ -14,6 +14,9 @@
 {% set vb_video        = settings.banner_video_botao_embed %}
 {% set vb_video_mobile = settings.banner_video_botao_embed_mobile | default(vb_video) %}
 {% set vb_image        = settings.banner_video_botao_image %}
+{% if 'banner_video_botao_image.png' | has_custom_image %}
+    {% set vb_image = 'banner_video_botao_image.png' %}
+{% endif %}
 {% set vb_link         = settings.banner_video_botao_link %}
 {% set vb_button       = settings.banner_video_botao_button %}
 {% set vb_title        = settings.banner_video_botao_title %}

@@ -8,10 +8,16 @@
 #}
 
 {% set bd1_image = settings.banner_duplo_1_image %}
+{% if 'banner_duplo_1_image.png' | has_custom_image %}
+    {% set bd1_image = 'banner_duplo_1_image.png' %}
+{% endif %}
 {% set bd1_link  = settings.banner_duplo_1_link %}
 {% set bd1_label = settings.banner_duplo_1_label %}
 
 {% set bd2_image = settings.banner_duplo_2_image %}
+{% if 'banner_duplo_2_image.png' | has_custom_image %}
+    {% set bd2_image = 'banner_duplo_2_image.png' %}
+{% endif %}
 {% set bd2_link  = settings.banner_duplo_2_link %}
 {% set bd2_label = settings.banner_duplo_2_label %}
 

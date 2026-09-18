@@ -597,8 +597,6 @@ Página de inicio
 	collapse
 		title = Carrusel de imágenes
 		backto = home_order_position
-	checkbox
-		description = Mostrar o banner horizontal na página principal
 	dropdown
 		name = slider_title_size_desktop
 		description = Tamaño de los títulos en computadoras:
@@ -2035,7 +2033,7 @@ Página de inicio
 	subtitle
 		subtitle = Banner 1 (esquerda)
 	image
-		name = banner_duplo_1_image
+		original = banner_duplo_1_image.png
 		title = Imagem (JPG, PNG)
 		width = 960
 		height = 1200
@@ -2048,7 +2046,7 @@ Página de inicio
 	subtitle
 		subtitle = Banner 2 (direita)
 	image
-		name = banner_duplo_2_image
+		original = banner_duplo_2_image.png
 		title = Imagem (JPG, PNG)
 		width = 960
 		height = 1200
@@ -2075,7 +2073,7 @@ Página de inicio
 	subtitle
 		subtitle = Imagem de fallback (usada se não houver vídeo)
 	image
-		name = banner_video_botao_image
+		original = banner_video_botao_image.png
 		title = Imagem (JPG, PNG)
 		width = 1920
 		height = 820
@@ -2406,7 +2404,7 @@ Detalle de producto
 	subtitle
 		subtitle = Imagem (usada se não houver vídeo)
 	image
-		name = product_banner_image
+		original = product_banner_image.png
 		title = Imagem do banner (JPG, PNG)
 		width = 1920
 		height = 820

@@ -14,6 +14,9 @@
 
 {% set pb_video       = settings.product_banner_video %}
 {% set pb_image       = settings.product_banner_image %}
+{% if 'product_banner_image.png' | has_custom_image %}
+    {% set pb_image = 'product_banner_image.png' %}
+{% endif %}
 {% set pb_button      = settings.product_banner_button %}
 {% set pb_title       = settings.product_banner_title %}
 {% set pb_link        = settings.product_banner_link %}
