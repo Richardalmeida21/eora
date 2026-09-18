@@ -14,18 +14,12 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
     const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
     const maxi = () => page.locator('[data-be-tag="maxivertice"]');
     try {
-        await page.route(base + '/?without-models', route => route.fulfill({contentType: 'text/html', body: '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">' + render('snipplets/bolsas-eora/index.tpl', {...context(), settings: {...context().settings, bolsas_eora_models: []}})}));
+        await page.route(base + '/?without-models', route => route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + render('snipplets/bolsas-eora/index.tpl', {...context(), settings: {...context().settings, bolsas_eora_models: []}})}));
         await page.goto(base + '/?without-models');
-        assert.equal(await page.locator('[data-be-paged]').first().locator('[data-be-product]:visible').count(), 12);
-        assert.equal(await page.locator('[data-be-page-items]').first().evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 4);
-        await page.locator('[data-be-paged]').first().locator('[data-be-next]').click();
-        assert.equal(await page.locator('[data-be-paged]').first().locator('[data-be-product]:visible').count(), 6);
-        await page.locator('[data-be-paged]').first().locator('[data-be-prev]').click();
-        await page.setViewportSize({width: 390, height: 844});
-        await expect(page.locator('[data-be-paged]').first().locator('[data-be-product]:visible')).toHaveCount(6);
-        assert.equal(await page.locator('[data-be-page-items]').first().evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
-        await page.setViewportSize({width: 1440, height: 1000});
-        console.log('PASS catalogos manuais: sem modelos configurados, desktop/mobile e paginacao preservados.');
+        await expect(page.locator('[data-be-paged]')).toHaveCount(0);
+        await expect(page.locator('[data-be-status]')).toHaveText('Nenhum modelo disponível no momento.');
+        await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
+        console.log('PASS sem modelos: estado vazio, primeiro banner e ausencia de catalogos manuais.');
 
         await page.goto(base);
         await expect(page.locator('[data-be-page]')).toHaveAttribute('data-be-ready', '1');
@@ -45,12 +39,11 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({path: path.join(output, 'desktop.png')});
-        await page.locator('.be-split').first().screenshot({path: path.join(output, 'desktop-split.png')});
+        await page.locator('[data-be-catalog-banner]').screenshot({path: path.join(output, 'desktop-split.png')});
         console.log('PASS desktop: catalogo automatico em 4 colunas, modelos e galerias com 20 itens.');
 
         await maxi().click();
-        await expect(page.locator('.be-catalog-block').first()).toBeHidden();
-        await expect(page.locator('.be-split').first()).toBeVisible();
+        await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         await idle();
         await expect(cards()).toHaveCount(12);
         assert(!(await cards().evaluateAll(nodes => nodes.map(n => n.dataset.beProduct))).includes('1'));
@@ -173,7 +166,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await idle();
         assert((await cards().count()) > 0 && (await cards().count()) <= 6);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
-        await expect(page.locator('.be-split__products').first()).toBeHidden();
+        await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         assert.equal(await page.locator('.be-models').evaluate(el => getComputedStyle(el).getPropertyValue('--be-visible').trim()), '2');
         await expect(page.locator('.be-models .be-dot')).toHaveCount(10);
         const mobileModelRatio = await page.locator('.be-models [data-be-track]').evaluate(el => el.clientWidth / el.firstElementChild.getBoundingClientRect().width);

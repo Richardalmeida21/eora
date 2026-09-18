@@ -71,7 +71,10 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
             return route.fulfill({contentType: 'text/html; charset=utf-8', body});
         });
         const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
-        const ready = () => expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
+        const ready = async () => {
+            await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
+            await expect(page.locator('[data-be-facet-status]')).toHaveText('');
+        };
         const open = async () => {await page.locator('[data-be-open-filters]').click(); await ready();};
         const select = (key, value) => page.locator('input[name="' + key + '"][value="' + value + '"]').check();
         const apply = async () => {await ready(); await page.locator('[data-be-filter-form] [type="submit"]').click(); await idle();};
@@ -120,7 +123,7 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
         failOnce = true;
         await page.locator('[data-be-open-filters]').click();
         await expect(page.locator('[data-be-facet-status]')).toContainText('Não foi possível');
-        await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeDisabled();
+        await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
         await page.keyboard.press('Escape'); await open();
         await expect(page.locator('[name="be_color"][value="azul"]')).toHaveCount(1);
         await page.keyboard.press('Escape');

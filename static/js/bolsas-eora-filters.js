@@ -26,8 +26,8 @@
             return filters[definition.key].split('|').some(function (value) { return candidates.indexOf(value) !== -1; });
         });
     }
-    function render(container, selected, tags) {
-        container.replaceChildren();
+    function render(container, selected, tags, append) {
+        if (!append) container.replaceChildren();
         definitions.forEach(function (definition) {
             var values = Array.from(new Set(tagValues(tags, definition)));
             if (!values.length) return;
@@ -37,21 +37,34 @@
                 var label = value.replace(/-/g, ' ');
                 options.push([value, label.charAt(0).toUpperCase() + label.slice(1)]);
             });
-            var fieldset = document.createElement('fieldset');
-            fieldset.className = 'be-facet';
-            var legend = document.createElement('legend');
-            legend.textContent = definition.label;
-            fieldset.appendChild(legend);
+            var fieldset = container.querySelector('[data-be-facet="' + definition.key + '"]');
+            if (!fieldset) {
+                fieldset = document.createElement('fieldset');
+                fieldset.className = 'be-facet';
+                fieldset.dataset.beFacet = definition.key;
+                var legend = document.createElement('legend');
+                legend.textContent = definition.label;
+                fieldset.appendChild(legend);
+                var following = Array.from(container.children).find(function (child) {
+                    return definitions.findIndex(function (item) { return item.key === child.dataset.beFacet; }) > definitions.indexOf(definition);
+                });
+                container.insertBefore(fieldset, following || null);
+            }
+            var existing = Array.from(fieldset.querySelectorAll('input'));
             options.forEach(function (option) {
+                if (existing.some(function (input) { return input.value === option[0]; })) return;
                 var label = document.createElement('label');
                 label.className = 'be-choice';
                 var input = document.createElement('input');
                 input.type = 'checkbox'; input.name = definition.key; input.value = option[0];
                 input.checked = (selected[definition.key] || '').split('|').indexOf(option[0]) !== -1;
                 var span = document.createElement('span'); span.textContent = option[1];
-                label.appendChild(input); label.appendChild(span); fieldset.appendChild(label);
+                label.appendChild(input); label.appendChild(span);
+                var following = existing.find(function (input) {
+                    return options.findIndex(function (item) { return item[0] === input.value; }) > options.indexOf(option);
+                });
+                fieldset.insertBefore(label, following ? following.parentNode : null);
             });
-            container.appendChild(fieldset);
         });
     }
     function models(select, tags) {

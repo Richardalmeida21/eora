@@ -10,7 +10,9 @@ O seletor usa somente as tags configuradas nas imagens de **Bolsas Eora > Filtro
 
 Ocasiao, Tamanho, Cor, O que cabe, Textura e Ferragem sao montados a partir das tags dos produtos que pertencem aos modelos cadastrados. Ao escolher um modelo, a lateral usa apenas as tags dos produtos daquele modelo. Grupos e valores sem tags nao aparecem.
 
-A consulta percorre todas as paginas de cada modelo, sem os filtros de preco ou caracteristicas, e verifica a tag exata do modelo para excluir correspondencias amplas da busca. O resultado completo e guardado em memoria ate recarregar a pagina. A interface indica carregamento/erro, cancela a consulta ao fechar ou trocar o modelo e nao habilita Aplicar filtros antes de terminar.
+A consulta percorre todas as paginas de cada modelo, sem os filtros de preco ou caracteristicas, e verifica a tag exata do modelo para excluir correspondencias amplas da busca. Ate tres modelos sao consultados em paralelo. As opcoes ja conhecidas aparecem imediatamente e as demais entram conforme cada pagina chega, preservando marcacoes e foco. Aplicar filtros fica disponivel durante o carregamento e tambem em caso de falha parcial.
+
+As tags descobertas e o progresso de cada modelo ficam em memoria ate recarregar a pagina. Fechar o painel ou trocar o modelo cancela as consultas; reabrir retoma das paginas pendentes, sem descartar as anteriores. As respostas de busca tambem sao compartilhadas entre catalogo e filtros em um cache de ate 40 paginas por cinco minutos, separado por URL completa (modelo, preco, ordenacao e previa). O painel indica enquanto ainda carrega opcoes e permite tentar novamente apos uma falha.
 
 Os nomes e a ordem das opcoes conhecidas sao apenas rotulos de apresentacao. Uma tag nova com prefixo reconhecido, como `cor:terracota`, tambem pode aparecer. Nenhuma opcao e criada a partir do nome do produto, propriedades ou variacoes. Preco continua usando os valores reais e os parametros nativos da loja, sem tag.
 
@@ -75,7 +77,7 @@ Cadastrar somente as caracteristicas confirmadas para cada produto. Nenhuma text
 
 Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto ou Marrom, combinado com Croco e Prata. Preco usa os filtros nativos da busca e aceita somente minimo, somente maximo ou ambos. Os demais filtros funcionam em Todos os modelos ou em um modelo especifico, com paginacao, URL compartilhavel e Limpar filtros.
 
-Publicar juntos `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. As URLs usam a versao `20260918-4` e a busca inclui `be_feed=4` para evitar respostas antigas em cache. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
+Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O CSS e o JS principal usam `20260918-6`; o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
 
 O cadastro de tags e a publicacao na loja nao sao realizados pelos testes locais.
 
@@ -87,4 +89,5 @@ Com a previa local na porta 4175 e NODE_PATH apontando para as dependencias de v
 node .github/tests/bolsas-eora-filters.cjs
 node .github/tests/bolsas-eora-browser.cjs
 node .github/tests/bolsas-eora-all-models.cjs
+node .github/tests/bolsas-eora-performance.cjs
 ```

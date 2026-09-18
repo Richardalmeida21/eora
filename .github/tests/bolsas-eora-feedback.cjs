@@ -15,7 +15,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         const initial = context();
         await page.route(base + '/?feedback*', route => {
             const small = new URL(route.request().url()).searchParams.has('small');
-            const data = {...initial, settings: {...initial.settings, bolsas_eora_2_split_enabled: true,
+            const data = {...initial, settings: {...initial.settings,
                 bolsas_eora_community: small ? initial.settings.bolsas_eora_community.slice(0, 2) : initial.settings.bolsas_eora_community,
             }};
             return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding-top:90px;font-family:Arial}.js-head-main{position:fixed;top:0;height:90px;width:100%;background:white;z-index:10}</style><header class="js-head-main">EORA</header>' + render('snipplets/bolsas-eora/index.tpl', data)});
@@ -27,9 +27,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await idle();
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'sem overflow em ' + width);
             if (width < 768) {
-                await expect(page.locator('[data-be-mobile-banners] .be-split')).toHaveCount(2);
-                await expect(page.locator('[data-be-catalog] > .be-split')).toHaveCount(0);
-                for (const selector of ['.be-models', '.be-best', '.be-gallery--community', '.be-gallery--categories', '.be-mobile-banners']) {
+                await expect(page.locator('[data-be-results-grid] [data-be-catalog-banner]')).toHaveCount(1);
+                for (const selector of ['.be-models', '.be-best', '.be-gallery--community', '.be-gallery--categories']) {
                     const section = page.locator(selector);
                     assert(await section.locator('[data-be-track]').evaluate(track => {
                         const viewport = track.getBoundingClientRect();
@@ -57,13 +56,12 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
                 assert(photo.width < width / 2 && Math.abs(photo.height - photo.width) < 1, 'comunidade compacta e quadrada');
                 if (width === 390) {
                     await page.locator('.be-gallery--community').screenshot({path: path.join(output, 'feedback-community-mobile.png')});
-                    await page.locator('.be-mobile-banners').screenshot({path: path.join(output, 'feedback-banners-mobile.png')});
+                    await page.locator('[data-be-catalog-banner]').screenshot({path: path.join(output, 'feedback-banners-mobile.png')});
                 }
             } else {
                 const model = await page.locator('.be-model img').first().boundingBox();
                 assert(model.width <= 222.1, 'filtros compactos no desktop');
-                await expect(page.locator('[data-be-mobile-banners]')).toBeHidden();
-                await expect(page.locator('[data-be-catalog] > .be-split')).toHaveCount(2);
+                await expect(page.locator('[data-be-catalog-banner]')).toHaveCount(1);
             }
             for (const motion of ['no-preference', 'reduce']) {
                 await page.emulateMedia({reducedMotion: motion});
@@ -79,12 +77,11 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             }
             console.log('PASS feedback em ' + width + 'px: layout, banners, carrosseis, rolagem e imagens.');
         }
-        // A faixa deve voltar ao local original ao cruzar o breakpoint.
+        // O mesmo banner acompanha a grade ao cruzar o breakpoint.
         await page.setViewportSize({width: 390, height: 844});
-        await expect(page.locator('[data-be-mobile-banners] .be-split')).toHaveCount(2);
+        await expect(page.locator('[data-be-results-grid] [data-be-catalog-banner]')).toHaveCount(1);
         await page.setViewportSize({width: 1440, height: 1000});
-        await expect(page.locator('[data-be-catalog] > .be-split')).toHaveCount(2);
-        await expect(page.locator('[data-be-mobile-banners] .be-split')).toHaveCount(0);
+        await expect(page.locator('[data-be-results-grid] [data-be-catalog-banner]')).toHaveCount(1);
 
         // Sem mais fotos, a comunidade nao oferece uma navegacao vazia.
         await page.setViewportSize({width: 390, height: 844});

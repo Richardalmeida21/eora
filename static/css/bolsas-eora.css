@@ -30,6 +30,8 @@
 .be-page .be-dot[aria-current="true"] { background: #111; transform: scale(1.2); }
 .be-page [data-be-prev] svg { transform: rotate(180deg); }
 .be-page .be-product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--be-gap); row-gap: 28px; }
+.be-page .be-catalog-banner { position: relative; grid-column: 3 / span 2; grid-row: var(--be-banner-row, 3) / span 2; min-height: 320px; overflow: hidden; background: #f3f3f3; }
+.be-page .be-catalog-banner img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
 .be-page .be-product { min-width: 0; }
 .be-page .be-product__image { display: block; position: relative; overflow: hidden; aspect-ratio: 3 / 4; background: #f3f3f3; }
 .be-page .be-product__image img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -40,15 +42,8 @@
 .be-page .be-product__info h3 { font-family: inherit; font-size: 11px; line-height: 1.5; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
 .be-page .be-product__price { display: flex; flex-direction: column; align-items: flex-end; white-space: nowrap; font-size: 11px; line-height: 1.5; }
 .be-page .be-product__price del { color: #777; }
-.be-page .be-catalog-block { margin-bottom: 32px; }
-.be-page .be-split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--be-gap); margin: 0 0 48px; }
-.be-page .be-split__products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px var(--be-gap); }
 .be-page .be-banner { position: relative; display: block; overflow: hidden; background: #f3f3f3; }
 .be-page .be-banner > img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.be-page .be-split > .be-banner { min-height: 400px; }
-.be-page .be-split .be-banner picture, .be-page .be-split .be-banner picture img { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.be-page .be-split--banner-only { grid-template-columns: 1fr; }
-.be-page .be-split--banner-only > .be-banner { aspect-ratio: 16 / 9; }
 .be-page .be-banner__caption { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; position: absolute; bottom: 16px; left: 16px; right: 16px; padding: 16px; background: rgba(25, 25, 25, .38); backdrop-filter: blur(8px); color: #fff; }
 .be-page .be-banner__caption strong { display: block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
 .be-page .be-banner__caption span span { display: block; margin-top: 8px; font-size: 11px; line-height: 1.5; }
@@ -97,18 +92,13 @@
     .be-page .be-models--overflow .be-models__viewport::before, .be-page .be-models--overflow .be-models__viewport::after { display: none; }
     .be-page .be-model span { font-size: 10px; }
     .be-page .be-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 22px; }
+    .be-page .be-catalog-banner { grid-column: 1 / -1; grid-row: auto; min-height: 0; aspect-ratio: 10 / 13; }
     .be-page .be-product__info { display: block; padding-top: 10px; }
     .be-page .be-product__info h3 { font-size: 10px; }
     .be-page .be-product__price { align-items: flex-start; margin-top: 5px; font-size: 11px; }
-    .be-page .be-split { display: block; margin-bottom: 32px; }
-    .be-page .be-split__products { display: none; }
-    .be-page .be-split > .be-banner { aspect-ratio: 3 / 4; min-height: 0; }
     .be-page .be-best { --be-visible: 2; --be-card-visible: 2.2; }
     .be-page .be-gallery { --be-visible: 1; --be-card-visible: 1.15; }
     .be-page .be-gallery--community { --be-visible: 2; --be-card-visible: 2.2; }
-    .be-page .be-mobile-banners { --be-visible: 1; --be-card-visible: 1.15; margin-bottom: 32px; }
-    .be-page .be-mobile-banners .be-split { margin-bottom: 0; }
-    .be-page .be-mobile-banners .be-split:only-child { flex-basis: 100%; }
     .be-page .be-best, .be-page .be-gallery { margin-top: 36px; }
     .be-page .be-banner__caption { left: 12px; right: 12px; bottom: 12px; padding: 14px; }
     .be-page .be-toolbar { flex-wrap: wrap; }

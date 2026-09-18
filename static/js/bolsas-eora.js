@@ -32,26 +32,6 @@
             if (current) dots.scrollLeft = Math.max(0, current.offsetLeft - dots.clientWidth / 2);
         }
 
-        // Reutiliza os mesmos banners no mobile e restaura a ordem no desktop.
-        var mobileBanners = one('[data-be-mobile-banners]');
-        if (mobileBanners) {
-            var bannerTrack = mobileBanners.querySelector('[data-be-track]');
-            var banners = all('[data-be-catalog] > .be-split').map(function (banner) {
-                var position = document.createComment('be-banner-position');
-                banner.before(position);
-                return {element: banner, position: position};
-            });
-            function arrangeBanners() {
-                mobileBanners.hidden = !mobile.matches || !banners.length;
-                banners.forEach(function (banner) {
-                    if (mobile.matches) bannerTrack.appendChild(banner.element);
-                    else banner.position.after(banner.element);
-                });
-            }
-            mobile.addEventListener('change', arrangeBanners);
-            arrangeBanners();
-        }
-
         // Rolagem nativa: funciona por toque, teclado e botoes, sem Swiper global.
         all('[data-be-carousel]').forEach(function (section) {
             var track = section.querySelector('[data-be-track]');
@@ -97,27 +77,6 @@
             update();
         });
 
-        // Cada grade conserva todos os produtos selecionados no painel.
-        all('[data-be-paged]').forEach(function (section) {
-            var items = Array.from(section.querySelector('[data-be-page-items]').children);
-            var controls = section.querySelector('[data-be-controls]');
-            var page = 0;
-            function render() {
-                var size = mobile.matches ? 6 : 12;
-                var count = Math.ceil(items.length / size);
-                page = Math.min(page, count - 1);
-                items.forEach(function (item, index) { item.hidden = index < page * size || index >= (page + 1) * size; });
-                controls.hidden = count <= 1;
-                controls.querySelector('[data-be-prev]').disabled = page === 0;
-                controls.querySelector('[data-be-next]').disabled = page >= count - 1;
-                updateDots(controls, count, page, function (target) { page = target; render(); });
-            }
-            controls.querySelector('[data-be-prev]').addEventListener('click', function () { page--; render(); section.scrollIntoView({block: 'start', behavior: 'auto'}); });
-            controls.querySelector('[data-be-next]').addEventListener('click', function () { page++; render(); section.scrollIntoView({block: 'start', behavior: 'auto'}); });
-            mobile.addEventListener('change', render);
-            render();
-        });
-
         var models = all('[data-be-tag]');
         var modelTags = [];
         models.forEach(function (model) {
@@ -126,6 +85,8 @@
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
         var grid = one('[data-be-results-grid]');
+        var bannerTemplates = all('[data-be-banner-template]');
+        var activeBanner = null;
         var results = one('[data-be-results]');
         var status = one('[data-be-status]');
         var more = one('[data-be-more]');
@@ -133,12 +94,32 @@
         var form = one('[data-be-filter-form]');
         var bagFilters = window.EoraBagFilters;
         var facetCache = new Map();
+        var feedCache = new Map();
         var facetRequest = null;
         var facetVersion = 0;
         var productRequest = null;
         var version = 0;
         var state;
         var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'preview', '__proto__', 'constructor', 'prototype'];
+
+        function placeBanner() {
+            if (!activeBanner) return;
+            var products = all('[data-be-product]', grid);
+            // Duas linhas completas antes do bloco dividido quando ha 12 produtos.
+            // Catalogos menores antecipam o banner para mante-lo junto das bolsas.
+            var row = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
+            var before = mobile.matches ? Math.min(4, products.length) : (row - 1) * 4;
+            activeBanner.style.setProperty('--be-banner-row', row);
+            grid.insertBefore(activeBanner, products[before] || null);
+        }
+        function selectBanner(model) {
+            var template = model ? bannerTemplates.find(function (item) {
+                return normalize(item.dataset.beBannerTag) === normalize(model);
+            }) : bannerTemplates[0];
+            activeBanner = template ? document.importNode(template.content.firstElementChild, true) : null;
+            placeBanner();
+        }
+        mobile.addEventListener('change', placeBanner);
 
         function selectedModel(value) {
             var model = models.find(function (item) { return normalize(item.dataset.beTag) === normalize(value); });
@@ -164,6 +145,9 @@
             return url;
         }
         async function fetchFeed(url, controller, tag) {
+            url = checkedUrl(url);
+            var cached = feedCache.get(url.href);
+            if (cached && Date.now() - cached.time < 300000) return cached.feed;
             var timeout = setTimeout(function () { controller.abort(); }, 20000);
             try {
                 var response = await fetch(checkedUrl(url), {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
@@ -173,8 +157,25 @@
                 var doc = new DOMParser().parseFromString(html, 'text/html');
                 var feed = doc.querySelector('template[data-be-search-feed]');
                 if (!feed || normalize(feed.dataset.tag) !== normalize(tag)) throw new Error('Missing campaign feed');
+                if (feed.dataset.last !== '1') {
+                    if (!feed.dataset.next) throw new Error('Missing pagination');
+                    checkedUrl(feed.dataset.next, url);
+                }
+                // Reutiliza as mesmas paginas entre o catalogo e a descoberta de filtros.
+                feedCache.delete(url.href);
+                feedCache.set(url.href, {feed: feed, time: Date.now()});
+                if (feedCache.size > 40) feedCache.delete(feedCache.keys().next().value);
+                var facet = getFacet(tag);
+                all('[data-be-product]', feed.content).forEach(function (card) {
+                    var tags = tagsFor(card);
+                    if (tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { facet.tags.add(value); });
+                });
                 return feed;
             } finally { clearTimeout(timeout); }
+        }
+        function getFacet(tag) {
+            if (!facetCache.has(tag)) facetCache.set(tag, {tags: new Set(), next: makeSearchUrl(tag, {}, 'user').href, visited: new Set()});
+            return facetCache.get(tag);
         }
         function tagsFor(card) {
             var tags;
@@ -197,13 +198,13 @@
             return state.searches.some(function (search) { return search.next || search.buffer.length; });
         }
         function showStatus(error) {
-            var count = grid.children.length;
+            var count = all('[data-be-product]', grid).length;
             var remaining = hasMore();
             if (error) status.textContent = 'Não foi possível carregar os produtos. Tente novamente.';
             else if (state.loading) status.textContent = 'Carregando produtos…';
             else if (!count && !remaining) status.textContent = 'Nenhum produto encontrado com estes filtros.';
             else if (!count) status.textContent = 'Ainda não encontramos produtos nesta parte da busca. Continue para ver os próximos resultados.';
-            else status.textContent = count + (count === 1 ? ' produto' : ' produtos') + (remaining ? ' carregados' : ' encontrados');
+            else status.textContent = count + (count === 1 ? ' produto' : ' produtos') + (remaining ? (count === 1 ? ' carregado' : ' carregados') : (count === 1 ? ' encontrado' : ' encontrados'));
             more.hidden = !error && !remaining;
             more.disabled = state.loading;
             more.textContent = error ? 'Tentar novamente' : 'Mostrar mais produtos';
@@ -263,6 +264,7 @@
             } finally {
                 if (run === version) {
                     cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
+                    placeBanner();
                     current.loading = false;
                     showStatus(error);
                 }
@@ -280,21 +282,19 @@
             state = {model: model, filters: filters, sort: sort, searches: tags.map(function (tag) {
                 return {tag: tag, next: makeSearchUrl(tag, filters, sort).href, buffer: []};
             }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
-            // Os modelos configurados geram o catalogo automatico. Os banners continuam
-            // logo depois dos resultados, antes de Best sellers e das galerias.
-            all('.be-catalog-block').forEach(function (section) { section.hidden = active || modelTags.length > 0; });
             one('[data-be-toolbar]').hidden = false;
             one('[data-be-reset]').setAttribute('aria-pressed', active ? 'false' : 'true');
             one('[data-be-sort]').closest('label').hidden = !model;
-            results.hidden = !active && !modelTags.length;
+            results.hidden = false;
             grid.replaceChildren();
+            selectBanner(model);
             more.hidden = true;
             models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });
             one('[data-be-sort]').value = sort;
             one('[data-be-result-title]').textContent = model || 'Todas as bolsas';
             if (save) remember();
             if (tags.length) loadMore();
-            else if (active) status.textContent = 'Escolha um modelo para ver os produtos.';
+            else status.textContent = 'Nenhum modelo disponível no momento.';
         }
         function fromLocation() {
             var url = new URL(window.location.href);
@@ -335,6 +335,7 @@
             var facets = one('[data-be-facets]');
             var modelSelect = form.elements.be_model;
             var submit = form.querySelector('[type="submit"]');
+            var pendingSelection = null;
             opener.hidden = false;
             bagFilters.models(modelSelect, modelTags);
             async function loadFacets(model, selected) {
@@ -343,48 +344,52 @@
                 var controller = new AbortController();
                 facetRequest = controller;
                 facets.replaceChildren();
-                facetStatus.textContent = 'Carregando filtros…';
-                submit.disabled = true;
-                try {
-                    var sources = model ? [model] : modelTags;
+                pendingSelection = selected;
+                submit.disabled = false;
+                var sources = model ? [model] : modelTags;
+                var pending = sources.filter(function (tag) { return getFacet(tag).next; });
+                var failed = false;
+                function renderAvailable() {
+                    if (run !== facetVersion) return;
                     var available = new Set();
-                    for (var index = 0; index < sources.length; index++) {
-                        var tag = sources[index];
-                        if (!facetCache.has(tag)) {
-                            var collected = new Set();
-                            var visited = new Set();
-                            var next = makeSearchUrl(tag, {}, 'user').href;
-                            // Examina todas as paginas apenas dos modelos cadastrados.
-                            while (next) {
-                                var url = checkedUrl(next);
-                                if (visited.has(url.href)) throw new Error('Repeated facet page');
+                    sources.forEach(function (tag) { getFacet(tag).tags.forEach(function (value) { available.add(value); }); });
+                    // Atualiza sem recriar campos: preserva marcacoes e foco durante a carga.
+                    bagFilters.render(facets, selected, Array.from(available), true);
+                }
+                facetStatus.textContent = pending.length ? 'Carregando mais opções… Você já pode aplicar os filtros disponíveis.' : '';
+                renderAvailable();
+                async function discover() {
+                    while (pending.length && run === facetVersion) {
+                        var tag = pending.shift();
+                        var facet = getFacet(tag);
+                        try {
+                            // Ate tres modelos em paralelo; cada um retoma da pagina pendente.
+                            while (facet.next && run === facetVersion) {
+                                var url = checkedUrl(facet.next);
+                                if (facet.visited.has(url.href)) throw new Error('Repeated facet page');
                                 var feed = await fetchFeed(url, controller, tag);
                                 if (run !== facetVersion) return;
-                                visited.add(url.href);
-                                all('[data-be-product]', feed.content).forEach(function (card) {
-                                    var tags = tagsFor(card);
-                                    if (tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { collected.add(value); });
-                                });
-                                next = feed.dataset.last === '1' ? '' : feed.dataset.next;
+                                var next = feed.dataset.last === '1' ? '' : feed.dataset.next;
                                 if (feed.dataset.last !== '1' && !next) throw new Error('Missing facet pagination');
                                 if (next) {
                                     next = checkedUrl(next, url);
                                     url.searchParams.forEach(function (value, key) { if (key !== 'page' && key !== 'results_only') next.searchParams.set(key, value); });
                                     next = next.href;
                                 }
+                                facet.visited.add(url.href);
+                                facet.next = next;
+                                renderAvailable();
                             }
-                            facetCache.set(tag, Array.from(collected));
+                        } catch (_) {
+                            if (run !== facetVersion) return;
+                            failed = true;
                         }
-                        facetCache.get(tag).forEach(function (value) { available.add(value); });
                     }
-                    if (run !== facetVersion) return;
-                    bagFilters.render(facets, selected, Array.from(available));
-                    facetStatus.textContent = '';
-                    submit.disabled = false;
-                } catch (_) {
-                    if (run !== facetVersion) return;
-                    facetStatus.textContent = 'Não foi possível carregar os filtros. Feche e abra novamente para tentar.';
                 }
+                await Promise.all(Array.from({length: Math.min(3, pending.length)}, discover));
+                if (run !== facetVersion) return;
+                if (!failed) pendingSelection = null;
+                facetStatus.textContent = failed ? 'Não foi possível carregar todas as opções. Você pode aplicar os filtros disponíveis ou fechar e abrir para tentar novamente.' : '';
             }
             opener.addEventListener('click', function () {
                 modelSelect.value = state.model;
@@ -414,6 +419,17 @@
                 var filters = Object.create(null);
                 new FormData(form).forEach(function (value, key) {
                     if (reserved.indexOf(key) === -1 && String(value).trim()) filters[key] = filters[key] ? filters[key] + '|' + value : String(value);
+                });
+                // Filtros ativos da URL podem pertencer a paginas ainda nao carregadas.
+                // Conserva somente valores ainda sem campo; desmarcacoes visiveis prevalecem.
+                Object.keys(pendingSelection || {}).forEach(function (key) {
+                    if (reserved.indexOf(key) !== -1 || key.indexOf('be_') !== 0) return;
+                    var rendered = all('input', facets).filter(function (input) { return input.name === key; });
+                    pendingSelection[key].split('|').forEach(function (value) {
+                        if (value && !rendered.some(function (input) { return input.value === value; })) {
+                            filters[key] = filters[key] ? filters[key] + '|' + value : value;
+                        }
+                    });
                 });
                 if (filters.min_price && filters.max_price && Number(filters.min_price) > Number(filters.max_price)) {
                     facetStatus.textContent = 'O preço máximo deve ser maior ou igual ao mínimo.';

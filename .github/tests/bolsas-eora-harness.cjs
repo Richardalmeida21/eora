@@ -54,10 +54,7 @@ const settings = {
     bolsas_eora_enabled: true, bolsas_eora_page_url: 'bolsas-eora', bolsas_eora_title: 'Bolsas Eora',
     bolsas_eora_catalog_tag: 'bolsa', bolsas_eora_filters_enabled: true, product_hover: true,
     bolsas_eora_models: Array.from({length: 20}, (_, i) => ({image: asset(i), link: i === 0 ? 'maxivertice' : i === 1 ? 'minivertice' : 'modelo-' + i})),
-    bolsas_eora_1_catalog_enabled: true, bolsas_eora_1_split_enabled: true,
-    bolsas_eora_1_title: 'Vértice', bolsas_eora_1_subtitle: 'Conheça nossas bolsas', bolsas_eora_1_link: '/vertice',
-    bolsas_eora_2_catalog_enabled: false, bolsas_eora_2_split_enabled: false,
-    bolsas_eora_2_title: 'Novos olhares', bolsas_eora_2_subtitle: 'Descubra a coleção', bolsas_eora_2_link: '/colecao',
+    bolsas_eora_banners: [{image: asset(4), link: 'maxivertice', title: 'Banner Maxi Vértice'}, {image: asset(5), link: 'minivertice', title: 'Banner Mini Vértice'}],
     bolsas_eora_best_enabled: true, bolsas_eora_best_title: 'Best sellers',
     bolsas_eora_community_enabled: true, bolsas_eora_community_title: 'Quem usa Eora',
     bolsas_eora_community_subtitle: 'Nossa comunidade', bolsas_eora_community_link: '/quem-usa',
@@ -66,10 +63,6 @@ const settings = {
     bolsas_eora_categories: Array.from({length: 5}, (_, i) => ({image: asset(i), title: ['Vértice', 'Mini Vértice', 'Maxi Vértice', 'Hobo', 'Coleção'][i], description: 'Conheça a coleção', link: '/colecao/' + i})),
 };
 const sections = {
-    bolsas_eora_1_catalog: {products: candidates.slice(0, 18)},
-    bolsas_eora_1_split: {products: candidates.slice(0, 4)},
-    bolsas_eora_2_catalog: {products: candidates.slice(6, 18)},
-    bolsas_eora_2_split: {products: candidates.slice(4, 8)},
     bolsas_eora_best: {products: candidates.slice(0, 8)},
 };
 const context = () => ({settings, sections, page: {handle: 'bolsas-eora', name: 'Bolsas Eora'}, store: {search_url: '/search/'}});
@@ -99,10 +92,10 @@ function validate() {
     assert.equal((html.match(/class="be-gallery__item"/g) || []).length, 25, '20 fotos e 5 categorias');
     assert.match(html, /data-be-dots/);
     assert(!html.includes('data-be-position'), 'controles sem numeracao');
-    assert.equal((html.match(/data-be-paged/g) || []).length, 1);
-    assert.equal((html.match(/be-split__products/g) || []).length, 1);
-    const catalogPosition = html.indexOf('be-catalog-block');
-    const bannerPosition = html.indexOf('be-split');
+    assert(!html.includes('data-be-paged'));
+    assert.equal((html.match(/data-be-banner-template/g) || []).length, 2);
+    const catalogPosition = html.indexOf('data-be-results-grid');
+    const bannerPosition = html.indexOf('data-be-banner-template');
     const bestPosition = html.indexOf('be-best');
     const communityPosition = html.indexOf('be-gallery--community');
     const categoriesPosition = html.indexOf('be-gallery--categories');
@@ -139,19 +132,17 @@ function validate() {
     assert(!newConfig.includes('gallery_max'));
     assert(!newConfig.includes('\u00a0'));
     const names = [...newConfig.matchAll(/name = (bolsas_eora_\w+)/g)].map(m => m[1]);
-    assert(names.length > 60);
+    assert(names.includes('bolsas_eora_banners'));
+    assert(!/bolsas_eora_\d+_/.test(newConfig), 'sem campos antigos de catalogo/banner');
+    assert(newConfig.indexOf('title = Banners\n') > newConfig.indexOf('name = bolsas_eora_models'));
     assert.equal(new Set(names).size, names.length, 'chaves exclusivas');
     const bannerOriginals = [...newConfig.matchAll(/original = (bolsas_eora_\w+\.jpg)/g)].map(m => m[1]);
-    assert.equal(bannerOriginals.length, 20);
-    bannerOriginals.forEach(name => {
-        const bytes = fs.readFileSync(path.join(root, 'static', name));
-        assert.equal(bytes.readUInt16BE(0), 0xffd8, name + ' possui arquivo JPEG base valido');
-    });
-    const configuredImages = [...customImages];
-    customImages.clear();
-    const withoutUploads = render('snipplets/bolsas-eora/index.tpl', context());
-    configuredImages.forEach(name => customImages.add(name));
-    assert(!withoutUploads.includes('class="be-split'), 'imagens-base nao exibem banners sem upload');
+    assert.equal(bannerOriginals.length, 0);
+    const withoutUploads = render('snipplets/bolsas-eora/index.tpl', {...context(), settings: {...settings, bolsas_eora_banners: []}});
+    assert(!withoutUploads.includes('data-be-banner-template'), 'sem banner quando galeria vazia');
+    const sectionsConfig = fs.readFileSync(path.join(root, 'config/sections.txt'), 'utf8');
+    assert(!/bolsas_eora_\d+_(catalog|split)/.test(sectionsConfig));
+    assert(sectionsConfig.includes('bolsas_eora_best'));
     assert(fs.existsSync(path.join(root, 'static/js/instatheme.js')), 'script no caminho esperado pelo editor');
     console.log('PASS: Twig parse/render, 20 modelos, 20 fotos, feed/paginacao, 32 rotas legadas, precedencia e configuracao.');
 }

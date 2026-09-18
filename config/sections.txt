@@ -146,66 +146,6 @@ campaign_page_10_qpc
 	name = Página de campanha 10, quarto carrossel de produtos
 	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).
 
-bolsas_eora_1_catalog
-	name = Bolsas Eora — Catálogo 1
-	description = Produtos da grade 1, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_1_split
-	name = Bolsas Eora — Dividido 1
-	description = Selecione e ordene até 4 produtos ao lado do banner 1. Visível somente no computador.
-bolsas_eora_2_catalog
-	name = Bolsas Eora — Catálogo 2
-	description = Produtos da grade 2, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_2_split
-	name = Bolsas Eora — Dividido 2
-	description = Selecione e ordene até 4 produtos ao lado do banner 2. Visível somente no computador.
-bolsas_eora_3_catalog
-	name = Bolsas Eora — Catálogo 3
-	description = Produtos da grade 3, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_3_split
-	name = Bolsas Eora — Dividido 3
-	description = Selecione e ordene até 4 produtos ao lado do banner 3. Visível somente no computador.
-bolsas_eora_4_catalog
-	name = Bolsas Eora — Catálogo 4
-	description = Produtos da grade 4, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_4_split
-	name = Bolsas Eora — Dividido 4
-	description = Selecione e ordene até 4 produtos ao lado do banner 4. Visível somente no computador.
-bolsas_eora_5_catalog
-	name = Bolsas Eora — Catálogo 5
-	description = Produtos da grade 5, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_5_split
-	name = Bolsas Eora — Dividido 5
-	description = Selecione e ordene até 4 produtos ao lado do banner 5. Visível somente no computador.
-bolsas_eora_6_catalog
-	name = Bolsas Eora — Catálogo 6
-	description = Produtos da grade 6, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_6_split
-	name = Bolsas Eora — Dividido 6
-	description = Selecione e ordene até 4 produtos ao lado do banner 6. Visível somente no computador.
-bolsas_eora_7_catalog
-	name = Bolsas Eora — Catálogo 7
-	description = Produtos da grade 7, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_7_split
-	name = Bolsas Eora — Dividido 7
-	description = Selecione e ordene até 4 produtos ao lado do banner 7. Visível somente no computador.
-bolsas_eora_8_catalog
-	name = Bolsas Eora — Catálogo 8
-	description = Produtos da grade 8, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_8_split
-	name = Bolsas Eora — Dividido 8
-	description = Selecione e ordene até 4 produtos ao lado do banner 8. Visível somente no computador.
-bolsas_eora_9_catalog
-	name = Bolsas Eora — Catálogo 9
-	description = Produtos da grade 9, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_9_split
-	name = Bolsas Eora — Dividido 9
-	description = Selecione e ordene até 4 produtos ao lado do banner 9. Visível somente no computador.
-bolsas_eora_10_catalog
-	name = Bolsas Eora — Catálogo 10
-	description = Produtos da grade 10, na ordem desejada. Exibe 12 por página no computador e 6 no celular.
-bolsas_eora_10_split
-	name = Bolsas Eora — Dividido 10
-	description = Selecione e ordene até 4 produtos ao lado do banner 10. Visível somente no computador.
 bolsas_eora_best
 	name = Bolsas Eora — Best sellers
 	description = Selecione e ordene os produtos do carrossel best sellers da campanha.
