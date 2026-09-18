@@ -12,7 +12,7 @@ Ocasiao, Tamanho, Cor, O que cabe, Textura e Ferragem sao montados a partir das 
 
 A consulta percorre todas as paginas de cada modelo, sem os filtros de preco ou caracteristicas, e verifica a tag exata do modelo para excluir correspondencias amplas da busca. Ate tres modelos sao consultados em paralelo. As opcoes ja conhecidas aparecem imediatamente e as demais entram conforme cada pagina chega, preservando marcacoes e foco. Aplicar filtros fica disponivel durante o carregamento e tambem em caso de falha parcial.
 
-As tags descobertas e o progresso de cada modelo ficam em memoria ate recarregar a pagina. Fechar o painel ou trocar o modelo cancela as consultas; reabrir retoma das paginas pendentes, sem descartar as anteriores. As respostas de busca tambem sao compartilhadas entre catalogo e filtros em um cache de ate 40 paginas por cinco minutos, separado por URL completa (modelo, preco, ordenacao e previa). O painel indica enquanto ainda carrega opcoes e permite tentar novamente apos uma falha.
+As tags descobertas e o progresso de cada modelo ficam em memoria ate recarregar a pagina. Fechar o painel ou trocar o modelo cancela as consultas; reabrir retoma das paginas pendentes, sem descartar as anteriores. O cache compartilhado guarda somente o HTML do feed, sem documentos DOM, limitado a 40 paginas e 2 MiB estimados de texto (dois bytes por caractere), por cinco minutos. A chave usa a URL completa (modelo, preco, ordenacao e previa). O HTML da busca normal nao e transformado em DOM: apenas o template da campanha e processado. O painel indica enquanto ainda carrega opcoes e permite tentar novamente apos uma falha.
 
 Os nomes e a ordem das opcoes conhecidas sao apenas rotulos de apresentacao. Uma tag nova com prefixo reconhecido, como `cor:terracota`, tambem pode aparecer. Nenhuma opcao e criada a partir do nome do produto, propriedades ou variacoes. Preco continua usando os valores reais e os parametros nativos da loja, sem tag.
 
@@ -77,7 +77,7 @@ Cadastrar somente as caracteristicas confirmadas para cada produto. Nenhuma text
 
 Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto ou Marrom, combinado com Croco e Prata. Preco usa os filtros nativos da busca e aceita somente minimo, somente maximo ou ambos. Os demais filtros funcionam em Todos os modelos ou em um modelo especifico, com paginacao, URL compartilhavel e Limpar filtros.
 
-Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O CSS e o JS principal usam `20260918-6`; o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
+Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal usa `20260918-7`, o CSS usa `20260918-6`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
 
 O cadastro de tags e a publicacao na loja nao sao realizados pelos testes locais.
 
@@ -90,4 +90,5 @@ node .github/tests/bolsas-eora-filters.cjs
 node .github/tests/bolsas-eora-browser.cjs
 node .github/tests/bolsas-eora-all-models.cjs
 node .github/tests/bolsas-eora-performance.cjs
+node .github/tests/bolsas-eora-memory.cjs
 ```

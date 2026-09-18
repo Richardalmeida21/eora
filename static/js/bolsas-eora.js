@@ -95,6 +95,8 @@
         var bagFilters = window.EoraBagFilters;
         var facetCache = new Map();
         var feedCache = new Map();
+        var feedCacheBytes = 0;
+        var feedCacheLimit = 2 * 1024 * 1024;
         var facetRequest = null;
         var facetVersion = 0;
         var productRequest = null;
@@ -144,27 +146,51 @@
             if (url.origin !== searchBase.origin || (url.pathname.replace(/\/$/, '') !== prefix && !url.pathname.startsWith(prefix + '/'))) throw new Error('Invalid search URL');
             return url;
         }
+        function forgetFeed(key) {
+            feedCacheBytes -= feedCache.get(key).bytes;
+            feedCache.delete(key);
+        }
+        function parseFeed(markup, tag) {
+            // Somente o template da campanha vira DOM. Cabecalho, scripts, imagens
+            // e cards da busca normal nao devem ser processados nem retidos no cache.
+            var container = document.createElement('template');
+            container.innerHTML = markup;
+            var feed = container.content.querySelector('template[data-be-search-feed]');
+            if (!feed || normalize(feed.dataset.tag) !== normalize(tag)) throw new Error('Missing campaign feed');
+            return feed;
+        }
         async function fetchFeed(url, controller, tag) {
             url = checkedUrl(url);
+            feedCache.forEach(function (entry, key) { if (Date.now() - entry.time >= 300000) forgetFeed(key); });
             var cached = feedCache.get(url.href);
-            if (cached && Date.now() - cached.time < 300000) return cached.feed;
+            if (cached) return parseFeed(cached.markup, tag);
             var timeout = setTimeout(function () { controller.abort(); }, 20000);
             try {
                 var response = await fetch(checkedUrl(url), {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
                 if (!response.ok) throw new Error('Search HTTP ' + response.status);
                 checkedUrl(response.url || url);
                 var html = await response.text();
-                var doc = new DOMParser().parseFromString(html, 'text/html');
-                var feed = doc.querySelector('template[data-be-search-feed]');
-                if (!feed || normalize(feed.dataset.tag) !== normalize(tag)) throw new Error('Missing campaign feed');
+                // O formato deste template e definido em search-feed.tpl; os campos
+                // dos produtos sao escapados e nao contem templates aninhados.
+                var match = html.match(/<template\b[^>]*\bdata-be-search-feed\b[^>]*>[\s\S]*?<\/template\s*>/i);
+                if (!match) throw new Error('Missing campaign feed');
+                var feed = parseFeed(match[0], tag);
                 if (feed.dataset.last !== '1') {
                     if (!feed.dataset.next) throw new Error('Missing pagination');
                     checkedUrl(feed.dataset.next, url);
                 }
-                // Reutiliza as mesmas paginas entre o catalogo e a descoberta de filtros.
-                feedCache.delete(url.href);
-                feedCache.set(url.href, {feed: feed, time: Date.now()});
-                if (feedCache.size > 40) feedCache.delete(feedCache.keys().next().value);
+                var unusedFacets = feed.content.querySelector('[data-be-feed-facets]');
+                if (unusedFacets) unusedFacets.remove();
+                // Strings compactas, sem documentos/DOM em cache. O limite em bytes
+                // complementa o numero de paginas para respostas de tamanhos diferentes.
+                var markup = feed.outerHTML;
+                var bytes = markup.length * 2;
+                if (feedCache.has(url.href)) forgetFeed(url.href);
+                if (bytes <= feedCacheLimit) {
+                    while (feedCache.size && (feedCache.size >= 40 || feedCacheBytes + bytes > feedCacheLimit)) forgetFeed(feedCache.keys().next().value);
+                    feedCache.set(url.href, {markup: markup, bytes: bytes, time: Date.now()});
+                    feedCacheBytes += bytes;
+                }
                 var facet = getFacet(tag);
                 all('[data-be-product]', feed.content).forEach(function (card) {
                     var tags = tagsFor(card);
