@@ -29,18 +29,22 @@ As galerias de modelos, Quem usa e categorias não declaram `gallery_max` nem co
 
 | Bloco | Computador | Celular |
 |---|---|---|
-| Modelos | 4 visíveis; rolagem e gradientes quando há mais de 4 | 3 visíveis; rolagem sem gradiente |
+| Modelos | 4 visíveis em faixa de até 960 px; fotos sem corte | 2 inteiros e parte do próximo; rolagem sem gradiente |
 | Catálogo | 4 colunas × 3 linhas | 2 colunas × 3 linhas |
-| Dividido | 2 × 2 produtos + banner com a mesma altura | Somente banner |
-| Best sellers | 4 produtos visíveis | 2 produtos visíveis |
-| Quem usa | 5 fotos visíveis; fundo branco | 1 foto visível |
-| Categorias | 4 banners visíveis | 1 banner visível |
+| Dividido | 2 × 2 produtos + banner com a mesma altura | Banners em carrossel, com parte do próximo quando houver mais de um |
+| Best sellers | 4 produtos visíveis | 2 produtos e parte do próximo |
+| Quem usa | 5 fotos quadradas; fundo branco | 2 fotos quadradas e parte da próxima, como no feed do rodapé |
+| Categorias | 4 banners visíveis | 1 banner e parte do próximo |
 
 As grades possuem navegação quando houver mais de 12 produtos no desktop ou 6 no mobile. Assim os produtos adicionais permanecem acessíveis. Os dez pares catálogo/banner são independentes e desativáveis.
 
+O clique em um modelo ou em Aplicar filtros rola ate os resultados, descontando a altura do cabecalho fixo e respeitando movimento reduzido. As fotos dos produtos, inclusive no hover, usam `object-fit: contain` para manter a imagem inteira. Produtos e galerias oferecem fontes de ate 1024 px; filtros usam fontes responsivas de ate 640 px. A nitidez final depende da resolucao do arquivo enviado. No mobile, os banners existentes sao agrupados sem duplicar imagens; ao voltar ao desktop, recuperam sua posicao original.
+
 ## Consulta por tag e filtros gerais
 
-- O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção.
+- Ao abrir sem selecionar um modelo, o catalogo abaixo dos filtros reune os produtos de todas as tags configuradas nas imagens. Cada tag possui sua propria paginacao, as consultas alternam entre modelos e um produto com varias tags aparece uma vez. Nao e necessario cadastrar uma tag geral nem selecionar produtos nas secoes manuais para essa listagem.
+- O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção. Ver todas as bolsas/Limpar filtros restaura a uniao das tags. Ordenacao e filtros gerais continuam vinculados ao modelo escolhido.
+- Com modelos configurados, a listagem automatica substitui as grades manuais do catalogo; os banners, produtos dos blocos divididos, Best sellers e galerias permanecem. Sem modelos configurados, as grades manuais e seus controles continuam funcionando.
 - A consulta usa `store.search_url` com o termo entre aspas. A busca nativa pode incluir correspondências em outros campos; por isso, cada resultado é conferido contra `product.tags`, comparando a tag inteira (sem diferenciar maiúsculas/minúsculas; acentos são preservados).
 - O card transforma as tags em um array JSON de textos no Twig, acessando `product_tag.tag`. A serializacao direta de `product.tags` na plataforma inclui detalhes internos e guarda o valor em `attributes.tag`, que tambem e aceito pelo JS para respostas anteriores mantidas em cache.
 - Um `<template>` inerte, sem scripts, é acrescentado ao resultado da busca somente quando a consulta corresponde à tag de um modelo configurado. A apresentação e a paginação da busca normal permanecem intactas.
@@ -82,6 +86,8 @@ Para repetir os testes visuais, o harness `--serve` usa seis imagens locais de d
 node .github/tests/bolsas-eora-harness.cjs --serve
 # Em outro terminal com NODE_PATH configurado:
 node .github/tests/bolsas-eora-browser.cjs
+node .github/tests/bolsas-eora-all-models.cjs
+node .github/tests/bolsas-eora-feedback.cjs
 ```
 
 Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, tag exata versus prefixo/nome, seis páginas de resultados, deduplicação, filtros cor/preço, ordenação, histórico, zero resultados, erro/retry, páginas iniciais sem correspondências, troca rápida de modelo, fechamento por Escape, foco e ausência de overflow horizontal/erros JavaScript.

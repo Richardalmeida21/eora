@@ -29,7 +29,7 @@
         {% endif %}
         {% if banner_link %}<a class="be-banner" href="{{ banner_link | escape }}">{% else %}<div class="be-banner">{% endif %}
             <picture>
-                {% if banner_mobile | has_custom_image %}<source media="(max-width: 767px)" srcset="{{ banner_mobile | static_url | settings_image_url('large') }}">{% endif %}
+                {% if banner_mobile | has_custom_image %}<source media="(max-width: 767px)" srcset="{{ banner_mobile | static_url | settings_image_url('large') }} 480w, {{ banner_mobile | static_url | settings_image_url('huge') }} 640w, {{ banner_mobile | static_url | settings_image_url('1080p') }} 1920w" sizes="85vw">{% endif %}
                 <img src="{{ banner_image | static_url | settings_image_url('1080p') }}" alt="{{ banner_title | default('Bolsas Eora') | escape }}" loading="lazy" decoding="async">
             </picture>
             {% if banner_title or banner_subtitle %}

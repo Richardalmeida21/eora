@@ -8,7 +8,7 @@
                         {% set model_tag = model.link | trim %}
                         {% if model.image and model_tag %}
                             <a class="be-model" href="?tag={{ model_tag | url_encode }}" data-be-tag="{{ model_tag | escape }}">
-                                <img src="{{ model.image | static_url | settings_image_url('medium') }}" alt="{{ model_tag | escape }}" width="{{ model.width | default(300) }}" height="{{ model.height | default(300) }}"{% if loop.index > 4 %} loading="lazy"{% endif %} decoding="async">
+                                <img src="{{ model.image | static_url | settings_image_url('large') }}" srcset="{{ model.image | static_url | settings_image_url('medium') }} 320w, {{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w" sizes="(max-width: 767px) 40vw, (max-width: 1024px) 25vw, 222px" alt="{{ model_tag | escape }}" width="{{ model.width | default(300) }}" height="{{ model.height | default(300) }}"{% if loop.index > 4 %} loading="lazy"{% endif %} decoding="async">
                                 <span>{{ model_tag | escape }}</span>
                             </a>
                         {% endif %}
@@ -31,7 +31,7 @@
         </select></label>
     </div>
 
-    <section class="be-results" data-be-results hidden aria-label="Produtos filtrados" aria-busy="false">
+    <section class="be-results" data-be-results hidden aria-label="Produtos de bolsas" aria-busy="false">
         <h2 data-be-result-title tabindex="-1"></h2>
         <p class="be-status" data-be-status role="status" aria-live="polite"></p>
         <div class="be-product-grid" data-be-results-grid></div>
@@ -43,6 +43,11 @@
             {% include 'snipplets/bolsas-eora/catalog-block.tpl' %}
         {% endfor %}
     </div>
+
+    <section class="be-mobile-banners" data-be-mobile-banners data-be-carousel aria-label="Colecoes de bolsas" hidden>
+        <div class="be-track" data-be-track tabindex="0" aria-label="Percorrer banners"></div>
+        {% include 'snipplets/bolsas-eora/controls.tpl' %}
+    </section>
 
     {% if settings.bolsas_eora_best_enabled and sections.bolsas_eora_best.products %}
         <section class="be-best" data-be-carousel aria-label="{{ settings.bolsas_eora_best_title | default('Best sellers') | escape }}">

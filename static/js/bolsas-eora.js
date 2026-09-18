@@ -32,6 +32,26 @@
             if (current) dots.scrollLeft = Math.max(0, current.offsetLeft - dots.clientWidth / 2);
         }
 
+        // Reutiliza os mesmos banners no mobile e restaura a ordem no desktop.
+        var mobileBanners = one('[data-be-mobile-banners]');
+        if (mobileBanners) {
+            var bannerTrack = mobileBanners.querySelector('[data-be-track]');
+            var banners = all('[data-be-catalog] > .be-split').map(function (banner) {
+                var position = document.createComment('be-banner-position');
+                banner.before(position);
+                return {element: banner, position: position};
+            });
+            function arrangeBanners() {
+                mobileBanners.hidden = !mobile.matches || !banners.length;
+                banners.forEach(function (banner) {
+                    if (mobile.matches) bannerTrack.appendChild(banner.element);
+                    else banner.position.after(banner.element);
+                });
+            }
+            mobile.addEventListener('change', arrangeBanners);
+            arrangeBanners();
+        }
+
         // Rolagem nativa: funciona por toque, teclado e botoes, sem Swiper global.
         all('[data-be-carousel]').forEach(function (section) {
             var track = section.querySelector('[data-be-track]');
@@ -39,25 +59,32 @@
             var previous = controls.querySelector('[data-be-prev]');
             var next = controls.querySelector('[data-be-next]');
             var currentPage = 0;
-            function goTo(target, immediate) {
-                var visible = Math.max(1, parseFloat(getComputedStyle(section).getPropertyValue('--be-visible')) || 4);
-                var count = Math.ceil(track.children.length / visible);
-                var page = Math.max(0, Math.min(count - 1, target));
+            function pageOffsets() {
+                var visible = Math.max(1, Math.floor(parseFloat(getComputedStyle(section).getPropertyValue('--be-visible')) || 4));
                 var maximum = Math.max(0, track.scrollWidth - track.clientWidth);
-                var start = 0;
-                var left = count > 1 ? start + (maximum - start) * page / (count - 1) : start;
-                track.scrollTo({left: left, behavior: immediate || reducedMotion.matches ? 'auto' : 'smooth'});
+                var offsets = [0];
+                for (var index = visible; index < track.children.length; index += visible) {
+                    var left = track.children[index].offsetLeft - track.children[0].offsetLeft;
+                    if (left >= maximum - 2) break;
+                    offsets.push(left);
+                }
+                if (maximum > 2) offsets.push(maximum);
+                return offsets;
+            }
+            function goTo(target, immediate) {
+                var offsets = pageOffsets();
+                var page = Math.max(0, Math.min(offsets.length - 1, target));
+                track.scrollTo({left: offsets[page], behavior: immediate || reducedMotion.matches ? 'auto' : 'smooth'});
             }
             function update() {
                 var overflow = track.scrollWidth - track.clientWidth > 2;
                 controls.hidden = !overflow;
                 section.classList.toggle('be-models--overflow', section.classList.contains('be-models') && track.children.length > 4);
-                var visible = Math.max(1, parseFloat(getComputedStyle(section).getPropertyValue('--be-visible')) || 4);
-                var count = Math.ceil(track.children.length / visible);
-                var maximum = Math.max(0, track.scrollWidth - track.clientWidth);
-                var start = 0;
-                var range = maximum - start;
-                currentPage = range && count > 1 ? Math.max(0, Math.min(count - 1, Math.round((track.scrollLeft - start) / range * (count - 1)))) : 0;
+                var offsets = pageOffsets();
+                var count = offsets.length;
+                currentPage = offsets.reduce(function (closest, left, index) {
+                    return Math.abs(left - track.scrollLeft) < Math.abs(offsets[closest] - track.scrollLeft) ? index : closest;
+                }, 0);
                 previous.disabled = currentPage === 0;
                 next.disabled = currentPage >= count - 1;
                 updateDots(controls, count, currentPage, goTo);
@@ -92,7 +119,10 @@
         });
 
         var models = all('[data-be-tag]');
-        var catalogTag = '';
+        var modelTags = [];
+        models.forEach(function (model) {
+            if (!modelTags.some(function (tag) { return normalize(tag) === normalize(model.dataset.beTag); })) modelTags.push(model.dataset.beTag);
+        });
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
         var grid = one('[data-be-results-grid]');
@@ -161,14 +191,18 @@
             if (state.sort !== 'user') url.searchParams.set('be_sort', state.sort);
             if (url.href !== window.location.href) window.history.pushState(null, '', url);
         }
+        function hasMore() {
+            return state.searches.some(function (search) { return search.next || search.buffer.length; });
+        }
         function showStatus(error) {
             var count = grid.children.length;
+            var remaining = hasMore();
             if (error) status.textContent = 'Não foi possível carregar os produtos. Tente novamente.';
             else if (state.loading) status.textContent = 'Carregando produtos…';
-            else if (!count && !state.next && !state.buffer.length) status.textContent = 'Nenhum produto encontrado com estes filtros.';
+            else if (!count && !remaining) status.textContent = 'Nenhum produto encontrado com estes filtros.';
             else if (!count) status.textContent = 'Ainda não encontramos produtos nesta parte da busca. Continue para ver os próximos resultados.';
-            else status.textContent = count + (count === 1 ? ' produto' : ' produtos') + (state.next || state.buffer.length ? ' carregados' : ' encontrados');
-            more.hidden = !error && !state.next && !state.buffer.length;
+            else status.textContent = count + (count === 1 ? ' produto' : ' produtos') + (remaining ? ' carregados' : ' encontrados');
+            more.hidden = !error && !remaining;
             more.disabled = state.loading;
             more.textContent = error ? 'Tentar novamente' : 'Mostrar mais produtos';
             results.setAttribute('aria-busy', state.loading ? 'true' : 'false');
@@ -181,64 +215,78 @@
             showStatus();
             var size = mobile.matches ? 6 : 12;
             var requests = 0;
+            var skipped = 0;
+            var cards = [];
             var error = false;
             try {
-                // No maximo 3 requisicoes sequenciais por acao. Nunca varre a loja inteira.
-                while (current.buffer.length < size && current.next && requests < 3) {
-                    var url = checkedUrl(current.next);
-                    if (current.visited.has(url.href)) throw new Error('Repeated search page');
-                    var controller = new AbortController();
-                    productRequest = controller;
-                    var feed = await fetchFeed(url, controller, current.tag);
-                    if (run !== version) return;
-                    var next = feed.dataset.last === '1' ? '' : feed.dataset.next;
-                    if (feed.dataset.last !== '1' && !next) throw new Error('Missing pagination');
-                    if (next) {
-                        next = checkedUrl(next, url);
-                        // Nao deixa a paginacao perder a tag ou os filtros da consulta.
-                        url.searchParams.forEach(function (value, key) { if (key !== 'page' && key !== 'results_only') next.searchParams.set(key, value); });
-                        next = next.href;
-                    }
-                    all('[data-be-product]', feed.content).forEach(function (card) {
-                        var id = card.dataset.beProduct;
-                        if (!current.ids.has(id) && tagsFor(card).indexOf(normalize(current.tag)) !== -1) {
-                            current.ids.add(id);
-                            current.buffer.push(card);
+                // Alterna entre modelos, com no maximo 3 consultas por acao.
+                while (cards.length < size && skipped < current.searches.length) {
+                    var search = current.searches[current.cursor];
+                    if (!search.buffer.length && search.next && requests < 3) {
+                        var url = checkedUrl(search.next);
+                        if (current.visited.has(url.href)) throw new Error('Repeated search page');
+                        var controller = new AbortController();
+                        productRequest = controller;
+                        var feed = await fetchFeed(url, controller, search.tag);
+                        if (run !== version) return;
+                        var next = feed.dataset.last === '1' ? '' : feed.dataset.next;
+                        if (feed.dataset.last !== '1' && !next) throw new Error('Missing pagination');
+                        if (next) {
+                            next = checkedUrl(next, url);
+                            // Nao deixa a paginacao perder a tag ou os filtros da consulta.
+                            url.searchParams.forEach(function (value, key) { if (key !== 'page' && key !== 'results_only') next.searchParams.set(key, value); });
+                            next = next.href;
                         }
-                    });
-                    current.visited.add(url.href);
-                    current.next = next;
-                    requests++;
+                        all('[data-be-product]', feed.content).forEach(function (card) {
+                            var id = card.dataset.beProduct;
+                            if (!current.ids.has(id) && tagsFor(card).indexOf(normalize(search.tag)) !== -1) {
+                                current.ids.add(id);
+                                search.buffer.push(card);
+                            }
+                        });
+                        current.visited.add(url.href);
+                        search.next = next;
+                        requests++;
+                    }
+                    current.cursor = (current.cursor + 1) % current.searches.length;
+                    if (search.buffer.length) { cards.push(search.buffer.shift()); skipped = 0; }
+                    else if (search.next && requests < 3) skipped = 0;
+                    else skipped++;
                 }
-                if (run !== version) return;
-                current.buffer.splice(0, size).forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
             } catch (_) {
                 if (run !== version) return;
                 error = true;
             } finally {
-                if (run === version) { current.loading = false; showStatus(error); }
+                if (run === version) {
+                    cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
+                    current.loading = false;
+                    showStatus(error);
+                }
             }
         }
         function activate(model, filters, sort, save) {
             version++;
             if (productRequest) productRequest.abort();
             model = selectedModel(model);
-            filters = filters || {};
-            sort = sort || 'user';
+            filters = model ? filters || {} : {};
+            sort = model ? sort || 'user' : 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
-            state = {model: model, tag: model || catalogTag, filters: filters, sort: sort, next: '', buffer: [], ids: new Set(), visited: new Set(), loading: false};
-            // Ao filtrar, troca somente as grades do catálogo. Os banners continuam
+            var tags = model ? [model] : modelTags;
+            state = {model: model, filters: filters, sort: sort, searches: tags.map(function (tag) {
+                return {tag: tag, next: makeSearchUrl(tag, filters, sort).href, buffer: []};
+            }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
+            // Os modelos configurados geram o catalogo automatico. Os banners continuam
             // logo depois dos resultados, antes de Best sellers e das galerias.
-            all('.be-catalog-block').forEach(function (section) { section.hidden = active; });
+            all('.be-catalog-block').forEach(function (section) { section.hidden = active || modelTags.length > 0; });
             one('[data-be-toolbar]').hidden = !active;
-            results.hidden = !active;
+            results.hidden = !active && !modelTags.length;
             grid.replaceChildren();
             more.hidden = true;
             models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });
             one('[data-be-sort]').value = sort;
             one('[data-be-result-title]').textContent = model || 'Todas as bolsas';
             if (save) remember();
-            if (active && state.tag) { state.next = makeSearchUrl(state.tag, filters, sort).href; loadMore(); }
+            if (tags.length) loadMore();
             else if (active) status.textContent = 'Escolha um modelo para ver os produtos.';
         }
         function fromLocation() {
@@ -252,11 +300,21 @@
             if (!all('option', one('[data-be-sort]')).some(function (option) { return option.value === sort; })) sort = 'user';
             activate(url.searchParams.get('tag'), filters, sort, false);
         }
+        function scrollToResults() {
+            window.requestAnimationFrame(function () {
+                var header = document.querySelector('.js-head-main');
+                var headerPosition = header && getComputedStyle(header).position;
+                var offset = header && (headerPosition === 'fixed' || headerPosition === 'sticky') ? header.getBoundingClientRect().height : 0;
+                one('[data-be-result-title]').focus({preventScroll: true});
+                window.scrollTo({top: Math.max(0, window.scrollY + results.getBoundingClientRect().top - offset - 16), behavior: reducedMotion.matches ? 'auto' : 'smooth'});
+            });
+        }
         models.forEach(function (model) {
             model.addEventListener('click', function (event) {
                 if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
                 event.preventDefault();
                 activate(model.dataset.beTag, {}, 'user', true);
+                scrollToResults();
             });
         });
         one('[data-be-reset]').addEventListener('click', function () { activate('', {}, 'user', true); });
@@ -264,7 +322,7 @@
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
 
-        if (dialog && typeof dialog.showModal === 'function' && (catalogTag || models.length)) {
+        if (dialog && typeof dialog.showModal === 'function' && models.length) {
             var opener = one('[data-be-open-filters]');
             var facetStatus = one('[data-be-facet-status]');
             var facets = one('[data-be-facets]');
@@ -274,7 +332,7 @@
             async function loadFacets(model, selected) {
                 var run = ++facetVersion;
                 if (facetRequest) facetRequest.abort();
-                var tag = model || catalogTag;
+                var tag = model;
                 facets.replaceChildren();
                 facetStatus.textContent = 'Carregando filtros…';
                 submit.disabled = true;
@@ -307,7 +365,7 @@
                 loadFacets(initialModel, state.model ? state.filters : {});
             });
             one('[data-be-close-filters]').addEventListener('click', function () { dialog.close(); });
-            dialog.addEventListener('close', function () { facetVersion++; if (facetRequest) facetRequest.abort(); opener.focus(); });
+            dialog.addEventListener('close', function () { facetVersion++; if (facetRequest) facetRequest.abort(); opener.focus({preventScroll: true}); });
             dialog.addEventListener('click', function (event) {
                 if (event.target !== dialog) return;
                 var rect = dialog.getBoundingClientRect();
@@ -328,6 +386,7 @@
                 }
                 dialog.close();
                 activate(modelSelect.value, filters, state.sort, true);
+                scrollToResults();
             });
         }
         fromLocation();
