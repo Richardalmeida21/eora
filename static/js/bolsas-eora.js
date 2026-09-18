@@ -131,13 +131,14 @@
         var more = one('[data-be-more]');
         var dialog = one('#be-filter-dialog');
         var form = one('[data-be-filter-form]');
+        var bagFilters = window.EoraBagFilters;
         var facetCache = new Map();
         var facetRequest = null;
         var facetVersion = 0;
         var productRequest = null;
         var version = 0;
         var state;
-        var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'preview', '__proto__', 'constructor', 'prototype'];
+        var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'preview', '__proto__', 'constructor', 'prototype'];
 
         function selectedModel(value) {
             var model = models.find(function (item) { return normalize(item.dataset.beTag) === normalize(value); });
@@ -147,10 +148,11 @@
             var url = new URL(searchBase);
             url.search = '';
             url.searchParams.set('q', '"' + tag + '"');
+            url.searchParams.set('be_feed', '4');
             var preview = new URL(window.location.href).searchParams.get('preview');
             if (preview) url.searchParams.set('preview', preview);
             Object.keys(filters).forEach(function (key) {
-                if (reserved.indexOf(key) === -1 && filters[key]) url.searchParams.set(key, filters[key]);
+                if (reserved.indexOf(key) === -1 && key.indexOf('be_') !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
             });
             if (sort && sort !== 'user') url.searchParams.set('sort_by', sort);
             return url;
@@ -229,6 +231,7 @@
                         productRequest = controller;
                         var feed = await fetchFeed(url, controller, search.tag);
                         if (run !== version) return;
+                        if (Object.keys(current.filters).some(function (key) { return key.indexOf('be_') === 0; }) && !bagFilters) throw new Error('Missing filters');
                         var next = feed.dataset.last === '1' ? '' : feed.dataset.next;
                         if (feed.dataset.last !== '1' && !next) throw new Error('Missing pagination');
                         if (next) {
@@ -239,7 +242,8 @@
                         }
                         all('[data-be-product]', feed.content).forEach(function (card) {
                             var id = card.dataset.beProduct;
-                            if (!current.ids.has(id) && tagsFor(card).indexOf(normalize(search.tag)) !== -1) {
+                            var tags = tagsFor(card);
+                            if (!current.ids.has(id) && tags.indexOf(normalize(search.tag)) !== -1 && (!bagFilters || bagFilters.matches(card, current.filters, tags))) {
                                 current.ids.add(id);
                                 search.buffer.push(card);
                             }
@@ -267,8 +271,9 @@
         function activate(model, filters, sort, save) {
             version++;
             if (productRequest) productRequest.abort();
+            var requestedModel = model;
             model = selectedModel(model);
-            filters = model ? filters || {} : {};
+            filters = requestedModel && !model ? {} : filters || {};
             sort = model ? sort || 'user' : 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
             var tags = model ? [model] : modelTags;
@@ -280,7 +285,7 @@
             all('.be-catalog-block').forEach(function (section) { section.hidden = active || modelTags.length > 0; });
             one('[data-be-toolbar]').hidden = false;
             one('[data-be-reset]').setAttribute('aria-pressed', active ? 'false' : 'true');
-            one('[data-be-sort]').closest('label').hidden = !active;
+            one('[data-be-sort]').closest('label').hidden = !model;
             results.hidden = !active && !modelTags.length;
             grid.replaceChildren();
             more.hidden = true;
@@ -324,35 +329,56 @@
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
 
-        if (dialog && typeof dialog.showModal === 'function' && models.length) {
+        if (dialog && typeof dialog.showModal === 'function' && models.length && bagFilters) {
             var opener = one('[data-be-open-filters]');
             var facetStatus = one('[data-be-facet-status]');
             var facets = one('[data-be-facets]');
             var modelSelect = form.elements.be_model;
             var submit = form.querySelector('[type="submit"]');
             opener.hidden = false;
+            bagFilters.models(modelSelect, modelTags);
             async function loadFacets(model, selected) {
                 var run = ++facetVersion;
                 if (facetRequest) facetRequest.abort();
-                var tag = model;
+                var controller = new AbortController();
+                facetRequest = controller;
                 facets.replaceChildren();
                 facetStatus.textContent = 'Carregando filtros…';
                 submit.disabled = true;
-                if (!tag) { facetStatus.textContent = 'Escolha um modelo.'; return; }
                 try {
-                    if (!facetCache.has(tag)) {
-                        var controller = new AbortController();
-                        facetRequest = controller;
-                        var feed = await fetchFeed(makeSearchUrl(tag, {}, 'user'), controller, tag);
-                        if (run !== facetVersion) return;
-                        facetCache.set(tag, feed.content.querySelector('[data-be-feed-facets]').cloneNode(true));
+                    var sources = model ? [model] : modelTags;
+                    var available = new Set();
+                    for (var index = 0; index < sources.length; index++) {
+                        var tag = sources[index];
+                        if (!facetCache.has(tag)) {
+                            var collected = new Set();
+                            var visited = new Set();
+                            var next = makeSearchUrl(tag, {}, 'user').href;
+                            // Examina todas as paginas apenas dos modelos cadastrados.
+                            while (next) {
+                                var url = checkedUrl(next);
+                                if (visited.has(url.href)) throw new Error('Repeated facet page');
+                                var feed = await fetchFeed(url, controller, tag);
+                                if (run !== facetVersion) return;
+                                visited.add(url.href);
+                                all('[data-be-product]', feed.content).forEach(function (card) {
+                                    var tags = tagsFor(card);
+                                    if (tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { collected.add(value); });
+                                });
+                                next = feed.dataset.last === '1' ? '' : feed.dataset.next;
+                                if (feed.dataset.last !== '1' && !next) throw new Error('Missing facet pagination');
+                                if (next) {
+                                    next = checkedUrl(next, url);
+                                    url.searchParams.forEach(function (value, key) { if (key !== 'page' && key !== 'results_only') next.searchParams.set(key, value); });
+                                    next = next.href;
+                                }
+                            }
+                            facetCache.set(tag, Array.from(collected));
+                        }
+                        facetCache.get(tag).forEach(function (value) { available.add(value); });
                     }
-                    facets.appendChild(document.importNode(facetCache.get(tag), true));
-                    all('input', facets).forEach(function (input) {
-                        var value = selected[input.name] || '';
-                        if (input.type === 'checkbox') input.checked = value.split('|').indexOf(input.value) !== -1;
-                        else input.value = value;
-                    });
+                    if (run !== facetVersion) return;
+                    bagFilters.render(facets, selected, Array.from(available));
                     facetStatus.textContent = '';
                     submit.disabled = false;
                 } catch (_) {
@@ -361,10 +387,13 @@
                 }
             }
             opener.addEventListener('click', function () {
-                var initialModel = state.model || (models[0] ? models[0].dataset.beTag : '');
-                modelSelect.value = initialModel;
+                modelSelect.value = state.model;
+                form.elements.min_price.value = state.filters.min_price || '';
+                form.elements.max_price.value = state.filters.max_price || '';
+                facetStatus.textContent = '';
                 dialog.showModal();
-                loadFacets(initialModel, state.model ? state.filters : {});
+                one('.be-filter-dialog__body').scrollTop = 0;
+                loadFacets(state.model, state.filters);
             });
             one('[data-be-close-filters]').addEventListener('click', function () { dialog.close(); });
             dialog.addEventListener('close', function () { facetVersion++; if (facetRequest) facetRequest.abort(); opener.focus({preventScroll: true}); });
@@ -373,8 +402,12 @@
                 var rect = dialog.getBoundingClientRect();
                 if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
             });
-            modelSelect.addEventListener('change', function () { loadFacets(modelSelect.value, {}); });
-            one('[data-be-clear-filters]').addEventListener('click', function () { dialog.close(); activate('', {}, 'user', true); });
+            one('[data-be-clear-filters]').addEventListener('click', function () { dialog.close(); activate('', {}, 'user', true); scrollToResults(); });
+            modelSelect.addEventListener('change', function () {
+                var selected = Object.create(null);
+                new FormData(form).forEach(function (value, key) { if (String(value).trim()) selected[key] = selected[key] ? selected[key] + '|' + value : String(value); });
+                loadFacets(modelSelect.value, selected);
+            });
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
                 if (submit.disabled) return;

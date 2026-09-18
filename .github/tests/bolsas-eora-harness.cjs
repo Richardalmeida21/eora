@@ -40,9 +40,11 @@ function product(id, tag = 'maxivertice', overrides = {}) {
     return {
         id, name: 'Bolsa Maxi Vértice ' + id, url: '/produto/' + id,
         available: true, display_price: true, price: 174900 + id * 100, compare_at_price: 0,
-        tags: id % 3 === 0 ? [platformTag(tag), platformTag('bolsa')] : id % 2 ? [{tag}, {tag: 'bolsa'}] : [tag, 'bolsa'],
+        tags: id % 3 === 0 ? [platformTag(tag), platformTag('bolsa'), platformTag(id % 2 ? 'cor:preto' : 'cor:marrom')] : id % 2 ? [{tag}, {tag: 'bolsa'}, {tag: 'cor:preto'}] : [tag, 'bolsa', 'cor:marrom'],
         featured_image: {url: asset(id), alt: 'Bolsa Eora', dimensions: {width: 600, height: 800}},
         other_images: [{url: asset(id + 1)}], brand: 'Eora', color: id % 2 ? 'Preto' : 'Marrom',
+        variations: [{name: 'Couro', options: [{name: id % 2 ? 'Preto / Prata' : 'Marrom / Dourado'}]}],
+        variants_object: [{option0: id % 2 ? 'Preto / Prata' : 'Marrom / Dourado'}],
         ...overrides,
     };
 }

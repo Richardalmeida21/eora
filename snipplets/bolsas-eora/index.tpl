@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260918-2">
+<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260918-4">
 <main class="be-page" data-be-page data-search-url="{{ store.search_url | escape }}">
     {% if settings.bolsas_eora_models %}
         <nav class="be-models" data-be-carousel aria-label="Modelos de bolsas">
@@ -75,17 +75,27 @@
         <dialog class="be-filter-dialog" id="be-filter-dialog" aria-labelledby="be-filter-title">
             <header><h2 id="be-filter-title">Filtros</h2><button type="button" data-be-close-filters aria-label="Fechar filtros"><svg aria-hidden="true"><use xlink:href="#times"/></svg></button></header>
             <form data-be-filter-form>
-                <label class="be-model-select">Modelo<select name="be_model"><option value="">Selecione um modelo</option>
-                    {% for model in settings.bolsas_eora_models %}
-                        {% if model.image and model.link | trim %}<option value="{{ model.link | trim | escape }}">{{ model.link | trim | escape }}</option>{% endif %}
-                    {% endfor %}
-                </select></label>
-                <p data-be-facet-status role="status"></p>
-                <div data-be-facets></div>
+                <div class="be-filter-dialog__body">
+                    <label class="be-model-select">Modelo<select name="be_model"><option value="">Todos os modelos</option>
+                        {% for model in settings.bolsas_eora_models %}
+                            {% if model.image and model.link | trim %}<option value="{{ model.link | trim | escape }}">{{ model.link | trim | escape }}</option>{% endif %}
+                        {% endfor %}
+                    </select></label>
+                    <p data-be-facet-status role="status"></p>
+                    <div data-be-facets></div>
+                    <fieldset class="be-facet">
+                        <legend>Preço</legend>
+                        <div class="be-price-fields">
+                            <label>De R$ <input type="number" name="min_price" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+                            <label>Até R$ <input type="number" name="max_price" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+                        </div>
+                    </fieldset>
+                </div>
                 <footer><button type="button" class="be-text-button" data-be-clear-filters>Limpar filtros</button><button type="submit" class="be-button">Aplicar filtros</button></footer>
             </form>
         </dialog>
     {% endif %}
     <noscript><p class="be-status">Ative o JavaScript para filtrar as bolsas por modelo. Os produtos e links abaixo continuam disponíveis.</p></noscript>
 </main>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260918-2" defer></script>
+<script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-4" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260918-4" defer></script>

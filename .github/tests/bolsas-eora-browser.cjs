@@ -99,19 +99,19 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
 
         await page.locator('[data-be-open-filters]').click();
         await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
-        await page.locator('input[name="Cor"][value="Preto"]').check();
+        await page.locator('input[name="be_color"][value="preto"]').check();
         await page.locator('input[name="max_price"]').fill('1780');
         await page.locator('[data-be-filter-form] [type="submit"]').click();
         await idle();
         await expect(page.locator('#be-filter-dialog')).not.toBeVisible();
         const filtered = await cards().evaluateAll(nodes => nodes.map(n => Number(n.dataset.beProduct)));
         assert(filtered.length > 0 && filtered.every(id => id % 2 === 1 && id <= 31 && (id - 1) % 5 !== 0));
-        assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).Cor, 'Preto');
+        assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preto');
         await page.locator('[data-be-sort]').selectOption('price-descending');
         await idle();
         const prices = await cards().evaluateAll(nodes => nodes.map(n => Number(n.dataset.beProduct)));
         assert.deepEqual(prices, [...prices].sort((a, b) => b - a));
-        console.log('PASS filtros gerais: cor e preco enviados ao servidor, tag preservada, ordenacao.');
+        console.log('PASS filtros gerais: cor do couro, preco no servidor, tag preservada e ordenacao.');
 
         await page.goto(base + '/?tag=modelo-2');
         await idle();
@@ -199,7 +199,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.screenshot({path: path.join(output, 'mobile.png'), fullPage: true});
         await page.locator('[data-be-open-filters]').click();
         await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
-        await page.locator('input[name="Cor"][value="Marrom"]').check();
+        await page.locator('input[name="be_color"][value="marrom"]').check();
         await page.screenshot({path: path.join(output, 'mobile-filters.png')});
         await page.keyboard.press('Escape');
         await expect(page.locator('#be-filter-dialog')).not.toBeVisible();
