@@ -1,6 +1,5 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const {execFileSync} = require('node:child_process');
 const assert = require('node:assert/strict');
 const {chromium, expect} = require('@playwright/test');
 const Twig = require('twig');
@@ -81,7 +80,6 @@ function fullscreenScript(source) {
         await expect(page.locator('[data-video-type="mobile"] iframe')).toHaveCount(0);
         console.log('PASS videos: fallback sem IntersectionObserver.');
 
-        const previous = execFileSync('git', ['show', 'HEAD:static/js/store.js.tpl'], {cwd: root, encoding: 'utf8'});
         async function prepareWishlist() {
             await page.setContent('<h3>Produtos</h3><div id="noise"></div>');
             await page.evaluate(() => {
@@ -92,11 +90,6 @@ function fullscreenScript(source) {
                 };
             });
         }
-        await prepareWishlist();
-        await page.addScriptTag({content: fullscreenScript(previous)});
-        await expect.poll(() => page.evaluate(() => window.headingScans)).toBeGreaterThanOrEqual(3);
-        const previousScans = await page.evaluate(() => window.headingScans);
-        // New document also clears the previous implementation's interval.
         await page.goto('about:blank');
         await prepareWishlist();
         await page.addScriptTag({content: fullscreenScript(read('static/js/store.js.tpl'))});
@@ -126,7 +119,7 @@ function fullscreenScript(source) {
             document.body.appendChild(wrapper);
         });
         await expect(page.locator('.absolute.z-10')).toHaveCSS('position', 'fixed');
-        console.log('PASS favoritos: ' + previousScans + ' varreduras periodicas anteriores; 0 com pagina parada, modal assincrono e fallback preservados.');
+        console.log('PASS favoritos: 0 varreduras periodicas com pagina parada, modal assincrono e fallback preservados.');
 
         await page.goto('about:blank');
         await page.setContent('<div class="block-actions-links"></div>');

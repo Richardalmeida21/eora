@@ -70,6 +70,7 @@ $env:NODE_PATH = 'C:/Temp/eora-bolsas-validation/node_modules'
 node .github/tests/bolsas-eora-harness.cjs --check
 node --check static/js/bolsas-eora.js
 node .github/tests/theme-editor-performance.cjs
+node .github/tests/theme-preview-loading.cjs
 git diff --check
 ```
 
@@ -90,5 +91,9 @@ Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, ta
 Os videos dos snippets `home-franqueados.tpl` e `home-banner-video-horizontal.tpl` carregam o player quando ficam visiveis. A versao oculta por CSS nao carrega antecipadamente, e a reinicializacao nao duplica o player. Autoplay e reproducao por clique continuam disponiveis. Ha fallback por scroll/resize para navegadores sem IntersectionObserver.
 
 Em `store.js.tpl`, a integracao dos favoritos passa a reagir a mudancas no DOM. A busca do modal a cada 100 ms e a busca do widget a cada segundo foram substituidas por observadores; o modo tela cheia, o reposicionamento no cabecalho e novas insercoes do aplicativo continuam atendidos.
+
+Em `grid/item.tpl`, a descricao completa so acompanha o card nas paginas em que o JS extrai o resumo. Na home e nas paginas de conteudo, essa extracao ja estava desativada; deixar de incluir o HTML inerte nao muda o texto visivel. Categoria, busca e produtos relacionados conservam a descricao e o resumo. Em uma amostra publica da home com `?preview=true`, remover os 48 blocos inutilizados reduziu o HTML de 5.713.916 para 999.633 bytes (82,5%), preservando textos, links, imagens e dados de variantes. Isso mede o tamanho do HTML, nao o consumo de RAM do painel.
+
+Em `layout.tpl`, `params.preview` impede somente o carregamento explicito de Clarity, TikTok e Martz durante a edicao. Na loja publica, os tres continuam carregando. `head_content`, scripts da plataforma, aplicativos de `store.assorted_js`, favoritos, quickshop, videos e popups permanecem disponiveis. `theme-preview-loading.cjs` renderiza os TPLs e verifica esses dois caminhos no Chromium com servicos externos simulados. Os testes de favoritos nao dependem mais de um `HEAD` anterior a correcao.
 
 Essas alteracoes reduzem o trabalho do tema dentro da previa. Nao controlam o codigo interno do painel da Nuvemshop, os aplicativos externos ou o filtro de rede. O teste local nao comprova a resolucao de um Out of Memory no painel autenticado.

@@ -326,7 +326,8 @@
                         {% endif %}
                     {% endif %}
                 {# Product description #}
-                {% if product.description is not empty and '<table' in product.description %}
+                {# Match the pages where store.js.tpl extracts card descriptions. #}
+                {% if template != 'home' and template != 'page' and product.description is not empty and '<table' in product.description %}
                     <template class="js-product-card-description-base user-content d-none">
                         {{ product.description }}
                     </template>

@@ -293,7 +293,9 @@
         {% head_content %}
 
         {# Martz must load after the GTM/GA4 integrations injected above. #}
-        {% include "snipplets/martz-data-layer.tpl" %}
+        {% if not params.preview %}
+            {% include "snipplets/martz-data-layer.tpl" %}
+        {% endif %}
 
         {# Structured data to provide information for Google about the page content #}
 
@@ -318,13 +320,17 @@
                 }
             };
 
+            {# Do not record editing sessions inside the layout preview. #}
+            {% if not params.preview %}
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "wb7jil6ddu");
+            {% endif %}
         </script>
 
+        {% if not params.preview %}
         <!-- TikTok Pixel Code -->
         <script>
             !function (w, d, t) {
@@ -348,6 +354,7 @@
                 }, 3000);
             }(window, document, 'ttq');
         </script>
+        {% endif %}
 
         <!-- Proteção máxima de layout e viewport contra quebras e encolhimento (squishing) -->
         <style>
