@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}">
+<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260918-2">
 <main class="be-page" data-be-page data-search-url="{{ store.search_url | escape }}">
     {% if settings.bolsas_eora_models %}
         <nav class="be-models" data-be-carousel aria-label="Modelos de bolsas">
@@ -19,9 +19,9 @@
         </nav>
     {% endif %}
 
-    <div class="be-toolbar" data-be-toolbar hidden>
-        <button class="be-text-button" type="button" data-be-reset>Ver todas as bolsas</button>
-        <label>Ordenar por <select data-be-sort aria-label="Ordenar produtos">
+    <div class="be-toolbar" data-be-toolbar>
+        <button class="be-button be-reset" type="button" data-be-reset aria-pressed="true">Ver todas as bolsas</button>
+        <label data-be-sort-control hidden>Ordenar por <select data-be-sort aria-label="Ordenar produtos">
             <option value="user">Destaques</option>
             <option value="best-selling">Mais vendidos</option>
             <option value="price-ascending">Menor preço</option>
@@ -88,4 +88,4 @@
     {% endif %}
     <noscript><p class="be-status">Ative o JavaScript para filtrar as bolsas por modelo. Os produtos e links abaixo continuam disponíveis.</p></noscript>
 </main>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260918-2" defer></script>

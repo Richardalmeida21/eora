@@ -69,8 +69,9 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
                 await page.emulateMedia({reducedMotion: motion});
                 await page.locator('[data-be-tag="maxivertice"]').click();
                 await idle();
-                await expect.poll(() => page.locator('[data-be-results]').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThanOrEqual(100);
-                await expect.poll(() => page.locator('[data-be-results]').evaluate(el => el.getBoundingClientRect().top)).toBeLessThan(115);
+                await expect.poll(() => page.locator('[data-be-toolbar]').evaluate(el => el.getBoundingClientRect().top)).toBeGreaterThanOrEqual(100);
+                await expect.poll(() => page.locator('[data-be-toolbar]').evaluate(el => el.getBoundingClientRect().top)).toBeLessThan(115);
+                await expect(page.locator('[data-be-reset]')).toBeInViewport();
                 await expect(page.locator('[data-be-result-title]')).toBeFocused();
                 const images = page.locator('[data-be-results-grid] .be-product').first().locator('img');
                 assert(await images.evaluateAll(nodes => nodes.every(img => getComputedStyle(img).objectFit === 'contain')), 'foto principal e hover sem corte');

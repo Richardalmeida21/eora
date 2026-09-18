@@ -65,6 +65,8 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             }
         }
         async function assertAll() {
+            await expect(page.locator('[data-be-reset]')).toBeVisible();
+            await expect(page.locator('[data-be-reset]')).toHaveAttribute('aria-pressed', 'true');
             await finish();
             const found = await ids();
             assert.deepEqual([...found].sort(), expectedIds);
@@ -79,6 +81,8 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             await page.goto(base);
             await idle();
             await expect(page.locator('[data-be-results]')).toBeVisible();
+            await expect(page.locator('[data-be-reset]')).toBeVisible();
+            assert(await page.locator('[data-be-reset]').evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 16 && el.getBoundingClientRect().height >= 48));
             await expect(page.locator('[data-be-result-title]')).toHaveText('Todas as bolsas');
             assert((await cards().count()) > 0 && (await cards().count()) <= (viewport.width < 768 ? 6 : 12));
             assert(requests.length <= 3);
@@ -90,6 +94,8 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
 
             await page.locator('[data-be-tag="minivertice"]').click();
             await idle();
+            await expect(page.locator('[data-be-reset]')).toBeVisible();
+            await expect(page.locator('[data-be-reset]')).toHaveAttribute('aria-pressed', 'false');
             assert.deepEqual((await ids()).sort(), ['101', '102', '103', '104', '700']);
             assert.equal(new URL(page.url()).searchParams.get('tag'), 'minivertice');
             await page.goBack();
@@ -117,7 +123,8 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
         await page.goto(base + '/?tag=desconhecida&be_sort=price-descending&be_filters=' + encodeURIComponent(JSON.stringify({Cor: 'Preto'})));
         await idle();
         await assertAll();
-        await expect(page.locator('[data-be-toolbar]')).toBeHidden();
+        await expect(page.locator('[data-be-toolbar]')).toBeVisible();
+        await expect(page.locator('[data-be-sort]')).toBeHidden();
         console.log('PASS agregacao: modelo desconhecido volta para todas, sem aplicar filtros ou ordenacao de um modelo inexistente.');
 
         delayTag = 'maxivertice';

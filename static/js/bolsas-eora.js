@@ -278,7 +278,9 @@
             // Os modelos configurados geram o catalogo automatico. Os banners continuam
             // logo depois dos resultados, antes de Best sellers e das galerias.
             all('.be-catalog-block').forEach(function (section) { section.hidden = active || modelTags.length > 0; });
-            one('[data-be-toolbar]').hidden = !active;
+            one('[data-be-toolbar]').hidden = false;
+            one('[data-be-reset]').setAttribute('aria-pressed', active ? 'false' : 'true');
+            one('[data-be-sort]').closest('label').hidden = !active;
             results.hidden = !active && !modelTags.length;
             grid.replaceChildren();
             more.hidden = true;
@@ -306,7 +308,7 @@
                 var headerPosition = header && getComputedStyle(header).position;
                 var offset = header && (headerPosition === 'fixed' || headerPosition === 'sticky') ? header.getBoundingClientRect().height : 0;
                 one('[data-be-result-title]').focus({preventScroll: true});
-                window.scrollTo({top: Math.max(0, window.scrollY + results.getBoundingClientRect().top - offset - 16), behavior: reducedMotion.matches ? 'auto' : 'smooth'});
+                window.scrollTo({top: Math.max(0, window.scrollY + one('[data-be-toolbar]').getBoundingClientRect().top - offset - 16), behavior: reducedMotion.matches ? 'auto' : 'smooth'});
             });
         }
         models.forEach(function (model) {
@@ -317,7 +319,7 @@
                 scrollToResults();
             });
         });
-        one('[data-be-reset]').addEventListener('click', function () { activate('', {}, 'user', true); });
+        one('[data-be-reset]').addEventListener('click', function () { activate('', {}, 'user', true); scrollToResults(); });
         more.addEventListener('click', loadMore);
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
