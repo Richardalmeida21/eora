@@ -55,6 +55,7 @@ const settings = {
     bolsas_eora_catalog_tag: 'bolsa', bolsas_eora_filters_enabled: true, product_hover: true,
     bolsas_eora_models: Array.from({length: 20}, (_, i) => ({image: asset(i), link: i === 0 ? 'maxivertice' : i === 1 ? 'minivertice' : 'modelo-' + i})),
     bolsas_eora_banners: [{image: asset(4), link: 'maxivertice', title: 'Banner Maxi Vértice'}, {image: asset(5), link: 'minivertice', title: 'Banner Mini Vértice'}],
+    bolsas_eora_banner_01_all: true,
     bolsas_eora_best_enabled: true, bolsas_eora_best_title: 'Best sellers',
     bolsas_eora_community_enabled: true, bolsas_eora_community_title: 'Quem usa Eora',
     bolsas_eora_community_subtitle: 'Nossa comunidade', bolsas_eora_community_link: '/quem-usa',

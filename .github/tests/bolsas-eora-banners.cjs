@@ -14,40 +14,63 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         page.on('pageerror', error => errors.push(error.message));
         const initial = context();
         const banners = [
-            {link: 'maxivertice'},
-            {image: '/fixtures/image-5.webp', link: 'minivertice', title: 'Primeiro banner'},
-            {image: '/fixtures/image-4.webp', link: ' MAXIVERTICE ', title: 'Banner Maxi'},
-            {image: '/fixtures/image-3.webp', link: 'maxivertice', title: 'Duplicado'},
+            {image: '/fixtures/image-5.webp', link: 'minivertice', title: 'Banner Mini'},
+            {image: '/fixtures/image-4.webp', link: ' MAXIVERTICE ', title: 'Banner Maxi A'},
+            {image: '/fixtures/image-3.webp', link: 'maxivertice', title: 'Banner Maxi B'},
         ];
         await page.route(base + '/**', route => {
             const url = new URL(route.request().url());
             if (url.pathname !== '/') return route.continue();
-            const list = url.searchParams.has('no-banners') ? [] : url.searchParams.has('reordered') ? [banners[2], banners[1]] : banners;
-            const data = {...initial, settings: {...initial.settings, bolsas_eora_banners: list}};
+            const list = url.searchParams.has('no-banners') ? [] : url.searchParams.has('reordered') ? [banners[1], banners[0]] : banners;
+            const showAll = url.searchParams.has('all-multiple');
+            const data = {...initial, settings: {
+                ...initial.settings,
+                bolsas_eora_banners: list,
+                bolsas_eora_banner_01_all: true,
+                bolsas_eora_banner_02_all: showAll,
+                bolsas_eora_banner_03_all: showAll,
+            }};
             return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
         });
-        const banner = page.locator('[data-be-results-grid] [data-be-catalog-banner]');
+        const catalogBanners = page.locator('[data-be-results-grid] [data-be-catalog-banner]');
         const cards = page.locator('[data-be-results-grid] [data-be-product]');
         const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
-        async function checkBanner(title) {
-            await expect(banner).toHaveCount(1);
-            await expect(banner.locator('img')).toHaveAttribute('alt', title);
-            assert.equal(await banner.locator('a').count(), 0, 'tag do banner nao vira link');
+        async function checkBanners(titles) {
+            await expect(catalogBanners).toHaveCount(titles.length);
+            for (let index = 0; index < titles.length; index++) {
+                await expect(catalogBanners.nth(index).locator('img')).toHaveAttribute('alt', titles[index]);
+                assert.equal(await catalogBanners.nth(index).locator('a').count(), 0, 'tag do banner nao vira link');
+            }
         }
-        async function checkLayout(width) {
+        async function checkLayout(width, bannerCount) {
             const geometry = await page.locator('[data-be-results-grid]').evaluate(grid => {
                 const rect = el => {const r = el.getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
-                return {grid:rect(grid), banner:rect(grid.querySelector('[data-be-catalog-banner]')), products:Array.from(grid.querySelectorAll('[data-be-product]')).map(rect)};
+                return {
+                    grid: rect(grid),
+                    columnGap: parseFloat(getComputedStyle(grid).columnGap) || 0,
+                    banners: Array.from(grid.querySelectorAll('[data-be-catalog-banner]')).map(rect),
+                    products: Array.from(grid.querySelectorAll('[data-be-product]')).map(rect),
+                    images: Array.from(grid.querySelectorAll('[data-be-product] .be-product__image')).map(rect),
+                };
             });
+            assert.equal(geometry.banners.length, bannerCount);
             if (width >= 768) {
-                assert(Math.abs(geometry.banner.x - geometry.products[2].x) < 2, 'banner nas duas colunas da direita');
-                assert(Math.abs(geometry.banner.y - geometry.products[8].y) < 2, 'banner apos oito produtos');
-                assert(Math.abs(geometry.banner.bottom - geometry.products[11].bottom) < 2, 'mesma altura que duas linhas de produtos');
-                assert(geometry.products[9].right <= geometry.banner.x, 'produtos ao lado, sem sobreposicao');
+                const productOffset = Math.max(0, 3 - bannerCount) * 4;
+                geometry.banners.forEach((banner, index) => {
+                    const productIndex = productOffset + index * 4;
+                    const expectedX = index % 2 ? geometry.grid.x : geometry.grid.x + (geometry.grid.width + geometry.columnGap) / 2;
+                    assert(Math.abs(banner.x - expectedX) < 2, 'banners alternam direita e esquerda');
+                    if (geometry.products[productIndex] && geometry.images[productIndex + 2]) {
+                        assert(Math.abs(banner.y - geometry.products[productIndex].y) < 2, 'banner alinhado ao inicio da linha de produtos');
+                        assert(Math.abs(banner.bottom - geometry.images[productIndex + 2].bottom) < 2, 'banner termina com a segunda imagem, sem incluir o segundo preco');
+                    }
+                });
             } else {
-                assert(Math.abs(geometry.banner.width - geometry.grid.width) < 2, 'banner com largura da grade no celular');
-                assert(geometry.banner.y >= geometry.products[3].bottom, 'banner depois dos primeiros quatro produtos');
-                assert(geometry.products[4].y >= geometry.banner.bottom, 'produtos seguintes depois do banner');
+                geometry.banners.forEach((banner, index) => {
+                    assert(Math.abs(banner.width - geometry.grid.width) < 2, 'banner com largura da grade no celular');
+                    if (index) assert(banner.y >= geometry.banners[index - 1].bottom, 'banners mantem a ordem no celular');
+                });
+                assert(geometry.banners[0].y >= geometry.products[Math.min(3, geometry.products.length - 1)].bottom, 'primeiro banner depois de quatro produtos');
             }
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'sem overflow');
         }
@@ -55,42 +78,45 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await page.setViewportSize({width, height: 1000});
             await page.goto(base);
             await idle();
-            await checkBanner('Primeiro banner');
+            await checkBanners(['Banner Mini']);
             await page.locator('[data-be-tag="maxivertice"]').click();
             await idle();
-            await checkBanner('Banner Maxi');
-            await expect(cards).toHaveCount(width < 768 ? 6 : 12);
-            await checkLayout(width);
+            await checkBanners(['Banner Maxi A', 'Banner Maxi B']);
+            await expect(cards).toHaveCount(24);
+            await checkLayout(width, 2);
             if (width === 1440 || width === 390) await page.locator('[data-be-results-grid]').screenshot({path:path.join(output, 'banners-by-model-' + width + '.png')});
-            await page.locator('[data-be-more]').click();
-            await idle();
-            await checkBanner('Banner Maxi');
+            await expect(page.locator('[data-be-more]')).toBeHidden();
             const ids = await cards.evaluateAll(nodes => nodes.map(node => node.dataset.beProduct));
             assert.equal(new Set(ids).size, ids.length);
             await expect(page.locator('[data-be-status]')).toContainText(ids.length + ' produtos');
             await page.locator('[data-be-tag="minivertice"]').click();
             await idle();
-            await checkBanner('Primeiro banner');
+            await checkBanners(['Banner Mini']);
             await expect(cards).toHaveCount(1);
             await expect(page.locator('[data-be-status]')).toHaveText('1 produto encontrado');
-            await page.goBack(); await idle(); await checkBanner('Banner Maxi');
-            await page.locator('[data-be-reset]').click(); await idle(); await checkBanner('Primeiro banner');
+            await page.goBack(); await idle(); await checkBanners(['Banner Maxi A', 'Banner Maxi B']);
+            await page.locator('[data-be-reset]').click(); await idle(); await checkBanners(['Banner Mini']);
             await page.goto(base + '/?tag=modelo-2'); await idle();
-            await expect(banner).toHaveCount(0);
+            await expect(catalogBanners).toHaveCount(0);
             await expect(page.locator('[data-be-status]')).toContainText('Nenhum produto');
-            console.log('PASS banners ' + width + 'px: primeiro, tag normalizada, duplicado, sem correspondencia, grade dividida, paginacao, contagem e historico.');
+            console.log('PASS banners ' + width + 'px: Todos configuravel, tags repetidas, alternancia, altura, carga automatica e historico.');
         }
-        await page.goto(base + '/?tag=maxivertice'); await idle(); await checkBanner('Banner Maxi');
-        await page.setViewportSize({width:390,height:1000}); await checkLayout(390);
-        await page.setViewportSize({width:1440,height:1000}); await checkLayout(1440);
+        await page.setViewportSize({width:1440,height:1000});
+        await page.goto(base + '/?all-multiple'); await idle();
+        await checkBanners(['Banner Mini', 'Banner Maxi A', 'Banner Maxi B']);
+        await checkLayout(1440, 3);
+        await page.goto(base + '/?tag=maxivertice'); await idle();
+        await checkBanners(['Banner Maxi A', 'Banner Maxi B']);
+        await page.setViewportSize({width:390,height:1000}); await checkLayout(390, 2);
+        await page.setViewportSize({width:1440,height:1000}); await checkLayout(1440, 2);
         await page.locator('[data-be-open-filters]').click();
         await page.locator('[name="be_model"]').selectOption('minivertice');
         await page.locator('[data-be-filter-form] [type="submit"]').click();
-        await idle(); await checkBanner('Primeiro banner');
+        await idle(); await checkBanners(['Banner Mini']);
         await page.goto(base + '/?no-banners&tag=maxivertice'); await idle();
-        await expect(banner).toHaveCount(0); await expect(cards).toHaveCount(12);
-        await page.goto(base + '/?reordered'); await idle(); await checkBanner('Banner Maxi');
+        await expect(catalogBanners).toHaveCount(0); await expect(cards).toHaveCount(24);
+        await page.goto(base + '/?reordered'); await idle(); await checkBanners(['Banner Maxi A']);
         assert.deepEqual(errors, []);
-        console.log('PASS link direto, resize, seletor do painel, galeria vazia, reordenacao e zero erros JS.');
+        console.log('PASS multiplos em Todos, link direto, resize, painel, galeria vazia, reordenacao e zero erros JS.');
     } finally { await browser.close(); }
 })().catch(error => {console.error(error); process.exitCode = 1;});

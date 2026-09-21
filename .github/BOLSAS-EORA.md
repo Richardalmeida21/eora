@@ -17,11 +17,12 @@ Implementação local baseada no PDF **BRIEFING DE ESTRUTURA PARA PÁGINA DE BOL
 2. Em **Personalizar layout → configurações avançadas → Bolsas Eora → Filtros por modelo**, adicione imagens e clique no lápis de cada imagem. Nos detalhes, o campo **Tag do produto** (a plataforma pode exibir **Link ao clicar na imagem**) recebe somente a tag: `maxivertice`, por exemplo. A imagem com tag vazia não aparece. Use uma tag por imagem, sem URL ou aspas. Arraste para ordenar e exclua para remover. A galeria exige `gallery_more_info = true` para abrir os campos adicionais.
 3. No cadastro dos produtos, associe somente a tag específica de cada modelo. A seleção verifica a tag inteira, sem exigir categoria ou tag geral.
 4. Em **Banners**, logo abaixo de **Filtros por modelo**, adicione as imagens. No campo **Link** de cada imagem, informe a tag do modelo, como `maxivertice`. Esse campo associa o banner ao modelo e não abre outra página. A mesma imagem atende computador e celular; proporção sugerida 1000 × 1300.
-5. Arraste as imagens para ordenar. Sem modelo selecionado, aparece a primeira imagem válida da galeria. Ao selecionar um modelo, aparece a primeira imagem com a tag correspondente, ignorando maiúsculas/minúsculas e espaços nas pontas. Sem correspondência, ficam somente os produtos. As imagens antigas precisam ser cadastradas nessa nova galeria.
-6. Configure **Best sellers** e seus produtos na seção de destaque **Bolsas Eora — Best sellers**.
-7. Em **Quem usa**, edite título, subtítulo e link geral. Adicione, reordene ou exclua fotos. Cada foto pode ter seu próprio link; sem link próprio, utiliza o link geral.
-8. Em **Banners de categorias**, configure imagens, título, descrição, botão e link no editor da galeria, como na home.
-9. Confira o conteúdo completo na prévia da Nuvemshop antes de publicar o tema.
+5. Em **Banners no filtro Todos**, marque as posições que também devem aparecer quando nenhum modelo estiver selecionado. As caixas correspondem à ordem atual das imagens da galeria; confira-as novamente depois de reordenar ou excluir banners. A primeira posição vem marcada por padrão para preservar o comportamento anterior.
+6. Arraste as imagens para ordenar. Em **Todos**, aparecem todos os banners marcados. Ao selecionar um modelo, aparecem todos os banners com a tag correspondente, ignorando maiúsculas/minúsculas e espaços nas pontas. Em ambos os casos, os banners alternam entre a direita e a esquerda. Sem correspondência, ficam somente os produtos. As imagens antigas precisam ser cadastradas nessa nova galeria.
+7. Configure **Best sellers** e seus produtos na seção de destaque **Bolsas Eora — Best sellers**.
+8. Em **Quem usa**, edite título, subtítulo e link geral. Adicione, reordene ou exclua fotos. Cada foto pode ter seu próprio link; sem link próprio, utiliza o link geral.
+9. Em **Banners de categorias**, configure imagens, título, descrição, botão e link no editor da galeria, como na home.
+10. Confira o conteúdo completo na prévia da Nuvemshop antes de publicar o tema.
 
 As galerias de modelos, Banners, Quem usa e categorias não declaram `gallery_max` nem cortam a lista no TPL. Eventuais limites do editor/plataforma continuam sendo aplicáveis. Best sellers respeita o limite nativo de produtos destacados.
 
@@ -31,21 +32,21 @@ As galerias de modelos, Banners, Quem usa e categorias não declaram `gallery_ma
 |---|---|---|
 | Modelos | 4 visíveis em faixa de até 960 px; fotos sem corte | 2 inteiros e parte do próximo; rolagem sem gradiente |
 | Catálogo | 4 colunas; até 12 novos produtos por ação | 2 colunas; até 6 novos produtos por ação |
-| Banner por modelo | Após 8 produtos, ocupa as duas colunas da direita e a altura de 2 linhas; antecipado em listas menores | Largura total entre os produtos, após os primeiros 4 ou ao final em listas menores |
+| Banners por modelo/Todos | Ocupam duas colunas, alternando direita e esquerda; a altura termina junto da imagem da segunda linha, sem incluir nome e preço | Largura total entre os produtos, começando após os primeiros 4 ou ao final em listas menores |
 | Best sellers | 4 produtos visíveis | 2 produtos e parte do próximo |
 | Quem usa | 5 fotos quadradas; fundo branco | 2 fotos quadradas e parte da próxima, como no feed do rodapé |
 | Categorias | 4 banners visíveis | 1 banner e parte do próximo |
 
-Mostrar mais produtos conserva os itens carregados e acrescenta os próximos, sem duplicar o banner nem contá-lo como produto. A troca de modelo, o painel de filtros e o histórico atualizam produtos e banner juntos.
+Mostrar mais produtos conserva os itens carregados e acrescenta os próximos, sem duplicar banners nem contá-los como produtos. A troca de modelo, o painel de filtros e o histórico atualizam produtos e banners juntos.
 
-O clique em um modelo ou em Aplicar filtros rola ate os resultados, descontando a altura do cabecalho fixo e respeitando movimento reduzido. As fotos dos produtos, inclusive no hover, usam `object-fit: contain` para manter a imagem inteira. O banner usa `object-fit: cover` para preencher seu espaço. Somente o banner selecionado sai do template inerte para a grade; as demais imagens não carregam antecipadamente. A nitidez final depende da resolução do arquivo enviado.
+O clique em um modelo ou em Aplicar filtros rola ate os resultados, descontando a altura do cabecalho fixo e respeitando movimento reduzido. As fotos dos produtos, inclusive no hover, usam `object-fit: contain` para manter a imagem inteira. Os banners usam `object-fit: cover` para preencher seu espaço. Somente os banners selecionados saem dos templates inertes para a grade; as demais imagens não carregam antecipadamente. A nitidez final depende da resolução do arquivo enviado.
 
 ## Consulta por tag e filtros gerais
 
 - Ao abrir sem selecionar um modelo, o catalogo abaixo dos filtros reune os produtos de todas as tags configuradas nas imagens. Cada tag possui sua propria paginacao, as consultas alternam entre modelos e um produto com varias tags aparece uma vez. Nao e necessario cadastrar uma tag geral nem selecionar produtos nas secoes manuais para essa listagem.
-- O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção. Ver todas as bolsas/Limpar filtros restaura a uniao das tags. Ordenacao continua vinculada ao modelo escolhido; filtros por caracteristicas e preco tambem funcionam em Todos os modelos.
+- O clique no modelo mantém o visitante na campanha e atualiza `?tag=...`. Voltar/Avançar e links compartilháveis restauram a seleção. Ver todas as bolsas/Limpar filtros restaura a uniao das tags. Ordenacao continua vinculada ao modelo escolhido; filtros por caracteristicas e preco tambem funcionam em Todos os modelos. Quando há modelo, característica ou preço selecionado, todas as páginas da busca são percorridas automaticamente e todos os resultados filtrados aparecem sem exigir **Mostrar mais produtos**.
 - Ver todas as bolsas permanece visivel, inclusive na entrada sem filtro, com botao de 16 px e altura minima de 48 px. A rolagem conserva a barra de acoes abaixo do cabecalho fixo. Ordenacao aparece somente quando ha modelo selecionado.
-- A listagem automática usa os modelos configurados, sem grades manuais. Sem modelos, a página informa que não há modelos disponíveis e conserva o primeiro banner, Best sellers e as galerias cadastradas.
+- A listagem automática usa os modelos configurados, sem grades manuais. Sem modelos, a página informa que não há modelos disponíveis e conserva os banners marcados para Todos, Best sellers e as galerias cadastradas.
 - A consulta usa `store.search_url` com o termo entre aspas. A busca nativa pode incluir correspondências em outros campos; por isso, cada resultado é conferido contra `product.tags`, comparando a tag inteira (sem diferenciar maiúsculas/minúsculas; acentos são preservados).
 - O card transforma as tags em um array JSON de textos no Twig, acessando `product_tag.tag`. A serializacao direta de `product.tags` na plataforma inclui detalhes internos e guarda o valor em `attributes.tag`, que tambem e aceito pelo JS para respostas anteriores mantidas em cache.
 - Um `<template>` inerte, sem scripts, é acrescentado ao resultado da busca somente quando a consulta corresponde à tag de um modelo configurado. A apresentação e a paginação da busca normal permanecem intactas.
@@ -61,7 +62,7 @@ O clique em um modelo ou em Aplicar filtros rola ate os resultados, descontando 
 - Integrações: uma condição em `templates/page.tpl` e sua cópia em `snipplets/templates/page.tpl`; um include condicional em `templates/search.tpl`; configurações exclusivas em `settings.txt`, `defaults.txt` e `sections.txt`.
 - CSS/JS da campanha carregam somente na página nova. As otimizacoes da previa estao nos dois snippets de video da home e na integracao de favoritos de `store.js.tpl`, descritas abaixo.
 - **Um push na `main` dispara o FTP de produção**, conforme `.github/workflows/deploy.yml`. Não usar esse caminho para testar.
-- O JS principal usa `?v=20260918-7`, o CSS usa `?v=20260918-6` e o script de opções usa `?v=20260918-5`. Publicar juntos configurações, `banners.tpl`, CSS, scripts e `index.tpl` para atualizar também as URLs do cache.
+- O JS principal usa `?v=20260921-9`, o CSS usa `?v=20260921-8`, e o script de opções usa `?v=20260918-5`. Publicar juntos configurações, `banners.tpl`, CSS, scripts e `index.tpl` para atualizar também as URLs do cache.
 - Antes da publicação: verificar no editor que a galeria aceita e conserva a tag textual no segundo campo; testar o TPL real, as imagens configuradas, mais de uma página de resultados e os filtros habilitados na loja.
 - Em envio manual, enviar primeiro os novos snippets/assets, depois configurações e por último os templates de entrada. Não ativar durante envio parcial.
 - Para a correção do editor, enviar também `static/js/instatheme.js`, recarregar o painel e conferir se o 403 desse script desapareceu. Os testes locais não comprovam que o travamento do editor foi resolvido; a validação deve ser feita no painel real.
@@ -93,7 +94,7 @@ node .github/tests/bolsas-eora-feedback.cjs
 node .github/tests/bolsas-eora-banners.cjs
 ```
 
-Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, tag exata versus prefixo/nome, seis páginas de resultados, deduplicação, filtros cor/preço, ordenação, histórico, zero resultados, erro/retry, páginas iniciais sem correspondências, troca rápida de modelo, fechamento por Escape, foco e ausência de overflow horizontal/erros JavaScript.
+Testado: desktop/mobile, navegação das grades, listas com mais de 15 itens, tag exata versus prefixo/nome, seis páginas de resultados, deduplicação, filtros cor/preço, ordenação, histórico, zero resultados, erro/retry, páginas iniciais sem correspondências, troca rápida de modelo, múltiplos banners em Todos e no mesmo modelo, alternância direita/esquerda, altura sem a área de preço, fechamento por Escape, foco e ausência de overflow horizontal/erros JavaScript.
 
 ## Desempenho da previa do editor
 

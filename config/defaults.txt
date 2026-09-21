@@ -157,6 +157,7 @@ footer_contact_title_pt = Entre em contato
 footer_contact_title_es_mx = Contáctanos
 
 bolsas_eora_filters_enabled = 1
+bolsas_eora_banner_01_all = 1
 bolsas_eora_best_enabled = 1
 bolsas_eora_best_title_pt = Best sellers
 bolsas_eora_community_enabled = 1

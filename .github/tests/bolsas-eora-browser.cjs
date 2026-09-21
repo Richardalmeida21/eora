@@ -45,11 +45,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await maxi().click();
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         await idle();
-        await expect(cards()).toHaveCount(12);
-        assert(!(await cards().evaluateAll(nodes => nodes.map(n => n.dataset.beProduct))).includes('1'));
-        await page.locator('[data-be-more]').click();
-        await idle();
         await expect(cards()).toHaveCount(24);
+        assert(!(await cards().evaluateAll(nodes => nodes.map(n => n.dataset.beProduct))).includes('1'));
         await expect(page.locator('[data-be-more]')).toBeHidden();
         const ids = await cards().evaluateAll(nodes => nodes.map(n => n.dataset.beProduct));
         assert.equal(new Set(ids).size, 24);
@@ -60,8 +57,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(cards().first()).toHaveAttribute('data-be-product', '101');
         await page.goBack();
         await idle();
-        await expect(cards()).toHaveCount(12);
-        console.log('PASS tags: 6 paginas, correspondencia exata, sem duplicados, troca e voltar.');
+        await expect(cards()).toHaveCount(24);
+        console.log('PASS tags: 6 paginas carregadas automaticamente, correspondencia exata, sem duplicados, troca e voltar.');
 
         // Response shape observed in production before normalizing tags in the TPL.
         await page.route('**/search/**', async route => {
@@ -87,7 +84,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.unroute('**/search/**');
         await page.goto(base + '/?tag=maxivertice');
         await idle();
-        await expect(cards()).toHaveCount(12);
+        await expect(cards()).toHaveCount(24);
         console.log('PASS tags da plataforma: attributes.tag, correspondencia exata, dados vazios e TPL normalizado.');
 
         await page.locator('[data-be-open-filters]').click();
@@ -122,7 +119,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('[data-be-status]')).toContainText('Não foi possível');
         await page.locator('[data-be-more]').click();
         await idle();
-        await expect(cards()).toHaveCount(12);
+        await expect(cards()).toHaveCount(24);
         await page.unroute('**/search/**');
         console.log('PASS vazio e erro: mensagem correta, tentativa recupera os produtos.');
 
@@ -137,14 +134,10 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         });
         await page.goto(base + '/?tag=maxivertice');
         await idle();
-        await expect(cards()).toHaveCount(0);
-        await expect(page.locator('[data-be-status]')).toContainText('Continue');
-        await expect(page.locator('[data-be-more]')).toBeVisible();
-        await page.locator('[data-be-more]').click();
-        await idle();
         await expect(cards()).toHaveCount(12);
+        await expect(page.locator('[data-be-more]')).toBeHidden();
         await page.unroute('**/search/**');
-        console.log('PASS resultado esparso: nao encerra busca antes das paginas restantes.');
+        console.log('PASS resultado esparso: paginas vazias intermediarias sao percorridas automaticamente.');
 
         await page.route('**/search/**', async route => {
             if (new URL(route.request().url()).searchParams.get('q') === '"maxivertice"') {

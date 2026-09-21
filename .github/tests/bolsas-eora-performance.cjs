@@ -105,22 +105,21 @@ const data = {...initial, settings: {...initial.settings,
             await black.check();
             await submit.click();
             await expect(page.locator('#be-filter-dialog')).not.toBeVisible();
+            await expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'true');
+            resume();
             await idle();
             assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preto');
-            resume();
             await expect.poll(() => active).toBe(0);
 
-            // Filtro da URL em uma pagina tardia nao pode sumir ao aplicar cedo.
+            // Filtro da URL em uma pagina tardia e restaurado depois da varredura completa.
             await page.goto(base + '/?be_filters=' + encodeURIComponent(JSON.stringify({be_color: 'terracota'})));
             await idle();
-            hold();
             await open();
-            await expect.poll(() => active).toBe(3);
-            await expect(page.locator('[name="be_color"][value="terracota"]')).toHaveCount(0);
+            await expect(status).toHaveText('');
+            await expect(page.locator('[name="be_color"][value="terracota"]')).toBeChecked();
             await submit.click();
             await idle();
             assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'terracota', 'selecao ativa ainda nao descoberta e preservada');
-            resume();
             await expect.poll(() => active).toBe(0);
             assert.deepEqual(errors, []);
             console.log('PASS ' + width + 'px: filtros utilizaveis com rede pendente, concorrencia limitada, foco/selecao, 12 paginas sem repeticoes, cache ao aplicar/reabrir e retomada apos cancelamento.');

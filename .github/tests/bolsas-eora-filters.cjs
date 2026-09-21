@@ -52,6 +52,7 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
         let failOnce = false;
         let emptyTags = false;
         let delayedTag = '';
+        let lateBurgundy = false;
         await page.route('http://127.0.0.1:4175/**', async route => {
             const url = new URL(route.request().url());
             if (url.pathname === '/') return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
@@ -62,6 +63,9 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
             if (failOnce) {failOnce = false; return route.fulfill({status: 503, body: 'Unavailable'});}
             if (tag === delayedTag) await new Promise(resolve => setTimeout(resolve, 200));
             let products = items.filter(item => item.tags.includes(tag));
+            if (lateBurgundy && tag === 'maxivertice') {
+                products = Array.from({length: 5}, (_, index) => item(601 + index, 'maxivertice', ['Teste'], [index === 4 ? 'cor:bordo' : 'cor:preto']));
+            }
             if (emptyTags) products = products.map(item => ({...item, tags: [tag]}));
             if (url.searchParams.has('min_price')) products = products.filter(item => item.price >= Number(url.searchParams.get('min_price')) * 100);
             if (url.searchParams.has('max_price')) products = products.filter(item => item.price <= Number(url.searchParams.get('max_price')) * 100);
@@ -119,6 +123,15 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
             console.log('PASS ' + width + 'px: ordem, combinacoes, tags, faixa de preco, todos/modelo/outros, URL, historico e limpar.');
         }
+        lateBurgundy = true;
+        await page.goto('http://127.0.0.1:4175'); await idle(); await open();
+        await page.locator('[name="be_model"]').selectOption('maxivertice'); await ready();
+        await select('be_color', 'bordo'); await apply();
+        assert.deepEqual(await ids(), [605], 'resultado bordo da quinta pagina aparece sem acao adicional');
+        await expect(page.locator('[data-be-more]')).toBeHidden();
+        await expect(page.locator('[data-be-status]')).toHaveText('1 produto encontrado');
+        lateBurgundy = false;
+        console.log('PASS filtro tardio: bordo na quinta pagina aparece automaticamente, sem Mostrar mais produtos.');
         await page.goto('http://127.0.0.1:4175'); await idle();
         failOnce = true;
         await page.locator('[data-be-open-filters]').click();

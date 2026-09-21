@@ -86,7 +86,7 @@
         if (searchBase.origin !== window.location.origin) return;
         var grid = one('[data-be-results-grid]');
         var bannerTemplates = all('[data-be-banner-template]');
-        var activeBanner = null;
+        var activeBanners = [];
         var results = one('[data-be-results]');
         var status = one('[data-be-status]');
         var more = one('[data-be-more]');
@@ -104,24 +104,38 @@
         var state;
         var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'preview', '__proto__', 'constructor', 'prototype'];
 
-        function placeBanner() {
-            if (!activeBanner) return;
+        function placeBanners() {
+            if (!activeBanners.length) return;
             var products = all('[data-be-product]', grid);
-            // Duas linhas completas antes do bloco dividido quando ha 12 produtos.
-            // Catalogos menores antecipam o banner para mante-lo junto das bolsas.
-            var row = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
-            var before = mobile.matches ? Math.min(4, products.length) : (row - 1) * 4;
-            activeBanner.style.setProperty('--be-banner-row', row);
-            grid.insertBefore(activeBanner, products[before] || null);
+            // Um banner conserva duas linhas completas antes dele. Com varios banners,
+            // o primeiro sobe o necessario para que todos alternem junto aos produtos.
+            var preferredRow = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
+            var firstRow = Math.max(1, preferredRow - Math.max(0, activeBanners.length - 1));
+            var productImage = products[0] && products[0].querySelector('.be-product__image');
+            var rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
+            var cardHeight = products.slice(0, 4).reduce(function (height, product) {
+                return Math.max(height, product.getBoundingClientRect().height);
+            }, 0);
+            var bannerHeight = productImage && cardHeight ? cardHeight + productImage.getBoundingClientRect().height + rowGap : 0;
+            activeBanners.forEach(function (banner, index) {
+                var row = firstRow + index * 2;
+                var before = mobile.matches ? Math.min(4 + index * 4, products.length) : Math.min((row - 1) * 4, products.length);
+                banner.style.setProperty('--be-banner-row', row);
+                banner.style.setProperty('--be-banner-column', index % 2 ? '1 / span 2' : '3 / span 2');
+                if (!mobile.matches && bannerHeight) banner.style.setProperty('--be-banner-height', bannerHeight + 'px');
+                else banner.style.removeProperty('--be-banner-height');
+                grid.insertBefore(banner, products[before] || null);
+            });
         }
-        function selectBanner(model) {
-            var template = model ? bannerTemplates.find(function (item) {
-                return normalize(item.dataset.beBannerTag) === normalize(model);
-            }) : bannerTemplates[0];
-            activeBanner = template ? document.importNode(template.content.firstElementChild, true) : null;
-            placeBanner();
+        function selectBanners(model) {
+            var templates = bannerTemplates.filter(function (item) {
+                return model ? normalize(item.dataset.beBannerTag) === normalize(model) : item.dataset.beBannerAll === 'true';
+            });
+            activeBanners = templates.map(function (template) { return document.importNode(template.content.firstElementChild, true); });
+            placeBanners();
         }
-        mobile.addEventListener('change', placeBanner);
+        mobile.addEventListener('change', placeBanners);
+        window.addEventListener('resize', placeBanners, {passive: true});
 
         function selectedModel(value) {
             var model = models.find(function (item) { return normalize(item.dataset.beTag) === normalize(value); });
@@ -242,7 +256,12 @@
             var current = state;
             current.loading = true;
             showStatus();
-            var size = mobile.matches ? 6 : 12;
+            // Ao filtrar, percorre todas as paginas antes de concluir. Os filtros
+            // de caracteristicas sao locais e um resultado pode estar em qualquer
+            // pagina da busca; exigir outro clique produziria uma lista incompleta.
+            var automatic = Boolean(current.model || Object.keys(current.filters).length);
+            var size = automatic ? Number.POSITIVE_INFINITY : (mobile.matches ? 6 : 12);
+            var requestLimit = automatic ? Number.POSITIVE_INFINITY : 3;
             var requests = 0;
             var skipped = 0;
             var cards = [];
@@ -251,7 +270,7 @@
                 // Alterna entre modelos, com no maximo 3 consultas por acao.
                 while (cards.length < size && skipped < current.searches.length) {
                     var search = current.searches[current.cursor];
-                    if (!search.buffer.length && search.next && requests < 3) {
+                    if (!search.buffer.length && search.next && requests < requestLimit) {
                         var url = checkedUrl(search.next);
                         if (current.visited.has(url.href)) throw new Error('Repeated search page');
                         var controller = new AbortController();
@@ -281,7 +300,7 @@
                     }
                     current.cursor = (current.cursor + 1) % current.searches.length;
                     if (search.buffer.length) { cards.push(search.buffer.shift()); skipped = 0; }
-                    else if (search.next && requests < 3) skipped = 0;
+                    else if (search.next && requests < requestLimit) skipped = 0;
                     else skipped++;
                 }
             } catch (_) {
@@ -290,7 +309,7 @@
             } finally {
                 if (run === version) {
                     cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
-                    placeBanner();
+                    placeBanners();
                     current.loading = false;
                     showStatus(error);
                 }
@@ -313,7 +332,7 @@
             one('[data-be-sort]').closest('label').hidden = !model;
             results.hidden = false;
             grid.replaceChildren();
-            selectBanner(model);
+            selectBanners(model);
             more.hidden = true;
             models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });
             one('[data-be-sort]').value = sort;
