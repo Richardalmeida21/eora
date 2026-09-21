@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260921-15">
+<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260921-16">
 <main class="be-page" data-be-page data-search-url="{{ store.search_url | escape }}">
     {% if settings.bolsas_eora_models %}
         <nav class="be-models" data-be-carousel aria-label="Modelos de bolsas">
@@ -89,4 +89,4 @@
     <noscript><p class="be-status">Ative o JavaScript para carregar as bolsas e filtrar por modelo.</p></noscript>
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-5" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260921-15" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260921-16" defer></script>

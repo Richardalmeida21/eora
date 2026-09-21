@@ -10912,13 +10912,13 @@ Bolsas Eora
 	collapse
 		title = Banners
 	description
-		description = No campo Link, informe somente o destino do clique. No campo Descricao, informe a tag do filtro, por exemplo maxivertice. Para tambem mostrar o banner em Todos, use maxivertice,todos. Titulo, Botao e Cor continuam livres para o conteudo visual. A configuracao acompanha o proprio banner ao reordenar ou excluir.
+		description = No campo Link, informe somente o destino do clique. No campo Descricao, informe a tag do filtro, por exemplo maxivertice. Para tambem mostrar o banner em Todos, use maxivertice,todos. Titulo, Botao e Cor continuam livres para o conteudo visual. Use imagens de alta resolucao; o tema exibe o arquivo original sem recorte. A configuracao acompanha o proprio banner ao reordenar ou excluir.
 	gallery
 		name = bolsas_eora_banners
 		gallery_image = Adicionar banner
 		gallery_link = Link ao clicar no banner (opcional)
-		gallery_width = 1000
-		gallery_height = 1300
+		gallery_width = 2000
+		gallery_height = 2600
 		gallery_more_info = true
 	collapse
 		title = Best sellers

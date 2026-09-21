@@ -78,6 +78,14 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await idle();
             await checkBanners(['Banner Mini'], ['/destino-mini']);
             if (width === 1440) {
+                const bannerImage = catalogBanners.first().locator('img');
+                await expect(bannerImage).toHaveAttribute('src', '/fixtures/image-5.webp');
+                await expect(bannerImage).not.toHaveAttribute('srcset', /.+/);
+                await expect(bannerImage).not.toHaveAttribute('sizes', /.+/);
+                assert.deepEqual(await bannerImage.evaluate(image => ({
+                    objectFit: getComputedStyle(image).objectFit,
+                    objectPosition: getComputedStyle(image).objectPosition,
+                })), {objectFit: 'contain', objectPosition: '50% 50%'});
                 const floatingButton = catalogBanners.first().locator('.be-catalog-banner__button');
                 await expect(floatingButton).toHaveText(/Ver mini/);
                 await expect(floatingButton.locator('svg use')).toHaveAttribute('xlink:href', '#chevron-diagonal');

@@ -11,7 +11,8 @@
         <template data-be-banner-template data-be-banner-filter="{{ banner_filter | escape }}" data-be-banner-href="{% if not legacy_banner %}{{ banner.link | default('') | trim | escape }}{% endif %}" data-be-banner-legacy-all="{{ legacy_show_in_all ? 'true' : 'false' }}">
             <figure class="be-catalog-banner{% if banner.color %} be-catalog-banner--{{ banner.color | escape }}{% endif %}" data-be-catalog-banner>
                 <div class="be-catalog-banner__body" data-be-banner-body{% if banner.title %} data-be-banner-label="{{ banner.title | escape }}"{% endif %}>
-                    <img src="{{ banner.image | static_url | settings_image_url('1080p') }}" srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 94vw, 47vw" alt="{{ banner.title | default('Bolsas Eora') | escape }}" width="{{ banner.width | default(1000) }}" height="{{ banner.height | default(1300) }}" loading="lazy" decoding="async">
+                    {# Usa o arquivo original: o banner pode mudar de largura na grade e nao deve receber uma miniatura ampliada. #}
+                    <img src="{{ banner.image | static_url }}" alt="{{ banner.title | default('Bolsas Eora') | escape }}" width="{{ banner.width | default(2000) }}" height="{{ banner.height | default(2600) }}" loading="lazy" decoding="async">
                     {% if banner.title or (banner.button and not legacy_show_in_all) %}
                         <div class="be-catalog-banner__content">
                             {% if banner.title %}<strong>{{ banner.title }}</strong>{% endif %}
