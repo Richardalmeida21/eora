@@ -1,5 +1,35 @@
 # Design QA — página Bolsas Eora
 
+## Revisão compacta da toolbar e paginação mobile — 21/09/2026
+
+### Evidências
+
+- Referência visual: `/workspace/scratch/eaaee0a7de06/upload/IMG_1696.png`, 945 × 2048 px, captura Retina de um iPhone. A interface do navegador foi desconsiderada.
+- Alvo de implementação: viewport de 393 CSS px, estado `Todas as bolsas`, filtro fechado.
+- Implementação alterada: `static/css/bolsas-eora.css`, restrita a `.be-page`, com cache atualizado em `snipplets/bolsas-eora/index.tpl`.
+- Captura renderizada pós-alteração: indisponível. O navegador remoto recusou a URL local de preview e a ferramenta local de navegador não está instalada neste ambiente.
+
+### Achados
+
+- P0: nenhum identificado na inspeção do código.
+- P1: nenhum identificado na inspeção do código.
+- P2 bloqueante para aprovação visual: falta a captura renderizada pós-alteração na mesma largura da referência.
+- Tipografia e cores: mantidas; somente tamanhos mobile dos controles foram reduzidos.
+- Espaçamento e layout: a toolbar passa de uma coluna para duas colunas abaixo de 480 px; o botão usa 44 px de altura e os indicadores visuais passam de 28 px para 8/10 px.
+- Imagens e conteúdo: sem alteração.
+- Compatibilidade Nuvemshop: alteração composta apenas por CSS escopado e atualização do query string de cache; nenhum JavaScript, filtro, catálogo, checkout ou componente global foi alterado.
+
+### Checklist para liberação
+
+- Renderizar a rota `/bolsas-eora` com o CSS alterado em 393 × 852 CSS px.
+- Confirmar ausência de overflow na toolbar e manter “Ver todas as bolsas” ao lado de “Ordenar por”.
+- Confirmar os dots com 8 px e o ativo com 10 px, sem herdar fundo ou tamanho do tema.
+- Verificar console e interação de ordenação antes da publicação.
+
+final result: blocked
+
+---
+
 ## Revisão mobile, categoria e carregamento — 21/09/2026
 
 ### Evidências
