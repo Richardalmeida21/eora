@@ -38,6 +38,15 @@
         <button class="be-button be-results__more" type="button" data-be-more hidden>Mostrar mais produtos</button>
     </section>
 
+    {# Ordem editorial do filtro Todos, configurada em Produtos em destaque. #}
+    {% if sections.bolsas_eora_all.products %}
+        <template data-be-all-products>
+            {% for product in sections.bolsas_eora_all.products %}
+                {% include 'snipplets/bolsas-eora/product-card.tpl' %}
+            {% endfor %}
+        </template>
+    {% endif %}
+
     {% include 'snipplets/bolsas-eora/banners.tpl' %}
 
     {% if settings.bolsas_eora_best_enabled and sections.bolsas_eora_best.products %}
@@ -89,4 +98,4 @@
     <noscript><p class="be-status">Ative o JavaScript para carregar as bolsas e filtrar por modelo.</p></noscript>
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-5" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260921-16" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260921-17" defer></script>

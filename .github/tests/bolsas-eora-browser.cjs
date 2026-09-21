@@ -41,6 +41,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         assert.equal(await page.locator('.be-gallery--community .be-gallery__item').count(), 20);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 4);
         assert((await cards().count()) > 0, 'catalogo automatico aparece sem selecionar uma tag');
+        assert.deepEqual((await cards().evaluateAll(nodes => nodes.slice(0, 3).map(node => node.dataset.beProduct))), ['101', '10', '2'], 'ordem manual abre o filtro Todos');
         await expect(page.locator('.be-models [data-be-dots] .be-dot')).toHaveCount(5);
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         assert.equal(await page.locator('.be-models [data-be-track]').evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');

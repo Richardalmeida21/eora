@@ -85,6 +85,7 @@
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
         var grid = one('[data-be-results-grid]');
+        var allProductsTemplate = one('[data-be-all-products]');
         var bannerTemplates = all('[data-be-banner-template]');
         var activeBanners = [];
         var results = one('[data-be-results]');
@@ -297,6 +298,15 @@
             }
             return cards;
         }
+        function addCuratedAllProducts(current) {
+            if (!allProductsTemplate || current.model || Object.keys(current.filters).length || current.sort !== 'user') return;
+            all('[data-be-product]', allProductsTemplate.content).forEach(function (card) {
+                var id = card.dataset.beProduct;
+                if (!id || current.ids.has(id)) return;
+                current.ids.add(id);
+                grid.appendChild(document.importNode(card, true));
+            });
+        }
         async function loadMore() {
             if (!state || state.loading) return;
             var run = version;
@@ -307,7 +317,9 @@
             // de caracteristicas sao locais e um resultado pode estar em qualquer
             // pagina da busca; exigir outro clique produziria uma lista incompleta.
             var automatic = Boolean(current.model || Object.keys(current.filters).length || current.sort !== 'user');
-            var size = automatic ? Number.POSITIVE_INFINITY : (mobile.matches ? 6 : 12);
+            var pageSize = mobile.matches ? 6 : 12;
+            var size = automatic ? Number.POSITIVE_INFINITY : current.initialLoad ? Math.max(0, pageSize - all('[data-be-product]', grid).length) : pageSize;
+            current.initialLoad = false;
             var requestLimit = automatic ? Number.POSITIVE_INFINITY : 3;
             var requests = 0;
             var skipped = 0;
@@ -372,7 +384,7 @@
             sort = sort || 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
             var tags = model ? [model] : modelTags;
-            state = {model: model, filters: filters, sort: sort, searches: tags.map(function (tag) {
+            state = {model: model, filters: filters, sort: sort, initialLoad: true, searches: tags.map(function (tag) {
                 return {tag: tag, next: makeSearchUrl(tag, filters, sort).href, buffer: []};
             }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
             one('[data-be-toolbar]').hidden = false;
@@ -380,6 +392,7 @@
             one('[data-be-sort]').closest('label').hidden = !tags.length;
             results.hidden = false;
             grid.replaceChildren();
+            addCuratedAllProducts(state);
             selectBanners(model);
             more.hidden = true;
             models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });

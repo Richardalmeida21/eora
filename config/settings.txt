@@ -10910,6 +10910,10 @@ Bolsas Eora
 	description
 		description = As opções de características vêm das tags cadastradas nos produtos de cada modelo. O preço usa os filtros da loja.
 	collapse
+		title = Ordem de Todos os produtos
+	description
+		description = Em Produtos em destaque, abra Bolsas Eora - Todos os produtos. Selecione e arraste as bolsas para definir a ordem do filtro Todos. As bolsas não selecionadas aparecem depois, na ordem automática do catálogo.
+	collapse
 		title = Banners
 	description
 		description = No campo Link, informe somente o destino do clique. No campo Descricao, informe a tag do filtro, por exemplo maxivertice. Para tambem mostrar o banner em Todos, use maxivertice,todos. Titulo, Botao e Cor continuam livres para o conteudo visual. Use imagens de alta resolucao; o tema exibe o arquivo original sem recorte. A configuracao acompanha o proprio banner ao reordenar ou excluir.

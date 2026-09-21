@@ -146,6 +146,10 @@ campaign_page_10_qpc
 	name = Página de campanha 10, quarto carrossel de produtos
 	description = Os carrossel de produtos da página de campanha 10, aparece abaixo do banner topo (máximo de 40 produtos).
 
+bolsas_eora_all
+	name = Bolsas Eora - Todos os produtos
+	description = Selecione e arraste os produtos para definir a ordem inicial do filtro Todos. Os produtos selecionados aparecem primeiro, na ordem escolhida; bolsas não selecionadas continuam aparecendo depois automaticamente.
+
 bolsas_eora_best
 	name = Bolsas Eora — Best sellers
 	description = Selecione e ordene os produtos do carrossel best sellers da campanha.

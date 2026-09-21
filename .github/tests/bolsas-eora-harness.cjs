@@ -67,6 +67,7 @@ const settings = {
     bolsas_eora_categories: Array.from({length: 5}, (_, i) => ({image: asset(i), title: ['Vértice', 'Mini Vértice', 'Maxi Vértice', 'Hobo', 'Coleção'][i], description: 'Conheça a coleção', link: '/colecao/' + i})),
 };
 const sections = {
+    bolsas_eora_all: {products: [mini, candidates[9], candidates[1]]},
     bolsas_eora_best: {products: candidates.slice(0, 8)},
 };
 const context = () => ({settings, sections, page: {handle: 'bolsas-eora', name: 'Bolsas Eora'}, store: {search_url: '/search/'}});
@@ -98,6 +99,7 @@ function validate() {
     assert(!html.includes('data-be-position'), 'controles sem numeracao');
     assert(!html.includes('data-be-paged'));
     assert.equal((html.match(/data-be-banner-template/g) || []).length, 2);
+    assert.match(html, /data-be-all-products/);
     const catalogPosition = html.indexOf('data-be-results-grid');
     const bannerPosition = html.indexOf('data-be-banner-template');
     const bestPosition = html.indexOf('be-best');
@@ -155,6 +157,7 @@ function validate() {
     assert(!legacyBanner.includes('<a '), 'link antigo continua tratado como tag durante a migracao');
     const sectionsConfig = fs.readFileSync(path.join(root, 'config/sections.txt'), 'utf8');
     assert(!/bolsas_eora_\d+_(catalog|split)/.test(sectionsConfig));
+    assert(sectionsConfig.includes('bolsas_eora_all'));
     assert(sectionsConfig.includes('bolsas_eora_best'));
     assert(fs.existsSync(path.join(root, 'static/js/instatheme.js')), 'script no caminho esperado pelo editor');
     console.log('PASS: Twig parse/render, 20 modelos, 20 fotos, feed/paginacao, 32 rotas legadas, precedencia e configuracao.');
