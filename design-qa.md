@@ -1,12 +1,12 @@
 # Design QA — página Bolsas Eora
 
-## Revisão compacta da toolbar e paginação mobile — 21/09/2026
+## Revisão dos controles e consentimento mobile — 21/09/2026
 
 ### Evidências
 
-- Referência visual: `/workspace/scratch/eaaee0a7de06/upload/IMG_1696.png`, 945 × 2048 px, captura Retina de um iPhone. A interface do navegador foi desconsiderada.
+- Referências visuais: `/workspace/scratch/eaaee0a7de06/upload/IMG_1697.jpeg` e `/workspace/scratch/eaaee0a7de06/upload/IMG_1698.jpeg`, capturas Retina de um iPhone após a primeira publicação. A interface do navegador foi desconsiderada.
 - Alvo de implementação: viewport de 393 CSS px, estado `Todas as bolsas`, filtro fechado.
-- Implementação alterada: `static/css/bolsas-eora.css`, restrita a `.be-page`, com cache atualizado em `snipplets/bolsas-eora/index.tpl`.
+- Implementação alterada: `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`, restrita à página de bolsas, com cache atualizado.
 - Captura renderizada pós-alteração: indisponível. O navegador remoto recusou a URL local de preview e a ferramenta local de navegador não está instalada neste ambiente.
 
 ### Achados
@@ -14,17 +14,24 @@
 - P0: nenhum identificado na inspeção do código.
 - P1: nenhum identificado na inspeção do código.
 - P2 bloqueante para aprovação visual: falta a captura renderizada pós-alteração na mesma largura da referência.
-- Tipografia e cores: mantidas; somente tamanhos mobile dos controles foram reduzidos.
-- Espaçamento e layout: a toolbar passa de uma coluna para duas colunas abaixo de 480 px; o botão usa 44 px de altura e os indicadores visuais passam de 28 px para 8/10 px.
+- Tipografia e cores: mantidas; o rótulo visual “Ordenar por” é ocultado somente no mobile e preservado semanticamente no HTML.
+- Espaçamento e layout: a toolbar usa duas colunas iguais; botão e select passam a 42 px de altura. O botão flutuante passa de 220 × 52 px para até 180 × 44 px.
 - Imagens e conteúdo: sem alteração.
-- Compatibilidade Nuvemshop: alteração composta apenas por CSS escopado e atualização do query string de cache; nenhum JavaScript, filtro, catálogo, checkout ou componente global foi alterado.
+- Compatibilidade Nuvemshop: o botão flutuante recebe a classe nativa `js-btn-fixed-bottom`, já usada pelo tema para acrescentar a altura real do banner de cookies e restaurar a posição após o aceite. Nenhum JavaScript novo foi adicionado.
+
+### Histórico da iteração
+
+1. A primeira publicação confirmou os dots compactos e colocou os controles na mesma linha.
+2. Os novos prints mostraram larguras diferentes, rótulo “Ordenar por” desnecessário e sobreposição do botão flutuante sobre “Entendi”.
+3. A segunda correção iguala as colunas, oculta o rótulo no mobile, reduz o botão flutuante e integra seu deslocamento ao mecanismo nativo de cookies da Nuvemshop.
 
 ### Checklist para liberação
 
 - Renderizar a rota `/bolsas-eora` com o CSS alterado em 393 × 852 CSS px.
-- Confirmar ausência de overflow na toolbar e manter “Ver todas as bolsas” ao lado de “Ordenar por”.
+- Confirmar ausência de overflow e larguras iguais entre “Ver todas as bolsas” e o select, sem o texto “Ordenar por”.
 - Confirmar os dots com 8 px e o ativo com 10 px, sem herdar fundo ou tamanho do tema.
-- Verificar console e interação de ordenação antes da publicação.
+- Com o consentimento aberto, confirmar o botão “Filtros” acima do banner e o link “Entendi” totalmente clicável.
+- Após aceitar os cookies, confirmar que o botão volta à margem inferior normal.
 
 final result: blocked
 
