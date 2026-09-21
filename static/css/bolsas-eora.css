@@ -130,14 +130,16 @@
     .be-page .be-gallery--community { --be-visible: 2; --be-card-visible: 2.2; }
     .be-page .be-best, .be-page .be-gallery { margin-top: 36px; }
     .be-page .be-banner__caption { left: 12px; right: 12px; bottom: 12px; padding: 14px; }
-    .be-page .be-toolbar { display: grid; grid-template-columns: minmax(128px, .8fr) minmax(0, 1.45fr); align-items: center; gap: 8px; padding-bottom: 24px; }
-    .be-page .be-toolbar label { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 6px; min-width: 0; font-size: 11px; white-space: nowrap; }
-    .be-page .be-toolbar select { width: 100%; min-width: 0; min-height: 44px; padding: 8px 30px 8px 10px; font-size: 12px; }
-    .be-page .be-reset { width: 100%; min-height: 44px; padding: 8px 10px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
+    .be-page .be-toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 8px; padding-bottom: 24px; }
+    .be-page .be-toolbar label { display: block; min-width: 0; margin: 0; }
+    .be-page .be-sort-label { display: none; }
+    .be-page .be-toolbar select { width: 100%; min-width: 0; min-height: 42px; padding: 8px 30px 8px 10px; font-size: 12px; }
+    .be-page .be-reset { width: 100%; min-height: 42px; padding: 7px 10px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
     .be-page .be-results h2 { font-size: 20px; line-height: 1.25; }
     .be-page .be-status { margin: 10px 0 20px; }
     .be-page .be-results__more { width: 100%; min-height: 52px; margin: 28px auto; }
-    .be-page .be-filter-button { width: min(220px, calc(100% - 112px)); min-width: 0; min-height: 52px; bottom: max(16px, calc(env(safe-area-inset-bottom) + 12px)); padding: 12px 20px; box-shadow: 0 8px 24px rgba(0, 0, 0, .2); }
+    .be-page .be-filter-button { width: min(180px, calc(100% - 160px)); min-width: 0; min-height: 44px; bottom: max(12px, calc(env(safe-area-inset-bottom) + 8px)); gap: 12px; padding: 8px 14px; font-size: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+    .be-page .be-filter-button svg { width: 16px; height: 16px; }
     .be-page .be-filter-dialog { inset: auto 0 0; width: 100%; height: min(90dvh, 760px); border-radius: 12px 12px 0 0; }
     .be-page .be-filter-dialog > header { padding: 14px 16px; }
     .be-page .be-filter-dialog > header button { display: grid; width: 44px; height: 44px; place-items: center; padding: 0; }
@@ -148,12 +150,11 @@
     .be-page .be-filter-dialog footer .be-text-button { min-height: 48px; padding-inline: 4px; }
 }
 @media (max-width: 479px) {
-    .be-page .be-toolbar { grid-template-columns: minmax(120px, .78fr) minmax(0, 1.42fr); }
+    .be-page .be-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 359px) {
     .be-page { padding-inline: 10px; }
-    .be-page .be-toolbar { grid-template-columns: minmax(108px, .72fr) minmax(0, 1.28fr); gap: 6px; }
-    .be-page .be-toolbar label { gap: 4px; font-size: 10px; }
+    .be-page .be-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
     .be-page .be-toolbar select { padding-inline: 8px 24px; font-size: 11px; }
     .be-page .be-reset { padding-inline: 6px; font-size: 11px; white-space: normal; }
     .be-page .be-price-fields { grid-template-columns: 1fr; }
