@@ -10912,7 +10912,7 @@ Bolsas Eora
 	collapse
 		title = Ordem de Todos os produtos
 	description
-		description = Em Produtos em destaque, abra Bolsas Eora - Todos os produtos. Selecione e arraste as bolsas para definir a ordem do filtro Todos. As bolsas não selecionadas aparecem depois, na ordem automática do catálogo.
+		description = Em Produtos em destaque, use as três listas Bolsas Eora - Todos em sequência: posições 1 a 40, 41 a 80 e 81 a 120. Selecione e arraste as bolsas dentro de cada lista. As bolsas não selecionadas continuam aparecendo depois, na ordem automática do catálogo.
 	collapse
 		title = Banners
 	description

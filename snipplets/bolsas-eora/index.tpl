@@ -39,9 +39,15 @@
     </section>
 
     {# Ordem editorial do filtro Todos, configurada em Produtos em destaque. #}
-    {% if sections.bolsas_eora_all.products %}
+    {% if sections.bolsas_eora_all.products or sections.bolsas_eora_all_2.products or sections.bolsas_eora_all_3.products %}
         <template data-be-all-products>
             {% for product in sections.bolsas_eora_all.products %}
+                {% include 'snipplets/bolsas-eora/product-card.tpl' %}
+            {% endfor %}
+            {% for product in sections.bolsas_eora_all_2.products %}
+                {% include 'snipplets/bolsas-eora/product-card.tpl' %}
+            {% endfor %}
+            {% for product in sections.bolsas_eora_all_3.products %}
                 {% include 'snipplets/bolsas-eora/product-card.tpl' %}
             {% endfor %}
         </template>

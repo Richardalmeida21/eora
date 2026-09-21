@@ -68,6 +68,8 @@ const settings = {
 };
 const sections = {
     bolsas_eora_all: {products: [mini, candidates[9], candidates[1]]},
+    bolsas_eora_all_2: {products: [candidates[4], candidates[3]]},
+    bolsas_eora_all_3: {products: [candidates[8]]},
     bolsas_eora_best: {products: candidates.slice(0, 8)},
 };
 const context = () => ({settings, sections, page: {handle: 'bolsas-eora', name: 'Bolsas Eora'}, store: {search_url: '/search/'}});
@@ -158,6 +160,8 @@ function validate() {
     const sectionsConfig = fs.readFileSync(path.join(root, 'config/sections.txt'), 'utf8');
     assert(!/bolsas_eora_\d+_(catalog|split)/.test(sectionsConfig));
     assert(sectionsConfig.includes('bolsas_eora_all'));
+    assert(sectionsConfig.includes('bolsas_eora_all_2'));
+    assert(sectionsConfig.includes('bolsas_eora_all_3'));
     assert(sectionsConfig.includes('bolsas_eora_best'));
     assert(fs.existsSync(path.join(root, 'static/js/instatheme.js')), 'script no caminho esperado pelo editor');
     console.log('PASS: Twig parse/render, 20 modelos, 20 fotos, feed/paginacao, 32 rotas legadas, precedencia e configuracao.');
