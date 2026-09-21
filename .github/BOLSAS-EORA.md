@@ -63,7 +63,7 @@ O clique em um modelo ou em Aplicar filtros rola ate os resultados, descontando 
 - Integrações: uma condição em `templates/page.tpl` e sua cópia em `snipplets/templates/page.tpl`; um include condicional em `templates/search.tpl`; configurações exclusivas em `settings.txt`, `defaults.txt` e `sections.txt`.
 - CSS/JS da campanha carregam somente na página nova. As otimizacoes da previa estao nos dois snippets de video da home e na integracao de favoritos de `store.js.tpl`, descritas abaixo.
 - **Um push na `main` dispara o FTP de produção**, conforme `.github/workflows/deploy.yml`. Não usar esse caminho para testar.
-- O JS principal e o CSS usam `?v=20260921-12`, e o script de opções usa `?v=20260918-5`. Publicar juntos configurações, `banners.tpl`, CSS, scripts e `index.tpl` para atualizar também as URLs do cache.
+- O JS principal e o CSS usam `?v=20260921-13`, e o script de opções usa `?v=20260918-5`. Publicar juntos configurações, `banners.tpl`, CSS, scripts e `index.tpl` para atualizar também as URLs do cache.
 - Antes da publicação: preencher a Descrição de cada banner no formato `tag` ou `tag,todos`; testar o link clicável, os conteúdos opcionais, o TPL real, as imagens configuradas, mais de uma página de resultados e os filtros habilitados na loja.
 - Em envio manual, enviar primeiro os novos snippets/assets, depois configurações e por último os templates de entrada. Não ativar durante envio parcial.
 - Para a correção do editor, enviar também `static/js/instatheme.js`, recarregar o painel e conferir se o 403 desse script desapareceu. Os testes locais não comprovam que o travamento do editor foi resolvido; a validação deve ser feita no painel real.

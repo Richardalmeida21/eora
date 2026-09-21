@@ -7,6 +7,8 @@
 - Implementação mobile: `C:\Temp\eora-bolsas-validation\banners-by-model-390.png` — captura do grid com 366 × 1908 px, viewport 390 × 1000, device scale factor 1.
 - Comparação combinada: `C:\Temp\eora-bolsas-validation\design-qa-comparison.png` — 1600 × 1100 px.
 - Estado avaliado: filtro `maxivertice` com dois banners vinculados à mesma tag. O cenário Todos com três banners marcados também foi coberto pelo teste automatizado.
+- Referência adicional do CTA: captura anexada na conversa com o botão flutuante da home, faixa escura translúcida, texto à esquerda e seta diagonal à direita.
+- Implementação do CTA: `C:\Temp\eora-bolsas-validation\desktop-split.png`, captura do banner no estado Todos. O fixture preenche também o campo Título, por isso mostra um título acima da faixa; no cadastro real com Título vazio aparece somente o Botão.
 
 As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fotografia da loja, enquanto a implementação é uma captura limpa do harness com dados de teste. Por isso, a comparação é estrutural e não recebeu normalização de densidade.
 
@@ -15,6 +17,7 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 - Tipografia: sem alteração; preserva os estilos existentes do tema.
 - Espaçamento e layout: aprovado. No desktop, banners sucessivos alternam direita/esquerda. A base de cada banner coincide com a base da imagem dos produtos da segunda linha e não inclui a área de nome/preço. No mobile, cada banner ocupa a largura do grid e entra entre grupos de produtos.
 - Cores e tokens: sem alteração.
+- CTA do banner: aprovado. Reutiliza os tokens `--banner-floating-background` e `--banner-floating-text` da home, largura máxima de 440 px, padding de 16 px, blur de 8 px, texto de 16 px/500 com 3,2 px de espaçamento e o mesmo símbolo `#chevron-diagonal` de 12 px.
 - Imagens e recorte: aprovado. Mantido `object-fit: cover`; a altura agora é calculada a partir do card da primeira linha, da imagem da segunda linha e do espaçamento entre linhas.
 - Conteúdo e textos: sem alteração.
 
@@ -28,6 +31,7 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 - Paginação, troca de modelo, histórico, redimensionamento e painel lateral reposicionam os banners sem duplicação.
 - Galeria vazia e reordenação não geram erros.
 - Nenhum erro JavaScript foi registrado nos cenários testados.
+- O CTA foi verificado em 1440, 768, 390 e 320 px; ocupa até 440 px no desktop e a largura disponível com margens de 16 px no mobile.
 
 ## Achados
 
@@ -41,5 +45,6 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 1. Referência inicial: o banner ocupava a altura de duas linhas completas de cards, incorporando visualmente o espaço de nome/preço da segunda linha.
 2. Ajuste: a altura passou a encerrar junto da segunda imagem de produto, e múltiplos banners passaram a usar posições alternadas.
 3. Comparação pós-ajuste: a captura combinada confirma o limite inferior correto e a alternância dos dois banners do modelo.
+4. Ajuste do CTA: o botão simples foi substituído pela mesma composição visual do botão flutuante da home. A captura pós-ajuste confirma largura, espaçamento, tipografia e seta; os valores computados também foram validados no navegador.
 
 final result: passed

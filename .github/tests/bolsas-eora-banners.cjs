@@ -77,6 +77,21 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await page.goto(base);
             await idle();
             await checkBanners(['Banner Mini'], ['/destino-mini']);
+            if (width === 1440) {
+                const floatingButton = catalogBanners.first().locator('.be-catalog-banner__button');
+                await expect(floatingButton).toHaveText(/Ver mini/);
+                await expect(floatingButton.locator('svg use')).toHaveAttribute('xlink:href', '#chevron-diagonal');
+                const buttonStyle = await floatingButton.evaluate(element => {
+                    const style = getComputedStyle(element);
+                    return {width: element.getBoundingClientRect().width, padding: style.padding, fontSize: style.fontSize, fontWeight: style.fontWeight, letterSpacing: style.letterSpacing, backdropFilter: style.backdropFilter || style.webkitBackdropFilter};
+                });
+                assert(buttonStyle.width <= 441, 'CTA respeita a largura maxima de 440px da home');
+                assert.equal(buttonStyle.padding, '16px');
+                assert.equal(buttonStyle.fontSize, '16px');
+                assert.equal(buttonStyle.fontWeight, '500');
+                assert.equal(buttonStyle.letterSpacing, '3.2px');
+                assert(buttonStyle.backdropFilter.includes('blur(8px)'), 'CTA usa o mesmo blur da home');
+            }
             await page.locator('[data-be-tag="maxivertice"]').click();
             await idle();
             await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a?campanha=eora', 'https://example.com/destino-maxi-b']);

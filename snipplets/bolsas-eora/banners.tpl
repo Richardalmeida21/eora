@@ -15,7 +15,12 @@
                     {% if banner.title or (banner.button and not legacy_show_in_all) %}
                         <div class="be-catalog-banner__content">
                             {% if banner.title %}<strong>{{ banner.title }}</strong>{% endif %}
-                            {% if banner.button and not legacy_show_in_all %}<span class="be-catalog-banner__button">{{ banner.button }}</span>{% endif %}
+                            {% if banner.button and not legacy_show_in_all %}
+                                <span class="be-catalog-banner__button">
+                                    <span>{{ banner.button }}</span>
+                                    {% if banner.link and not legacy_banner %}<svg aria-hidden="true" viewBox="0 0 10 10" fill="none"><use xlink:href="#chevron-diagonal"></use></svg>{% endif %}
+                                </span>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
