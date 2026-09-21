@@ -1,29 +1,24 @@
 {% for banner in settings.bolsas_eora_banners %}
     {% if banner.image %}
-        {# Novos itens usam Icone/Filtro. Sem esse valor, preserva o cadastro antigo: Link=tag e Botao=SIM. #}
-        {% set banner_filter = banner.icon | default('') | trim %}
+        {# Descricao=tag[,todos]. Sem descricao, preserva temporariamente Link=tag e Botao=SIM. #}
+        {% set banner_filter = banner.description | default('') | trim %}
         {% set legacy_banner = not banner_filter %}
         {% if legacy_banner %}
             {% set banner_filter = banner.link | default('') | trim %}
         {% endif %}
         {% set show_in_all_value = banner.button | default('') | trim | lower %}
         {% set legacy_show_in_all = legacy_banner and (show_in_all_value == 'sim' or show_in_all_value == 'sí' or show_in_all_value == 'yes' or show_in_all_value == 'true' or show_in_all_value == '1') %}
-        <template data-be-banner-template data-be-banner-filter="{{ banner_filter | escape }}" data-be-banner-legacy-all="{{ legacy_show_in_all ? 'true' : 'false' }}">
+        <template data-be-banner-template data-be-banner-filter="{{ banner_filter | escape }}" data-be-banner-href="{% if not legacy_banner %}{{ banner.link | default('') | trim | escape }}{% endif %}" data-be-banner-legacy-all="{{ legacy_show_in_all ? 'true' : 'false' }}">
             <figure class="be-catalog-banner{% if banner.color %} be-catalog-banner--{{ banner.color | escape }}{% endif %}" data-be-catalog-banner>
-                {% if banner.link and not legacy_banner %}
-                    <a class="be-catalog-banner__link" href="{{ banner.link | setting_url }}"{% if banner.title %} aria-label="{{ banner.title | escape }}"{% endif %}>
-                {% endif %}
-                <img src="{{ banner.image | static_url | settings_image_url('1080p') }}" srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 94vw, 47vw" alt="{{ banner.title | default('Bolsas Eora') | escape }}" width="{{ banner.width | default(1000) }}" height="{{ banner.height | default(1300) }}" loading="lazy" decoding="async">
-                {% if not legacy_banner and (banner.title or banner.description or banner.button) %}
-                    <div class="be-catalog-banner__content">
-                        {% if banner.title %}<strong>{{ banner.title }}</strong>{% endif %}
-                        {% if banner.description %}<span>{{ banner.description }}</span>{% endif %}
-                        {% if banner.button %}<span class="be-catalog-banner__button">{{ banner.button }}</span>{% endif %}
-                    </div>
-                {% endif %}
-                {% if banner.link and not legacy_banner %}
-                    </a>
-                {% endif %}
+                <div class="be-catalog-banner__body" data-be-banner-body{% if banner.title %} data-be-banner-label="{{ banner.title | escape }}"{% endif %}>
+                    <img src="{{ banner.image | static_url | settings_image_url('1080p') }}" srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 94vw, 47vw" alt="{{ banner.title | default('Bolsas Eora') | escape }}" width="{{ banner.width | default(1000) }}" height="{{ banner.height | default(1300) }}" loading="lazy" decoding="async">
+                    {% if banner.title or (banner.button and not legacy_show_in_all) %}
+                        <div class="be-catalog-banner__content">
+                            {% if banner.title %}<strong>{{ banner.title }}</strong>{% endif %}
+                            {% if banner.button and not legacy_show_in_all %}<span class="be-catalog-banner__button">{{ banner.button }}</span>{% endif %}
+                        </div>
+                    {% endif %}
+                </div>
             </figure>
         </template>
     {% endif %}

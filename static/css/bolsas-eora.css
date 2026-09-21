@@ -44,7 +44,7 @@
 .be-page .be-product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--be-gap); row-gap: 28px; }
 .be-page .be-catalog-banner { position: relative; grid-column: var(--be-banner-column, 3 / span 2); grid-row: var(--be-banner-row, 3) / span 2; align-self: start; height: var(--be-banner-height, auto); min-height: 320px; overflow: hidden; background: #f3f3f3; }
 .be-page .be-catalog-banner img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
-.be-page .be-catalog-banner__link { position: absolute; inset: 0; display: block; color: inherit; text-decoration: none; }
+.be-page .be-catalog-banner__body, .be-page .be-catalog-banner__link { position: absolute; inset: 0; display: block; color: inherit; text-decoration: none; }
 .be-page .be-catalog-banner__content { position: absolute; z-index: 1; right: 28px; bottom: 28px; left: 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; color: #111; text-shadow: 0 1px 12px rgba(255, 255, 255, .55); }
 .be-page .be-catalog-banner--light .be-catalog-banner__content { color: #fff; text-shadow: 0 1px 12px rgba(0, 0, 0, .45); }
 .be-page .be-catalog-banner__content strong { font-size: clamp(18px, 2vw, 30px); line-height: 1.1; text-transform: uppercase; }

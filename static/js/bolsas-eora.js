@@ -128,20 +128,40 @@
             });
         }
         function bannerSettings(item) {
-            var values = String(item.dataset.beBannerFilter || '').split('|');
+            var values = String(item.dataset.beBannerFilter || '').split(',');
             var tag = values.shift() || '';
-            var showInAll = item.dataset.beBannerLegacyAll === 'true' || values.some(function (value) {
-                value = normalize(value);
-                return value === 'todos' || value === 'sim' || value === 'all' || value === 'true' || value === '1';
-            });
-            return {tag: tag.trim(), showInAll: showInAll};
+            var showInAll = values.some(function (value) { return normalize(value) === 'todos'; });
+            var href = '';
+            var rawHref = String(item.dataset.beBannerHref || '').trim();
+            if (rawHref) {
+                try {
+                    var url = new URL(rawHref, window.location.href);
+                    if (url.protocol === 'http:' || url.protocol === 'https:') href = url.origin === window.location.origin ? url.pathname + url.search + url.hash : url.href;
+                } catch (error) {}
+            }
+            return {tag: tag.trim(), showInAll: showInAll || item.dataset.beBannerLegacyAll === 'true', href: href};
+        }
+        function createBanner(template, settings) {
+            var banner = document.importNode(template.content.firstElementChild, true);
+            var body = banner.querySelector('[data-be-banner-body]');
+            if (settings.href && body) {
+                var link = document.createElement('a');
+                link.className = 'be-catalog-banner__link';
+                link.setAttribute('href', settings.href);
+                if (body.dataset.beBannerLabel) link.setAttribute('aria-label', body.dataset.beBannerLabel);
+                while (body.firstChild) link.appendChild(body.firstChild);
+                body.replaceWith(link);
+            }
+            return banner;
         }
         function selectBanners(model) {
-            var templates = bannerTemplates.filter(function (item) {
+            var templates = bannerTemplates.map(function (item) {
                 var banner = bannerSettings(item);
-                return model ? normalize(banner.tag) === normalize(model) : banner.showInAll;
+                return {template: item, settings: banner};
+            }).filter(function (item) {
+                return model ? normalize(item.settings.tag) === normalize(model) : item.settings.showInAll;
             });
-            activeBanners = templates.map(function (template) { return document.importNode(template.content.firstElementChild, true); });
+            activeBanners = templates.map(function (item) { return createBanner(item.template, item.settings); });
             placeBanners();
         }
         mobile.addEventListener('change', placeBanners);

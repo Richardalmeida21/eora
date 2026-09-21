@@ -14,9 +14,9 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         page.on('pageerror', error => errors.push(error.message));
         const initial = context();
         const banners = [
-            {image: '/fixtures/image-5.webp', icon: 'minivertice | todos', link: '/destino-mini', title: 'Banner Mini', description: 'Mini descrição', button: 'Ver mini', color: 'light'},
-            {image: '/fixtures/image-4.webp', icon: ' MAXIVERTICE ', link: '/destino-maxi-a', title: 'Banner Maxi A'},
-            {image: '/fixtures/image-3.webp', icon: 'maxivertice', link: '/destino-maxi-b', title: 'Banner Maxi B'},
+            {image: '/fixtures/image-5.webp', link: '/destino-mini', title: 'Banner Mini', description: 'minivertice,todos', button: 'Ver mini', color: 'light'},
+            {image: '/fixtures/image-4.webp', link: '/destino-maxi-a?campanha=eora', title: 'Banner Maxi A', description: ' MAXIVERTICE '},
+            {image: '/fixtures/image-3.webp', link: 'https://example.com/destino-maxi-b', title: 'Banner Maxi B', description: 'maxivertice'},
         ];
         await page.route(base + '/**', route => {
             const url = new URL(route.request().url());
@@ -25,7 +25,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             const showAll = url.searchParams.has('all-multiple');
             const data = {...initial, settings: {
                 ...initial.settings,
-                bolsas_eora_banners: list.map(banner => ({...banner, icon: showAll && !banner.icon.includes('|') ? banner.icon + ' | todos' : banner.icon})),
+                bolsas_eora_banners: list.map(banner => ({...banner, description: showAll && !banner.description.includes(',todos') ? banner.description + ',todos' : banner.description})),
             }};
             return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
         });
@@ -79,7 +79,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await checkBanners(['Banner Mini'], ['/destino-mini']);
             await page.locator('[data-be-tag="maxivertice"]').click();
             await idle();
-            await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a', '/destino-maxi-b']);
+            await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a?campanha=eora', 'https://example.com/destino-maxi-b']);
             await expect(cards).toHaveCount(24);
             await checkLayout(width, 2);
             if (width === 1440 || width === 390) await page.locator('[data-be-results-grid]').screenshot({path:path.join(output, 'banners-by-model-' + width + '.png')});
@@ -92,7 +92,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await checkBanners(['Banner Mini'], ['/destino-mini']);
             await expect(cards).toHaveCount(1);
             await expect(page.locator('[data-be-status]')).toHaveText('1 produto encontrado');
-            await page.goBack(); await idle(); await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a', '/destino-maxi-b']);
+            await page.goBack(); await idle(); await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a?campanha=eora', 'https://example.com/destino-maxi-b']);
             await page.locator('[data-be-reset]').click(); await idle(); await checkBanners(['Banner Mini'], ['/destino-mini']);
             await page.goto(base + '/?tag=modelo-2'); await idle();
             await expect(catalogBanners).toHaveCount(0);
@@ -101,10 +101,10 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         }
         await page.setViewportSize({width:1440,height:1000});
         await page.goto(base + '/?all-multiple'); await idle();
-        await checkBanners(['Banner Mini', 'Banner Maxi A', 'Banner Maxi B'], ['/destino-mini', '/destino-maxi-a', '/destino-maxi-b']);
+        await checkBanners(['Banner Mini', 'Banner Maxi A', 'Banner Maxi B'], ['/destino-mini', '/destino-maxi-a?campanha=eora', 'https://example.com/destino-maxi-b']);
         await checkLayout(1440, 3);
         await page.goto(base + '/?tag=maxivertice'); await idle();
-        await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a', '/destino-maxi-b']);
+        await checkBanners(['Banner Maxi A', 'Banner Maxi B'], ['/destino-maxi-a?campanha=eora', 'https://example.com/destino-maxi-b']);
         await page.setViewportSize({width:390,height:1000}); await checkLayout(390, 2);
         await page.setViewportSize({width:1440,height:1000}); await checkLayout(1440, 2);
         await page.locator('[data-be-open-filters]').click();
