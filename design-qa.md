@@ -18,7 +18,7 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 - Espaçamento e layout: aprovado. No desktop, banners sucessivos alternam direita/esquerda. A base de cada banner coincide com a base da imagem dos produtos da segunda linha e não inclui a área de nome/preço. No mobile, cada banner ocupa a largura do grid e entra entre grupos de produtos.
 - Cores e tokens: sem alteração.
 - CTA do banner: aprovado. Reutiliza os tokens `--banner-floating-background` e `--banner-floating-text` da home, largura máxima de 440 px, padding de 16 px, blur de 8 px, texto de 16 px/500 com 3,2 px de espaçamento e o mesmo símbolo `#chevron-diagonal` de 12 px. A seta agora é sempre renderizada com `href` e `xlink:href`, inclusive durante a migração do cadastro.
-- Imagens e recorte dos banners: aprovado. O banner carrega diretamente o arquivo original, sem `srcset` de 480/640 px, e usa `object-fit: contain` centralizado. A imagem mantém a proporção inteira, sem zoom, distorção ou recorte; sobras de proporção recebem o fundo `#f3f3f3`. A captura atualizada está em `C:\Temp\eora-bolsas-validation\desktop-split.png`.
+- Imagens e recorte dos banners: aprovado. O banner carrega diretamente o arquivo original, sem `srcset` de 480/640 px, e usa `object-fit: cover` centralizado. A imagem preenche toda a área sem distorção ou faixas vazias; quando a proporção do bloco difere do arquivo, ocorre um recorte central nas bordas. A captura atualizada está em `C:\Temp\eora-bolsas-validation\desktop-split.png`.
 - Filtros de modelo: aprovado. Todos os cards usam base `#eee` e `object-fit: contain`, mantendo a imagem inteira, sem zoom ou corte. A captura desktop pós-ajuste está em `C:\Temp\eora-bolsas-validation\desktop.png`.
 - Conteúdo e textos: sem alteração.
 
@@ -49,6 +49,6 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 3. Comparação pós-ajuste: a captura combinada confirma o limite inferior correto e a alternância dos dois banners do modelo.
 4. Ajuste do CTA: o botão simples foi substituído pela mesma composição visual do botão flutuante da home. A captura pós-ajuste confirma largura, espaçamento, tipografia e seta; os valores computados também foram validados no navegador.
 5. Ajuste final: os filtros voltaram a `contain` para preservar a imagem inteira sobre uma base única `#eee`; a seta passou a ser incondicional no CTA; e Ordenar por foi liberado e validado no estado Todos com ordenação global.
-6. Ajuste de qualidade: removidas as variantes redimensionadas de 480/640/1920 px do banner. A captura pós-ajuste confirma o arquivo inteiro centralizado, sem corte; o navegador computou `object-fit: contain` e `object-position: 50% 50%` em 1440 px, e os mesmos estados passaram em 768, 390 e 320 px.
+6. Ajuste de qualidade: removidas as variantes redimensionadas de 480/640/1920 px do banner. O banner usa o arquivo original com `object-fit: cover` e `object-position: 50% 50%`, preenchendo o bloco em 1440, 768, 390 e 320 px.
 
 final result: passed

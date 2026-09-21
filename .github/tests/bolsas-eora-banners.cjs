@@ -85,7 +85,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
                 assert.deepEqual(await bannerImage.evaluate(image => ({
                     objectFit: getComputedStyle(image).objectFit,
                     objectPosition: getComputedStyle(image).objectPosition,
-                })), {objectFit: 'contain', objectPosition: '50% 50%'});
+                })), {objectFit: 'cover', objectPosition: '50% 50%'});
                 const floatingButton = catalogBanners.first().locator('.be-catalog-banner__button');
                 await expect(floatingButton).toHaveText(/Ver mini/);
                 await expect(floatingButton.locator('svg use')).toHaveAttribute('xlink:href', '#chevron-diagonal');
