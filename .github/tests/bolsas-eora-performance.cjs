@@ -35,11 +35,12 @@ const data = {...initial, settings: {...initial.settings,
                 maximum = Math.max(maximum, ++active);
                 try {
                     if (gate) await gate;
-                    const id = tags.indexOf(tag) * 10 + index;
+                    const id = tags.indexOf(tag) * 100 + index * 2;
                     const colors = ['preto', 'azul', 'terracota'];
-                    const item = product(id, tag, {tags: [tag, 'cor:' + colors[index - 1], 'ocasiao:trabalho']});
+                    const color = colors[(index - 1) % colors.length];
+                    const items = [product(id, tag, {tags: [tag, 'cor:' + color, 'ocasiao:trabalho']}), product(id + 1, tag, {tags: [tag, 'cor:' + color, 'ocasiao:trabalho']})];
                     url.searchParams.set('page', index + 1);
-                    const body = render('snipplets/bolsas-eora/search-feed.tpl', {...data, query: '"' + tag + '"', products: [item], pages: {current: index, is_last: index === 3, next: url.pathname + url.search}});
+                    const body = render('snipplets/bolsas-eora/search-feed.tpl', {...data, query: '"' + tag + '"', products: items, pages: {current: index, is_last: index === 6, next: url.pathname + url.search}});
                     await route.fulfill({contentType: 'text/html; charset=utf-8', body});
                 } finally { active--; }
             });
@@ -62,23 +63,23 @@ const data = {...initial, settings: {...initial.settings,
             await page.evaluate(() => { window.originalFilter = document.activeElement; });
             await expect.poll(() => active).toBe(3);
             assert.equal(maximum, 3, 'tres consultas independentes em paralelo');
-            assert(requests.slice(initialRequests).every(item => item.index === 2), 'primeiras paginas do catalogo reaproveitadas');
+            assert(requests.slice(initialRequests, initialRequests + 3).every(item => item.index === 4), 'as tres primeiras paginas de cada modelo foram reaproveitadas');
             resume();
             await expect(status).toHaveText('');
             await expect(black).toBeChecked();
             assert(await page.evaluate(() => document.activeElement === window.originalFilter), 'foco e elemento preservados ao adicionar opcoes');
             assert.deepEqual(await page.locator('[name="be_color"]').evaluateAll(nodes => nodes.map(node => node.value)), ['preto', 'azul', 'terracota']);
             assert.equal(maximum, 3);
-            assert.equal(requests.length, 12, 'cada uma das 12 paginas consultada uma unica vez');
+            assert.equal(requests.length, 24, 'cada uma das 24 paginas consultada uma unica vez');
             await submit.click();
             await idle();
-            assert.equal(requests.length, 12, 'aplicar caracteristicas reutiliza o feed sem novas consultas');
+            assert.equal(requests.length, 24, 'aplicar caracteristicas reutiliza o feed sem novas consultas');
             await open();
             await expect(status).toHaveText('');
             await expect(black).toBeChecked();
             await black.uncheck();
             await expect(black).not.toBeChecked();
-            assert.equal(requests.length, 12, 'reabrir painel completo nao faz consultas');
+            assert.equal(requests.length, 24, 'reabrir painel completo nao faz consultas');
             await page.keyboard.press('Escape');
 
             // Interrompe a descoberta e comprova que paginas concluidas nao se repetem.
@@ -93,7 +94,10 @@ const data = {...initial, settings: {...initial.settings,
             await expect.poll(() => active).toBe(0);
             await open();
             await expect(status).toHaveText('');
-            assert(requests.slice(afterReload).filter(item => item.index === 1).every(item => item.tag === 'clutch'), 'reabrir nao reinicia paginas concluidas');
+            const resumedUrls = requests.slice(afterReload).map(item => item.url);
+            const attempts = resumedUrls.reduce((counts, url) => counts.set(url, (counts.get(url) || 0) + 1), new Map());
+            assert(Array.from(attempts.values()).every(count => count <= 2), 'somente consultas abortadas podem ser repetidas');
+            assert.equal(Array.from(attempts.values()).filter(count => count === 2).length, 3, 'as tres consultas abortadas sao retomadas uma unica vez');
             await page.keyboard.press('Escape');
 
             // Aplicar antes da descoberta completa deve funcionar, sem aguardar a rede.
@@ -122,7 +126,7 @@ const data = {...initial, settings: {...initial.settings,
             assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'terracota', 'selecao ativa ainda nao descoberta e preservada');
             await expect.poll(() => active).toBe(0);
             assert.deepEqual(errors, []);
-            console.log('PASS ' + width + 'px: filtros utilizaveis com rede pendente, concorrencia limitada, foco/selecao, 12 paginas sem repeticoes, cache ao aplicar/reabrir e retomada apos cancelamento.');
+            console.log('PASS ' + width + 'px: lote inicial de 24 produtos, filtros utilizaveis com rede pendente, concorrencia limitada, foco/selecao, cache e retomada apos cancelamento.');
             await page.close();
         }
     } finally { await browser.close(); }

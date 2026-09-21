@@ -61,7 +61,7 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
                 const before = requests.length;
                 await page.locator('[data-be-more]').click();
                 await idle();
-                assert(requests.length - before <= 3, 'no maximo tres consultas por acao');
+                assert(requests.length - before <= 12, 'no maximo doze consultas por lote de 24 produtos');
             }
         }
         async function assertAll() {
@@ -84,8 +84,8 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             await expect(page.locator('[data-be-reset]')).toBeVisible();
             assert(await page.locator('[data-be-reset]').evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 16 && el.getBoundingClientRect().height >= 48));
             await expect(page.locator('[data-be-result-title]')).toHaveText('Todas as bolsas');
-            assert((await cards().count()) > 0 && (await cards().count()) <= (viewport.width < 768 ? 6 : 12));
-            assert(requests.length <= 3);
+            assert((await cards().count()) > 0 && (await cards().count()) <= 24);
+            assert(requests.length <= 12);
             assert(new Set(requests.map(request => request.tag)).size > 1, 'consulta inicial alterna entre tags');
             await page.screenshot({path: path.join(output, 'all-models-' + viewport.width + '.png'), fullPage: true});
             await assertAll();

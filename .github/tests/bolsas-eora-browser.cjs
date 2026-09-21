@@ -21,6 +21,29 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         console.log('PASS sem modelos: estado vazio, primeiro banner e ausencia de catalogos manuais.');
 
+        const categoryProducts = Array.from({length: 30}, (_, index) => product(930 - index, index % 2 ? 'maxivertice' : 'minivertice'));
+        await page.route(base + '/?category-order', route => route.fulfill({
+            contentType: 'text/html; charset=utf-8',
+            body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + render('snipplets/bolsas-eora/index.tpl', {...context(), settings: {...context().settings, bolsas_eora_category_url: '/categoria/bolsas-eora-catalogo'}}),
+        }));
+        await page.route('**/categoria/bolsas-eora-catalogo**', route => {
+            const url = new URL(route.request().url());
+            const current = Number(url.searchParams.get('page') || 1);
+            const start = (current - 1) * 24;
+            const last = start + 24 >= categoryProducts.length;
+            const next = '/categoria/bolsas-eora-catalogo?be_category_feed=1&page=' + (current + 1);
+            return route.fulfill({contentType: 'text/html; charset=utf-8', body: render('snipplets/bolsas-eora/category-feed.tpl', {...context(), params: {be_category_feed: '1'}, products: categoryProducts.slice(start, start + 24), pages: {current, is_last: last, next: last ? '' : next}})});
+        });
+        await page.goto(base + '/?category-order'); await idle();
+        assert.deepEqual(await cards().evaluateAll(nodes => nodes.map(node => Number(node.dataset.beProduct))), categoryProducts.slice(0, 24).map(item => item.id), 'Todos respeita a ordem manual da categoria em lotes de 24');
+        await page.locator('[data-be-more]').scrollIntoViewIfNeeded();
+        await expect(cards()).toHaveCount(30);
+        await idle();
+        assert.deepEqual(await cards().evaluateAll(nodes => nodes.map(node => Number(node.dataset.beProduct))), categoryProducts.map(item => item.id), 'paginacao conserva a ordem completa da categoria');
+        await page.unroute(base + '/?category-order');
+        await page.unroute('**/categoria/bolsas-eora-catalogo**');
+        console.log('PASS categoria: ordem manual preservada sem limite de 40, em lotes de 24.');
+
         await page.goto(base);
         await expect(page.locator('[data-be-page]')).toHaveAttribute('data-be-ready', '1');
         await idle();
@@ -41,7 +64,6 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         assert.equal(await page.locator('.be-gallery--community .be-gallery__item').count(), 20);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 4);
         assert((await cards().count()) > 0, 'catalogo automatico aparece sem selecionar uma tag');
-        assert.deepEqual((await cards().evaluateAll(nodes => nodes.slice(0, 6).map(node => node.dataset.beProduct))), ['101', '10', '2', '5', '4', '9'], 'as tres listas formam uma unica ordem manual no filtro Todos');
         await expect(page.locator('.be-models [data-be-dots] .be-dot')).toHaveCount(5);
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         assert.equal(await page.locator('.be-models [data-be-track]').evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
@@ -172,8 +194,12 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.setViewportSize({width: 390, height: 844});
         await page.goto(base);
         await idle();
-        assert((await cards().count()) > 0 && (await cards().count()) <= 6);
+        assert((await cards().count()) > 0 && (await cards().count()) <= 24);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
+        assert.equal(await page.locator('[data-be-toolbar]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 1);
+        assert((await page.locator('[data-be-reset]').boundingBox()).height >= 52);
+        assert((await page.locator('[data-be-sort]').boundingBox()).height >= 52);
+        assert((await page.locator('.be-models [data-be-next]').boundingBox()).height >= 44);
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         assert.equal(await page.locator('.be-models').evaluate(el => getComputedStyle(el).getPropertyValue('--be-visible').trim()), '2');
         await expect(page.locator('.be-models .be-dot')).toHaveCount(10);
@@ -206,7 +232,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('#be-filter-dialog')).not.toBeVisible();
         await expect(page.locator('[data-be-open-filters]')).toBeFocused();
         assert.deepEqual(errors, []);
-        console.log('PASS mobile: 2 colunas/6 produtos, carrosseis com proximo item visivel, comunidade compacta, sem overflow; modal e Escape.');
+        console.log('PASS mobile: 2 colunas/24 produtos, controles responsivos, carrosseis com proximo item visivel, comunidade compacta, sem overflow; modal e Escape.');
         console.log('PASS: nenhum erro JavaScript. Screenshots em ' + output);
     } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

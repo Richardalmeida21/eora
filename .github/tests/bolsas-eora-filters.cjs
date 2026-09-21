@@ -36,7 +36,11 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
         page.on('pageerror', error => errors.push(error.message));
         const initial = context();
         const tags = ['maxivertice', 'hobovertice', 'minivertice', 'clutch', 'modelo-extra'];
-        const data = {...initial, settings: {...initial.settings, bolsas_eora_models: tags.map((link, i) => ({link, image: '/fixtures/image-' + i + '.webp'}))}};
+        const data = {
+            ...initial,
+            settings: {...initial.settings, bolsas_eora_models: tags.map((link, i) => ({link, image: '/fixtures/image-' + i + '.webp'}))},
+            sections: {...initial.sections, bolsas_eora_all: {products: []}, bolsas_eora_all_2: {products: []}, bolsas_eora_all_3: {products: []}},
+        };
         const item = (id, model, colors, extra = []) => product(id, model, {
             tags: [model, ...extra], price: id === 501 ? 254990 : 200000,
             variations: [{name: 'Couro', options: colors.map(name => ({name}))}],
@@ -135,11 +139,11 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
         await page.goto('http://127.0.0.1:4175'); await idle();
         failOnce = true;
         await page.locator('[data-be-open-filters]').click();
-        await expect(page.locator('[data-be-facet-status]')).toContainText('Não foi possível');
+        await expect(page.locator('[data-be-facet-status]')).toHaveText('');
         await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
-        await page.keyboard.press('Escape'); await open();
         await expect(page.locator('[name="be_color"][value="azul"]')).toHaveCount(1);
         await page.keyboard.press('Escape');
+        failOnce = false;
         emptyTags = true;
         await page.reload(); await idle(); await open();
         await expect(page.locator('[data-be-facets] input')).toHaveCount(0);

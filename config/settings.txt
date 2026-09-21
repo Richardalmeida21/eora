@@ -10910,9 +10910,12 @@ Bolsas Eora
 	description
 		description = As opções de características vêm das tags cadastradas nos produtos de cada modelo. O preço usa os filtros da loja.
 	collapse
-		title = Ordem de Todos os produtos
+		title = Categoria de Todas as bolsas
+	text
+		name = bolsas_eora_category_url
+		description = Link da categoria que contém todas as bolsas (ex.: /bolsas-eora-catalogo)
 	description
-		description = Em Produtos em destaque, use as três listas Bolsas Eora - Todos em sequência: posições 1 a 40, 41 a 80 e 81 a 120. Selecione e arraste as bolsas dentro de cada lista. As bolsas não selecionadas continuam aparecendo depois, na ordem automática do catálogo.
+		description = Crie uma categoria com todas as bolsas, escolha Ordem manual em Organizar produtos e cole o link acima. O filtro Todos seguirá essa ordem sem limite de 40 produtos. Se o link ficar vazio, o tema usa a ordem automática por modelos.
 	collapse
 		title = Banners
 	description

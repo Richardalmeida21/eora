@@ -84,8 +84,13 @@
         });
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
+        var categoryFeedTag = '__bolsas_eora_category__';
+        var categoryBase = null;
+        try {
+            var configuredCategory = new URL(String(root.dataset.categoryUrl || '').trim(), window.location.href);
+            if (root.dataset.categoryUrl && configuredCategory.origin === window.location.origin && configuredCategory.pathname !== searchBase.pathname) categoryBase = configuredCategory;
+        } catch (_) { /* Link de categoria invalido: usa a busca por modelos. */ }
         var grid = one('[data-be-results-grid]');
-        var allProductsTemplate = one('[data-be-all-products]');
         var bannerTemplates = all('[data-be-banner-template]');
         var activeBanners = [];
         var results = one('[data-be-results]');
@@ -103,7 +108,7 @@
         var productRequest = null;
         var version = 0;
         var state;
-        var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'preview', '__proto__', 'constructor', 'prototype'];
+        var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'be_category_feed', 'preview', '__proto__', 'constructor', 'prototype'];
 
         function placeBanners() {
             if (!activeBanners.length) return;
@@ -185,10 +190,25 @@
             if (sort && sort !== 'user') url.searchParams.set('sort_by', sort);
             return url;
         }
+        function makeCategoryUrl(filters, sort) {
+            var url = new URL(categoryBase);
+            url.search = '';
+            url.searchParams.set('be_category_feed', '1');
+            var preview = new URL(window.location.href).searchParams.get('preview');
+            if (preview) url.searchParams.set('preview', preview);
+            Object.keys(filters).forEach(function (key) {
+                if (reserved.indexOf(key) === -1 && key.indexOf('be_') !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
+            });
+            if (sort && sort !== 'user') url.searchParams.set('sort_by', sort);
+            return url;
+        }
         function checkedUrl(value, base) {
             var url = new URL(value, base || searchBase);
-            var prefix = searchBase.pathname.replace(/\/$/, '');
-            if (url.origin !== searchBase.origin || (url.pathname.replace(/\/$/, '') !== prefix && !url.pathname.startsWith(prefix + '/'))) throw new Error('Invalid search URL');
+            var allowed = [searchBase, categoryBase].filter(Boolean).some(function (source) {
+                var prefix = source.pathname.replace(/\/$/, '');
+                return url.origin === source.origin && (url.pathname.replace(/\/$/, '') === prefix || url.pathname.startsWith(prefix + '/'));
+            });
+            if (!allowed) throw new Error('Invalid product feed URL');
             return url;
         }
         function forgetFeed(key) {
@@ -239,13 +259,13 @@
                 var facet = getFacet(tag);
                 all('[data-be-product]', feed.content).forEach(function (card) {
                     var tags = tagsFor(card);
-                    if (tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { facet.tags.add(value); });
+                    if (tag === categoryFeedTag || tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { facet.tags.add(value); });
                 });
                 return feed;
             } finally { clearTimeout(timeout); }
         }
         function getFacet(tag) {
-            if (!facetCache.has(tag)) facetCache.set(tag, {tags: new Set(), next: makeSearchUrl(tag, {}, 'user').href, visited: new Set()});
+            if (!facetCache.has(tag)) facetCache.set(tag, {tags: new Set(), next: tag === categoryFeedTag ? makeCategoryUrl({}, 'user').href : makeSearchUrl(tag, {}, 'user').href, visited: new Set()});
             return facetCache.get(tag);
         }
         function tagsFor(card) {
@@ -298,15 +318,6 @@
             }
             return cards;
         }
-        function addCuratedAllProducts(current) {
-            if (!allProductsTemplate || current.model || Object.keys(current.filters).length || current.sort !== 'user') return;
-            all('[data-be-product]', allProductsTemplate.content).forEach(function (card) {
-                var id = card.dataset.beProduct;
-                if (!id || current.ids.has(id)) return;
-                current.ids.add(id);
-                grid.appendChild(document.importNode(card, true));
-            });
-        }
         async function loadMore() {
             if (!state || state.loading) return;
             var run = version;
@@ -317,10 +328,10 @@
             // de caracteristicas sao locais e um resultado pode estar em qualquer
             // pagina da busca; exigir outro clique produziria uma lista incompleta.
             var automatic = Boolean(current.model || Object.keys(current.filters).length || current.sort !== 'user');
-            var pageSize = mobile.matches ? 6 : 12;
+            var pageSize = 24;
             var size = automatic ? Number.POSITIVE_INFINITY : current.initialLoad ? Math.max(0, pageSize - all('[data-be-product]', grid).length) : pageSize;
             current.initialLoad = false;
-            var requestLimit = automatic ? Number.POSITIVE_INFINITY : 3;
+            var requestLimit = automatic ? Number.POSITIVE_INFINITY : 12;
             var requests = 0;
             var skipped = 0;
             var cards = [];
@@ -348,7 +359,7 @@
                         all('[data-be-product]', feed.content).forEach(function (card) {
                             var id = card.dataset.beProduct;
                             var tags = tagsFor(card);
-                            if (!current.ids.has(id) && tags.indexOf(normalize(search.tag)) !== -1 && (!bagFilters || bagFilters.matches(card, current.filters, tags))) {
+                            if (!current.ids.has(id) && (search.tag === categoryFeedTag || tags.indexOf(normalize(search.tag)) !== -1) && (!bagFilters || bagFilters.matches(card, current.filters, tags))) {
                                 current.ids.add(id);
                                 search.buffer.push(card);
                             }
@@ -383,16 +394,15 @@
             filters = requestedModel && !model ? {} : filters || {};
             sort = sort || 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
-            var tags = model ? [model] : modelTags;
+            var tags = model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
             state = {model: model, filters: filters, sort: sort, initialLoad: true, searches: tags.map(function (tag) {
-                return {tag: tag, next: makeSearchUrl(tag, filters, sort).href, buffer: []};
+                return {tag: tag, next: tag === categoryFeedTag ? makeCategoryUrl(filters, sort).href : makeSearchUrl(tag, filters, sort).href, buffer: []};
             }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
             one('[data-be-toolbar]').hidden = false;
             one('[data-be-reset]').setAttribute('aria-pressed', active ? 'false' : 'true');
             one('[data-be-sort]').closest('label').hidden = !tags.length;
             results.hidden = false;
             grid.replaceChildren();
-            addCuratedAllProducts(state);
             selectBanners(model);
             more.hidden = true;
             models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });
@@ -432,6 +442,11 @@
         });
         one('[data-be-reset]').addEventListener('click', function () { activate('', {}, 'user', true); scrollToResults(); });
         more.addEventListener('click', loadMore);
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+                if (entries.some(function (entry) { return entry.isIntersecting; }) && !more.hidden && !more.disabled && more.textContent !== 'Tentar novamente') loadMore();
+            }, {rootMargin: '600px 0px'}).observe(more);
+        }
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
 
@@ -452,7 +467,7 @@
                 facets.replaceChildren();
                 pendingSelection = selected;
                 submit.disabled = false;
-                var sources = model ? [model] : modelTags;
+                var sources = model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
                 var pending = sources.filter(function (tag) { return getFacet(tag).next; });
                 var failed = false;
                 function renderAvailable() {

@@ -1,4 +1,37 @@
-# Design QA — banners da página Bolsas Eora
+# Design QA — página Bolsas Eora
+
+## Revisão mobile, categoria e carregamento — 21/09/2026
+
+### Evidências
+
+- Referência: captura mobile anexada pelo usuário na conversa, com 738 × 1600 px. A área do navegador foi desconsiderada; foram comparados toolbar, catálogo, grade e botão flutuante.
+- Implementação: `C:\Temp\eora-bolsas-validation\mobile.png`, viewport 390 × 844 CSS px, device scale factor 1, estado Todos e filtro fechado.
+- Filtros: `C:\Temp\eora-bolsas-validation\mobile-filters.png`, viewport 390 × 844 CSS px, painel aberto e uma cor selecionada.
+- Breakpoints adicionais: 320, 767, 768, 1440 e 1920 px, capturados e verificados pelo teste de feedback responsivo.
+
+### Verificação
+
+- Toolbar mobile: aprovada. Em 390 px, “Ver todas as bolsas” e “Ordenar por” ocupam linhas completas, sem compressão ou overflow; select e botão têm 52 px de altura.
+- Catálogo: aprovado. Mantém duas colunas no mobile, espaçamento consistente entre cards e tipografia legível sem ampliar excessivamente os nomes.
+- Controles: aprovados. Setas e fechar têm pelo menos 44 px; selects, ações primárias e botão flutuante têm pelo menos 52 px; dots conservam aparência compacta com área de toque de 28 px.
+- Filtros: aprovados. O diálogo vira bottom sheet, respeita 90dvh e safe area, preserva cabeçalho e rodapé de ações, e não apresenta overflow horizontal.
+- Botão flutuante: aprovado. Largura limitada a 220 px, margem reservada para a barra social e posicionamento com safe area.
+- Carregamento: aprovado. O primeiro lote contém até 24 produtos em todas as larguras; o lote seguinte é carregado por `IntersectionObserver` quando o botão se aproxima da viewport, mantendo o botão como fallback acessível.
+- Categoria: aprovada. O estado Todos consome a categoria configurada, preserva a ordem manual do painel e continua além de 40 produtos em páginas de 24. Filtros por modelo continuam usando as tags existentes.
+- Desempenho: aprovado. O feed interno da categoria devolve somente os cartões necessários; consultas de facetas têm concorrência máxima de três, cache e retomada de requisições abortadas.
+
+### Achados desta revisão
+
+- P0: nenhum.
+- P1: nenhum.
+- P2: nenhum.
+- Diferenças esperadas: a implementação local usa produtos e imagens de demonstração; a referência mostra dados reais e a interface do navegador do aparelho.
+
+final result: passed
+
+---
+
+## Revisão anterior — banners
 
 ## Evidências
 

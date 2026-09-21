@@ -43,7 +43,6 @@ const data = {...initial, settings: {...initial.settings,
             const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
             const cards = page.locator('[data-be-results-grid] [data-be-product]');
             await idle();
-            await page.locator('[data-be-more]').click(); await idle();
             await expect(cards).toHaveCount(6);
             assert.equal(requests, 6);
             assert.equal(await page.evaluate(() => window.searchDocumentsParsed), 0, 'nao transforma a busca inteira em documentos DOM');
@@ -60,7 +59,7 @@ const data = {...initial, settings: {...initial.settings,
                 assert.equal(requests, 6, 'cache compacto ainda reutiliza paginas normais');
                 await page.evaluate(() => {const now = Date.now; Date.now = () => now() + 300001;});
                 await page.locator('[data-be-reset]').click(); await idle();
-                assert.equal(requests, 9, 'respostas expiradas sao descartadas');
+                assert.equal(requests, 12, 'respostas expiradas sao descartadas');
             }
             assert.deepEqual(errors, []);
             console.log('PASS memoria (' + (largeFeed ? 'feed grande' : 'feed normal') + '): ' + counters.nodes + ' nos DOM apos coleta; sem parse/imagens/scripts da busca inteira, cache limitado e expiracao.');

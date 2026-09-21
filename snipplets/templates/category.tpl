@@ -3,11 +3,17 @@
 {# Only remove this if you want to take away the theme onboarding advices #}
 {% set show_help = not has_products %}
 
-{% if settings.pagination == 'infinite' %}
+{% if params.be_category_feed == '1' %}
+	{% paginate by 24 %}
+{% elseif settings.pagination == 'infinite' %}
 	{% paginate by 12 %}
 {% else %}
 	{% paginate by 48 %}
 {% endif %}
+
+{% if params.be_category_feed == '1' %}
+	{% include 'snipplets/bolsas-eora/category-feed.tpl' %}
+{% else %}
 
 {% if not show_help %}
 
@@ -309,6 +315,8 @@
 
 {# Banners de categoria customizados #}
 {% include 'snipplets/category-banners-grid.tpl' %}
+
+{% endif %}
 
 {# <div class="container-fluid">
 	<div class="row">
