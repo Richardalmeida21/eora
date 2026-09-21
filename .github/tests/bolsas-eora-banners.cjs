@@ -81,6 +81,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
                 const floatingButton = catalogBanners.first().locator('.be-catalog-banner__button');
                 await expect(floatingButton).toHaveText(/Ver mini/);
                 await expect(floatingButton.locator('svg use')).toHaveAttribute('xlink:href', '#chevron-diagonal');
+                await expect(floatingButton.locator('svg use')).toHaveAttribute('href', '#chevron-diagonal');
                 const buttonStyle = await floatingButton.evaluate(element => {
                     const style = getComputedStyle(element);
                     return {width: element.getBoundingClientRect().width, padding: style.padding, fontSize: style.fontSize, fontWeight: style.fontWeight, letterSpacing: style.letterSpacing, backdropFilter: style.backdropFilter || style.webkitBackdropFilter};

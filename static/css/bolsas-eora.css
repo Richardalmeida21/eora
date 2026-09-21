@@ -27,7 +27,7 @@
 .be-page .be-track > * { flex: 0 0 calc((100% - (var(--be-card-visible, var(--be-visible)) - 1) * var(--be-gap)) / var(--be-card-visible, var(--be-visible))); min-width: 0; scroll-snap-align: start; }
 .be-page .be-model { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding-bottom: 6px; border-bottom: 2px solid transparent; }
 .be-page .be-model[aria-current="true"] { border-bottom-color: #111; }
-.be-page .be-model img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; background: #f6f6f6; }
+.be-page .be-model img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; background: #eee; }
 .be-page .be-model span { font-size: 11px; text-transform: uppercase; letter-spacing: .02em; overflow-wrap: anywhere; }
 .be-page .be-models__viewport { position: relative; }
 .be-page .be-models--overflow .be-models__viewport::before, .be-page .be-models--overflow .be-models__viewport::after { content: ""; position: absolute; top: 0; bottom: 14px; width: 32px; z-index: 1; pointer-events: none; }

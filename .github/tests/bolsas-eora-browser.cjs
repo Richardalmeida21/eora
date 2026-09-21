@@ -25,6 +25,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('[data-be-page]')).toHaveAttribute('data-be-ready', '1');
         await idle();
         await expect(page.locator('[data-be-results]')).toBeVisible();
+        await expect(page.locator('[data-be-sort]')).toBeVisible();
         await page.evaluate(() => {
             const strayHeart = document.createElement('button');
             strayHeart.id = 'wishlistselly-fixture';
@@ -43,6 +44,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('.be-models [data-be-dots] .be-dot')).toHaveCount(5);
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         assert.equal(await page.locator('.be-models [data-be-track]').evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
+        const modelImageStyle = await page.locator('.be-model img').first().evaluate(element => ({objectFit: getComputedStyle(element).objectFit, backgroundColor: getComputedStyle(element).backgroundColor}));
+        assert.deepEqual(modelImageStyle, {objectFit: 'contain', backgroundColor: 'rgb(238, 238, 238)'});
         await page.locator('.be-models .be-dot').last().click();
         await expect(page.locator('.be-models .be-dot').last()).toHaveAttribute('aria-current', 'true');
         await expect(page.locator('.be-models [data-be-next]')).toBeDisabled();

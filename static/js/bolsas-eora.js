@@ -280,6 +280,23 @@
             more.textContent = error ? 'Tentar novamente' : 'Mostrar mais produtos';
             results.setAttribute('aria-busy', state.loading ? 'true' : 'false');
         }
+        function sortCards(cards, sort) {
+            if (sort === 'price-ascending' || sort === 'price-descending') {
+                var direction = sort === 'price-ascending' ? 1 : -1;
+                cards.sort(function (first, second) { return direction * (Number(first.dataset.bePrice || 0) - Number(second.dataset.bePrice || 0)); });
+            } else if (sort === 'alpha-ascending') {
+                cards.sort(function (first, second) { return String(first.dataset.beName || '').localeCompare(String(second.dataset.beName || ''), 'pt-BR', {sensitivity: 'base'}); });
+            } else if (sort === 'created-descending') {
+                var createdValue = function (card) {
+                    var value = String(card.dataset.beCreated || '');
+                    if (/^\d+$/.test(value)) return Number(value);
+                    var parsed = Date.parse(value);
+                    return Number.isNaN(parsed) ? Number(value || 0) : parsed;
+                };
+                cards.sort(function (first, second) { return createdValue(second) - createdValue(first); });
+            }
+            return cards;
+        }
         async function loadMore() {
             if (!state || state.loading) return;
             var run = version;
@@ -289,7 +306,7 @@
             // Ao filtrar, percorre todas as paginas antes de concluir. Os filtros
             // de caracteristicas sao locais e um resultado pode estar em qualquer
             // pagina da busca; exigir outro clique produziria uma lista incompleta.
-            var automatic = Boolean(current.model || Object.keys(current.filters).length);
+            var automatic = Boolean(current.model || Object.keys(current.filters).length || current.sort !== 'user');
             var size = automatic ? Number.POSITIVE_INFINITY : (mobile.matches ? 6 : 12);
             var requestLimit = automatic ? Number.POSITIVE_INFINITY : 3;
             var requests = 0;
@@ -338,6 +355,7 @@
                 error = true;
             } finally {
                 if (run === version) {
+                    if (current.sort !== 'user') sortCards(cards, current.sort);
                     cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
                     placeBanners();
                     current.loading = false;
@@ -351,7 +369,7 @@
             var requestedModel = model;
             model = selectedModel(model);
             filters = requestedModel && !model ? {} : filters || {};
-            sort = model ? sort || 'user' : 'user';
+            sort = sort || 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
             var tags = model ? [model] : modelTags;
             state = {model: model, filters: filters, sort: sort, searches: tags.map(function (tag) {
@@ -359,7 +377,7 @@
             }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
             one('[data-be-toolbar]').hidden = false;
             one('[data-be-reset]').setAttribute('aria-pressed', active ? 'false' : 'true');
-            one('[data-be-sort]').closest('label').hidden = !model;
+            one('[data-be-sort]').closest('label').hidden = !tags.length;
             results.hidden = false;
             grid.replaceChildren();
             selectBanners(model);

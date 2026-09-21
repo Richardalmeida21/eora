@@ -39,7 +39,7 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             }
             if (!url.pathname.startsWith('/search/')) return route.continue();
             const tag = url.searchParams.get('q').replace(/^"|"$/g, '');
-            requests.push({tag, page: Number(url.searchParams.get('page') || 1)});
+            requests.push({tag, page: Number(url.searchParams.get('page') || 1), sort: url.searchParams.get('sort_by') || 'user'});
             if (tag === failTag) { failTag = ''; return route.fulfill({status: 503, body: 'Unavailable'}); }
             if (tag === delayTag) await new Promise(resolve => setTimeout(resolve, 250));
             const items = products[tag] || [];
@@ -92,6 +92,19 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             assert.deepEqual([...new Set(requests.map(request => request.tag))].sort(), ['clutch', 'hobovertice', 'maxivertice', 'minivertice']);
             assert.equal(requests.filter(request => request.tag === 'maxivertice' && request.page === 1).length, 1, 'tag repetida com outra capitalizacao nao duplica consultas');
 
+            requests.length = 0;
+            await expect(page.locator('[data-be-sort]')).toBeVisible();
+            await page.locator('[data-be-sort]').selectOption('price-descending');
+            await idle();
+            const descending = (await ids()).map(Number);
+            assert.deepEqual(descending, [...descending].sort((first, second) => second - first), 'Todos ordena globalmente, nao apenas dentro de cada modelo');
+            await expect(page.locator('[data-be-more]')).toBeHidden();
+            assert(requests.length && requests.every(request => request.sort === 'price-descending'), 'ordenacao e enviada para todas as tags');
+            assert.equal(new URL(page.url()).searchParams.get('be_sort'), 'price-descending');
+            await page.locator('[data-be-reset]').click();
+            await idle();
+            await assertAll();
+
             await page.locator('[data-be-tag="minivertice"]').click();
             await idle();
             await expect(page.locator('[data-be-reset]')).toBeVisible();
@@ -122,10 +135,13 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
 
         await page.goto(base + '/?tag=desconhecida&be_sort=price-descending&be_filters=' + encodeURIComponent(JSON.stringify({Cor: 'Preto'})));
         await idle();
-        await assertAll();
+        const fallbackSorted = (await ids()).map(Number);
+        assert.deepEqual(fallbackSorted, [...fallbackSorted].sort((first, second) => second - first));
+        assert.deepEqual([...fallbackSorted].sort((first, second) => first - second).map(String), [...expectedIds].sort((first, second) => Number(first) - Number(second)));
         await expect(page.locator('[data-be-toolbar]')).toBeVisible();
-        await expect(page.locator('[data-be-sort]')).toBeHidden();
-        console.log('PASS agregacao: modelo desconhecido volta para todas, sem aplicar filtros ou ordenacao de um modelo inexistente.');
+        await expect(page.locator('[data-be-sort]')).toBeVisible();
+        await expect(page.locator('[data-be-sort]')).toHaveValue('price-descending');
+        console.log('PASS agregacao: modelo desconhecido volta para Todos, limpa filtros e preserva a ordenacao valida.');
 
         delayTag = 'maxivertice';
         await page.goto(base);

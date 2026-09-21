@@ -17,8 +17,9 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 - Tipografia: sem alteração; preserva os estilos existentes do tema.
 - Espaçamento e layout: aprovado. No desktop, banners sucessivos alternam direita/esquerda. A base de cada banner coincide com a base da imagem dos produtos da segunda linha e não inclui a área de nome/preço. No mobile, cada banner ocupa a largura do grid e entra entre grupos de produtos.
 - Cores e tokens: sem alteração.
-- CTA do banner: aprovado. Reutiliza os tokens `--banner-floating-background` e `--banner-floating-text` da home, largura máxima de 440 px, padding de 16 px, blur de 8 px, texto de 16 px/500 com 3,2 px de espaçamento e o mesmo símbolo `#chevron-diagonal` de 12 px.
-- Imagens e recorte: aprovado. Mantido `object-fit: cover`; a altura agora é calculada a partir do card da primeira linha, da imagem da segunda linha e do espaçamento entre linhas.
+- CTA do banner: aprovado. Reutiliza os tokens `--banner-floating-background` e `--banner-floating-text` da home, largura máxima de 440 px, padding de 16 px, blur de 8 px, texto de 16 px/500 com 3,2 px de espaçamento e o mesmo símbolo `#chevron-diagonal` de 12 px. A seta agora é sempre renderizada com `href` e `xlink:href`, inclusive durante a migração do cadastro.
+- Imagens e recorte dos banners: aprovado. Mantido `object-fit: cover`; a altura agora é calculada a partir do card da primeira linha, da imagem da segunda linha e do espaçamento entre linhas.
+- Filtros de modelo: aprovado. Todos os cards usam base `#eee` e `object-fit: contain`, mantendo a imagem inteira, sem zoom ou corte. A captura desktop pós-ajuste está em `C:\Temp\eora-bolsas-validation\desktop.png`.
 - Conteúdo e textos: sem alteração.
 
 ## Interações verificadas
@@ -32,6 +33,7 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 - Galeria vazia e reordenação não geram erros.
 - Nenhum erro JavaScript foi registrado nos cenários testados.
 - O CTA foi verificado em 1440, 768, 390 e 320 px; ocupa até 440 px no desktop e a largura disponível com margens de 16 px no mobile.
+- Ordenar por fica disponível em Todos; preço decrescente foi verificado sobre 29 produtos agregados de quatro tags, em desktop e mobile, sem duplicação e com persistência na URL.
 
 ## Achados
 
@@ -46,5 +48,6 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 2. Ajuste: a altura passou a encerrar junto da segunda imagem de produto, e múltiplos banners passaram a usar posições alternadas.
 3. Comparação pós-ajuste: a captura combinada confirma o limite inferior correto e a alternância dos dois banners do modelo.
 4. Ajuste do CTA: o botão simples foi substituído pela mesma composição visual do botão flutuante da home. A captura pós-ajuste confirma largura, espaçamento, tipografia e seta; os valores computados também foram validados no navegador.
+5. Ajuste final: os filtros voltaram a `contain` para preservar a imagem inteira sobre uma base única `#eee`; a seta passou a ser incondicional no CTA; e Ordenar por foi liberado e validado no estado Todos com ordenação global.
 
 final result: passed

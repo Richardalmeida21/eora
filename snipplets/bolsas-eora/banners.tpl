@@ -18,7 +18,7 @@
                             {% if banner.button and not legacy_show_in_all %}
                                 <span class="be-catalog-banner__button">
                                     <span>{{ banner.button }}</span>
-                                    {% if banner.link and not legacy_banner %}<svg aria-hidden="true" viewBox="0 0 10 10" fill="none"><use xlink:href="#chevron-diagonal"></use></svg>{% endif %}
+                                    <svg aria-hidden="true" viewBox="0 0 10 10" fill="none"><use href="#chevron-diagonal" xlink:href="#chevron-diagonal"></use></svg>
                                 </span>
                             {% endif %}
                         </div>

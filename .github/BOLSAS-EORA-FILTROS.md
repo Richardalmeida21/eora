@@ -75,9 +75,9 @@ Cadastrar somente as caracteristicas confirmadas para cada produto. Nenhuma text
 
 ## Combinacao e publicacao
 
-Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto ou Marrom, combinado com Croco e Prata. Preco usa os filtros nativos da busca e aceita somente minimo, somente maximo ou ambos. Os demais filtros funcionam em Todos os modelos ou em um modelo especifico, com URL compartilhavel e Limpar filtros. Quando existe qualquer modelo, caracteristica ou faixa de preco selecionada, o catalogo percorre automaticamente todas as paginas e mostra o resultado completo sem exigir **Mostrar mais produtos**.
+Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto ou Marrom, combinado com Croco e Prata. Preco usa os filtros nativos da busca e aceita somente minimo, somente maximo ou ambos. Os demais filtros e Ordenar por funcionam em Todos os modelos ou em um modelo especifico, com URL compartilhavel e Limpar filtros. Quando existe qualquer modelo, caracteristica, faixa de preco ou ordenacao selecionada, o catalogo percorre automaticamente todas as paginas e mostra o resultado completo sem exigir **Mostrar mais produtos**. Em Todos, preco, A-Z e mais novos sao ordenados globalmente depois de reunir as tags; mais vendidos intercala a ordem nativa de cada modelo.
 
-Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal e o CSS usam `20260921-13`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
+Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `snipplets/bolsas-eora/product-card.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal e o CSS usam `20260921-15`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
 
 O cadastro de tags e a publicacao na loja nao sao realizados pelos testes locais.
 
