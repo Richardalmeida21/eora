@@ -18,6 +18,7 @@ Twig.extendFilter('money', value => (Number(value) / 100).toLocaleString('pt-BR'
 Twig.extendFilter('take', (value, params) => (value || []).slice(0, params[0]));
 Twig.extendFilter('translate', value => value);
 Twig.extendFilter('is_external', value => /^https?:/.test(value || ''));
+Twig.extendFilter('setting_url', value => value);
 Twig.extendFunction('component', () => '');
 
 const templates = new Map();
@@ -54,8 +55,10 @@ const settings = {
     bolsas_eora_enabled: true, bolsas_eora_page_url: 'bolsas-eora', bolsas_eora_title: 'Bolsas Eora',
     bolsas_eora_catalog_tag: 'bolsa', bolsas_eora_filters_enabled: true, product_hover: true,
     bolsas_eora_models: Array.from({length: 20}, (_, i) => ({image: asset(i), link: i === 0 ? 'maxivertice' : i === 1 ? 'minivertice' : 'modelo-' + i})),
-    bolsas_eora_banners: [{image: asset(4), link: 'maxivertice', title: 'Banner Maxi Vértice'}, {image: asset(5), link: 'minivertice', title: 'Banner Mini Vértice'}],
-    bolsas_eora_banner_01_all: true,
+    bolsas_eora_banners: [
+        {image: asset(4), icon: 'maxivertice | todos', link: '/colecoes/maxivertice', title: 'Banner Maxi Vértice', description: 'Conheça a coleção', button: 'Ver bolsas', color: 'light'},
+        {image: asset(5), icon: 'minivertice', link: '/colecoes/minivertice', title: 'Banner Mini Vértice'},
+    ],
     bolsas_eora_best_enabled: true, bolsas_eora_best_title: 'Best sellers',
     bolsas_eora_community_enabled: true, bolsas_eora_community_title: 'Quem usa Eora',
     bolsas_eora_community_subtitle: 'Nossa comunidade', bolsas_eora_community_link: '/quem-usa',
@@ -134,6 +137,9 @@ function validate() {
     assert(!newConfig.includes('\u00a0'));
     const names = [...newConfig.matchAll(/name = (bolsas_eora_\w+)/g)].map(m => m[1]);
     assert(names.includes('bolsas_eora_banners'));
+    assert(!names.some(name => /^bolsas_eora_banner_\d+_all$/.test(name)), 'sem checkboxes separados por posicao');
+    assert(newConfig.includes('gallery_icon = Filtro do banner'), 'tag e Todos usam o novo campo individual do banner');
+    assert(newConfig.includes('gallery_link = Link ao clicar no banner'), 'link recupera sua funcao de navegacao');
     assert(!/bolsas_eora_\d+_/.test(newConfig), 'sem campos antigos de catalogo/banner');
     assert(newConfig.indexOf('title = Banners\n') > newConfig.indexOf('name = bolsas_eora_models'));
     assert.equal(new Set(names).size, names.length, 'chaves exclusivas');
@@ -141,6 +147,10 @@ function validate() {
     assert.equal(bannerOriginals.length, 0);
     const withoutUploads = render('snipplets/bolsas-eora/index.tpl', {...context(), settings: {...settings, bolsas_eora_banners: []}});
     assert(!withoutUploads.includes('data-be-banner-template'), 'sem banner quando galeria vazia');
+    const legacyBanner = render('snipplets/bolsas-eora/banners.tpl', {...context(), settings: {...settings, bolsas_eora_banners: [{image: asset(1), link: 'maxivertice', title: 'Legado', button: 'SIM'}]}});
+    assert.match(legacyBanner, /data-be-banner-filter="maxivertice"/);
+    assert.match(legacyBanner, /data-be-banner-legacy-all="true"/);
+    assert(!legacyBanner.includes('<a '), 'link antigo continua tratado como tag durante a migracao');
     const sectionsConfig = fs.readFileSync(path.join(root, 'config/sections.txt'), 'utf8');
     assert(!/bolsas_eora_\d+_(catalog|split)/.test(sectionsConfig));
     assert(sectionsConfig.includes('bolsas_eora_best'));

@@ -10912,48 +10912,15 @@ Bolsas Eora
 	collapse
 		title = Banners
 	description
-		description = Adicione e arraste as imagens para ordenar os banners. No campo Link de cada imagem, informe a tag do modelo, por exemplo maxivertice. Todos os banners com a mesma tag aparecem alternados entre direita e esquerda. Use uma tag por imagem, sem URL ou aspas.
+		description = Adicione e arraste as imagens para ordenar. Em Filtro do banner, informe a tag do modelo (ex.: maxivertice). Para tambem mostrar em Todos, use maxivertice | todos. O campo Link volta a ser o destino do clique; Titulo, Descricao, Botao e Cor controlam o conteudo sobre a imagem. A configuracao acompanha o proprio banner ao reordenar ou excluir.
 	gallery
 		name = bolsas_eora_banners
 		gallery_image = Adicionar banner
-		gallery_link = Tag do produto (ex.: maxivertice)
+		gallery_link = Link ao clicar no banner (opcional)
+		gallery_icon = Filtro do banner (ex.: maxivertice | todos)
 		gallery_width = 1000
 		gallery_height = 1300
 		gallery_more_info = true
-	collapse
-		title = Banners no filtro Todos
-	description
-		description = Marque quais banners tambem aparecem em Todas as bolsas. Cada caixa corresponde a posicao atual da imagem na galeria acima; se reordenar as imagens, revise as caixas. O primeiro banner permanece marcado por padrao para conservar a configuracao anterior.
-	checkbox
-		name = bolsas_eora_banner_01_all
-		description = Banner 1 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_02_all
-		description = Banner 2 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_03_all
-		description = Banner 3 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_04_all
-		description = Banner 4 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_05_all
-		description = Banner 5 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_06_all
-		description = Banner 6 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_07_all
-		description = Banner 7 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_08_all
-		description = Banner 8 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_09_all
-		description = Banner 9 — mostrar no filtro Todos
-	checkbox
-		name = bolsas_eora_banner_10_all
-		description = Banner 10 — mostrar no filtro Todos
 	collapse
 		title = Best sellers
 	checkbox

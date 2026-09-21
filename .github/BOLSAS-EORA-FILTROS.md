@@ -77,7 +77,7 @@ Cadastrar somente as caracteristicas confirmadas para cada produto. Nenhuma text
 
 Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto ou Marrom, combinado com Croco e Prata. Preco usa os filtros nativos da busca e aceita somente minimo, somente maximo ou ambos. Os demais filtros funcionam em Todos os modelos ou em um modelo especifico, com URL compartilhavel e Limpar filtros. Quando existe qualquer modelo, caracteristica ou faixa de preco selecionada, o catalogo percorre automaticamente todas as paginas e mostra o resultado completo sem exigir **Mostrar mais produtos**.
 
-Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal usa `20260921-9`, o CSS usa `20260921-8`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
+Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal e o CSS usam `20260921-10`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
 
 O cadastro de tags e a publicacao na loja nao sao realizados pelos testes locais.
 

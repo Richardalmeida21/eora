@@ -127,9 +127,19 @@
                 grid.insertBefore(banner, products[before] || null);
             });
         }
+        function bannerSettings(item) {
+            var values = String(item.dataset.beBannerFilter || '').split('|');
+            var tag = values.shift() || '';
+            var showInAll = item.dataset.beBannerLegacyAll === 'true' || values.some(function (value) {
+                value = normalize(value);
+                return value === 'todos' || value === 'sim' || value === 'all' || value === 'true' || value === '1';
+            });
+            return {tag: tag.trim(), showInAll: showInAll};
+        }
         function selectBanners(model) {
             var templates = bannerTemplates.filter(function (item) {
-                return model ? normalize(item.dataset.beBannerTag) === normalize(model) : item.dataset.beBannerAll === 'true';
+                var banner = bannerSettings(item);
+                return model ? normalize(banner.tag) === normalize(model) : banner.showInAll;
             });
             activeBanners = templates.map(function (template) { return document.importNode(template.content.firstElementChild, true); });
             placeBanners();

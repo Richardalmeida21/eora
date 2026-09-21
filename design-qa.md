@@ -20,8 +20,10 @@ As capturas têm enquadramentos e conteúdos diferentes: a referência é uma fo
 
 ## Interações verificadas
 
-- Todos exibe apenas os banners cujas posições foram marcadas nas configurações.
-- Um modelo exibe todos os banners que possuem a mesma tag no campo Link.
+- Todos exibe apenas os banners cujo novo campo individual **Filtro do banner** contém `| todos` depois da tag.
+- Um modelo exibe todos os banners que possuem a mesma tag no campo **Filtro do banner**.
+- O Link é novamente um destino de navegação e torna toda a imagem clicável. Título, Descrição, Botão e Cor continuam disponíveis para o conteúdo sobre o banner.
+- Cadastros antigos sem o novo campo continuam usando Link como tag e Botão `SIM` como Todos até serem migrados.
 - Banners alternam entre direita e esquerda no desktop.
 - Paginação, troca de modelo, histórico, redimensionamento e painel lateral reposicionam os banners sem duplicação.
 - Galeria vazia e reordenação não geram erros.

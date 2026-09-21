@@ -25,6 +25,17 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('[data-be-page]')).toHaveAttribute('data-be-ready', '1');
         await idle();
         await expect(page.locator('[data-be-results]')).toBeVisible();
+        await page.evaluate(() => {
+            const strayHeart = document.createElement('button');
+            strayHeart.id = 'wishlistselly-fixture';
+            document.querySelector('[data-be-toolbar]').appendChild(strayHeart);
+            const headerHeart = document.createElement('button');
+            headerHeart.id = 'selly-wishlist-widget';
+            headerHeart.className = 'wishlist-header-icon';
+            document.body.insertBefore(headerHeart, document.body.firstChild);
+        });
+        await expect(page.locator('#wishlistselly-fixture')).toBeHidden();
+        await expect(page.locator('#selly-wishlist-widget')).toBeVisible();
         assert.equal(await page.locator('[data-be-tag]').count(), 20);
         assert.equal(await page.locator('.be-gallery--community .be-gallery__item').count(), 20);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 4);
@@ -40,7 +51,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({path: path.join(output, 'desktop.png')});
         await page.locator('[data-be-catalog-banner]').screenshot({path: path.join(output, 'desktop-split.png')});
-        console.log('PASS desktop: catalogo automatico em 4 colunas, modelos e galerias com 20 itens.');
+        console.log('PASS desktop: catalogo automatico em 4 colunas, favoritos ocultos somente na campanha, modelos e galerias com 20 itens.');
 
         await maxi().click();
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();

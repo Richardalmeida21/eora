@@ -1,21 +1,29 @@
-{# O link da galeria e uma tag, nunca um destino de navegacao. #}
 {% for banner in settings.bolsas_eora_banners %}
     {% if banner.image %}
-        {% set show_in_all =
-            (loop.index == 1 and settings.bolsas_eora_banner_01_all) or
-            (loop.index == 2 and settings.bolsas_eora_banner_02_all) or
-            (loop.index == 3 and settings.bolsas_eora_banner_03_all) or
-            (loop.index == 4 and settings.bolsas_eora_banner_04_all) or
-            (loop.index == 5 and settings.bolsas_eora_banner_05_all) or
-            (loop.index == 6 and settings.bolsas_eora_banner_06_all) or
-            (loop.index == 7 and settings.bolsas_eora_banner_07_all) or
-            (loop.index == 8 and settings.bolsas_eora_banner_08_all) or
-            (loop.index == 9 and settings.bolsas_eora_banner_09_all) or
-            (loop.index == 10 and settings.bolsas_eora_banner_10_all)
-        %}
-        <template data-be-banner-template data-be-banner-tag="{{ banner.link | trim | escape }}" data-be-banner-all="{{ show_in_all ? 'true' : 'false' }}">
-            <figure class="be-catalog-banner" data-be-catalog-banner>
+        {# Novos itens usam Icone/Filtro. Sem esse valor, preserva o cadastro antigo: Link=tag e Botao=SIM. #}
+        {% set banner_filter = banner.icon | default('') | trim %}
+        {% set legacy_banner = not banner_filter %}
+        {% if legacy_banner %}
+            {% set banner_filter = banner.link | default('') | trim %}
+        {% endif %}
+        {% set show_in_all_value = banner.button | default('') | trim | lower %}
+        {% set legacy_show_in_all = legacy_banner and (show_in_all_value == 'sim' or show_in_all_value == 'sí' or show_in_all_value == 'yes' or show_in_all_value == 'true' or show_in_all_value == '1') %}
+        <template data-be-banner-template data-be-banner-filter="{{ banner_filter | escape }}" data-be-banner-legacy-all="{{ legacy_show_in_all ? 'true' : 'false' }}">
+            <figure class="be-catalog-banner{% if banner.color %} be-catalog-banner--{{ banner.color | escape }}{% endif %}" data-be-catalog-banner>
+                {% if banner.link and not legacy_banner %}
+                    <a class="be-catalog-banner__link" href="{{ banner.link | setting_url }}"{% if banner.title %} aria-label="{{ banner.title | escape }}"{% endif %}>
+                {% endif %}
                 <img src="{{ banner.image | static_url | settings_image_url('1080p') }}" srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 94vw, 47vw" alt="{{ banner.title | default('Bolsas Eora') | escape }}" width="{{ banner.width | default(1000) }}" height="{{ banner.height | default(1300) }}" loading="lazy" decoding="async">
+                {% if not legacy_banner and (banner.title or banner.description or banner.button) %}
+                    <div class="be-catalog-banner__content">
+                        {% if banner.title %}<strong>{{ banner.title }}</strong>{% endif %}
+                        {% if banner.description %}<span>{{ banner.description }}</span>{% endif %}
+                        {% if banner.button %}<span class="be-catalog-banner__button">{{ banner.button }}</span>{% endif %}
+                    </div>
+                {% endif %}
+                {% if banner.link and not legacy_banner %}
+                    </a>
+                {% endif %}
             </figure>
         </template>
     {% endif %}
