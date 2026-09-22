@@ -502,9 +502,15 @@
             grid.replaceChildren();
             selectBanners(model);
             more.hidden = true;
-            models.forEach(function (item) { if (item.dataset.beTag === model) item.setAttribute('aria-current', 'true'); else item.removeAttribute('aria-current'); });
+            var modelTitle = '';
+            models.forEach(function (item) {
+                if (item.dataset.beTag === model) {
+                    item.setAttribute('aria-current', 'true');
+                    modelTitle = item.dataset.beTitle || model;
+                } else item.removeAttribute('aria-current');
+            });
             one('[data-be-sort]').value = sort;
-            one('[data-be-result-title]').textContent = model || 'Todas as bolsas';
+            one('[data-be-result-title]').textContent = modelTitle || model || 'Todas as bolsas';
             if (save) remember();
             if (tags.length) loadMore();
             else status.textContent = 'Nenhum modelo disponível no momento.';
