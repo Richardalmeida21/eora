@@ -10913,9 +10913,9 @@ Bolsas Eora
 		title = Categoria de Todas as bolsas
 	text
 		name = bolsas_eora_category_url
-		description = Link da categoria que contém todas as bolsas (ex.: /bolsas-eora-catalogo)
+		description = Link da categoria que contém todas as bolsas (padrão: /bolsas-eora-msc8z)
 	description
-		description = Crie uma categoria com todas as bolsas, escolha Ordem manual em Organizar produtos e cole o link acima. O filtro Todos seguirá essa ordem sem limite de 40 produtos. Se o link ficar vazio, o tema usa a ordem automática por modelos.
+		description = O filtro Todos usa esta categoria como fonte única, preserva a ordem definida na Nuvemshop e evita buscas separadas por modelo. Se precisar trocar a categoria, cole o novo link acima.
 	collapse
 		title = Banners
 	description
