@@ -1,5 +1,47 @@
 # Design QA — página Bolsas Eora
 
+## Carrossel de imagens nos cards — 22/09/2026
+
+### Evidências
+
+- Verdade visual: `/workspace/scratch/eaaee0a7de06/upload/5164edf2-78eb-4c1c-93b0-34283fb686d6.mov`, vídeo mobile de 384 × 848 px. O frame de comparação está em `/workspace/scratch/eaaee0a7de06/gallery-preview/reference-carousel.jpg`.
+- Implementação renderizada: `http://terminal.local:4173/`, prévia aberta e capturada no navegador em um iframe de 384 × 848 CSS px, `devicePixelRatio: 1`, estado da primeira galeria na foto `2 / 3`.
+- Comparação combinada: referência e implementação foram renderizadas lado a lado na mesma página do navegador. O chrome do Instagram/Safari presente na referência foi desconsiderado; a região comparada foi a grade com dois cards, fotos e contador.
+- Dimensões normalizadas: fonte 384 × 848 px; implementação 384 × 848 CSS px e 384 × 848 px na captura do iframe. Não houve redimensionamento de densidade.
+
+### Verificação das superfícies
+
+- Tipografia: o contador mantém texto pequeno, preto e alinhado ao canto superior direito como na referência. Nomes e preços preservam a tipografia já usada pela EORA, em vez de copiar a identidade da loja de referência.
+- Espaçamento e layout: a grade permanece com duas colunas no mobile. Cada foto ocupa integralmente a área existente do card, sem alterar altura, espaçamento, nome ou preço.
+- Cores e tokens: mantidos fundo claro, texto preto e o tratamento neutro existente na página. O contador usa fundo branco translúcido discreto para continuar legível sobre fotos claras ou escuras.
+- Imagens: `object-fit: contain` preserva a bolsa inteira. Somente a primeira foto tem `src/srcset` no carregamento inicial; fotos adjacentes são hidratadas quando há interação.
+- Conteúdo: contador no formato `posição / total`, usando a quantidade real de fotos cadastradas no produto.
+
+### Interações verificadas
+
+- Navegação pela seta seguinte e anterior no desktop atualizou `1 / 3 → 2 / 3 → 3 / 3` e retornou para `2 / 3`.
+- Navegação por teclado com `ArrowRight` atualizou o slide ativo e o contador.
+- No mobile, as setas ficam ocultas e a trilha usa rolagem nativa horizontal com `scroll-snap`, preservando o gesto mostrado no vídeo.
+- O carregamento inicial manteve quatro imagens secundárias sem `src` em dois cards; ao interagir apenas com o primeiro card, somente suas imagens adjacentes foram carregadas.
+- Nenhum erro ou aviso de `terminal.local` foi registrado no console.
+
+### Achados
+
+- P0: nenhum.
+- P1: nenhum.
+- P2: nenhum.
+- Diferenças esperadas: imagens, textos, preços e identidade visual permanecem os da EORA; a referência foi usada somente para reproduzir o comportamento do carrossel e o contador.
+
+### Histórico da comparação
+
+1. A implementação inicial foi renderizada com duas colunas e contador, mantendo o layout atual da EORA.
+2. A prévia foi normalizada em 384 × 848 px e colocada lado a lado com um frame do vídeo na mesma página.
+3. O estado `2 / 3`, as setas desktop, o teclado e a hidratação progressiva foram testados após a comparação visual, sem novos desvios P0/P1/P2.
+
+final result: passed
+
+---
+
 ## Revisão dos controles e consentimento mobile — 21/09/2026
 
 ### Evidências
