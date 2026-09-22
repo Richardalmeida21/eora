@@ -8,7 +8,9 @@
     {% set be_product_images = be_product_images | merge([product.featured_image]) %}
 {% endif %}
 {% for product_image in product.other_images %}
-    {% set be_product_images = be_product_images | merge([product_image]) %}
+    {% if be_product_images | length < 3 %}
+        {% set be_product_images = be_product_images | merge([product_image]) %}
+    {% endif %}
 {% endfor %}
 {% set be_product_image_count = be_product_images | length %}
 <article class="be-product" data-be-product="{{ product.id }}" data-be-tags="{{ be_product_tags | json_encode | escape }}" data-be-price="{{ product.price | default(0) }}" data-be-name="{{ product.name | escape }}" data-be-created="{{ product.created_at | default(product.id) | escape }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
