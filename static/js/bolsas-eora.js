@@ -174,10 +174,13 @@
         prepareProductGalleries(root);
 
         var models = all('[data-be-tag]');
-        var modelTags = [];
+        var modelOptions = [];
         models.forEach(function (model) {
-            if (!modelTags.some(function (tag) { return normalize(tag) === normalize(model.dataset.beTag); })) modelTags.push(model.dataset.beTag);
+            if (!modelOptions.some(function (option) { return normalize(option.value) === normalize(model.dataset.beTag); })) {
+                modelOptions.push({value: model.dataset.beTag, label: model.dataset.beTitle || model.dataset.beTag});
+            }
         });
+        var modelTags = modelOptions.map(function (option) { return option.value; });
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
         var categoryFeedTag = '__bolsas_eora_category__';
@@ -561,7 +564,7 @@
             var submit = form.querySelector('[type="submit"]');
             var pendingSelection = null;
             opener.hidden = false;
-            bagFilters.models(modelSelect, modelTags);
+            bagFilters.models(modelSelect, modelOptions);
             async function loadFacets(model, selected) {
                 var run = ++facetVersion;
                 if (facetRequest) facetRequest.abort();
