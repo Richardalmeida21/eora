@@ -77,6 +77,102 @@
             update();
         });
 
+        function hydrateGallerySlide(slide) {
+            var image = slide && slide.querySelector('img[data-be-src]');
+            if (!image) return;
+            if (image.dataset.beSrcset) image.srcset = image.dataset.beSrcset;
+            image.src = image.dataset.beSrc;
+            image.loading = 'lazy';
+            image.removeAttribute('data-be-src');
+            image.removeAttribute('data-be-srcset');
+        }
+
+        function initProductGallery(gallery) {
+            if (gallery.dataset.beGalleryReady) return;
+            gallery.dataset.beGalleryReady = '1';
+            var track = gallery.querySelector('[data-be-product-slides]');
+            var slides = all('[data-be-product-slide]', gallery);
+            var counter = gallery.querySelector('[data-be-gallery-counter]');
+            var previous = gallery.querySelector('[data-be-gallery-prev]');
+            var next = gallery.querySelector('[data-be-gallery-next]');
+            var current = 0;
+            var frame = 0;
+            var pointerStart = null;
+            var dragged = false;
+            var primed = false;
+            if (!track || !slides.length) return;
+
+            function loadAround(index) {
+                hydrateGallerySlide(slides[index]);
+                hydrateGallerySlide(slides[index - 1]);
+                hydrateGallerySlide(slides[index + 1]);
+            }
+            function update() {
+                frame = 0;
+                var width = Math.max(1, track.clientWidth);
+                current = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / width)));
+                if (counter) counter.textContent = (current + 1) + ' / ' + slides.length;
+                if (previous) previous.disabled = current === 0;
+                if (next) next.disabled = current === slides.length - 1;
+                slides.forEach(function (slide, index) {
+                    if (index === current) slide.setAttribute('aria-current', 'true');
+                    else slide.removeAttribute('aria-current');
+                });
+                if (primed) loadAround(current);
+            }
+            function scheduleUpdate() {
+                if (!frame) frame = window.requestAnimationFrame(update);
+            }
+            function goTo(index) {
+                var target = Math.max(0, Math.min(slides.length - 1, index));
+                primed = true;
+                loadAround(target);
+                track.scrollTo({left: target * track.clientWidth, behavior: reducedMotion.matches ? 'auto' : 'smooth'});
+            }
+            function prime() {
+                primed = true;
+                loadAround(current);
+            }
+
+            track.addEventListener('scroll', scheduleUpdate, {passive: true});
+            track.addEventListener('pointerdown', function (event) {
+                pointerStart = {x: event.clientX, y: event.clientY};
+                dragged = false;
+                prime();
+            }, {passive: true});
+            track.addEventListener('pointermove', function (event) {
+                if (!pointerStart) return;
+                if (Math.abs(event.clientX - pointerStart.x) > 8 && Math.abs(event.clientX - pointerStart.x) > Math.abs(event.clientY - pointerStart.y)) dragged = true;
+            }, {passive: true});
+            ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (name) {
+                track.addEventListener(name, function () {
+                    pointerStart = null;
+                    window.setTimeout(function () { dragged = false; }, 0);
+                }, {passive: true});
+            });
+            track.addEventListener('click', function (event) {
+                if (!dragged) return;
+                event.preventDefault();
+                event.stopPropagation();
+            }, true);
+            track.addEventListener('keydown', function (event) {
+                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                event.preventDefault();
+                goTo(current + (event.key === 'ArrowRight' ? 1 : -1));
+            });
+            gallery.addEventListener('mouseenter', prime, {once: true, passive: true});
+            gallery.addEventListener('focusin', prime, {once: true});
+            if (previous) previous.addEventListener('click', function () { goTo(current - 1); });
+            if (next) next.addEventListener('click', function () { goTo(current + 1); });
+            update();
+        }
+
+        function prepareProductGalleries(parent) {
+            all('[data-be-product-gallery]', parent || root).forEach(initProductGallery);
+        }
+
+        prepareProductGalleries(root);
+
         var models = all('[data-be-tag]');
         var modelTags = [];
         models.forEach(function (model) {
@@ -380,6 +476,7 @@
                 if (run === version) {
                     if (current.sort !== 'user') sortCards(cards, current.sort);
                     cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
+                    prepareProductGalleries(grid);
                     placeBanners();
                     current.loading = false;
                     showStatus(error);
