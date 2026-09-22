@@ -3,12 +3,13 @@
 {% for product_tag in product.tags %}
     {% set be_product_tags = be_product_tags | merge([product_tag.tag | default(product_tag)]) %}
 {% endfor %}
+{% set be_product_image_limit = be_product_image_limit | default(0) %}
 {% set be_product_images = [] %}
 {% if product.featured_image %}
     {% set be_product_images = be_product_images | merge([product.featured_image]) %}
 {% endif %}
 {% for product_image in product.other_images %}
-    {% if be_product_images | length < 3 %}
+    {% if be_product_image_limit == 0 or be_product_images | length < be_product_image_limit %}
         {% set be_product_images = be_product_images | merge([product_image]) %}
     {% endif %}
 {% endfor %}

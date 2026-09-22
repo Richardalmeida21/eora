@@ -48,7 +48,7 @@
             <header class="be-section-heading"><h2>{{ settings.bolsas_eora_best_title | default('Best sellers') | escape }}</h2></header>
             <div class="be-track" data-be-track tabindex="0" aria-label="Percorrer produtos">
                 {% for product in sections.bolsas_eora_best.products %}
-                    {% include 'snipplets/bolsas-eora/product-card.tpl' %}
+                    {% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 3} %}
                 {% endfor %}
             </div>
             {% include 'snipplets/bolsas-eora/controls.tpl' %}
