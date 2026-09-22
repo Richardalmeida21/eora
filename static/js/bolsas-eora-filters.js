@@ -67,9 +67,9 @@
             });
         });
     }
-    function models(select, tags) {
+    function models(select, options) {
         select.replaceChildren(new Option('Todos os modelos', ''));
-        tags.forEach(function (tag) { select.appendChild(new Option(tag, tag)); });
+        options.forEach(function (option) { select.appendChild(new Option(option.label, option.value)); });
     }
     window.EoraBagFilters = {matches: matches, render: render, models: models};
 }());
