@@ -93,5 +93,5 @@
     {% endif %}
     <noscript><p class="be-status">Ative o JavaScript para carregar as bolsas e filtrar por modelo.</p></noscript>
 </main>
-<script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-5" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260922-2" defer></script>
+<script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260922-1" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260922-3" defer></script>
