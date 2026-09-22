@@ -8,10 +8,11 @@
                 <div class="be-track" data-be-track tabindex="0" aria-label="Percorrer modelos">
                     {% for model in settings.bolsas_eora_models %}
                         {% set model_tag = model.link | trim %}
+                        {% set model_title = model.title | default(model_tag) | trim %}
                         {% if model.image and model_tag %}
-                            <a class="be-model" href="?tag={{ model_tag | url_encode }}" data-be-tag="{{ model_tag | escape }}">
-                                <img src="{{ model.image | static_url | settings_image_url('large') }}" srcset="{{ model.image | static_url | settings_image_url('medium') }} 320w, {{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w" sizes="(max-width: 767px) 40vw, (max-width: 1024px) 25vw, 222px" alt="{{ model_tag | escape }}" width="{{ model.width | default(300) }}" height="{{ model.height | default(300) }}"{% if loop.index > 4 %} loading="lazy"{% endif %} decoding="async">
-                                <span>{{ model_tag | escape }}</span>
+                            <a class="be-model" href="?tag={{ model_tag | url_encode }}" data-be-tag="{{ model_tag | escape }}" data-be-title="{{ model_title | escape }}">
+                                <img src="{{ model.image | static_url | settings_image_url('large') }}" srcset="{{ model.image | static_url | settings_image_url('medium') }} 320w, {{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w" sizes="(max-width: 767px) 40vw, (max-width: 1024px) 25vw, 222px" alt="{{ model_title | escape }}" width="{{ model.width | default(300) }}" height="{{ model.height | default(300) }}"{% if loop.index > 4 %} loading="lazy"{% endif %} decoding="async">
+                                <span>{{ model_title | escape }}</span>
                             </a>
                         {% endif %}
                     {% endfor %}
@@ -71,7 +72,9 @@
                 <div class="be-filter-dialog__body">
                     <label class="be-model-select">Modelo<select name="be_model"><option value="">Todos os modelos</option>
                         {% for model in settings.bolsas_eora_models %}
-                            {% if model.image and model.link | trim %}<option value="{{ model.link | trim | escape }}">{{ model.link | trim | escape }}</option>{% endif %}
+                            {% set model_tag = model.link | trim %}
+                            {% set model_title = model.title | default(model_tag) | trim %}
+                            {% if model.image and model_tag %}<option value="{{ model_tag | escape }}">{{ model_title | escape }}</option>{% endif %}
                         {% endfor %}
                     </select></label>
                     <p data-be-facet-status role="status"></p>
@@ -91,4 +94,4 @@
     <noscript><p class="be-status">Ative o JavaScript para carregar as bolsas e filtrar por modelo.</p></noscript>
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-5" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260922-1" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260922-2" defer></script>
