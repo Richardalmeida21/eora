@@ -1,6 +1,6 @@
 {% set configured_bolsas_eora_category_url = settings.bolsas_eora_category_url | default('') | trim %}
 {% set bolsas_eora_category_url = configured_bolsas_eora_category_url ? configured_bolsas_eora_category_url : '/bolsas-eora-msc8z' %}
-<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260921-20">
+<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260922-1">
 <main class="be-page" data-be-page data-search-url="{{ store.search_url | escape }}" data-category-url="{{ bolsas_eora_category_url | escape }}">
     {% if settings.bolsas_eora_models %}
         <nav class="be-models" data-be-carousel aria-label="Modelos de bolsas">
@@ -91,4 +91,4 @@
     <noscript><p class="be-status">Ative o JavaScript para carregar as bolsas e filtrar por modelo.</p></noscript>
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260918-5" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260921-18" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260922-1" defer></script>
