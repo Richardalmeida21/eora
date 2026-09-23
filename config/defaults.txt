@@ -164,3 +164,12 @@ bolsas_eora_community_enabled = 1
 bolsas_eora_community_title_pt = Quem usa Eora
 bolsas_eora_community_subtitle_pt = Nossa comunidade
 bolsas_eora_categories_enabled = 1
+
+oculos_eora_filters_enabled = 1
+oculos_eora_category_url =
+oculos_eora_best_enabled = 1
+oculos_eora_best_title_pt = Best sellers
+oculos_eora_community_enabled = 1
+oculos_eora_community_title_pt = Quem usa Eora
+oculos_eora_community_subtitle_pt = Nossa comunidade
+oculos_eora_categories_enabled = 1

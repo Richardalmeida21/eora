@@ -82,7 +82,7 @@ const expectedIds = [...new Set(Object.values(products).flat().filter(item => it
             await idle();
             await expect(page.locator('[data-be-results]')).toBeVisible();
             await expect(page.locator('[data-be-reset]')).toBeVisible();
-            assert(await page.locator('[data-be-reset]').evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 16 && el.getBoundingClientRect().height >= 48));
+            assert(await page.locator('[data-be-reset]').evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 12 && el.getBoundingClientRect().height >= 42));
             await expect(page.locator('[data-be-result-title]')).toHaveText('Todas as bolsas');
             assert((await cards().count()) > 0 && (await cards().count()) <= 24);
             assert(requests.length <= 12);

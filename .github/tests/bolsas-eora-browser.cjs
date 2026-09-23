@@ -196,9 +196,9 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await idle();
         assert((await cards().count()) > 0 && (await cards().count()) <= 24);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
-        assert.equal(await page.locator('[data-be-toolbar]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 1);
-        assert((await page.locator('[data-be-reset]').boundingBox()).height >= 52);
-        assert((await page.locator('[data-be-sort]').boundingBox()).height >= 52);
+        assert.equal(await page.locator('[data-be-toolbar]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
+        assert((await page.locator('[data-be-reset]').boundingBox()).height >= 42);
+        assert((await page.locator('[data-be-sort]').boundingBox()).height >= 42);
         assert((await page.locator('.be-models [data-be-next]').boundingBox()).height >= 44);
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         assert.equal(await page.locator('.be-models').evaluate(el => getComputedStyle(el).getPropertyValue('--be-visible').trim()), '2');

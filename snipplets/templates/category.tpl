@@ -3,7 +3,7 @@
 {# Only remove this if you want to take away the theme onboarding advices #}
 {% set show_help = not has_products %}
 
-{% if params.be_category_feed == '1' %}
+{% if params.be_category_feed == '1' or params.oe_category_feed == '1' %}
 	{% paginate by 24 %}
 {% elseif settings.pagination == 'infinite' %}
 	{% paginate by 12 %}
@@ -13,6 +13,8 @@
 
 {% if params.be_category_feed == '1' %}
 	{% include 'snipplets/bolsas-eora/category-feed.tpl' %}
+{% elseif params.oe_category_feed == '1' %}
+	{% include 'snipplets/oculos-eora/category-feed.tpl' %}
 {% else %}
 
 {% if not show_help %}

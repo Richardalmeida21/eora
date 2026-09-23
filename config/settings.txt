@@ -10979,6 +10979,96 @@ Bolsas Eora
 		gallery_height = 1000
 		gallery_more_info = true
 
+Óculos Eora
+	meta
+		icon = shopping-bag
+		advanced = true
+	collapse
+		title = Filtros por modelo — imagem, título e tag
+	description
+		description = Adicione e ordene as imagens dos modelos IRIS, NOVA, ASTRA, LUNA, LUAR, ONYX, SPARKY e dos demais modelos. No campo Título, informe o nome exibido. No campo Tag, use a tag cadastrada nos produtos, por exemplo iris. Uma tag por imagem; sem URL, barras ou aspas.
+	gallery
+		name = oculos_eora_models
+		gallery_image = Adicionar imagem do modelo
+		gallery_title = Título exibido no filtro
+		gallery_link = Tag do produto (ex.: iris)
+		gallery_width = 400
+		gallery_height = 400
+		gallery_more_info = true
+	checkbox
+		name = oculos_eora_filters_enabled
+		description = Mostrar botão flutuante de filtros
+	description
+		description = As facetas aparecem a partir das tags reais dos produtos. Use formato:aviador, estilo:classico, cor-armacao:preto, cor-lente:cinza, tipo-lente:solar, material-armacao:acetato e tamanho:medio. Os valores adicionais das mesmas famílias aparecem automaticamente. O preço usa os filtros da loja.
+	collapse
+		title = Categoria de Todos os óculos
+	text
+		name = oculos_eora_category_url
+		description = Link da categoria que contém todos os óculos
+	description
+		description = O filtro Todos usa esta categoria como fonte única e preserva a ordem manual definida em Organizar produtos. Se o link ficar vazio, a página reúne os produtos pelas tags dos modelos configurados acima.
+	collapse
+		title = Banners
+	description
+		description = No campo Link, informe o destino do clique. No campo Descrição, informe a tag do modelo, por exemplo iris. Para mostrar também em Todos, use iris,todos. Título, Botão e Cor ficam livres para o conteúdo visual.
+	gallery
+		name = oculos_eora_banners
+		gallery_image = Adicionar banner
+		gallery_link = Link ao clicar no banner (opcional)
+		gallery_width = 2000
+		gallery_height = 2600
+		gallery_more_info = true
+	collapse
+		title = Best sellers
+	checkbox
+		name = oculos_eora_best_enabled
+		description = Mostrar best sellers
+	i18n_input
+		name = oculos_eora_best_title
+		description = Título
+	description
+		description = Selecione e ordene os produtos em Óculos Eora — Best sellers, na organização dos produtos em destaque. São 4 produtos visíveis no computador e 2 no celular.
+	collapse
+		title = Quem usa — galeria
+	checkbox
+		name = oculos_eora_community_enabled
+		description = Mostrar Quem usa
+	i18n_input
+		name = oculos_eora_community_title
+		description = Título
+	i18n_input
+		name = oculos_eora_community_subtitle
+		description = Subtítulo
+	text
+		name = oculos_eora_community_link
+		description = Link da página Quem usa (também usado nas fotos sem link próprio)
+	description
+		description = Adicione, exclua e arraste as fotos para ordenar. Cada foto pode ter seu próprio link. São 5 imagens visíveis no computador e 2 no celular.
+	gallery
+		name = oculos_eora_community
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 600
+		gallery_height = 800
+		gallery_more_info = true
+	collapse
+		title = Banners de categorias
+	checkbox
+		name = oculos_eora_categories_enabled
+		description = Mostrar banners de categorias
+	i18n_input
+		name = oculos_eora_categories_title
+		description = Título da seção (opcional)
+	description
+		description = Adicione e ordene os banners. Edite título, descrição, botão e link em cada imagem. São 4 banners visíveis no computador e 1 no celular.
+	gallery
+		name = oculos_eora_categories
+		gallery_image = Adicionar banner de categoria
+		gallery_link = Link da categoria
+		gallery_width = 750
+		gallery_height = 1000
+		gallery_more_info = true
+
 Edición avanzada de CSS
 	meta
 		icon = code

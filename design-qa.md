@@ -1,5 +1,35 @@
 # Design QA — página Bolsas Eora
 
+## Clone Óculos Eora — 23/09/2026
+
+### Evidências
+
+- Fonte visual: `C:\Temp\eora-bolsas-validation\mobile.png`, página Bolsas Eora existente, captura em 390 px CSS e device scale factor 1.
+- Implementação: `C:\Temp\eora-bolsas-validation\oculos-eora-mobile.png`, página Óculos Eora, captura em 390 px CSS e device scale factor 1.
+- Comparação normalizada: `C:\Temp\eora-bolsas-validation\oculos-eora-comparison.png`, recorte superior de 844 px das duas páginas lado a lado, sem redimensionamento.
+- Comparação focada: `C:\Temp\eora-bolsas-validation\oculos-eora-filters-comparison.png`, filtros abertos em 390 × 844 px.
+- Estado: catálogo Todos, ordenação Destaques, filtro fechado na comparação principal e aberto na comparação focada.
+
+### Superfícies verificadas
+
+- Tipografia: mesma família, pesos, tamanhos, caixa alta e hierarquia. Mudam somente os substantivos e nomes de modelos solicitados.
+- Espaçamento e layout: mesma largura, grid de duas colunas, toolbar, carrossel, controles, cards e botão flutuante; sem overflow horizontal.
+- Cores e tokens: idênticos, pois a nova página reutiliza a folha de estilos de Bolsas Eora.
+- Imagens: estrutura, proporções, carregamento progressivo e galerias idênticos. Os fixtures usam imagens de bolsas apenas como dados de demonstração; a produção consumirá as imagens reais dos óculos.
+- Conteúdo: Todos os óculos, IRIS/NOVA/ASTRA/LUNA/LUAR/ONYX/SPARKY e as sete famílias de facetas aparecem na ordem definida. Preço permanece no final.
+- Interações: categoria manual, lotes de 24, carregamento automático, modelo, ordenação, filtros combinados, limpar, histórico, Escape e retorno de foco passaram no navegador sem erros JavaScript.
+
+### Achados
+
+- P0: nenhum.
+- P1: nenhum.
+- P2: nenhum.
+- Diferenças esperadas: nomes, facetas, quantidade inicial e imagens de demonstração são dados de conteúdo, não divergências visuais.
+
+final result: passed
+
+---
+
 ## Carrossel de imagens nos cards — 22/09/2026
 
 ### Evidências

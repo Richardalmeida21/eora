@@ -74,6 +74,8 @@
 	</main>
 {% elseif page.handle == 'bolsas-eora' %}
 	{% include 'snipplets/bolsas-eora/index.tpl' %}
+{% elseif page.handle == 'oculos-eora' %}
+	{% include 'snipplets/oculos-eora/index.tpl' %}
 {% else %}
 	
 	<section class="user-content pb-5 pagina-institucional">

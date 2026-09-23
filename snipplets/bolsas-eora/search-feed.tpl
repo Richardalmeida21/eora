@@ -1,4 +1,5 @@
 {# Dados inertes: a busca normal permanece intacta. Somente tags configuradas geram o feed. #}
+{% if params.oe_feed != '4' %}
 {% set be_search_tag = '' %}
 {% for model in settings.bolsas_eora_models %}
     {% set be_model_tag = model.link | trim %}
@@ -38,4 +39,5 @@
             {% endif %}
         </div>
     </template>
+{% endif %}
 {% endif %}

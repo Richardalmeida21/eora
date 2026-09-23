@@ -5,6 +5,16 @@
         var root = document.querySelector('[data-be-page]');
         if (!root || root.dataset.beReady) return;
         root.dataset.beReady = '1';
+        var filterPrefix = root.dataset.beFilterPrefix || 'be';
+        var filterEngineName = root.dataset.beFilterGlobal || 'EoraBagFilters';
+        var categoryFeedTag = root.dataset.beCategoryFeedTag || '__bolsas_eora_category__';
+        var allTitle = root.dataset.beAllTitle || 'Todas as bolsas';
+        var filtersParam = filterPrefix + '_filters';
+        var sortParam = filterPrefix + '_sort';
+        var feedParam = filterPrefix + '_feed';
+        var categoryFeedParam = filterPrefix + '_category_feed';
+        var modelField = filterPrefix + '_model';
+        var localFilterPrefix = filterPrefix + '_';
         var mobile = window.matchMedia('(max-width: 767px)');
         var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         var normalize = function (value) { return String(value || '').trim().toLocaleLowerCase('pt-BR'); };
@@ -183,7 +193,6 @@
         var modelTags = modelOptions.map(function (option) { return option.value; });
         var searchBase = new URL(root.dataset.searchUrl, window.location.href);
         if (searchBase.origin !== window.location.origin) return;
-        var categoryFeedTag = '__bolsas_eora_category__';
         var categoryBase = null;
         try {
             var configuredCategory = new URL(String(root.dataset.categoryUrl || '').trim(), window.location.href);
@@ -197,7 +206,7 @@
         var more = one('[data-be-more]');
         var dialog = one('#be-filter-dialog');
         var form = one('[data-be-filter-form]');
-        var bagFilters = window.EoraBagFilters;
+        var bagFilters = window[filterEngineName];
         var facetCache = new Map();
         var feedCache = new Map();
         var feedCacheBytes = 0;
@@ -207,7 +216,7 @@
         var productRequest = null;
         var version = 0;
         var state;
-        var reserved = ['q', 'page', 'results_only', 'sort_by', 'be_model', 'be_feed', 'be_category_feed', 'preview', '__proto__', 'constructor', 'prototype'];
+        var reserved = ['q', 'page', 'results_only', 'sort_by', modelField, feedParam, categoryFeedParam, 'preview', '__proto__', 'constructor', 'prototype'];
 
         function placeBanners() {
             if (!activeBanners.length) return;
@@ -280,11 +289,11 @@
             var url = new URL(searchBase);
             url.search = '';
             url.searchParams.set('q', '"' + tag + '"');
-            url.searchParams.set('be_feed', '4');
+            url.searchParams.set(feedParam, '4');
             var preview = new URL(window.location.href).searchParams.get('preview');
             if (preview) url.searchParams.set('preview', preview);
             Object.keys(filters).forEach(function (key) {
-                if (reserved.indexOf(key) === -1 && key.indexOf('be_') !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
+                if (reserved.indexOf(key) === -1 && key.indexOf(localFilterPrefix) !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
             });
             if (sort && sort !== 'user') url.searchParams.set('sort_by', sort);
             return url;
@@ -292,11 +301,11 @@
         function makeCategoryUrl(filters, sort) {
             var url = new URL(categoryBase);
             url.search = '';
-            url.searchParams.set('be_category_feed', '1');
+            url.searchParams.set(categoryFeedParam, '1');
             var preview = new URL(window.location.href).searchParams.get('preview');
             if (preview) url.searchParams.set('preview', preview);
             Object.keys(filters).forEach(function (key) {
-                if (reserved.indexOf(key) === -1 && key.indexOf('be_') !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
+                if (reserved.indexOf(key) === -1 && key.indexOf(localFilterPrefix) !== 0 && filters[key]) url.searchParams.set(key, filters[key]);
             });
             if (sort && sort !== 'user') url.searchParams.set('sort_by', sort);
             return url;
@@ -320,7 +329,7 @@
             var container = document.createElement('template');
             container.innerHTML = markup;
             var feed = container.content.querySelector('template[data-be-search-feed]');
-            if (!feed || normalize(feed.dataset.tag) !== normalize(tag)) throw new Error('Missing campaign feed');
+            if (!feed || normalize(feed.dataset.tag) !== normalize(tag)) throw new Error('Missing campaign feed for ' + tag);
             return feed;
         }
         async function fetchFeed(url, controller, tag) {
@@ -337,7 +346,7 @@
                 // O formato deste template e definido em search-feed.tpl; os campos
                 // dos produtos sao escapados e nao contem templates aninhados.
                 var match = html.match(/<template\b[^>]*\bdata-be-search-feed\b[^>]*>[\s\S]*?<\/template\s*>/i);
-                if (!match) throw new Error('Missing campaign feed');
+                if (!match) throw new Error('Missing campaign feed for ' + tag + ' at ' + url.pathname);
                 var feed = parseFeed(match[0], tag);
                 if (feed.dataset.last !== '1') {
                     if (!feed.dataset.next) throw new Error('Missing pagination');
@@ -378,10 +387,10 @@
         }
         function remember() {
             var url = new URL(window.location.href);
-            ['tag', 'be_filters', 'be_sort'].forEach(function (key) { url.searchParams.delete(key); });
+            ['tag', filtersParam, sortParam].forEach(function (key) { url.searchParams.delete(key); });
             if (state.model) url.searchParams.set('tag', state.model);
-            if (Object.keys(state.filters).length) url.searchParams.set('be_filters', JSON.stringify(state.filters));
-            if (state.sort !== 'user') url.searchParams.set('be_sort', state.sort);
+            if (Object.keys(state.filters).length) url.searchParams.set(filtersParam, JSON.stringify(state.filters));
+            if (state.sort !== 'user') url.searchParams.set(sortParam, state.sort);
             if (url.href !== window.location.href) window.history.pushState(null, '', url);
         }
         function hasMore() {
@@ -446,7 +455,7 @@
                         productRequest = controller;
                         var feed = await fetchFeed(url, controller, search.tag);
                         if (run !== version) return;
-                        if (Object.keys(current.filters).some(function (key) { return key.indexOf('be_') === 0; }) && !bagFilters) throw new Error('Missing filters');
+                        if (Object.keys(current.filters).some(function (key) { return key.indexOf(localFilterPrefix) === 0; }) && !bagFilters) throw new Error('Missing filters');
                         var next = feed.dataset.last === '1' ? '' : feed.dataset.next;
                         if (feed.dataset.last !== '1' && !next) throw new Error('Missing pagination');
                         if (next) {
@@ -513,7 +522,7 @@
                 } else item.removeAttribute('aria-current');
             });
             one('[data-be-sort]').value = sort;
-            one('[data-be-result-title]').textContent = modelTitle || model || 'Todas as bolsas';
+            one('[data-be-result-title]').textContent = modelTitle || model || allTitle;
             if (save) remember();
             if (tags.length) loadMore();
             else status.textContent = 'Nenhum modelo disponível no momento.';
@@ -522,10 +531,10 @@
             var url = new URL(window.location.href);
             var filters = {};
             try {
-                var parsed = JSON.parse(url.searchParams.get('be_filters') || '{}');
+                var parsed = JSON.parse(url.searchParams.get(filtersParam) || '{}');
                 Object.keys(parsed || {}).forEach(function (key) { if (reserved.indexOf(key) === -1 && typeof parsed[key] === 'string') Object.defineProperty(filters, key, {value: parsed[key], enumerable: true}); });
             } catch (_) { /* URL incompleta: volta ao catalogo sem filtros adicionais. */ }
-            var sort = url.searchParams.get('be_sort') || 'user';
+            var sort = url.searchParams.get(sortParam) || 'user';
             if (!all('option', one('[data-be-sort]')).some(function (option) { return option.value === sort; })) sort = 'user';
             activate(url.searchParams.get('tag'), filters, sort, false);
         }
@@ -560,7 +569,7 @@
             var opener = one('[data-be-open-filters]');
             var facetStatus = one('[data-be-facet-status]');
             var facets = one('[data-be-facets]');
-            var modelSelect = form.elements.be_model;
+            var modelSelect = form.elements[modelField];
             var submit = form.querySelector('[type="submit"]');
             var pendingSelection = null;
             opener.hidden = false;
@@ -650,7 +659,7 @@
                 // Filtros ativos da URL podem pertencer a paginas ainda nao carregadas.
                 // Conserva somente valores ainda sem campo; desmarcacoes visiveis prevalecem.
                 Object.keys(pendingSelection || {}).forEach(function (key) {
-                    if (reserved.indexOf(key) !== -1 || key.indexOf('be_') !== 0) return;
+                    if (reserved.indexOf(key) !== -1 || key.indexOf(localFilterPrefix) !== 0) return;
                     var rendered = all('input', facets).filter(function (input) { return input.name === key; });
                     pendingSelection[key].split('|').forEach(function (value) {
                         if (value && !rendered.some(function (input) { return input.value === value; })) {

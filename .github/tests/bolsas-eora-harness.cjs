@@ -27,9 +27,11 @@ function compile(id, source) {
     templates.set(id, template);
     return template;
 }
-for (const file of fs.readdirSync(path.join(root, 'snipplets/bolsas-eora'))) {
-    const id = 'snipplets/bolsas-eora/' + file;
-    compile(id, fs.readFileSync(path.join(root, id), 'utf8'));
+for (const directory of ['bolsas-eora', 'oculos-eora']) {
+    for (const file of fs.readdirSync(path.join(root, 'snipplets', directory))) {
+        const id = 'snipplets/' + directory + '/' + file;
+        compile(id, fs.readFileSync(path.join(root, id), 'utf8'));
+    }
 }
 function render(id, data) { return templates.get(id).render(data); }
 function platformTag(tag) {
@@ -51,9 +53,31 @@ function product(id, tag = 'maxivertice', overrides = {}) {
 }
 const candidates = Array.from({length: 30}, (_, index) => product(index + 1, index % 5 === 0 ? 'maxivertice-extra' : 'maxivertice'));
 const mini = product(101, 'minivertice', {name: 'Bolsa Mini Vértice'});
+const eyewearModels = ['iris', 'nova', 'astra', 'luna', 'luar', 'onyx', 'sparky'];
+const eyewearValues = {
+    formato: ['aviador', 'retangular', 'quadrado', 'oval', 'redondo', 'cat-eye', 'geometrico'],
+    estilo: ['classico', 'minimalista', 'statement', 'esportivo'],
+    'cor-armacao': ['preto', 'tartaruga', 'marrom', 'transparente', 'bege-creme', 'cinza', 'colorido'],
+    'cor-lente': ['cinza', 'marrom', 'verde', 'azul', 'preto-escuro', 'lente-clara', 'transparente'],
+    'tipo-lente': ['solar', 'oftalmica-clara', 'degrade'],
+    'material-armacao': ['acetato', 'metal', 'acetato-metal'],
+    tamanho: ['pequeno', 'medio', 'grande-oversized'],
+};
+function eyewearProduct(index) {
+    const model = eyewearModels[index % eyewearModels.length];
+    const tags = [model, 'oculos', ...Object.entries(eyewearValues).map(([key, values]) => key + ':' + values[index % values.length])];
+    return product(500 + index, model, {
+        name: 'Óculos ' + model.toUpperCase() + ' ' + (index + 1),
+        tags,
+        featured_image: {url: asset(index), alt: 'Óculos Eora', dimensions: {width: 800, height: 800}},
+        other_images: [{url: asset(index + 1)}],
+        price: 69900 + index * 100,
+    });
+}
+const eyewearCandidates = Array.from({length: 30}, (_, index) => eyewearProduct(index));
 const settings = {
     bolsas_eora_enabled: true, bolsas_eora_page_url: 'bolsas-eora', bolsas_eora_title: 'Bolsas Eora',
-    bolsas_eora_catalog_tag: 'bolsa', bolsas_eora_filters_enabled: true, product_hover: true,
+    bolsas_eora_catalog_tag: 'bolsa', bolsas_eora_filters_enabled: true, bolsas_eora_category_url: '/search/', product_hover: true,
     bolsas_eora_models: Array.from({length: 20}, (_, i) => ({image: asset(i), link: i === 0 ? 'maxivertice' : i === 1 ? 'minivertice' : 'modelo-' + i})),
     bolsas_eora_banners: [
         {image: asset(4), link: '/colecoes/maxivertice', title: 'Banner Maxi Vértice', description: 'maxivertice,todos', button: 'Ver bolsas', color: 'light'},
@@ -65,11 +89,23 @@ const settings = {
     bolsas_eora_community: Array.from({length: 20}, (_, i) => ({image: asset(i), title: 'Quem usa ' + (i + 1), link: '/quem-usa/' + i})),
     bolsas_eora_categories_enabled: true,
     bolsas_eora_categories: Array.from({length: 5}, (_, i) => ({image: asset(i), title: ['Vértice', 'Mini Vértice', 'Maxi Vértice', 'Hobo', 'Coleção'][i], description: 'Conheça a coleção', link: '/colecao/' + i})),
+    oculos_eora_filters_enabled: true,
+    oculos_eora_category_url: '/categoria/oculos-eora',
+    oculos_eora_models: eyewearModels.map((link, i) => ({image: asset(i), link, title: link.toUpperCase()})),
+    oculos_eora_banners: [{image: asset(4), link: '/oculos/iris', title: 'Banner IRIS', description: 'iris,todos', button: 'Ver óculos', color: 'light'}],
+    oculos_eora_best_enabled: true, oculos_eora_best_title: 'Best sellers',
+    oculos_eora_community_enabled: true, oculos_eora_community_title: 'Quem usa Eora',
+    oculos_eora_community_subtitle: 'Nossa comunidade', oculos_eora_community_link: '/quem-usa',
+    oculos_eora_community: Array.from({length: 8}, (_, i) => ({image: asset(i), title: 'Quem usa ' + (i + 1), link: '/quem-usa/' + i})),
+    oculos_eora_categories_enabled: true,
+    oculos_eora_categories: Array.from({length: 4}, (_, i) => ({image: asset(i), title: ['Solar', 'Oftálmico', 'Statement', 'Clássico'][i], description: 'Conheça a coleção', link: '/oculos/' + i})),
 };
 const sections = {
     bolsas_eora_best: {products: candidates.slice(0, 8)},
+    oculos_eora_best: {products: eyewearCandidates.slice(0, 8)},
 };
 const context = () => ({settings, sections, page: {handle: 'bolsas-eora', name: 'Bolsas Eora'}, store: {search_url: '/search/'}});
+const oculosContext = () => ({settings, sections, page: {handle: 'oculos-eora', name: 'Óculos Eora'}, store: {search_url: '/search/'}});
 function feed(url) {
     const query = url.searchParams.get('q');
     const tag = (query || '').replace(/^"|"$/g, '');
@@ -88,6 +124,19 @@ function feed(url) {
         {type: 'brand', name: 'Marca', key: 'brand', has_products: true, values: [{name: 'Eora', product_count: 30}]},
     ];
     return render('snipplets/bolsas-eora/search-feed.tpl', {...context(), query, products: products.slice((page - 1) * 5, page * 5), pages: {current: page, is_last: last, next: last ? '' : next.pathname + next.search}, has_filters_enabled: true, product_filters});
+}
+
+function eyewearFeed(url) {
+    const query = url.searchParams.get('q');
+    const tag = (query || '').replace(/^"|"$/g, '');
+    let products = eyewearCandidates.filter(item => item.tags.includes(tag));
+    if (url.searchParams.has('min_price')) products = products.filter(item => item.price >= Number(url.searchParams.get('min_price')) * 100);
+    if (url.searchParams.has('max_price')) products = products.filter(item => item.price <= Number(url.searchParams.get('max_price')) * 100);
+    const page = Number(url.searchParams.get('page') || 1);
+    const last = page * 5 >= products.length;
+    const next = new URL(url);
+    next.searchParams.set('page', page + 1);
+    return render('snipplets/oculos-eora/search-feed.tpl', {...oculosContext(), params: {oe_feed: '4'}, query, products: products.slice((page - 1) * 5, page * 5), pages: {current: page, is_last: last, next: last ? '' : next.pathname + next.search}});
 }
 
 function validate() {
@@ -114,15 +163,15 @@ function validate() {
     const currentSource = fs.readFileSync(path.join(root, 'templates/page.tpl'), 'utf8');
     const oldSource = execFileSync('git', ['show', 'HEAD:templates/page.tpl'], {cwd: root, encoding: 'utf8'});
     const includes = [...new Set([...oldSource.matchAll(/include\s+'([^']+)'/g)].map(m => m[1]))];
-    includes.filter(id => !id.startsWith('snipplets/bolsas-eora/')).forEach(id => compile(id, 'LEGACY:' + id));
+    includes.filter(id => !id.startsWith('snipplets/bolsas-eora/') && !id.startsWith('snipplets/oculos-eora/')).forEach(id => compile(id, 'LEGACY:' + id));
     const old = compile('legacy-page', oldSource);
     const current = compile('current-page', currentSource);
     const configured = {gift_guide_page_url: 'presentes', behind_lens_page_url: 'lentes'};
     for (let i = 1; i <= 10; i++) configured['campaign_page_' + String(i).padStart(2, '0') + '_url'] = 'campanha-' + i;
-    const handles = ['sobre', 'bolsas-eora', 'presentes', 'lentes', 'garantia-eora', ...Array.from({length: 10}, (_, i) => 'campanha-' + (i + 1))];
+    const handles = ['sobre', 'bolsas-eora', 'oculos-eora', 'presentes', 'lentes', 'garantia-eora', ...Array.from({length: 10}, (_, i) => 'campanha-' + (i + 1))];
     for (const enabled of [false, true]) for (const handle of handles) {
         const data = {settings: {...configured, bolsas_eora_enabled: enabled}, page: {handle, name: 'Teste', content: 'Conteudo'}};
-        if (handle !== 'bolsas-eora') assert.equal(current.render(data), old.render(data), handle + ' preserved');
+        if (handle !== 'bolsas-eora' && handle !== 'oculos-eora') assert.equal(current.render(data), old.render(data), handle + ' preserved');
     }
     // Uma URL que ja pertença a outra campanha conserva a precedencia anterior.
     for (const handle of ['presentes', 'lentes', 'garantia-eora', 'campanha-1']) {
@@ -130,6 +179,7 @@ function validate() {
         assert.equal(current.render(data), old.render(data));
     }
     assert.match(current.render(context()), /data-be-page/);
+    assert.match(current.render(oculosContext()), /data-be-filter-global="EoraEyewearFilters"/);
     assert.equal(currentSource, fs.readFileSync(path.join(root, 'snipplets/templates/page.tpl'), 'utf8'));
     const config = fs.readFileSync(path.join(root, 'config/settings.txt'), 'utf8').replace(/\r\n/g, '\n');
     const newConfig = config.slice(config.indexOf('\nBolsas Eora\n'), config.indexOf('\nEdición avanzada de CSS'));
@@ -156,11 +206,29 @@ function validate() {
     const sectionsConfig = fs.readFileSync(path.join(root, 'config/sections.txt'), 'utf8');
     assert(!/bolsas_eora_\d+_(catalog|split)/.test(sectionsConfig));
     assert(sectionsConfig.includes('bolsas_eora_best'));
+    assert(sectionsConfig.includes('oculos_eora_best'));
+    const eyewearConfig = config.slice(config.indexOf('\nÓculos Eora\n'), config.indexOf('\nEdición avanzada de CSS'));
+    const eyewearNames = [...eyewearConfig.matchAll(/name = (oculos_eora_\w+)/g)].map(match => match[1]);
+    assert(eyewearNames.includes('oculos_eora_models'));
+    assert(eyewearNames.includes('oculos_eora_category_url'));
+    assert(eyewearConfig.includes('formato:aviador'));
+    assert.equal(new Set(eyewearNames).size, eyewearNames.length, 'chaves de Óculos Eora exclusivas');
+    const eyewearHtml = render('snipplets/oculos-eora/index.tpl', oculosContext());
+    assert.equal((eyewearHtml.match(/data-be-tag=/g) || []).length, 7, 'sete modelos iniciais de óculos');
+    assert.match(eyewearHtml, /Todos os óculos/);
+    assert.match(eyewearHtml, /name="oe_model"/);
+    const eyewearCategoryFeed = render('snipplets/oculos-eora/category-feed.tpl', {...oculosContext(), params: {oe_category_feed: '1'}, products: eyewearCandidates.slice(0, 2), pages: {current: 1, is_last: true, next: ''}});
+    assert.match(eyewearCategoryFeed, /data-tag="__oculos_eora_category__"/);
+    assert.equal((eyewearCategoryFeed.match(/data-be-product=/g) || []).length, 2);
+    const eyewearSearchFeed = eyewearFeed(new URL('http://localhost/search/?q=%22iris%22&oe_feed=4'));
+    assert.match(eyewearSearchFeed, /data-tag="iris"/);
+    assert.equal(render('snipplets/oculos-eora/search-feed.tpl', {...oculosContext(), query: '"iris"'}).trim(), '', 'feed de óculos exige oe_feed');
+    assert.equal(render('snipplets/bolsas-eora/search-feed.tpl', {...context(), params: {oe_feed: '4'}, query: '"maxivertice"'}).trim(), '', 'feed de bolsas não responde à consulta de óculos');
     const categoryFeed = render('snipplets/bolsas-eora/category-feed.tpl', {...context(), params: {be_category_feed: '1'}, products: [mini, candidates[0]], pages: {current: 1, is_last: true, next: ''}});
     assert.match(categoryFeed, /data-tag="__bolsas_eora_category__"/);
     assert.equal((categoryFeed.match(/data-be-product=/g) || []).length, 2, 'feed da categoria preserva todos os produtos e sua ordem');
     assert(fs.existsSync(path.join(root, 'static/js/instatheme.js')), 'script no caminho esperado pelo editor');
-    console.log('PASS: Twig parse/render, 20 modelos, 20 fotos, feed/paginacao, 32 rotas legadas, precedencia e configuracao.');
+    console.log('PASS: Twig parse/render, Bolsas Eora e Óculos Eora, feeds, rotas legadas, precedência e configuração.');
 }
 
 if (process.argv.includes('--check')) validate();
@@ -179,12 +247,26 @@ if (process.argv.includes('--serve')) {
                 res.setHeader('Content-Type', 'image/webp');
                 return res.end(fs.readFileSync(path.join(temp, 'assets', path.basename(url.pathname))));
             }
-            if (url.pathname.startsWith('/search')) { res.setHeader('Content-Type', 'text/html; charset=utf-8'); return res.end(feed(url)); }
+            if (url.pathname === '/categoria/oculos-eora') {
+                const page = Number(url.searchParams.get('page') || 1);
+                const start = (page - 1) * 24;
+                const last = start + 24 >= eyewearCandidates.length;
+                const next = '/categoria/oculos-eora?oe_category_feed=1&page=' + (page + 1);
+                const body = render('snipplets/oculos-eora/category-feed.tpl', {...oculosContext(), params: {oe_category_feed: '1'}, products: eyewearCandidates.slice(start, start + 24), pages: {current: page, is_last: last, next: last ? '' : next}});
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                return res.end(body);
+            }
+            if (url.pathname.startsWith('/search')) {
+                const tag = (url.searchParams.get('q') || '').replace(/^"|"$/g, '');
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                return res.end(eyewearModels.includes(tag) ? eyewearFeed(url) : feed(url));
+            }
             if (url.pathname === '/favicon.ico') { res.writeHead(204); return res.end(); }
-            const html = render('snipplets/bolsas-eora/index.tpl', context());
+            const isEyewear = url.pathname === '/oculos-eora';
+            const html = render(isEyewear ? 'snipplets/oculos-eora/index.tpl' : 'snipplets/bolsas-eora/index.tpl', isEyewear ? oculosContext() : context());
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.end('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bolsas Eora — prévia local</title><style>body{margin:0;font-family:Arial,sans-serif}.preview-header{padding:24px;text-align:center;border-bottom:1px solid #eee;font-size:24px;letter-spacing:5px}.preview-note{padding:8px;text-align:center;background:#f5f5f5;font-size:11px}.hidden{display:none}</style></head><body><div class="preview-note">Prévia local — produtos e configurações de demonstração</div><header class="preview-header">EORA</header>' + fs.readFileSync(path.join(root, 'snipplets/svg/icons.tpl'), 'utf8') + html + '</body></html>');
+            res.end('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + (isEyewear ? 'Óculos' : 'Bolsas') + ' Eora — prévia local</title><style>body{margin:0;font-family:Arial,sans-serif}.preview-header{padding:24px;text-align:center;border-bottom:1px solid #eee;font-size:24px;letter-spacing:5px}.preview-note{padding:8px;text-align:center;background:#f5f5f5;font-size:11px}.hidden{display:none}</style></head><body><div class="preview-note">Prévia local — produtos e configurações de demonstração</div><header class="preview-header">EORA</header>' + fs.readFileSync(path.join(root, 'snipplets/svg/icons.tpl'), 'utf8') + html + '</body></html>');
         } catch (error) { console.error(error); res.writeHead(500); res.end(String(error)); }
     }).listen(port, '127.0.0.1', () => console.log('Preview http://127.0.0.1:' + port));
 }
-module.exports = {context, feed, render, product, validate};
+module.exports = {context, oculosContext, feed, eyewearFeed, render, product, eyewearProduct, validate};

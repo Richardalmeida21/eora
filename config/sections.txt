@@ -149,3 +149,7 @@ campaign_page_10_qpc
 bolsas_eora_best
 	name = Bolsas Eora — Best sellers
 	description = Selecione e ordene os produtos do carrossel best sellers da campanha.
+
+oculos_eora_best
+	name = Óculos Eora — Best sellers
+	description = Selecione e ordene os produtos do carrossel best sellers da página Óculos Eora.

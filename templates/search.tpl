@@ -39,3 +39,4 @@
 </section>
 
 {% include 'snipplets/bolsas-eora/search-feed.tpl' %}
+{% include 'snipplets/oculos-eora/search-feed.tpl' %}
