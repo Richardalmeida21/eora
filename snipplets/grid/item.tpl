@@ -91,12 +91,13 @@
                 {% set desktop_image_viewport_space = '50' %}
             {% endif %}
 
-            {# --- Selo NOVO: produtos marcados com a tag "novo" no painel Nuvemshop --- #}
-            {# Para exibir o selo: adicione a tag "novo" ao produto no painel             #}
-            {# Para remover o selo: remova a tag "novo" do produto                        #}
+            {# --- Selo NOVO: aceita a tag "novo" independentemente de maiúsculas --- #}
+            {# Para exibir o selo: adicione a tag "novo" ao produto no painel          #}
+            {# Para remover o selo: remova a tag "novo" do produto                     #}
             {% set is_new_product = false %}
             {% for _tag in product.tags %}
-                {% if _tag.tag == 'novo' or _tag == 'novo' %}
+                {% set tag_name = _tag.tag ? _tag.tag : _tag %}
+                {% if tag_name|trim|lower == 'novo' %}
                     {% set is_new_product = true %}
                 {% endif %}
             {% endfor %}
