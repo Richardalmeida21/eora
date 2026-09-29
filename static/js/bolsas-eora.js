@@ -221,10 +221,11 @@
         function placeBanners() {
             if (!activeBanners.length) return;
             var products = all('[data-be-product]', grid);
-            // Um banner conserva duas linhas completas antes dele. Com varios banners,
-            // o primeiro sobe o necessario para que todos alternem junto aos produtos.
+            // Cada banner ocupa duas linhas. Em "Todos", reserva uma linha completa
+            // de quatro produtos entre banners consecutivos para dar respiro ao grid.
             var preferredRow = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
             var firstRow = Math.max(1, preferredRow - Math.max(0, activeBanners.length - 1));
+            var bannerRowStep = state && !state.model ? 3 : 2;
             var productImage = products[0] && products[0].querySelector('.be-product__image');
             var rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
             var cardHeight = products.slice(0, 4).reduce(function (height, product) {
@@ -232,7 +233,7 @@
             }, 0);
             var bannerHeight = productImage && cardHeight ? cardHeight + productImage.getBoundingClientRect().height + rowGap : 0;
             activeBanners.forEach(function (banner, index) {
-                var row = firstRow + index * 2;
+                var row = firstRow + index * bannerRowStep;
                 var before = mobile.matches ? Math.min(4 + index * 4, products.length) : Math.min((row - 1) * 4, products.length);
                 banner.style.setProperty('--be-banner-row', row);
                 banner.style.setProperty('--be-banner-column', index % 2 ? '1 / span 2' : '3 / span 2');
