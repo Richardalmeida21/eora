@@ -221,11 +221,12 @@
         function placeBanners() {
             if (!activeBanners.length) return;
             var products = all('[data-be-product]', grid);
-            // Cada banner ocupa duas linhas. Em "Todos", reserva uma linha completa
-            // de quatro produtos entre banners consecutivos para dar respiro ao grid.
+            // Cada banner ocupa duas linhas. Em "Todos", exibe primeiro uma linha
+            // completa e reserva outra linha de quatro produtos entre os banners.
             var preferredRow = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
-            var firstRow = Math.max(1, preferredRow - Math.max(0, activeBanners.length - 1));
-            var bannerRowStep = state && !state.model ? 3 : 2;
+            var allProductsLayout = state && !state.model;
+            var firstRow = allProductsLayout ? 2 : Math.max(1, preferredRow - Math.max(0, activeBanners.length - 1));
+            var bannerRowStep = allProductsLayout ? 3 : 2;
             var productImage = products[0] && products[0].querySelector('.be-product__image');
             var rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
             var cardHeight = products.slice(0, 4).reduce(function (height, product) {
