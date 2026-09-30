@@ -10999,7 +10999,7 @@ Bolsas Eora
 		name = oculos_eora_filters_enabled
 		description = Mostrar botão flutuante de filtros
 	description
-		description = As facetas aparecem a partir das tags reais dos produtos. Use formato:aviador, estilo:classico, cor-armacao:preto, cor-lente:cinza, tipo-lente:solar, material-armacao:acetato e tamanho:medio. Os valores adicionais das mesmas famílias aparecem automaticamente. O preço usa os filtros da loja.
+		description = As facetas usam as tags reais: formato:aviador, estilo:classico, cor-armacao:preta, cor-lente:cinza, tipo-lente:solar, material-armacao:acetato e tamanho:medio. Preto e preta aparecem juntos como Preta. No Luar, cor da armação, cor da lente e Fotocromática usam as variações do campo Metal/Lente; mantenha as tags comuns no produto. Também são aceitos prefixos como material da armação e tipo da lente. O preço usa os filtros da loja.
 	collapse
 		title = Categoria de Todos os óculos
 	text

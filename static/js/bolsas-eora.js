@@ -369,7 +369,10 @@
                 var facet = getFacet(tag);
                 all('[data-be-product]', feed.content).forEach(function (card) {
                     var tags = tagsFor(card);
-                    if (tag === categoryFeedTag || tags.indexOf(normalize(tag)) !== -1) tags.forEach(function (value) { facet.tags.add(value); });
+                    if (tag === categoryFeedTag || tags.indexOf(normalize(tag)) !== -1) {
+                        var available = bagFilters && bagFilters.facetTags ? bagFilters.facetTags(card, tags) : tags;
+                        available.forEach(function (value) { facet.tags.add(value); });
+                    }
                 });
                 return feed;
             } finally { clearTimeout(timeout); }
@@ -503,6 +506,7 @@
             var requestedModel = model;
             model = selectedModel(model);
             filters = requestedModel && !model ? {} : filters || {};
+            if (bagFilters && bagFilters.normalizeFilters) filters = bagFilters.normalizeFilters(filters);
             sort = sort || 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
             var tags = model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;

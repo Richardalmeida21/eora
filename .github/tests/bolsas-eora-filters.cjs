@@ -123,7 +123,7 @@ console.log('PASS classificacao: todos os grupos exigem tags, sem inferir nomes 
             await page.goBack(); await idle(); await finish(); assert.deepEqual(await ids(), [501, 502, 503, 504, 505]);
             await open(); await page.locator('[name="be_model"]').selectOption('modelo-extra'); await apply(); await finish(); assert.deepEqual(await ids(), [505]);
             await page.locator('[data-be-reset]').click(); await idle();
-            await open(); await select('be_color', 'preto'); await select('be_texture', 'pony-hair'); await select('be_hardware', 'prata'); await apply(); await finish(); assert.deepEqual(await ids(), [], 'sem combinar texturas de variantes diferentes');
+            await open(); await select('be_color', 'preta'); await select('be_texture', 'pony-hair'); await select('be_hardware', 'prata'); await apply(); await finish(); assert.deepEqual(await ids(), [], 'sem combinar texturas de variantes diferentes');
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
             console.log('PASS ' + width + 'px: ordem, combinacoes, tags, faixa de preco, todos/modelo/outros, URL, historico e limpar.');
         }

@@ -90,5 +90,5 @@
     {% endif %}
     <noscript><p class="be-status">Ative o JavaScript para carregar os óculos e filtrar por modelo.</p></noscript>
 </main>
-<script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260923-1" defer></script>
-<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260929-2" defer></script>
+<script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
+<script src="{{ 'js/bolsas-eora.js' | static_url }}?v=20260930-1" defer></script>

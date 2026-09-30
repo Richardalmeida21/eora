@@ -48,7 +48,7 @@ O filtro Cor usa exclusivamente as tags cadastradas no produto. Nao interpreta a
 
 | Cor no filtro | Tag exata |
 |---|---|
-| Preto | `cor:preto` |
+| Preta | `cor:preta` (tambem aceita `cor:preto`) |
 | Marrom | `cor:marrom` |
 | Bordo | `cor:bordo` |
 | Bege / Creme | `cor:bege-creme` |
@@ -59,6 +59,8 @@ O filtro Cor usa exclusivamente as tags cadastradas no produto. Nao interpreta a
 | Outras cores | `cor:outras` |
 
 Um produto pode ter mais de uma tag de cor. Sem tag, continua no catalogo, mas nao aparece ao filtrar por cor. Outras cores tambem exige sua tag; nao e um agrupamento automatico de produtos sem cadastro.
+
+Preto e preta sao sinonimos no filtro, exibidos uma unica vez como Preta. As tags de busca do cadastro permanecem intactas. URLs antigas com `be_color:preto` continuam funcionando e a selecao pode ser desmarcada normalmente.
 
 Todas as tags classificam o produto inteiro. Em produtos com varias cores/variantes, elas nao indicam qual cor pertence a cada ferragem; o filtro nao seleciona uma variante para a compra.
 
@@ -80,6 +82,16 @@ Opcoes dentro do mesmo grupo usam OU; grupos diferentes usam E. Exemplo: Preto o
 Publicar juntos as configuracoes, `snipplets/bolsas-eora/banners.tpl`, `snipplets/bolsas-eora/product-card.tpl`, `static/js/bolsas-eora-filters.js`, `static/js/bolsas-eora.js`, `static/css/bolsas-eora.css` e `snipplets/bolsas-eora/index.tpl`. O JS principal e o CSS usam `20260921-16`, o script de opcoes usa `20260918-5` e a busca permanece em `be_feed=4`. Os banners carregam o arquivo original e usam `object-fit: contain`, sem miniatura ampliada, zoom ou recorte. O feed continua usando as tags reais ja serializadas por `product-card.tpl`; nao precisa de metadados de variantes.
 
 O cadastro de tags e a publicacao na loja nao sao realizados pelos testes locais.
+
+### Atualizacao de 30/09/2026: Luar e Preta
+
+Os scripts de filtros e o script compartilhado usam a versao `20260930-1` nos dois `index.tpl`. Publicar juntos os dois scripts de filtros, `bolsas-eora.js`, os dois `index.tpl`, `product-card.tpl`, os feeds de busca/categoria de Oculos Eora e `config/settings.txt`.
+
+Somente os feeds de oculos serializam os nomes/valores das variacoes. Para o campo `Metal/Lente` do Luar, cada variante fornece sua propria cor de armacao e lente; o sufixo Fotocromatica fornece o tipo. Os outros tipos de lente continuam dependendo das tags do produto. Material, formato, estilo e tamanho continuam nas tags comuns. Prefixos como `material da armação:metal` e `tipo da lente:solar` tambem sao aceitos.
+
+O filtro exige que os criterios combinem na mesma variante e mostra o produto Luar uma vez. A escolha da variante para compra continua na pagina do produto. Nao modifica SKU, tags de busca, estoque ou produtos no painel; nao cria tags por variante na plataforma. Bolsas continuam classificadas exclusivamente pelas tags.
+
+Verificacao adicional: `node .github/tests/oculos-eora-variants.cjs`.
 
 ## Verificacao
 

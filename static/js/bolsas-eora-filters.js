@@ -3,7 +3,7 @@
     var definitions = [
         {key: 'be_occasion', tag: 'ocasiao', label: 'Ocasi\u00e3o', options: [['trabalho', 'Trabalho'], ['dia-a-dia', 'Dia a dia'], ['noite-eventos', 'Noite e eventos'], ['viagem', 'Viagem']]},
         {key: 'be_size', tag: 'tamanho', label: 'Tamanho', options: [['mini', 'Mini'], ['pequena', 'Pequena'], ['media', 'M\u00e9dia'], ['grande', 'Grande']]},
-        {key: 'be_color', tag: 'cor', label: 'Cor', options: [['preto', 'Preto'], ['marrom', 'Marrom'], ['bordo', 'Bord\u00f4'], ['bege-creme', 'Bege / Creme'], ['cinza', 'Cinza'], ['verde', 'Verde'], ['azul', 'Azul'], ['rosa', 'Rosa'], ['outras', 'Outras cores']]},
+        {key: 'be_color', tag: 'cor', label: 'Cor', options: [['preta', 'Preta'], ['marrom', 'Marrom'], ['bordo', 'Bord\u00f4'], ['bege-creme', 'Bege / Creme'], ['cinza', 'Cinza'], ['verde', 'Verde'], ['azul', 'Azul'], ['rosa', 'Rosa'], ['outras', 'Outras cores']]},
         {key: 'be_capacity', tag: 'cabe', label: 'O que cabe', options: [['essenciais', 'Essenciais'], ['tablet', 'Tablet'], ['notebook-14', 'Notebook at\u00e9 14\u201d'], ['notebook-16', 'Notebook at\u00e9 16\u201d'], ['notebook-17', 'Notebook at\u00e9 17\u201d']]},
         {key: 'be_texture', tag: 'textura', label: 'Textura', options: [['liso', 'Liso'], ['croco', 'Croco'], ['camurca', 'Camur\u00e7a'], ['verniz', 'Verniz'], ['pony-hair', 'Pony Hair'], ['lizard', 'Lizard'], ['piton', 'P\u00edton'], ['avestruz', 'Avestruz']]},
         {key: 'be_hardware', tag: 'ferragem', label: 'Ferragem', options: [['prata', 'Prata'], ['dourado', 'Dourado'], ['mix', 'Mix de metais']]}
@@ -12,6 +12,7 @@
     function slug(value) { return normalize(value).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
     function optionValue(definition, value) {
         var key = slug(value);
+        if (definition.key === 'be_color' && key === 'preto') key = 'preta';
         var option = definition.options.find(function (item) { return key === item[0] || key === slug(item[1]); });
         return option ? option[0] : key;
     }
@@ -23,7 +24,7 @@
         return definitions.every(function (definition) {
             if (!filters[definition.key]) return true;
             var candidates = tagValues(tags, definition);
-            return filters[definition.key].split('|').some(function (value) { return candidates.indexOf(value) !== -1; });
+            return filters[definition.key].split('|').some(function (value) { return candidates.indexOf(optionValue(definition, value)) !== -1; });
         });
     }
     function render(container, selected, tags, append) {
@@ -57,7 +58,7 @@
                 label.className = 'be-choice';
                 var input = document.createElement('input');
                 input.type = 'checkbox'; input.name = definition.key; input.value = option[0];
-                input.checked = (selected[definition.key] || '').split('|').indexOf(option[0]) !== -1;
+                input.checked = (selected[definition.key] || '').split('|').some(function (value) { return optionValue(definition, value) === option[0]; });
                 var span = document.createElement('span'); span.textContent = option[1];
                 label.appendChild(input); label.appendChild(span);
                 var following = existing.find(function (input) {
@@ -71,5 +72,12 @@
         select.replaceChildren(new Option('Todos os modelos', ''));
         options.forEach(function (option) { select.appendChild(new Option(option.label, option.value)); });
     }
-    window.EoraBagFilters = {matches: matches, render: render, models: models};
+    function normalizeFilters(filters) {
+        var result = Object.assign({}, filters);
+        if (result.be_color) result.be_color = Array.from(new Set(result.be_color.split('|').map(function (value) {
+            return optionValue(definitions[2], value);
+        }))).join('|');
+        return result;
+    }
+    window.EoraBagFilters = {matches: matches, render: render, models: models, normalizeFilters: normalizeFilters};
 }());

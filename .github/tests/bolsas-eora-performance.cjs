@@ -48,7 +48,7 @@ const data = {...initial, settings: {...initial.settings,
             const status = page.locator('[data-be-facet-status]');
             const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
             const open = () => page.locator('[data-be-open-filters]').click();
-            const black = page.locator('[name="be_color"][value="preto"]');
+            const black = page.locator('[name="be_color"][value="preta"]');
             await page.goto(base);
             await idle();
             const initialRequests = requests.length;
@@ -68,7 +68,7 @@ const data = {...initial, settings: {...initial.settings,
             await expect(status).toHaveText('');
             await expect(black).toBeChecked();
             assert(await page.evaluate(() => document.activeElement === window.originalFilter), 'foco e elemento preservados ao adicionar opcoes');
-            assert.deepEqual(await page.locator('[name="be_color"]').evaluateAll(nodes => nodes.map(node => node.value)), ['preto', 'azul', 'terracota']);
+            assert.deepEqual(await page.locator('[name="be_color"]').evaluateAll(nodes => nodes.map(node => node.value)), ['preta', 'azul', 'terracota']);
             assert.equal(maximum, 3);
             assert.equal(requests.length, 24, 'cada uma das 24 paginas consultada uma unica vez');
             await submit.click();
@@ -112,7 +112,7 @@ const data = {...initial, settings: {...initial.settings,
             await expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'true');
             resume();
             await idle();
-            assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preto');
+            assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preta');
             await expect.poll(() => active).toBe(0);
 
             // Filtro da URL em uma pagina tardia e restaurado depois da varredura completa.

@@ -14,7 +14,20 @@
     {% endif %}
 {% endfor %}
 {% set be_product_image_count = be_product_images | length %}
-<article class="be-product" data-be-product="{{ product.id }}" data-be-tags="{{ be_product_tags | json_encode | escape }}" data-be-price="{{ product.price | default(0) }}" data-be-name="{{ product.name | escape }}" data-be-created="{{ product.created_at | default(product.id) | escape }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
+{% set oe_product_variants = [] %}
+{% if be_product_variants_enabled %}
+    {# Apenas os nomes/opcoes necessarios aos filtros; sem dados de pagamento/estoque. #}
+    {% for variant in product.variants_object %}
+        {% if variant.is_visible is not defined or variant.is_visible %}
+            {% set oe_variant_options = [] %}
+            {% for variation in product.variations %}
+                {% set oe_variant_options = oe_variant_options | merge([{name: variation.name, value: variant['option' ~ loop.index0]}]) %}
+            {% endfor %}
+            {% set oe_product_variants = oe_product_variants | merge([oe_variant_options]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<article class="be-product" data-be-product="{{ product.id }}" data-be-tags="{{ be_product_tags | json_encode | escape }}"{% if oe_product_variants %} data-oe-variants="{{ oe_product_variants | json_encode | escape }}"{% endif %} data-be-price="{{ product.price | default(0) }}" data-be-name="{{ product.name | escape }}" data-be-created="{{ product.created_at | default(product.id) | escape }}" data-store="product-item-{{ product.id }}" data-component="product-list-item" data-component-value="{{ product.id }}">
     <div class="be-product__image" data-be-product-gallery role="group" aria-roledescription="carrossel" aria-label="Fotos de {{ product.name | escape }}">
         <div class="be-product__slides" data-be-product-slides tabindex="0">
             {% for product_image in be_product_images %}

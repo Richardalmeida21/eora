@@ -126,14 +126,14 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
 
         await page.locator('[data-be-open-filters]').click();
         await expect(page.locator('[data-be-filter-form] [type="submit"]')).toBeEnabled();
-        await page.locator('input[name="be_color"][value="preto"]').check();
+        await page.locator('input[name="be_color"][value="preta"]').check();
         await page.locator('input[name="max_price"]').fill('1780');
         await page.locator('[data-be-filter-form] [type="submit"]').click();
         await idle();
         await expect(page.locator('#be-filter-dialog')).not.toBeVisible();
         const filtered = await cards().evaluateAll(nodes => nodes.map(n => Number(n.dataset.beProduct)));
         assert(filtered.length > 0 && filtered.every(id => id % 2 === 1 && id <= 31 && (id - 1) % 5 !== 0));
-        assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preto');
+        assert.equal(JSON.parse(new URL(page.url()).searchParams.get('be_filters')).be_color, 'preta');
         await page.locator('[data-be-sort]').selectOption('price-descending');
         await idle();
         const prices = await cards().evaluateAll(nodes => nodes.map(n => Number(n.dataset.beProduct)));
