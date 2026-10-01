@@ -93,6 +93,14 @@ O filtro exige que os criterios combinem na mesma variante e mostra o produto Lu
 
 Verificacao adicional: `node .github/tests/oculos-eora-variants.cjs`.
 
+### Atualizacao de 01/10/2026: links dos produtos auxiliares do Luar
+
+Os cards da campanha usam links diretos para `/produtos/luar/?vi=N`, seguindo a selecao ja usada na home: `luar4` = 0 (Dourado/Marrom), `luar1` = 1 (Preto Fosco/Preto), `luar-1rh88` = 2 (Prata/Cinza), `luar-copia` = 3 (Dourado/Preto), `luar3` = 4 (Prata/Rosa Fotocromatica), `luar2` = 5 (Prata/Prata Fotocromatica).
+
+A regra vale para as fotos e o titulo, incluindo feeds de busca/categoria, best sellers e abertura em nova aba. Setas e gestos da galeria continuam apenas trocando as fotos. O Luar original e os demais produtos conservam seus links. Produtos auxiliares continuam sendo filtrados pelas proprias tags. Se um slug ou a ordem das variantes mudar, revisar este mapa e o da home em `layouts/layout.tpl`.
+
+Publicar `snipplets/bolsas-eora/product-card.tpl`. Verificacao: `node .github/tests/oculos-eora-links.cjs`.
+
 ## Verificacao
 
 Com a previa local na porta 4175 e NODE_PATH apontando para as dependencias de validacao:
