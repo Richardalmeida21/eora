@@ -64,7 +64,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         assert.equal(await page.locator('.be-gallery--community .be-gallery__item').count(), 20);
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 4);
         assert((await cards().count()) > 0, 'catalogo automatico aparece sem selecionar uma tag');
-        await expect(page.locator('.be-models [data-be-dots] .be-dot')).toHaveCount(5);
+        await expect(page.locator('.be-models [data-be-dots] .be-dot')).toHaveCount(17);
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         assert.equal(await page.locator('.be-models [data-be-track]').evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
         const modelImageStyle = await page.locator('.be-model img').first().evaluate(element => ({objectFit: getComputedStyle(element).objectFit, backgroundColor: getComputedStyle(element).backgroundColor}));
@@ -202,7 +202,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         assert((await page.locator('.be-models [data-be-next]').boundingBox()).height >= 44);
         await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
         assert.equal(await page.locator('.be-models').evaluate(el => getComputedStyle(el).getPropertyValue('--be-visible').trim()), '2');
-        await expect(page.locator('.be-models .be-dot')).toHaveCount(10);
+        await expect(page.locator('.be-models .be-dot')).toHaveCount(19);
         const mobileModelRatio = await page.locator('.be-models [data-be-track]').evaluate(el => el.clientWidth / el.firstElementChild.getBoundingClientRect().width);
         assert(mobileModelRatio > 2.5 && mobileModelRatio < 2.7, 'mobile mostra dois filtros inteiros e metade do terceiro');
         const mobileComposition = await page.locator('.be-models [data-be-track]').evaluate(track => {

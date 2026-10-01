@@ -101,6 +101,10 @@ A regra vale para as fotos e o titulo, incluindo feeds de busca/categoria, best 
 
 Publicar `snipplets/bolsas-eora/product-card.tpl`. Verificacao: `node .github/tests/oculos-eora-links.cjs`.
 
+### Carrosseis: um item por clique
+
+Em Bolsas Eora e Oculos Eora, as setas dos carrosseis de modelos, best sellers e galerias avancam ou voltam um item por clique. As bolinhas representam as posicoes de rolagem; a ultima posicao alinha o final da lista, inclusive no celular quando parte do proximo item fica visivel. Publicar `bolsas-eora.js` com a versao `20261001-1` nos dois `index.tpl`, junto de `controls.tpl`. Verificacao: `node .github/tests/eora-carousel-step.cjs` com a previa local ativa.
+
 ## Verificacao
 
 Com a previa local na porta 4175 e NODE_PATH apontando para as dependencias de validacao:

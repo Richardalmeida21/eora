@@ -29,7 +29,7 @@
                     var dot = document.createElement('button');
                     dot.type = 'button';
                     dot.className = 'be-dot';
-                    dot.setAttribute('aria-label', 'Ir para página ' + (index + 1));
+                    dot.setAttribute('aria-label', 'Ir para posição ' + (index + 1));
                     dot.addEventListener('click', (function (page) { return function () { onSelect(page); }; }(index)));
                     dots.appendChild(dot);
                 }
@@ -50,10 +50,10 @@
             var next = controls.querySelector('[data-be-next]');
             var currentPage = 0;
             function pageOffsets() {
-                var visible = Math.max(1, Math.floor(parseFloat(getComputedStyle(section).getPropertyValue('--be-visible')) || 4));
                 var maximum = Math.max(0, track.scrollWidth - track.clientWidth);
                 var offsets = [0];
-                for (var index = visible; index < track.children.length; index += visible) {
+                // Uma posicao por item, independentemente de quantos estao visiveis.
+                for (var index = 1; index < track.children.length; index++) {
                     var left = track.children[index].offsetLeft - track.children[0].offsetLeft;
                     if (left >= maximum - 2) break;
                     offsets.push(left);
