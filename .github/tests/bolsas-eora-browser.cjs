@@ -18,8 +18,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.goto(base + '/?without-models');
         await expect(page.locator('[data-be-paged]')).toHaveCount(0);
         await expect(page.locator('[data-be-status]')).toHaveText('Nenhum modelo disponível no momento.');
-        await expect(page.locator('[data-be-catalog-banner]')).toBeVisible();
-        console.log('PASS sem modelos: estado vazio, primeiro banner e ausencia de catalogos manuais.');
+        await expect(page.locator('[data-be-catalog-banner]')).toHaveCount(0);
+        console.log('PASS sem modelos: estado vazio, sem banners isolados ou catalogos manuais.');
 
         const categoryProducts = Array.from({length: 30}, (_, index) => product(930 - index, index % 2 ? 'maxivertice' : 'minivertice'));
         await page.route(base + '/?category-order', route => route.fulfill({
@@ -37,6 +37,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.goto(base + '/?category-order'); await idle();
         assert.deepEqual(await cards().evaluateAll(nodes => nodes.map(node => Number(node.dataset.beProduct))), categoryProducts.slice(0, 24).map(item => item.id), 'Todos respeita a ordem manual da categoria em lotes de 24');
         await page.locator('[data-be-more]').scrollIntoViewIfNeeded();
+        await expect(cards()).toHaveCount(24);
+        await page.locator('[data-be-more]').click();
         await expect(cards()).toHaveCount(30);
         await idle();
         assert.deepEqual(await cards().evaluateAll(nodes => nodes.map(node => Number(node.dataset.beProduct))), categoryProducts.map(item => item.id), 'paginacao conserva a ordem completa da categoria');
@@ -76,6 +78,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await expect(page.locator('.be-models .be-dot').first()).toHaveAttribute('aria-current', 'true');
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({path: path.join(output, 'desktop.png')});
+        await page.locator('[data-be-more]').click(); await idle();
         await page.locator('[data-be-catalog-banner]').screenshot({path: path.join(output, 'desktop-split.png')});
         console.log('PASS desktop: catalogo automatico em 4 colunas, favoritos ocultos somente na campanha, modelos e galerias com 20 itens.');
 
@@ -195,6 +198,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         await page.goto(base);
         await idle();
         assert((await cards().count()) > 0 && (await cards().count()) <= 24);
+        await page.locator('[data-be-more]').click(); await idle();
         assert.equal(await page.locator('[data-be-results-grid]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
         assert.equal(await page.locator('[data-be-toolbar]').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length), 2);
         assert((await page.locator('[data-be-reset]').boundingBox()).height >= 42);

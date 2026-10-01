@@ -22,6 +22,8 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
         assert.deepEqual(await page.locator('[data-be-tag]').evaluateAll(nodes => nodes.map(node => node.dataset.beTitle)), ['IRIS', 'NOVA', 'ASTRA', 'LUNA', 'LUAR', 'ONYX', 'SPARKY']);
 
         await page.locator('[data-be-more]').scrollIntoViewIfNeeded();
+        await expect(cards()).toHaveCount(24);
+        await page.locator('[data-be-more]').click();
         await expect(cards()).toHaveCount(30);
         await idle();
 

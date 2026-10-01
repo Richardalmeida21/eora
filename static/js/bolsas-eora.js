@@ -225,7 +225,10 @@
             // completa e reserva outra linha de quatro produtos entre os banners.
             var preferredRow = Math.floor(Math.max(0, Math.min(8, products.length - 4)) / 4) + 1;
             var allProductsLayout = state && !state.model;
-            var firstRow = allProductsLayout ? 2 : Math.max(1, preferredRow - Math.max(0, activeBanners.length - 1));
+            // Em Todos, cada bloco usa oito produtos: quatro na linha completa
+            // e quatro ao lado do banner. Nao cria linhas para paginas pendentes.
+            var visibleCount = Math.min(activeBanners.length, allProductsLayout ? Math.floor(products.length / 8) : Math.ceil(products.length / 4));
+            var firstRow = allProductsLayout ? 2 : Math.max(1, preferredRow - Math.max(0, visibleCount - 1));
             var bannerRowStep = allProductsLayout ? 3 : 2;
             var productImage = products[0] && products[0].querySelector('.be-product__image');
             var rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
@@ -233,9 +236,15 @@
                 return Math.max(height, product.getBoundingClientRect().height);
             }, 0);
             var bannerHeight = productImage && cardHeight ? cardHeight + productImage.getBoundingClientRect().height + rowGap : 0;
-            activeBanners.forEach(function (banner, index) {
+            activeBanners.forEach(function (item, index) {
+                if (index >= visibleCount) {
+                    if (item.element) item.element.remove();
+                    return;
+                }
+                // Mantem os banners futuros inertes, sem baixar suas imagens.
+                var banner = item.element || (item.element = createBanner(item.template, item.settings));
                 var row = firstRow + index * bannerRowStep;
-                var before = mobile.matches ? Math.min(4 + index * 4, products.length) : Math.min((row - 1) * 4, products.length);
+                var before = allProductsLayout ? 4 + index * 8 : mobile.matches ? Math.min(4 + index * 4, products.length) : Math.min((row - 1) * 4, products.length);
                 banner.style.setProperty('--be-banner-row', row);
                 banner.style.setProperty('--be-banner-column', index % 2 ? '1 / span 2' : '3 / span 2');
                 if (!mobile.matches && bannerHeight) banner.style.setProperty('--be-banner-height', bannerHeight + 'px');
@@ -277,7 +286,7 @@
             }).filter(function (item) {
                 return model ? normalize(item.settings.tag) === normalize(model) : item.settings.showInAll;
             });
-            activeBanners = templates.map(function (item) { return createBanner(item.template, item.settings); });
+            activeBanners = templates;
             placeBanners();
         }
         mobile.addEventListener('change', placeBanners);
@@ -411,7 +420,7 @@
             else status.textContent = count + (count === 1 ? ' produto' : ' produtos') + (remaining ? (count === 1 ? ' carregado' : ' carregados') : (count === 1 ? ' encontrado' : ' encontrados'));
             more.hidden = !error && !remaining;
             more.disabled = state.loading;
-            more.textContent = error ? 'Tentar novamente' : 'Mostrar mais produtos';
+            more.textContent = error ? 'Tentar novamente' : state.loading ? 'Carregando produtos…' : 'Mostrar mais produtos';
             results.setAttribute('aria-busy', state.loading ? 'true' : 'false');
         }
         function sortCards(cards, sort) {
@@ -431,7 +440,7 @@
             }
             return cards;
         }
-        async function loadMore() {
+        async function loadMore(loadRemaining) {
             if (!state || state.loading) return;
             var run = version;
             var current = state;
@@ -440,7 +449,7 @@
             // Ao filtrar, percorre todas as paginas antes de concluir. Os filtros
             // de caracteristicas sao locais e um resultado pode estar em qualquer
             // pagina da busca; exigir outro clique produziria uma lista incompleta.
-            var automatic = Boolean(current.model || Object.keys(current.filters).length || current.sort !== 'user');
+            var automatic = Boolean(loadRemaining === true || current.model || Object.keys(current.filters).length || current.sort !== 'user');
             var pageSize = 24;
             var size = automatic ? Number.POSITIVE_INFINITY : current.initialLoad ? Math.max(0, pageSize - all('[data-be-product]', grid).length) : pageSize;
             current.initialLoad = false;
@@ -449,9 +458,24 @@
             var skipped = 0;
             var cards = [];
             var error = false;
+            function appendCards() {
+                if (!cards.length) return;
+                if (current.sort !== 'user') sortCards(cards, current.sort);
+                var fragment = document.createDocumentFragment();
+                var added = cards.map(function (card) {
+                    var copy = document.importNode(card, true);
+                    fragment.appendChild(copy);
+                    return copy;
+                });
+                grid.appendChild(fragment);
+                added.forEach(prepareProductGalleries);
+                placeBanners();
+                cards = [];
+            }
+            var loaded = 0;
             try {
-                // Alterna entre modelos, com no maximo 3 consultas por acao.
-                while (cards.length < size && skipped < current.searches.length) {
+                // Alterna entre modelos, com ate 12 consultas na carga inicial.
+                while (loaded < size && skipped < current.searches.length) {
                     var search = current.searches[current.cursor];
                     if (!search.buffer.length && search.next && requests < requestLimit) {
                         var url = checkedUrl(search.next);
@@ -482,7 +506,14 @@
                         requests++;
                     }
                     current.cursor = (current.cursor + 1) % current.searches.length;
-                    if (search.buffer.length) { cards.push(search.buffer.shift()); skipped = 0; }
+                    if (search.buffer.length) {
+                        cards.push(search.buffer.shift());
+                        loaded++;
+                        skipped = 0;
+                        // Publica cada lote completo sem esperar pelo catalogo todo.
+                        // Ordenacoes globais ainda precisam de todos os resultados.
+                        if (cards.length === pageSize && current.sort === 'user') appendCards();
+                    }
                     else if (search.next && requests < requestLimit) skipped = 0;
                     else skipped++;
                 }
@@ -491,10 +522,7 @@
                 error = true;
             } finally {
                 if (run === version) {
-                    if (current.sort !== 'user') sortCards(cards, current.sort);
-                    cards.forEach(function (card) { grid.appendChild(document.importNode(card, true)); });
-                    prepareProductGalleries(grid);
-                    placeBanners();
+                    appendCards();
                     current.loading = false;
                     showStatus(error);
                 }
@@ -562,12 +590,9 @@
             });
         });
         one('[data-be-reset]').addEventListener('click', function () { activate('', {}, 'user', true); scrollToResults(); });
-        more.addEventListener('click', loadMore);
-        if ('IntersectionObserver' in window) {
-            new IntersectionObserver(function (entries) {
-                if (entries.some(function (entry) { return entry.isIntersecting; }) && !more.hidden && !more.disabled && more.textContent !== 'Tentar novamente') loadMore();
-            }, {rootMargin: '600px 0px'}).observe(more);
-        }
+        // O cliente decide quando carregar o restante; rolar ate o botao nao
+        // dispara novas paginas nem faz os banners aparecerem antes dos produtos.
+        more.addEventListener('click', function () { loadMore(true); });
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
 

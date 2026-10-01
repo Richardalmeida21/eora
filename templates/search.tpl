@@ -4,6 +4,7 @@
 	{% paginate by 48 %}
 {% endif %}
 
+{% if params.be_feed != '4' and params.oe_feed != '4' %}
 {% embed "snipplets/page-header.tpl" with { breadcrumbs: false, container_fluid: true } %}
 	{% block page_header_text %}
 		{% if products %}
@@ -37,6 +38,7 @@
 		{% endif %}
 	</div>
 </section>
+{% endif %}
 
 {% include 'snipplets/bolsas-eora/search-feed.tpl' %}
 {% include 'snipplets/oculos-eora/search-feed.tpl' %}

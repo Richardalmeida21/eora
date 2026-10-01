@@ -25,6 +25,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             await page.setViewportSize({width, height: 1000});
             await page.goto(base + '/?feedback');
             await idle();
+            await page.locator('[data-be-more]').click(); await idle();
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'sem overflow em ' + width);
             if (width < 768) {
                 await expect(page.locator('[data-be-results-grid] [data-be-catalog-banner]')).toHaveCount(1);

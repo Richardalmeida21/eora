@@ -25,6 +25,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             const showAll = url.searchParams.has('all-multiple');
             const data = {...initial, settings: {
                 ...initial.settings,
+                bolsas_eora_models: initial.settings.bolsas_eora_models.slice(0, 3),
                 bolsas_eora_banners: list.map(banner => ({...banner, description: showAll && !banner.description.includes(',todos') ? banner.description + ',todos' : banner.description})),
             }};
             return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
@@ -53,9 +54,10 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             });
             assert.equal(geometry.banners.length, bannerCount);
             if (width >= 768) {
+                const allMode = await page.locator('[data-be-tag][aria-current]').count() === 0;
                 const productOffset = Math.max(0, 3 - bannerCount) * 4;
                 geometry.banners.forEach((banner, index) => {
-                    const productIndex = productOffset + index * 4;
+                    const productIndex = allMode ? 4 + index * 8 : productOffset + index * 4;
                     const expectedX = index % 2 ? geometry.grid.x : geometry.grid.x + (geometry.grid.width + geometry.columnGap) / 2;
                     assert(Math.abs(banner.x - expectedX) < 2, 'banners alternam direita e esquerda');
                     if (geometry.products[productIndex] && geometry.images[productIndex + 2]) {
