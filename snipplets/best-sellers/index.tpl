@@ -1,6 +1,6 @@
 {# Briefing Best Sellers — outubro/2026. Produtos da categoria /best-sellers/. #}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260922-1">
-<link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261008-1">
+<link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261008-2">
 <main class="be-page bs-page" data-bs-page data-bs-category-url="/best-sellers/">
     <header class="bs-heading"><h1>{{ settings.best_sellers_eora_title | default('Best sellers') | escape }}</h1></header>
     {% set bs_macro_count = 0 %}
@@ -28,7 +28,7 @@
                 {% set macro_description = attribute(settings, prefix ~ '_description') %}
                 {% if attribute(settings, prefix ~ '_enabled') and macro_tag and (macro_image | has_custom_image) %}
                     {% set macro_url = attribute(settings, prefix ~ '_link') | default('?bs_category=' ~ i) %}
-                    <a class="bs-macro" href="{{ macro_url | escape }}" data-bs-category="{{ i }}" data-bs-tag="{{ macro_tag | escape }}" data-bs-order="{{ attribute(settings, prefix ~ '_order') | default(i) | escape }}" aria-expanded="false"{% if macro_description %} aria-controls="bs-description-{{ i }}"{% endif %}>
+                    <a class="bs-macro" href="{{ macro_url | escape }}" data-bs-category="{{ i }}" data-bs-tag="{{ macro_tag | escape }}" data-bs-order="{{ attribute(settings, prefix ~ '_order') | default(i) | escape }}" aria-expanded="false"{% if macro_description %} aria-controls="bs-description-{{ i }} bs-mobile-description"{% endif %}>
                         <span class="bs-macro__selection">
                             <picture>
                                 {% if macro_mobile_image | has_custom_image %}
@@ -43,6 +43,7 @@
                 {% endif %}
             {% endfor %}
         </div>
+        <p class="bs-macros__description" id="bs-mobile-description" data-bs-mobile-description hidden aria-live="polite"></p>
         {% include 'snipplets/bolsas-eora/controls.tpl' %}
     </nav>
 
@@ -83,4 +84,4 @@
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-2" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-3" defer></script>

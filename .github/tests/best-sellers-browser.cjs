@@ -5,23 +5,54 @@ const temp = process.env.BS_VALIDATION_DIR || 'C:/Temp/eora-best-sellers-validat
 const baseUrl = 'http://127.0.0.1:4176/best-sellers1/';
 const url = baseUrl + '?fixture_demo=1';
 async function assertMacroSelection(page, selected) {
+    const mobile = page.viewportSize().width < 768;
     const macros = await page.locator('[data-bs-category]').evaluateAll(elements => elements.map(element => {
         const selection = element.querySelector('.bs-macro__selection');
         const style = getComputedStyle(selection);
         const titleStyle = getComputedStyle(element.querySelector('.bs-macro__title'));
-        return {id: element.dataset.bsCategory, current: element.getAttribute('aria-current') === 'true', expanded: element.getAttribute('aria-expanded') === 'true', borderColor: style.borderTopColor, borderWidth: parseFloat(style.borderTopWidth), pictureOnly: selection.children.length === 1 && selection.firstElementChild.tagName === 'PICTURE', titleAlignment: titleStyle.textAlign, titleDecoration: titleStyle.textDecorationLine, descriptionAlignment: getComputedStyle(element.querySelector('.bs-macro__description')).textAlign};
+        const description = element.querySelector('.bs-macro__description');
+        const descriptionStyle = getComputedStyle(description);
+        return {id: element.dataset.bsCategory, current: element.getAttribute('aria-current') === 'true', expanded: element.getAttribute('aria-expanded') === 'true', borderColor: style.borderTopColor, borderWidth: parseFloat(style.borderTopWidth), pictureOnly: selection.children.length === 1 && selection.firstElementChild.tagName === 'PICTURE', titleAlignment: titleStyle.textAlign, titleDecoration: titleStyle.textDecorationLine, description: description.textContent.trim(), descriptionAlignment: descriptionStyle.textAlign, descriptionFont: parseFloat(descriptionStyle.fontSize), controls: element.getAttribute('aria-controls')};
     }));
     for (const macro of macros) {
         const active = macro.id === String(selected);
         assert.equal(macro.current, active, 'filtro selecionado identificado por aria-current');
         assert.equal(macro.expanded, active, 'descricao acompanha o filtro selecionado');
-        assert(macro.borderWidth > 0, 'borda reserva espaco e evita deslocar a imagem');
+        assert.equal(macro.borderWidth, 3, 'borda de 3px reservada tambem nos filtros inativos, sem deslocar a imagem');
         assert.equal(macro.pictureOnly, true, 'contorno envolve somente a foto');
         const transparent = macro.borderColor === 'transparent' || /rgba\([^)]*,\s*0\)/.test(macro.borderColor);
         assert.equal(transparent, !active, 'borda visivel somente na foto selecionada');
+        if (active) assert.equal(macro.borderColor, 'rgb(0, 0, 0)', 'contorno selecionado preto');
         assert.equal(macro.titleAlignment, 'center', 'titulo centralizado');
         assert.equal(macro.descriptionAlignment, 'center', 'legenda centralizada');
+        if (!mobile) assert.equal(macro.descriptionFont, 14, 'descricao maior no computador');
+        assert(macro.controls.split(/\s+/).includes('bs-mobile-description'), 'filtro referencia a descricao compartilhada para celular');
         assert.equal(macro.titleDecoration.includes('underline'), active, 'sublinhado acompanha a selecao existente');
+    }
+    const expected = macros.find(macro => macro.id === String(selected))?.description || '';
+    const shared = page.locator('[data-bs-mobile-description]');
+    assert.equal(await shared.count(), 1, 'uma unica descricao compartilhada fora dos banners');
+    assert.equal(await shared.textContent(), expected, 'descricao compartilhada segue filtro/troca/reset/historico');
+    assert.equal(await page.locator('.bs-macro__description:visible').count(), !mobile && expected ? 1 : 0, 'descricoes dos cards aparecem somente no computador');
+    assert.equal(await shared.isVisible(), mobile && !!expected, 'celular mostra somente o texto compartilhado selecionado');
+    const geometry = await shared.evaluate(element => {
+        const nav = element.closest('.bs-macros');
+        const track = nav.querySelector('.bs-macros__track');
+        const box = element.getBoundingClientRect();
+        const row = track.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return {width: box.width, rowWidth: row.width, left: box.left, rowLeft: row.left, top: box.top, rowBottom: row.bottom, alignment: style.textAlign, font: parseFloat(style.fontSize), insideTrack: track.contains(element), insideLink: !!element.closest('a')};
+    });
+    assert.equal(geometry.insideTrack, false, 'texto compartilhado fica fora do carrossel');
+    assert.equal(geometry.insideLink, false, 'texto compartilhado nao fica preso a um banner');
+    if (mobile) {
+        assert.equal(geometry.alignment, 'center');
+        assert.equal(geometry.font, 12, 'descricao do celular com 12px');
+        if (expected) {
+            assert(Math.abs(geometry.width - geometry.rowWidth) < 2, 'descricao ocupa 100% da linha de banners');
+            assert(Math.abs(geometry.left - geometry.rowLeft) < 2, 'descricao alinhada com a linha inteira');
+            assert(geometry.top >= geometry.rowBottom - 1, 'descricao fica abaixo de todos os banners');
+        }
     }
 }
 (async () => {
@@ -80,13 +111,13 @@ async function assertMacroSelection(page, selected) {
             }
             await page.locator('[data-bs-category="1"]').click();
             await assertMacroSelection(page, 1);
-            assert.equal(await page.locator('.bs-macro__description:visible').count(), 1);
+            assert.equal(await page.locator('.bs-macro__description:visible').count(), mobile ? 0 : 1);
             assert.equal(await page.locator('[data-bs-grid] > article').count(), count);
             assert(await page.locator('[data-bs-community] a.be-banner').first().getAttribute('href').then(href => href.includes('onyx')));
             assert.equal(await page.locator('[data-bs-community] .be-gallery__item').count(), 15);
             await page.locator('[data-bs-category="2"]').click();
             await assertMacroSelection(page, 2);
-            assert.equal(await page.locator('.bs-macro__description:visible').count(), 1);
+            assert.equal(await page.locator('.bs-macro__description:visible').count(), mobile ? 0 : 1);
             assert.equal(await page.locator('[data-bs-category="1"]').getAttribute('aria-expanded'), 'false');
             assert(await page.locator('[data-bs-community] a.be-banner').first().getAttribute('href').then(href => href.includes('prism')));
             await page.locator('[data-bs-more]').click();
@@ -176,6 +207,16 @@ async function assertMacroSelection(page, selected) {
                 }
             }
         }
+        for (const width of [390, 1440]) {
+            await page.setViewportSize({width, height: 1000});
+            await page.goto(url);
+            await page.waitForSelector('[data-bs-catalog-ready="1"]');
+            await page.locator('[data-bs-category="1"] .bs-macro__description').evaluate(element => { element.textContent = ''; });
+            await page.locator('[data-bs-category="1"]').click();
+            await assertMacroSelection(page, 1);
+            await page.locator('[data-bs-reset]').click();
+            await assertMacroSelection(page, null);
+        }
         await page.goto(baseUrl + '?fixture_empty=1&fixture_macros=0&fixture_no_community=1');
         await page.waitForSelector('[data-bs-catalog-ready="1"]');
         assert.equal(await page.locator('[data-bs-grid] > article').count(), 0);
@@ -195,6 +236,6 @@ async function assertMacroSelection(page, selected) {
         }
         assert.deepEqual(errors, []);
         await page.close();
-        console.log('PASS: 1/2/3/4 filtros dividem a largura; 6/15 preservam carrossel; legendas, borda/sublinhado, historico, item unico, dados vazios e console sem erros.');
+        console.log('PASS: 1/2/3/4 filtros dividem a largura; 6/15 preservam carrossel; descricao mobile em linha inteira, fonte desktop14/mobile12, borda3px, reset/historico, dados vazios e console sem erros.');
     } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

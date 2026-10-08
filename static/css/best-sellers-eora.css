@@ -6,13 +6,14 @@
 .bs-page .bs-macros--overflow { --be-visible: 3; --be-card-visible: 3.2; }
 .bs-page .bs-macros__track { align-items: flex-start; }
 .bs-page .bs-macro { display: block; min-width: 0; text-align: center; }
-.bs-page .bs-macro__selection { display: block; border: 1px solid transparent; }
-.bs-page .bs-macro[aria-current="true"] .bs-macro__selection { border-color: #111; }
+.bs-page .bs-macro__selection { display: block; border: 3px solid transparent; }
+.bs-page .bs-macro[aria-current="true"] .bs-macro__selection { border-color: #000; }
 .bs-page .bs-macro__selection > picture { display: block; }
 .bs-page .bs-macro__selection > picture > img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 4; object-fit: cover; }
 .bs-page .bs-macro__title { display: block; padding: 10px 4px; font-size: 13px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
 .bs-page .bs-macro[aria-current="true"] .bs-macro__title { text-decoration: underline; text-underline-offset: 4px; }
-.bs-page .bs-macro__description { display: block; margin-top: 6px; font-size: 12px; line-height: 1.5; font-weight: 400; white-space: pre-line; }
+.bs-page .bs-macro__description { display: block; margin-top: 6px; font-size: 14px; line-height: 1.5; font-weight: 400; white-space: pre-line; }
+.bs-page .bs-macros__description { display: none; }
 .bs-page .bs-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 24px; font-size: 12px; }
 .bs-page .bs-toolbar label { display: flex; align-items: center; gap: 12px; margin: 0; }
 .bs-page .bs-toolbar select { min-height: 42px; }
@@ -42,7 +43,8 @@
     .bs-page .bs-macros--overflow { --be-visible: 2; --be-card-visible: 2; }
     .bs-page .bs-macro__selection > picture > img { aspect-ratio: 3 / 4; }
     .bs-page .bs-macro__title { font-size: 12px; }
-    .bs-page .bs-macro__description { font-size: 11px; }
+    .bs-page .bs-macro__description { display: none !important; }
+    .bs-page .bs-macros__description { display: block; width: 100%; margin: 6px 0 0; font-size: 12px; line-height: 1.6; font-weight: 400; text-align: center; white-space: pre-line; overflow-wrap: anywhere; }
     .bs-page .bs-sort-label { display: none; }
     .bs-page .bs-toolbar { padding-bottom: 20px; }
     .bs-page .bs-catalog .be-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); row-gap: 24px; }

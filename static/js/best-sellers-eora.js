@@ -18,6 +18,7 @@
         var macros = all('[data-bs-category]').sort(function (a, b) { return Number(a.dataset.bsOrder) - Number(b.dataset.bsOrder); });
         macros.forEach(function (item) { item.parentNode.appendChild(item); });
         var macroNav = one('.bs-macros');
+        var mobileDescription = one('[data-bs-mobile-description]');
         macroNav.style.setProperty('--bs-macro-count', String(Math.max(1, macros.length)));
         macroNav.classList.toggle('bs-macros--overflow', macros.length > 4);
         macroNav.hidden = !macros.length;
@@ -277,6 +278,12 @@
             });
             one('[data-bs-reset]').setAttribute('aria-pressed', String(category === 'all'));
             var macro = byId.get(category);
+            if (mobileDescription) {
+                var selectedDescription = macro && macro.querySelector('.bs-macro__description');
+                var descriptionText = selectedDescription ? selectedDescription.textContent : '';
+                if (mobileDescription.textContent !== descriptionText) mobileDescription.textContent = descriptionText;
+                mobileDescription.hidden = !descriptionText.trim();
+            }
             one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : 'Todos os best sellers';
             var filterKeys = Object.keys(filters);
             var list = categoryProducts(category);
