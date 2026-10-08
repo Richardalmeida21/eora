@@ -3198,27 +3198,47 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     {# /* // Add to cart */ #}
 
+    function getCartImageSource($container, selector) {
+        var container = $container.get()[0];
+        if (!container) return '';
+        var groups = [container.querySelectorAll(selector + '.js-active-variant'), container.querySelectorAll(selector)];
+        for (var group = 0; group < groups.length; group++) {
+            var images = groups[group];
+            var index;
+            for (index = 0; index < images.length; index++) {
+                var srcset = images[index].getAttribute('data-srcset') || images[index].getAttribute('srcset');
+                if (srcset && srcset.trim()) return srcset.trim().split(/\s+/)[0].replace(/,$/, '');
+            }
+            for (index = 0; index < images.length; index++) {
+                var source = images[index].getAttribute('data-src') || images[index].currentSrc || images[index].getAttribute('src');
+                if (source) return source;
+            }
+        }
+        return '';
+    }
+
     function getQuickShopImgSrc(element){
-        const image = jQueryNuvem(element).closest('.js-quickshop-container').find('img');
-        return String(image.attr('srcset'));
+        return getCartImageSource(jQueryNuvem(element).closest('.js-quickshop-container'), 'img');
     }
 
     jQueryNuvem(document).on("click", ".js-addtocart:not(.js-addtocart-placeholder)", function (e) {
 
         {# INP fix: prevent default immediately before any DOM work to minimize input delay #}
-        var _isContactBtn = jQueryNuvem(this).hasClass('contact');
+        var _isContactBtn = jQueryNuvem(this).hasClass('contact') || jQueryNuvem(this).hasClass('catalog');
         {% if settings.ajax_cart %}
         if (!_isContactBtn) {
             e.preventDefault();
         }
         {% endif %}
+        if (_isContactBtn || this.disabled || jQueryNuvem(this).hasClass('nostock')) return;
 
         {# Button variables for transitions on add to cart #}
 
         var $productContainer = jQueryNuvem(this).closest('.js-product-container');
         var $productVariants = $productContainer.find(".js-variation-option");
         var $productButton = $productContainer.find("input[type='submit'].js-addtocart");
-        var productButtonWidth = $productButton[0] ? $productButton[0].offsetWidth : 0;
+        var productButton = $productButton.get()[0];
+        var productButtonWidth = productButton ? productButton.offsetWidth : 0;
 
         {# Define if event comes from quickshop, product page or cross selling #}
 
@@ -3241,11 +3261,7 @@ DOMContentLoaded.addEventOrExecute(() => {
             var price = $productContainer.find('.js-cross-selling-promo-price').text();
             var addedToCartCopy = $productContainer.data('add-to-cart-translation');
         } else if (!isQuickShop) {
-            if(jQueryNuvem(".js-product-slide-img.js-active-variant").length) {
-                var imageSrc = $productContainer.find('.js-product-slide-img.js-active-variant').data('srcset').split(' ')[0];
-            } else {
-                var imageSrc = $productContainer.find('.js-product-slide-img').data('srcset').split(' ')[0];
-            }
+            var imageSrc = getCartImageSource($productContainer, '.js-product-slide-img');
             var quantity = $productContainer.find('.js-quantity-input').val();
             var name = $productContainer.find('.js-product-name').text();
             var price = $productContainer.find('.js-price-display').text();
@@ -3264,10 +3280,19 @@ DOMContentLoaded.addEventOrExecute(() => {
         }
 
         if (!_isContactBtn) {
+            var $prod_form = jQueryNuvem(this).closest("form");
+            {% if settings.ajax_cart %}
+                var productForm = $prod_form.get()[0];
+                if (!productForm || productForm.eoraCartPending) return;
+                productForm.eoraCartPending = true;
+            {% endif %}
 
             {# INP fix: defer visual DOM mutations to requestAnimationFrame to unblock the main thread #}
 
             requestAnimationFrame(function() {
+            {% if settings.ajax_cart %}
+                if (!productForm.eoraCartPending) return;
+            {% endif %}
             $productButton.hide();
             if (isQuickShop) {
                 $productButtonContainer.hide();
@@ -3281,6 +3306,7 @@ DOMContentLoaded.addEventOrExecute(() => {
             {% if settings.ajax_cart %}
 
                 var callback_add_to_cart = function(html_notification_related_products, html_notification_cross_selling) {
+                    productForm.eoraCartPending = false;
 
                     {# Fill notification info #}
 
@@ -3344,7 +3370,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                         jQueryNuvem("#quickshop-modal").removeClass('modal-show');
                         jQueryNuvem(".js-modal-overlay[data-modal-id='#quickshop-modal']").hide();
                         jQueryNuvem("body").removeClass("overflow-none");
-                        restoreQuickshopForm();
+                        if (typeof restoreQuickshopForm === 'function') restoreQuickshopForm();
                         if (window.innerWidth < 768) {
                             cleanURLHash();
                         }
@@ -3490,6 +3516,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                     }
                 }
                 var callback_error = function(){
+                    productForm.eoraCartPending = false;
                     {# Restore real button visibility in case of error #}
 
                     $productButtonAdding.removeClass("active");
@@ -3500,16 +3527,20 @@ DOMContentLoaded.addEventOrExecute(() => {
                         $productButtonContainer.show();
                     }
                 }
-                $prod_form = jQueryNuvem(this).closest("form");
-                LS.addToCartEnhanced(
-                    $prod_form,
-                    addedToCartCopy,
-                    '{{ "Agregando..." | translate }}',
-                    '{{ "No hay más stock de este producto." | translate }}',
-                    {{ store.editable_ajax_cart_enabled ? 'true' : 'false' }},
+                try {
+                    LS.addToCartEnhanced(
+                        $prod_form,
+                        addedToCartCopy,
+                        '{{ "Agregando..." | translate }}',
+                        '{{ "No hay más stock de este producto." | translate }}',
+                        {{ store.editable_ajax_cart_enabled ? 'true' : 'false' }},
                         callback_add_to_cart,
                         callback_error
-                );
+                    );
+                } catch (error) {
+                    callback_error();
+                    throw error;
+                }
 
             {% endif %}
         }

@@ -23,6 +23,15 @@
 {# Used to assign currency to total #}
 <div id="store-curr" class="hidden">{{ cart.currency }}</div>
 
+{# Hooks required by the platform when CartTotalUpdated updates payment discounts.
+   Keep them present even when the custom cart hides the standard totals. #}
+<div class="eora-cart-payment-discount-hooks" hidden aria-hidden="true" style="display:none;">
+  <div class="js-payment-discount-price-cart-container" style="display:none;">
+    <span class="js-payment-discount-price-cart"></span>
+    <span class="js-payment-discount-name-cart"></span>
+  </div>
+</div>
+
 {# Define conditions to show shipping calculator and store branches on cart #}
 
 {% set show_calculator_on_cart = settings.shipping_calculator_cart_page and store.has_shipping %}

@@ -589,13 +589,92 @@
         return form.querySelector('[name="commit"], input.js-addtocart, button.js-addtocart, .js-addtocart');
     }
 
+    function readProductVariants(root) {
+        if (!root) return null;
+        var productField = root.querySelector('input[name="add_to_cart"]');
+        var productId = productField && productField.value;
+        try {
+            var variants = JSON.parse(root.getAttribute('data-variants') || '[]');
+            if (!Array.isArray(variants) || variants.some(function (variant) {
+                return !variant || typeof variant !== 'object' || variant.id == null ||
+                    (productId && String(variant.product_id) !== String(productId));
+            })) return null;
+            return variants;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function setProductFieldValue(field, value) {
+        if (field.tagName === 'SELECT' && !Array.from(field.options).some(function (option) {
+            return String(option.value) === String(value) && !option.disabled;
+        })) return false;
+        var changed = String(field.value) !== String(value);
+        field.value = value;
+        if (changed) field.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+    }
+
+    function setFormVariants(formEl, variant) {
+        if (!formEl || !variant) return false;
+        var productField = formEl.querySelector('input[name="add_to_cart"]');
+        if (productField && String(productField.value) !== String(variant.product_id)) return false;
+        var selects = Array.from(formEl.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (select) {
+            return !select.classList.contains('js-shipping-select');
+        });
+        var values = selects.map(function (select, index) {
+            var match = /variation\[(\d+)\]/.exec(select.name);
+            return variant['option' + (match ? match[1] : index)];
+        });
+        if (selects.some(function (select, index) {
+            return values[index] == null || !Array.from(select.options).some(function (option) {
+                return String(option.value) === String(values[index]) && !option.disabled;
+            });
+        })) return false;
+        selects.forEach(function (select, index) { setProductFieldValue(select, values[index]); });
+        formEl.querySelectorAll('input[name="variant_id"]').forEach(function (field) {
+            setProductFieldValue(field, variant.id);
+        });
+        return true;
+    }
+
+    function resolveProductVariant(combo, root) {
+        var variants = readProductVariants(root);
+        if (!variants || !combo) return null;
+        return variants.find(function (variant) {
+            if (combo.productId != null && String(combo.productId) !== String(variant.product_id)) return false;
+            if (combo.variantId != null) return String(combo.variantId) === String(variant.id);
+            var values = [variant.option0, variant.option1, variant.option2].filter(function (value) { return value != null; });
+            if (Array.isArray(combo.values)) {
+                return values.length === combo.values.length && values.every(function (value, index) {
+                    return String(value) === String(combo.values[index]);
+                });
+            }
+            return combo.name === values.join(' / ');
+        }) || null;
+    }
+
     function syncFormValues(fromForm, toForm) {
-        if (!fromForm || !toForm) return;
+        if (!fromForm || !toForm) return false;
+        var sourceProduct = fromForm.querySelector('input[name="add_to_cart"]');
+        var targetProduct = toForm.querySelector('input[name="add_to_cart"]');
+        if (sourceProduct && targetProduct && sourceProduct.value !== targetProduct.value) return false;
+        var synced = true;
         var fields = fromForm.querySelectorAll('input[name], select[name], textarea[name]');
+        if (Array.from(fields).some(function (src) {
+            if (src.disabled || src.tagName !== 'SELECT') return false;
+            var name = src.getAttribute('name');
+            return Array.from(toForm.querySelectorAll('[name="' + name.replace(/"/g, '\\"') + '"]')).some(function (dst) {
+                return dst.tagName === 'SELECT' && !Array.from(dst.options).some(function (option) {
+                    return String(option.value) === String(src.value) && !option.disabled;
+                });
+            });
+        })) return false;
         fields.forEach(function (src) {
             if (src.disabled) return;
             var name = src.getAttribute('name');
             if (!name) return;
+            if (name === 'variant_id') return;
             var dstList = toForm.querySelectorAll('[name="' + name.replace(/"/g, '\\"') + '"]');
             if (!dstList.length) return;
 
@@ -604,7 +683,7 @@
                 dstList.forEach(function (dst) {
                     var changed = dst.checked !== (dst.value === src.value);
                     dst.checked = (dst.value === src.value);
-                    if (changed) dst.dispatchEvent(new Event('change'));
+                    if (changed) dst.dispatchEvent(new Event('change', { bubbles: true }));
                 });
                 return;
             }
@@ -613,27 +692,44 @@
                 dstList.forEach(function (dst) {
                     var changed = dst.checked !== src.checked;
                     dst.checked = src.checked;
-                    if (changed) dst.dispatchEvent(new Event('change'));
+                    if (changed) dst.dispatchEvent(new Event('change', { bubbles: true }));
                 });
                 return;
             }
 
             dstList.forEach(function (dst) {
-                var changed = dst.value !== src.value;
-                dst.value = src.value;
-                if (changed) dst.dispatchEvent(new Event('change'));
+                if (!setProductFieldValue(dst, src.value)) synced = false;
             });
         });
+        var sourceVariant = fromForm.querySelector('input[name="variant_id"]');
+        if (sourceVariant) {
+            var variants = readProductVariants(toForm.closest('#single-product') || getOriginalProductRoot());
+            var optionFields = Array.from(toForm.querySelectorAll('select[name^="variation"], input[name^="variation"]')).filter(function (field) {
+                return field.type !== 'radio' || field.checked;
+            });
+            var selectedVariant = variants && variants.find(function (variant) {
+                if (!optionFields.length) return String(variant.id) === String(sourceVariant.value);
+                return optionFields.every(function (field) {
+                    var match = /variation\[(\d+)\]/.exec(field.name);
+                    return match && String(variant['option' + match[1]]) === String(field.value);
+                });
+            });
+            if (!selectedVariant) return false;
+            toForm.querySelectorAll('input[name="variant_id"]').forEach(function (field) {
+                setProductFieldValue(field, selectedVariant.id);
+            });
+        }
+        return synced;
     }
 
     function triggerOriginalBuy() {
         if (window.eoraIsSubmittingCart) return false;
-        window.eoraIsSubmittingCart = true;
-        setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
-
         var form = getOriginalProductForm();
         if (!form) return false;
         var addBtn = getOriginalAddButton();
+        if (addBtn && (addBtn.disabled || addBtn.classList.contains('nostock'))) return false;
+        window.eoraIsSubmittingCart = true;
+        setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
         if (addBtn) {
             addBtn.click();
             return true;
@@ -1090,6 +1186,8 @@
             var parser = new DOMParser();
             var newDoc = parser.parseFromString(html, 'text/html');
             var newSP = newDoc.querySelector('#single-product');
+            var newVariants = readProductVariants(newSP);
+            if (!newVariants) throw new Error('Invalid product variants');
 
             // ── EXTRAI E ATUALIZA O WINDOW.LS IMEDIATAMENTE ────────────────────────
             var parsedLS = null;
@@ -1122,11 +1220,10 @@
                         window.LS = {};
                     }
                     window.LS.product = parsedLS;
-                    if (parsedLS.variants) {
-                        window.LS.variants = parsedLS.variants;
-                    }
                 }
             } catch (e) {}
+            window.LS = window.LS || {};
+            window.LS.variants = newVariants;
             // ────────────────────────────────────────────────────────────────────────
             
             // Só considera indisponível se o botão de compra realmente indicar falta de estoque
@@ -1245,7 +1342,7 @@
                     var forwardToOriginal = function () {
                         var originalForm = getOriginalProductForm();
                         if (!originalForm) return;
-                        syncFormValues(freshForm, originalForm);
+                        if (!syncFormValues(freshForm, originalForm)) return;
                         triggerOriginalBuy();
                     };
                     freshForm.addEventListener('submit', function (e) {
@@ -1335,6 +1432,8 @@
                     }
                 }, 50);
             }
+            var variantSelect = newSP.querySelector('select.js-variation-option');
+            if (variantSelect) variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }).catch(function () {
             window.location.href = fullUrl;
         });
@@ -2768,7 +2867,7 @@
                 var forwardToOriginal = function () {
                     var originalForm = getOriginalProductForm();
                     if (!originalForm) return;
-                    syncFormValues(clonedForm, originalForm);
+                    if (!syncFormValues(clonedForm, originalForm)) return;
                     triggerOriginalBuy();
                 };
 
@@ -3864,41 +3963,23 @@
             return fetchTagProducts(tag, currentPath);
         }
 
-        function submitVariant(combo, variants) {
-            if (window.eoraIsSubmittingCart) return;
-            window.eoraIsSubmittingCart = true;
-            setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
-
+        function submitVariant(combo) {
+            if (window.eoraIsSubmittingCart) return false;
             var originalForm = getOriginalProductForm();
             var customForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
-            
-            function setFormVariants(formEl) {
-                if (!formEl) return;
-                var selects = Array.from(formEl.querySelectorAll('select.js-variation-option, select[name^="variation"]')).filter(function (s) {
-                    return !s.classList.contains('js-shipping-select');
-                });
-                if (typeof LS !== 'undefined' && LS.variants && combo.lsIdx !== undefined) {
-                    var v = LS.variants[combo.lsIdx];
-                    if (v) {
-                        if (v.option0 && selects[0]) { selects[0].value = v.option0; selects[0].dispatchEvent(new Event('change')); }
-                        if (v.option1 && selects[1]) { selects[1].value = v.option1; selects[1].dispatchEvent(new Event('change')); }
-                        if (v.option2 && selects[2]) { selects[2].value = v.option2; selects[2].dispatchEvent(new Event('change')); }
-                    }
-                } else if (combo.refs && combo.values) {
-                    combo.values.forEach(function (val, i) {
-                        if (selects[i]) {
-                            selects[i].value = val;
-                            selects[i].dispatchEvent(new Event('change'));
-                        }
-                    });
-                }
-            }
-            
-            setFormVariants(originalForm);
-            setFormVariants(customForm);
+            var variant = resolveProductVariant(combo, getOriginalProductRoot());
+            if (!originalForm || !variant || variant.available === false) return false;
+            if (!setFormVariants(originalForm, variant)) return false;
+            if (customForm && !setFormVariants(customForm, variant)) return false;
+            var addBtn = getOriginalAddButton();
+            if (addBtn && (addBtn.disabled || addBtn.classList.contains('nostock'))) return false;
+            window.eoraIsSubmittingCart = true;
+            setTimeout(function(){ window.eoraIsSubmittingCart = false; }, 2000);
             
             setTimeout(function () {
+                if (getOriginalProductForm() !== originalForm) return;
                 var addBtn = getOriginalAddButton();
+                if (addBtn && (addBtn.disabled || addBtn.classList.contains('nostock'))) return;
                 if (addBtn) {
                     addBtn.click();
                 } else if (originalForm) {
@@ -3909,6 +3990,7 @@
                     }
                 }
             }, 200);
+            return true;
         }
 
         function abrirPopup() {
@@ -3920,11 +4002,11 @@
             var groupTag = getVariantGroupTag();
 
             if (typeof LS !== 'undefined' && LS.variants && LS.variants.length > 0) {
-                LS.variants.forEach(function (v, i) {
+                LS.variants.forEach(function (v) {
                     if (!v) return;
                     var opts = [v.option0, v.option1, v.option2].filter(Boolean);
                     if (opts.length > 0) {
-                        validOptions.push({ name: opts.join(' / '), lsIdx: i, price: v.price_short || basePrice, image_url: v.image_url || '', stock: v.stock });
+                        validOptions.push({ name: opts.join(' / '), variantId: v.id, productId: v.product_id, values: opts, price: v.price_short || basePrice, image_url: v.image_url || '', stock: v.stock });
                     }
                 });
             } else {
@@ -3986,7 +4068,7 @@
                 var clonedForm = document.querySelector('.eora-product-wrap form, .js-product-form:not(#product_form)');
                 var originalForm = getOriginalProductForm();
                 if (clonedForm && originalForm) {
-                    syncFormValues(clonedForm, originalForm);
+                    if (!syncFormValues(clonedForm, originalForm)) return;
                 }
                 if (triggerOriginalBuy()) return;
                 var wrapEl = document.querySelector('.eora-product-wrap');
@@ -4012,8 +4094,9 @@
 
             list.querySelectorAll('.eora-bolsa-pu-select').forEach(function (btn) {
                 btn.addEventListener('click', function () {
-                    popup.classList.remove('eora-pu-open');
-                    submitVariant(validOptions[parseInt(this.getAttribute('data-idx'))]);
+                    if (submitVariant(validOptions[parseInt(this.getAttribute('data-idx'))])) {
+                        popup.classList.remove('eora-pu-open');
+                    }
                 });
             });
             popup.classList.add('eora-pu-open');

@@ -123,6 +123,8 @@
 
                 {% if not reduced_item %}
                     {% include 'snipplets/labels.tpl' %}
+                {% else %}
+                    <span class="hidden" data-store="stock-product-{{ product.id }}-{% if product.has_stock %}{% if product.stock %}{{ product.stock }}{% else %}infinite{% endif %}{% else %}0{% endif %}"></span>
                 {% endif %}
                 
                 {# {% if product.available and product.display_price and settings.quick_shop and not reduced_item %} #}
