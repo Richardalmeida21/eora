@@ -4,11 +4,23 @@ A rota existente `/best-sellers1/` usa uma campanha dedicada. A sequência é fi
 
 ## Configuração
 
-1. Em cada uma das 15 categorias visuais, ative o slot e cadastre foto, nome, tag exata, descrição e posição. A tag deve existir nos produtos da categoria Best Sellers. O clique normal filtra somente esses produtos na página. A descrição abre somente na categoria selecionada. Sem link personalizado, abrir a imagem em outra aba mantém a campanha com o filtro selecionado; sem JavaScript, há um link para a categoria nativa.
-2. Cadastre e ordene os produtos na categoria **Best Sellers**, em `/best-sellers/`. A campanha lê todas as páginas dessa categoria e preserva sua ordem. Os 10 blocos opcionais correspondem às posições 1–12, 13–24 e assim por diante, até 109–120. Os produtos seguintes continuam disponíveis, sem limite de 120. Produtos repetidos aparecem uma vez.
-3. Cadastre a galeria **Quem usa — Todos** e as galerias independentes de cada categoria. Cada galeria aceita até 15 fotos; remova fotos para desativá-las e arraste para ordenar. Fotos sem link próprio usam o link configurado da galeria, ou `/quem-usa/`. Uma categoria sem fotos cadastradas não exibe a galeria de outra categoria.
-4. Cadastre os banners de categorias como na home: imagem, título, descrição, botão e destino. Ative ou desative a seção pelo painel.
-5. O botão **Filtros** usa os atributos existentes de Óculos Eora e Bolsas Eora, além de Categoria, Modelo e Preço. As opções vêm das tags e variantes dos produtos de Best Sellers. Quando a seleção contém apenas óculos, atributos exclusivos de bolsas ficam ocultos, e vice-versa. A lista de modelos usa os modelos cadastrados nas duas páginas e os modelos conhecidos que existem nessa categoria.
+O painel tem cinco abas, cada uma com seus próprios campos:
+
+| Aba | Campos |
+| --- | --- |
+| Página | Endereço e título da página |
+| Catálogo e filtros | Botão de filtros, orientações dos produtos e ativação dos 10 blocos |
+| Categorias visuais | Imagens, nome, tag, descrição, ordem e link das 15 categorias |
+| Quem usa | Opções padrão, fotos de Ver todos e fotos de cada categoria |
+| Banners de categorias | Ativação, título e galeria de banners |
+
+As categorias são grupos dentro das abas, sem abrir novas abas individuais. As orientações de imagens aparecem uma vez por tipo de conteúdo. Os 201 campos mantêm seus identificadores, tipos, arquivos de imagem e dimensões, preservando a compatibilidade com os cadastros existentes. A organização usa `collapse` para as abas e `title` para os grupos internos, conforme a [documentação da Nuvemshop](https://docs.nuvemshop.com.br/help/layout-avancado-settings).
+
+1. Em **Página**, edite o endereço e o título da campanha.
+2. Em **Catálogo e filtros**, ative o botão de filtros e escolha os blocos visíveis. Cadastre e ordene os produtos na categoria **Best Sellers**, em `/best-sellers/`. A campanha lê todas as páginas dessa categoria e preserva sua ordem. Os 10 blocos opcionais correspondem às posições 1–12, 13–24 e assim por diante, até 109–120. Os produtos seguintes continuam disponíveis, sem limite de 120. Produtos repetidos aparecem uma vez. O botão **Filtros** usa os atributos existentes de Óculos Eora e Bolsas Eora, além de Categoria, Modelo e Preço. As opções vêm das tags e variantes dos produtos de Best Sellers. Quando a seleção contém apenas óculos, atributos exclusivos de bolsas ficam ocultos, e vice-versa. A lista de modelos usa os modelos cadastrados nas duas páginas e os modelos conhecidos que existem nessa categoria.
+3. Em **Categorias visuais**, ative as categorias desejadas e cadastre foto, nome, tag exata, descrição e posição. A tag deve existir nos produtos da categoria Best Sellers. O clique normal filtra somente esses produtos na página. A descrição abre somente na categoria selecionada. Sem link personalizado, abrir a imagem em outra aba mantém a campanha com o filtro selecionado; sem JavaScript, há um link para a categoria nativa.
+4. Em **Quem usa**, cadastre as **Fotos de Ver todos** e as galerias independentes de cada categoria, usando a mesma numeração de **Categorias visuais**. Cada galeria exibe até 15 fotos; remova fotos para desativá-las e arraste para ordenar. Título, subtítulo e link em branco usam os valores padrão dessa aba. Fotos sem link próprio usam o link configurado da galeria, ou `/quem-usa/`. Uma categoria sem fotos cadastradas não exibe a galeria de outra categoria.
+5. Em **Banners de categorias**, cadastre os banners como na home: imagem, título, descrição, botão e destino. Ative ou desative a seção pelo painel.
 
 A categoria Best Sellers é a única fonte de produtos. Produtos da home, de destaques ou de carrosséis de outras campanhas não entram no catálogo. Ordenação e filtros completos ficam disponíveis quando todas as páginas terminam de carregar. Se houver falha, **Tentar novamente** retoma a página pendente, preservando os produtos já recebidos. A paginação aceita tanto `?page=N` quanto `/best-sellers/page/N/`.
 
