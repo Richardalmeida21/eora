@@ -11602,7 +11602,7 @@ Página Best Sellers Eora
 	title
 		title = Fotos por filtro
 	description
-		description = Use o mesmo número da aba Filtro Best Sellers. Cada filtro tem suas próprias fotos; sem fotos, ele não mostra Quem usa. Título, subtítulo e link em branco usam os valores padrão acima.
+		description = As Fotos de Ver todos aparecem também nos filtros sem fotos próprias. Para usar as mesmas fotos em todos os filtros, cadastre somente essa galeria. Se quiser fotos específicas, use o mesmo número da aba Filtro Best Sellers. Título, subtítulo e link em branco usam os valores padrão acima.
 	title
 		title = Filtro 1 — fotos
 	i18n_input

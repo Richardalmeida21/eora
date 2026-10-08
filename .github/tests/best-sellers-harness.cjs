@@ -45,6 +45,12 @@ function context(options = {}) {
         data.settings[prefix + '_description'] = 'Os favoritos da coleção ' + data.settings[prefix + '_title'] + '. Design EORA para todos os dias.';
         data.settings[prefix + '_order'] = i;
         data.settings[prefix + '_community'] = Array.from({length: 18}, (_, j) => ({image: modelImage(tag, 'lifestyle', asset(j + i)), title: tag + ' — nossa comunidade', link: '/quem-usa/' + tag + '-' + j}));
+        if (options.communityMode === 'general') data.settings[prefix + '_community'] = [];
+        if (options.communityMode === 'imageless' || options.communityMode === 'mixed') {
+            data.settings[prefix + '_community'] = options.communityMode === 'mixed' && i === 2
+                ? data.settings[prefix + '_community'].slice(0, 3)
+                : [{title: tag + ' — cadastro sem foto', link: '/quem-usa/sem-foto-' + i}, {image: '', title: 'Foto ainda nao enviada'}];
+        }
     }
     data.category_products = Array.from({length: options.empty ? 0 : options.amount ?? 120}, (_, n) => {
             const tag = tags[n % 4];
@@ -82,6 +88,15 @@ function validate() {
     assert.match(html, /data-bs-category-url="\/best-sellers\/"/);
     assert.doesNotMatch(html, /data-be-product="(?:888|889|890)"/, 'home, campanha antiga e destaques nao sao fontes de produtos');
     assert.equal((html.match(/<template data-bs-community-template=/g) || []).length, 5);
+    const communityTemplate = (markup, id) => markup.match(new RegExp('<template data-bs-community-template="' + id + '">([\\s\\S]*?)</template>'))?.[1] || '';
+    const generalCommunity = render(context({galleryItems: 5, communityMode: 'general'}));
+    assert.equal((generalCommunity.match(/<template data-bs-community-template=/g) || []).length, 1, 'configuracao publicada: cinco fotos gerais e nenhum album de filtro');
+    assert.equal((communityTemplate(generalCommunity, 'all').match(/be-gallery__item/g) || []).length, 5);
+    const imagelessCommunity = render(context({galleryItems: 5, communityMode: 'imageless'}));
+    assert.equal((communityTemplate(imagelessCommunity, 'all').match(/be-gallery__item/g) || []).length, 5);
+    assert.equal((communityTemplate(imagelessCommunity, '1').match(/be-gallery__item/g) || []).length, 0, 'entradas sem imagem nao representam fotos validas');
+    const mixedCommunity = render(context({galleryItems: 5, communityMode: 'mixed'}));
+    assert.equal((communityTemplate(mixedCommunity, '2').match(/be-gallery__item/g) || []).length, 3, 'album valido do filtro continua disponivel como override');
     assert.doesNotMatch(html, /data-bs-disabled-blocks/);
     const feed = categoryFeed(new URL('http://127.0.0.1:4176/best-sellers/?bs_category_feed=1'));
     assert.equal((feed.match(/data-be-product=/g) || []).length, 24);
@@ -128,7 +143,7 @@ if (process.argv.includes('--serve')) {
             const isFeed = /^\/best-sellers(?:\/page\/[1-9]\d*)?\/?$/.test(url.pathname);
             const fixtureUrl = isFeed ? new URL(req.headers.referer || 'http://127.0.0.1:4176/') : url;
             const isFixture = Array.from(fixtureUrl.searchParams.keys()).some(key => key.startsWith('fixture_'));
-            const options = {macros: Number(fixtureUrl.searchParams.get('fixture_macros') ?? 4), amount: Number(fixtureUrl.searchParams.get('fixture_products') ?? 120), empty: fixtureUrl.searchParams.has('fixture_empty'), noFilters: fixtureUrl.searchParams.has('fixture_no_filters'), noCommunity: fixtureUrl.searchParams.has('fixture_no_community'), prettyPages: fixtureUrl.searchParams.has('fixture_pretty_pages'), galleryItems: Number(fixtureUrl.searchParams.get('fixture_gallery_items') ?? 18), bannerItems: Number(fixtureUrl.searchParams.get('fixture_banner_items') ?? 5)};
+            const options = {macros: Number(fixtureUrl.searchParams.get('fixture_macros') ?? 4), amount: Number(fixtureUrl.searchParams.get('fixture_products') ?? 120), empty: fixtureUrl.searchParams.has('fixture_empty'), noFilters: fixtureUrl.searchParams.has('fixture_no_filters'), noCommunity: fixtureUrl.searchParams.has('fixture_no_community'), prettyPages: fixtureUrl.searchParams.has('fixture_pretty_pages'), galleryItems: Number(fixtureUrl.searchParams.get('fixture_gallery_items') ?? 18), bannerItems: Number(fixtureUrl.searchParams.get('fixture_banner_items') ?? 5), communityMode: fixtureUrl.searchParams.get('fixture_community_mode')};
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             if (isFeed && isFixture) return res.end(categoryFeed(url, options));
             if (isFeed) {

@@ -84,4 +84,4 @@
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-3" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-4" defer></script>

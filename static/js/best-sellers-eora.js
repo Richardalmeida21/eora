@@ -23,6 +23,9 @@
         macroNav.classList.toggle('bs-macros--overflow', macros.length > 4);
         macroNav.hidden = !macros.length;
         var byId = new Map(macros.map(function (item) { return [item.dataset.bsCategory, item]; }));
+        var communityTemplates = new Map(all('[data-bs-community-template]').filter(function (template) {
+            return template.content.querySelector('.be-gallery__item img');
+        }).map(function (template) { return [template.dataset.bsCommunityTemplate, template]; }));
         var seen = new Set();
         var products = [];
         var categoryBase = new URL(root.dataset.bsCategoryUrl, window.location.href);
@@ -237,13 +240,14 @@
             return '';
         }
         function refreshCommunity() {
-            if (communityId === category) return;
-            communityId = category;
-            disposeCommunity();
             var container = one('[data-bs-community]');
             if (!container) return;
+            var template = communityTemplates.get(category) || communityTemplates.get('all');
+            var nextCommunityId = template ? template.dataset.bsCommunityTemplate : null;
+            if (communityId === nextCommunityId) return;
+            communityId = nextCommunityId;
+            disposeCommunity();
             container.replaceChildren();
-            var template = all('[data-bs-community-template]').find(function (item) { return item.dataset.bsCommunityTemplate === category; });
             if (template) {
                 container.appendChild(template.content.cloneNode(true));
                 disposeCommunity = initCarousel(container.firstElementChild);
