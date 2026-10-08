@@ -46,11 +46,13 @@ As fotos principais e adicionais dos produtos usam versões responsivas até 102
 
 | Elemento | Computador | Celular |
 | --- | --- | --- |
-| Filtro Best Sellers | 3; com mais de 3, parte da quarta e rolagem | 2 e rolagem |
+| Filtro Best Sellers | Até 4 dividem a largura igualmente; acima de 4, 3 e parte da quarta com rolagem | Até 4 dividem a largura igualmente; acima de 4, 2 com rolagem |
 | Catálogo inicial | Até 24 produtos, 6 linhas de 4 | Até 24 produtos, 12 linhas de 2 |
 | Mostrar mais | Acrescenta até 24 produtos | Acrescenta até 24 produtos |
 | Quem usa | 5 fotos e parte da próxima | 1 foto e parte da próxima |
 | Banners de categorias | 4 banners e parte do próximo | 1 banner e parte do próximo |
+
+As fotos dos filtros dividem a linha conforme a quantidade ativa: 2 usam metade cada, 3 usam um terço e 4 usam um quarto, considerando os espaçamentos, no computador e no celular. Títulos e descrições ficam centralizados abaixo das fotos. O filtro selecionado recebe contorno ao redor da foto e mantém o título sublinhado; somente sua descrição abre.
 
 Os carrosséis usam rolagem nativa, setas, teclado e bolinhas. Quem usa e os banners alinham os itens ao início durante a navegação e centralizam o último ao chegar ao fim. O trecho do próximo item aparece somente quando existem mais imagens do que cabem na tela; sem rolagem, os itens ficam centralizados e os controles são ocultos. Quem usa tem fundo branco; a campanha substitui o Instagram preto do rodapé nessa rota. Os cards mantêm links, preços, situação de estoque e galeria existentes da EORA, incluindo o redirecionamento de variantes do Luar.
 
@@ -81,6 +83,8 @@ Prévia: `http://127.0.0.1:4176/best-sellers1/`. O endereço padrão lê os prod
 Foram verificados 320, 390, 767, 768, 1440 e 1920 px, trecho do próximo item, último item centralizado, item único, filtros combinados, ordenação, histórico, Escape e foco, galerias, limite de 15 fotos, 3/15 categorias e estados vazios. A fonte de produtos foi verificada com 137 produtos em seis páginas, as duas formas de paginação, falha com retomada e rejeição de URLs externas à categoria. A prévia real carregou 32 produtos em duas páginas. Capturas e comparação com o PDF: `C:/Temp/eora-best-sellers-validation/`.
 
 Na atualização de 08/10/2026, os testes também bloquearam as páginas seguintes em 390 e 1440 px: os primeiros 24 produtos apareceram antes do catálogo completo, **Mostrar mais** passou de 24 para 48 e depois 72, e todos os 24 cards iniciais mantiveram sua identidade, a foto selecionada e a galeria Quem usa. A retomada após erro preservou os cards recebidos. Os testes de navegador, feed e campos do editor passaram.
+
+Os ajustes dos áudios de 08/10/2026 foram verificados na mesma rota `/best-sellers1/`, em 320, 390, 767, 768, 1440 e 1920 px. Também passaram 30 combinações com 1, 2, 3, 4, 6 e 15 filtros: largura, centralização, contorno somente na foto, sublinhado, troca de seleção, reset e histórico. A seleção por teclado manteve foco visível e não deslocou as imagens. Feed, paginação e lotes de 24 produtos passaram. A validação foi local, sem publicação.
 
 ## Arquivos para publicação
 

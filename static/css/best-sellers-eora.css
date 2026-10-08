@@ -2,14 +2,16 @@
 .bs-page { padding-top: 28px; }
 .bs-page .bs-heading { margin-bottom: 24px; }
 .bs-page .bs-heading h1 { font-family: inherit; font-size: 22px; font-weight: 600; line-height: 1.3; }
-.bs-page .bs-macros { --be-gap: 12px; --be-visible: 3; --be-card-visible: 3; margin-bottom: 18px; }
-.bs-page .bs-macros--overflow { --be-card-visible: 3.2; }
+.bs-page .bs-macros { --be-gap: 12px; --be-visible: var(--bs-macro-count, 3); --be-card-visible: var(--bs-macro-count, 3); margin-bottom: 18px; }
+.bs-page .bs-macros--overflow { --be-visible: 3; --be-card-visible: 3.2; }
 .bs-page .bs-macros__track { align-items: flex-start; }
-.bs-page .bs-macro { display: block; min-width: 0; }
-.bs-page .bs-macro > picture { display: block; }
-.bs-page .bs-macro > picture > img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 4; object-fit: cover; }
-.bs-page .bs-macro__title { display: block; margin-top: 10px; font-size: 13px; line-height: 1.5; font-weight: 600; }
-.bs-page .bs-macro[aria-expanded="true"] .bs-macro__title { text-decoration: underline; text-underline-offset: 4px; }
+.bs-page .bs-macro { display: block; min-width: 0; text-align: center; }
+.bs-page .bs-macro__selection { display: block; border: 1px solid transparent; }
+.bs-page .bs-macro[aria-current="true"] .bs-macro__selection { border-color: #111; }
+.bs-page .bs-macro__selection > picture { display: block; }
+.bs-page .bs-macro__selection > picture > img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 4; object-fit: cover; }
+.bs-page .bs-macro__title { display: block; padding: 10px 4px; font-size: 13px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.bs-page .bs-macro[aria-current="true"] .bs-macro__title { text-decoration: underline; text-underline-offset: 4px; }
 .bs-page .bs-macro__description { display: block; margin-top: 6px; font-size: 12px; line-height: 1.5; font-weight: 400; white-space: pre-line; }
 .bs-page .bs-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 24px; font-size: 12px; }
 .bs-page .bs-toolbar label { display: flex; align-items: center; gap: 12px; margin: 0; }
@@ -36,8 +38,9 @@
     .bs-page { padding-top: 20px; }
     .bs-page .bs-heading { margin-bottom: 20px; }
     .bs-page .bs-heading h1 { font-size: 18px; }
-    .bs-page .bs-macros, .bs-page .bs-macros--overflow { --be-gap: 10px; --be-visible: 2; --be-card-visible: 2; }
-    .bs-page .bs-macro > picture > img { aspect-ratio: 3 / 4; }
+    .bs-page .bs-macros { --be-gap: 10px; }
+    .bs-page .bs-macros--overflow { --be-visible: 2; --be-card-visible: 2; }
+    .bs-page .bs-macro__selection > picture > img { aspect-ratio: 3 / 4; }
     .bs-page .bs-macro__title { font-size: 12px; }
     .bs-page .bs-macro__description { font-size: 11px; }
     .bs-page .bs-sort-label { display: none; }

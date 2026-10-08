@@ -17,8 +17,10 @@
         var engines = [window.EoraBagFilters, window.EoraEyewearFilters].filter(Boolean);
         var macros = all('[data-bs-category]').sort(function (a, b) { return Number(a.dataset.bsOrder) - Number(b.dataset.bsOrder); });
         macros.forEach(function (item) { item.parentNode.appendChild(item); });
-        one('.bs-macros').classList.toggle('bs-macros--overflow', macros.length > 3);
-        one('.bs-macros').hidden = !macros.length;
+        var macroNav = one('.bs-macros');
+        macroNav.style.setProperty('--bs-macro-count', String(Math.max(1, macros.length)));
+        macroNav.classList.toggle('bs-macros--overflow', macros.length > 4);
+        macroNav.hidden = !macros.length;
         var byId = new Map(macros.map(function (item) { return [item.dataset.bsCategory, item]; }));
         var seen = new Set();
         var products = [];
