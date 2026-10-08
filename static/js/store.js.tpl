@@ -4020,7 +4020,8 @@ DOMContentLoaded.addEventOrExecute(() => {
         {% set is_campaign_09 = page.handle == page_current_09 %}
         {% set is_campaign_10 = page.handle == page_current_10 %}
 
-        {% set is_on_campaign_page = is_campaign_01 or is_campaign_02 or is_campaign_03 or is_campaign_04 or is_campaign_05 or is_campaign_06 or is_campaign_07 or is_campaign_08 or is_campaign_09 or is_campaign_10 %}
+        {% set is_best_sellers_eora_page = template == 'page' and (page.handle == (settings.best_sellers_eora_page_url | default('best-sellers1') | trim('/')) or page.handle == 'best-sellers1') %}
+        {% set is_on_campaign_page = not is_best_sellers_eora_page and (is_campaign_01 or is_campaign_02 or is_campaign_03 or is_campaign_04 or is_campaign_05 or is_campaign_06 or is_campaign_07 or is_campaign_08 or is_campaign_09 or is_campaign_10) %}
 
         {% if is_on_campaign_page %}
 

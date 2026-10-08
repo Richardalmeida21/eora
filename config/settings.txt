@@ -11081,6 +11081,869 @@ Edición avanzada de CSS
 	subtitle
 		subtitle = <a target='_blank' href='https://ayuda.tiendanube.com/es_ES/123225-edicion-avanzada-de-css/como-editar-el-diseno-con-codigo-css'>¿Cómo edito el código CSS de mi tienda?</a>
 
+
+Página Best Sellers Eora
+	meta
+		icon = star
+		advanced = false
+	collapse
+		title = Página e catálogo
+	text
+		name = best_sellers_eora_page_url
+		description = Endereço da página, sem domínio (padrão: best-sellers1)
+	i18n_input
+		name = best_sellers_eora_title
+		description = Título da página
+	description
+		description = Qualidade das imagens: as medidas abaixo são largura x altura, em pixels. Envie fotos originais nítidas em JPG ou PNG, de preferência até 1 MB por imagem. Preserve a proporção indicada e mantenha rostos e produtos na área central. Ampliar uma foto pequena não recupera detalhes.
+	checkbox
+		name = best_sellers_eora_filters_enabled
+		description = Mostrar botão e painel de filtros (mesmos atributos de Óculos Eora e Bolsas Eora)
+	description
+		description = Os produtos são carregados automaticamente da categoria Best Sellers (/best-sellers), na ordem cadastrada nela. Edite os produtos e a ordem nessa categoria. Os 10 blocos abaixo correspondem aos primeiros grupos de 12 produtos da categoria e podem ser desativados; produtos seguintes continuam disponíveis. São 3 linhas de 4 no computador e grupos de 6 no celular. As categorias visuais filtram por tag somente dentro de Best Sellers.
+	description
+		description = Fotos dos produtos: recomendado 1200 x 1600 px (proporção 3:4), com pelo menos 1024 px de largura. Use a mesma proporção nas fotos do catálogo e mantenha o produto inteiro dentro da imagem. Edite essas fotos no cadastro de cada produto; a campanha usa as imagens da categoria Best Sellers.
+	checkbox
+		name = best_sellers_eora_catalog_1_enabled
+		description = Exibir bloco 1: posições 1 a 12 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_2_enabled
+		description = Exibir bloco 2: posições 13 a 24 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_3_enabled
+		description = Exibir bloco 3: posições 25 a 36 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_4_enabled
+		description = Exibir bloco 4: posições 37 a 48 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_5_enabled
+		description = Exibir bloco 5: posições 49 a 60 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_6_enabled
+		description = Exibir bloco 6: posições 61 a 72 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_7_enabled
+		description = Exibir bloco 7: posições 73 a 84 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_8_enabled
+		description = Exibir bloco 8: posições 85 a 96 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_9_enabled
+		description = Exibir bloco 9: posições 97 a 108 da categoria Best Sellers
+	checkbox
+		name = best_sellers_eora_catalog_10_enabled
+		description = Exibir bloco 10: posições 109 a 120 da categoria Best Sellers
+	collapse
+		title = Quem usa — Todos
+	checkbox
+		name = best_sellers_eora_community_enabled
+		description = Mostrar carrosséis Quem usa
+	i18n_input
+		name = best_sellers_eora_community_title
+		description = Título padrão
+	i18n_input
+		name = best_sellers_eora_community_subtitle
+		description = Subtítulo padrão
+	text
+		name = best_sellers_eora_community_link
+		description = Link padrão da página Quem usa
+	description
+		description = Fotos Quem usa: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. A mesma foto aparece no celular e no computador. Fotos fora dessa proporção terão as bordas recortadas; mantenha o rosto e os óculos na área central.
+	description
+		description = Até 15 fotos: 5 visíveis no computador e 1 no celular, com parte da próxima foto quando houver mais itens. O último item fica centralizado. Fundo branco. Arraste para ordenar; remova a foto para desativar. Cada foto pode ter link próprio. A galeria abaixo aparece em Ver todos; cada categoria tem uma galeria independente.
+	gallery
+		name = best_sellers_eora_community
+		gallery_image = Adicionar foto Quem usa — 1920 x 1920 px
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 1 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_1_enabled
+		description = Ativar categoria 1
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_1.jpg
+		title = Categoria 1 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_1_mobile.jpg
+		title = Categoria 1 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_1_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_1_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_1_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_1_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_1_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_1_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_1_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_1_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_1_community
+		gallery_image = Adicionar foto Quem usa da categoria 1 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 2 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_2_enabled
+		description = Ativar categoria 2
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_2.jpg
+		title = Categoria 2 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_2_mobile.jpg
+		title = Categoria 2 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_2_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_2_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_2_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_2_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_2_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_2_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_2_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_2_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_2_community
+		gallery_image = Adicionar foto Quem usa da categoria 2 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 3 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_3_enabled
+		description = Ativar categoria 3
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_3.jpg
+		title = Categoria 3 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_3_mobile.jpg
+		title = Categoria 3 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_3_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_3_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_3_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_3_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_3_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_3_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_3_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_3_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_3_community
+		gallery_image = Adicionar foto Quem usa da categoria 3 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 4 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_4_enabled
+		description = Ativar categoria 4
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_4.jpg
+		title = Categoria 4 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_4_mobile.jpg
+		title = Categoria 4 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_4_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_4_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_4_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_4_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_4_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_4_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_4_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_4_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_4_community
+		gallery_image = Adicionar foto Quem usa da categoria 4 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 5 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_5_enabled
+		description = Ativar categoria 5
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_5.jpg
+		title = Categoria 5 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_5_mobile.jpg
+		title = Categoria 5 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_5_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_5_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_5_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_5_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_5_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_5_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_5_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_5_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_5_community
+		gallery_image = Adicionar foto Quem usa da categoria 5 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 6 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_6_enabled
+		description = Ativar categoria 6
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_6.jpg
+		title = Categoria 6 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_6_mobile.jpg
+		title = Categoria 6 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_6_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_6_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_6_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_6_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_6_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_6_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_6_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_6_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_6_community
+		gallery_image = Adicionar foto Quem usa da categoria 6 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 7 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_7_enabled
+		description = Ativar categoria 7
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_7.jpg
+		title = Categoria 7 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_7_mobile.jpg
+		title = Categoria 7 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_7_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_7_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_7_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_7_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_7_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_7_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_7_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_7_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_7_community
+		gallery_image = Adicionar foto Quem usa da categoria 7 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 8 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_8_enabled
+		description = Ativar categoria 8
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_8.jpg
+		title = Categoria 8 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_8_mobile.jpg
+		title = Categoria 8 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_8_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_8_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_8_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_8_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_8_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_8_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_8_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_8_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_8_community
+		gallery_image = Adicionar foto Quem usa da categoria 8 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 9 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_9_enabled
+		description = Ativar categoria 9
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_9.jpg
+		title = Categoria 9 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_9_mobile.jpg
+		title = Categoria 9 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_9_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_9_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_9_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_9_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_9_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_9_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_9_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_9_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_9_community
+		gallery_image = Adicionar foto Quem usa da categoria 9 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 10 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_10_enabled
+		description = Ativar categoria 10
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_10.jpg
+		title = Categoria 10 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_10_mobile.jpg
+		title = Categoria 10 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_10_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_10_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_10_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_10_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_10_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_10_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_10_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_10_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_10_community
+		gallery_image = Adicionar foto Quem usa da categoria 10 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 11 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_11_enabled
+		description = Ativar categoria 11
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_11.jpg
+		title = Categoria 11 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_11_mobile.jpg
+		title = Categoria 11 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_11_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_11_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_11_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_11_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_11_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_11_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_11_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_11_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_11_community
+		gallery_image = Adicionar foto Quem usa da categoria 11 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 12 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_12_enabled
+		description = Ativar categoria 12
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_12.jpg
+		title = Categoria 12 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_12_mobile.jpg
+		title = Categoria 12 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_12_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_12_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_12_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_12_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_12_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_12_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_12_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_12_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_12_community
+		gallery_image = Adicionar foto Quem usa da categoria 12 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 13 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_13_enabled
+		description = Ativar categoria 13
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_13.jpg
+		title = Categoria 13 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_13_mobile.jpg
+		title = Categoria 13 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_13_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_13_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_13_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_13_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_13_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_13_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_13_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_13_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_13_community
+		gallery_image = Adicionar foto Quem usa da categoria 13 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 14 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_14_enabled
+		description = Ativar categoria 14
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_14.jpg
+		title = Categoria 14 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_14_mobile.jpg
+		title = Categoria 14 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_14_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_14_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_14_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_14_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_14_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_14_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_14_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_14_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_14_community
+		gallery_image = Adicionar foto Quem usa da categoria 14 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Categoria visual 15 e Quem usa
+	checkbox
+		name = best_sellers_eora_macro_15_enabled
+		description = Ativar categoria 15
+	description
+		description = Foto da categoria no computador: recomendado 2160 x 960 px, mínimo 1080 x 480 px, proporção horizontal 9:4. Foto para celular: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. Envie uma versão para cada tela; sem a foto para celular, a horizontal será recortada pelo centro.
+	image
+		original = best_sellers_eora_macro_15.jpg
+		title = Categoria 15 — computador: 2160 x 960 px
+		width = 2160
+		height = 960
+	image
+		original = best_sellers_eora_macro_15_mobile.jpg
+		title = Categoria 15 — celular: 1920 x 2560 px (opcional)
+		width = 1920
+		height = 2560
+	i18n_input
+		name = best_sellers_eora_macro_15_title
+		description = Nome da categoria
+	i18n_input
+		name = best_sellers_eora_macro_15_description
+		description = Descrição (abre ao selecionar esta categoria)
+		rows = 3
+	text
+		name = best_sellers_eora_macro_15_tag
+		description = Tag exata dos produtos (exemplo: onyx ou minivertice)
+	text
+		name = best_sellers_eora_macro_15_link
+		description = Link da categoria (abertura em nova aba ou sem JavaScript; opcional)
+	text
+		name = best_sellers_eora_macro_15_order
+		description = Ordem no carrossel (número; menor aparece primeiro)
+	i18n_input
+		name = best_sellers_eora_macro_15_community_title
+		description = Título Quem usa desta categoria (opcional)
+	i18n_input
+		name = best_sellers_eora_macro_15_community_subtitle
+		description = Subtítulo Quem usa desta categoria (opcional)
+	text
+		name = best_sellers_eora_macro_15_community_link
+		description = Link Quem usa desta categoria (opcional)
+	description
+		description = Fotos Quem usa desta categoria: recomendado 1920 x 1920 px, mínimo 1024 x 1024 px, proporção quadrada 1:1. Use a foto original nítida, com o rosto e os óculos na área central. A mesma imagem aparece no celular e no computador.
+	gallery
+		name = best_sellers_eora_macro_15_community
+		gallery_image = Adicionar foto Quem usa da categoria 15 — 1920 x 1920 px (até 15)
+		gallery_link = Link da foto
+		gallery_width = 1920
+		gallery_height = 1920
+		gallery_more_info = true
+	collapse
+		title = Banners de categorias
+	checkbox
+		name = best_sellers_eora_categories_enabled
+		description = Mostrar carrossel de banners de categorias
+	i18n_input
+		name = best_sellers_eora_categories_title
+		description = Título da seção (opcional)
+	description
+		description = Imagens dos banners: recomendado 1920 x 2560 px, mínimo 960 x 1280 px, proporção vertical 3:4. A mesma imagem aparece no computador e no celular. Deixe espaço na parte inferior para o título e o botão que a página coloca sobre a foto.
+	description
+		description = Configure e ordene como os banners da home: foto, título, descrição, botão e link em cada banner. São 4 visíveis no computador e 1 no celular, com parte do próximo banner quando houver mais itens. O último fica centralizado. Remova a imagem para desativar.
+	gallery
+		name = best_sellers_eora_categories
+		gallery_image = Adicionar banner de categoria — 1920 x 2560 px
+		gallery_link = Link da categoria
+		gallery_width = 1920
+		gallery_height = 2560
+		gallery_more_info = true
+
+
 Página Garantia Eora
 	meta
 		icon = star

@@ -56,7 +56,9 @@
 	{% set settings_name = 'behind_lens_page' %}
 {% endif %}
 
-{% if is_gift_guide_page %}
+{% if page.handle == (settings.best_sellers_eora_page_url | default('best-sellers1') | trim('/')) or page.handle == 'best-sellers1' %}
+    {% include 'snipplets/best-sellers/index.tpl' with {current_settings_name: settings_name} %}
+{% elseif is_gift_guide_page %}
     <main>
         {% include 'snipplets/gift-guide-banners.tpl' %}
     </main>

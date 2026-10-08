@@ -108,7 +108,7 @@
 {% if template == 'password' %}
 	{% else %}
 	{# Instafeed no rodapé #}
-		{% if settings.show_instafeed %}
+		{% if settings.show_instafeed and not is_best_sellers_eora_page %}
     	{#  **** Instafeed ****  #}
     		{% if show_help or (show_component_help and not has_instafeed) %}
         		{% snipplet 'defaults/home/instafeed_help.tpl' %}

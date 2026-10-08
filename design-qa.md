@@ -1,4 +1,47 @@
-# Design QA — página Bolsas Eora
+# Design QA — Eora
+
+## Best Sellers — briefing outubro de 2026 — 06/10/2026
+
+### Evidências e escopo da comparação
+
+- Fonte: `BRIEFING  DE ESTRUTURA PARA PÁGINA BEST SELLERS DO SITE -  OUT 2026.pdf`, 10 páginas. Páginas 2/3 definem a composição; páginas 4–9 especificam os componentes e as diferenças responsivas.
+- PDF renderizado: `C:/Temp/eora-best-sellers-validation/brief-2.png` e `brief-3.png`, 834 × 1180 px. Os recortes da composição são 365 × 855 px no desktop e 130 × 850 px no mobile; são montagens de referências, sem uma viewport CSS declarada.
+- Implementação: `http://127.0.0.1:4176/best-sellers1/?fixture_demo=1`, capturas `best-sellers-1440.png` (1440 × 3242 px) e `best-sellers-390.png` (390 × 2641 px), viewports 1440/390 × 1000 CSS px, deviceScaleFactor 1. Estado Ver todos, ordem da categoria, 12/6 produtos iniciais, quatro categorias visuais e cinco banners de demonstração.
+- Comparação conjunta: `comparison-desktop.png` (1060 × 1232 px) e `comparison-mobile.png` (700 × 2153 px), no mesmo diretório. Fonte e implementação foram colocadas lado a lado, com largura visual normalizada e proporção preservada. A comparação é estrutural; as montagens do PDF não permitem afirmar equivalência de medidas ou pixels.
+- Região focada: filtro em `best-sellers-filters-390.png`, 390 × 1000 px, categoria Mini Vértice, cor Preta selecionada. As imagens do catálogo foram decodificadas antes das capturas.
+- Ajuste solicitado pelo usuário: parte do próximo item em Quem usa e nos banners, no desktop e mobile, com último item centralizado. Evidências: `best-sellers-community-last-390.png` (366 × 443 px), `best-sellers-banners-last-1440.png` (1354 × 489 px) e capturas correspondentes nas duas larguras. As medições comparam o centro do último card ao centro da trilha, com tolerância de 2 CSS px.
+- Fonte real: prévia sem fixtures, `best-sellers-live-category-390.png` (390 × 2692 px), seleção ONYX. A leitura da categoria publicada retornou 32 produtos em duas páginas, começando pelos IDs 309854102, 291466475 e 291459065, todos ONYX. As requisições de produtos permaneceram na categoria `/best-sellers/`.
+- Qualidade de imagens: `best-sellers-quality-390-3x.png`, viewport 390 × 1000 CSS px, deviceScaleFactor 3. `image-quality-evidence.json` registra a seleção de thumbs em 390/767 px a 3× e 1440 px a 2×, com URLs instrumentadas nos fixtures. Foi verificada a escolha de resolução suficiente para cada tamanho exibido, até o máximo disponível de cada família. As imagens físicas desses fixtures são fotos de demonstração; a nitidez final depende do arquivo enviado ao painel.
+
+### Superfícies verificadas
+
+- Tipografia: família herdada do tema em produção; prévia com Arial. Mantidos títulos, nomes, preços e controles da EORA. As fontes e os textos de Represent e Marc Jacobs são exemplos do briefing, não o cadastro final da marca.
+- Layout e espaçamento: sequência filtros visuais → catálogo → Quem usa → banners. No desktop há três categorias e parte da quarta quando necessário, quatro colunas e três linhas iniciais, cinco fotos da comunidade e parte da sexta, quatro banners e parte do quinto. No mobile há duas categorias, duas colunas e três linhas iniciais, uma foto e parte da próxima em cada galeria. O último item fica centralizado ao chegar ao fim. Sem itens adicionais, os controles são ocultos. As galerias usam rolagem, controles e foco visível; não há overflow horizontal em 320–1920 px.
+- Cores: fundo branco e texto preto. O fundo branco de Quem usa segue a instrução escrita da página 7, que substitui o preto da imagem de referência. O Instagram global preto não se repete nessa campanha.
+- Imagens: a implementação lê as imagens cadastradas no tema e nos produtos; a prévia usa fotos públicas reais da EORA em fixtures temporários. As fotos dos exemplos de outras marcas e as fotos finais de comunidade não são copiadas nem reconstruídas. Produtos usam contain; categorias e banners usam cover, preservando suas proporções.
+- Painel de imagens: orientação em todos os 15 slots e nas 16 galerias Quem usa. Medidas recomendadas: categorias 2160 × 960 px no desktop e 1920 × 2560 px no celular; Quem usa 1920 × 1920 px; banners 1920 × 2560 px; produtos 1200 × 1600 px. Cada campo informa a proporção, o mínimo e o recorte previsto. As fotos para celular são opcionais e não alteram o cadastro anterior.
+- Resolução: categorias, banners e Quem usa oferecem srcset até 1920 px. Fotos adicionais dos produtos recebem srcset até 1024 px ao interagir, assim como a foto principal. O navegador escolhe o tamanho conforme a densidade e a largura da tela. O `<picture>` seleciona a foto mobile até 767 px e mantém a foto desktop quando não há upload específico. As proporções e o comportamento dos carrosséis permaneceram corretos nos seis tamanhos verificados.
+- Conteúdo: título, 15 categorias opcionais, descrição exclusiva da seleção ativa, 10 blocos opcionais e galerias independentes de até 15 fotos configuráveis no painel. O catálogo lê exclusivamente a categoria Best Sellers; filtros e ordenação também se limitam a seus produtos. Nomes, preços e tags da prévia padrão são reais; os testes visuais usam fixtures indicados na URL. Imagens dos filtros, comunidade e banners são demonstrações.
+
+### Interações e compatibilidade
+
+- Troca de categoria filtra por tag exata, fecha a descrição anterior e troca somente a comunidade correspondente. Nenhuma galeria de outra categoria é usada quando falta cadastro.
+- Catálogo lê todas as páginas da categoria Best Sellers em lotes de 24, exibe grupos de 12/6 e preserva a ordem nativa; elimina produtos repetidos. Os dez blocos opcionais correspondem aos primeiros grupos de 12, sem limitar o total a 120. Não usa vitrines da home ou de outras campanhas.
+- Teste de fonte: 137 produtos em seis páginas, produto da última página disponível na ordenação e no filtro, HTML externo ao template ignorado, decoys de outras vitrines ausentes. Paginação por query e por `/best-sellers/page/N/` passaram. HTTP 503 na segunda página foi retomado sem repetir a primeira; destino `/search/` foi rejeitado sem requisição.
+- Painel reutiliza os filtros de bolsas e óculos, com categoria, modelo e preço. Atributos exclusivos da outra família não aparecem numa categoria composta por um único tipo. Tamanhos recebem rótulos claros para bolsas e óculos. Tags e variantes reais alimentam as opções.
+- Ordenação, faixa de preço, recarregamento, histórico, Escape, retorno de foco, setas e teclado das galerias passaram no navegador. Estados com 3/15 categorias, sem produtos, filtros desativados e item único também passaram. A centralização final permaneceu correta ao redimensionar de 390 para 1440 px e voltar.
+- Templates Twig, nomes de configuração, isolamento da rota e dos scripts legados e regressão dos templates de Bolsas/Óculos Eora passaram. O console não apresentou erros JavaScript.
+
+### Achados e limites
+
+- P0/P1/P2: nenhum pendente no layout e nas interações verificados.
+- Corrigidos durante implementação: atributos de bolsas/óculos misturados no painel, rótulos de tamanho ambíguos e inicialização dos carrosséis antigos na rota dedicada. Após esclarecimento do usuário, a fonte foi corrigida para a categoria nativa Best Sellers e as galerias ganharam a indicação do próximo item e centralização final.
+- A revisão das capturas identificou imagens ainda carregando; a captura passou a esperar a decodificação. As comparações finais mostram todas as fotos.
+- Limite: não é uma aprovação de arte final nem uma comparação pixel a pixel de um mockup EORA. O PDF usa exemplos de outras marcas e especificações textuais. Imagens finais e tags dos filtros visuais precisam de cadastro no painel; os produtos são administrados na categoria Best Sellers. A loja publicada não foi alterada nesta verificação.
+
+final result: passed
+
+---
 
 ## Clone Óculos Eora — 23/09/2026
 
