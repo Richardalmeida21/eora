@@ -15,7 +15,7 @@ const url = baseUrl + '?fixture_demo=1';
             await page.goto(url);
             await page.waitForSelector('[data-bs-page][data-bs-catalog-ready="1"]');
             const mobile = width < 768;
-            const count = mobile ? 6 : 12;
+            const count = 24;
             assert.equal(await page.locator('[data-bs-grid] > article').count(), count);
             const geometry = await page.evaluate(() => {
                 const measure = selector => { const track = document.querySelector(selector); const card = track.firstElementChild; return {width: track.clientWidth, card: card.getBoundingClientRect().width, gap: parseFloat(getComputedStyle(track).gap)}; };
@@ -67,7 +67,7 @@ const url = baseUrl + '?fixture_demo=1';
             assert.equal(await page.locator('[data-bs-category="1"]').getAttribute('aria-expanded'), 'false');
             assert(await page.locator('[data-bs-community] a.be-banner').first().getAttribute('href').then(href => href.includes('prism')));
             await page.locator('[data-bs-more]').click();
-            assert.equal(await page.locator('[data-bs-grid] > article').count(), count * 2);
+            assert.equal(await page.locator('[data-bs-grid] > article').count(), 30, 'Mostrar mais exibe os restantes da categoria em lote de ate 24');
             await page.locator('[data-bs-sort]').selectOption('price-descending');
             const prices = await page.locator('[data-bs-grid] > article').evaluateAll(cards => cards.map(card => Number(card.dataset.bePrice)));
             assert.deepEqual(prices, [...prices].sort((a, b) => b - a));
@@ -135,9 +135,6 @@ const url = baseUrl + '?fixture_demo=1';
         await page.waitForSelector('[data-bs-catalog-ready="1"]');
         assert.equal(await page.locator('[data-bs-grid] > article').count(), 0);
         assert.match(await page.locator('[data-bs-status]').textContent(), /Nenhum produto/);
-        await page.goto(baseUrl + '?fixture_disabled=1&fixture_macros=0');
-        await page.waitForSelector('[data-bs-catalog-ready="1"]');
-        assert.equal(await page.locator('[data-bs-grid] > article').count(), 0);
         await page.goto(baseUrl + '?fixture_no_filters=1');
         assert.equal(await page.locator('[data-bs-open-filters]').count(), 0);
         for (const width of [390, 1440]) {
@@ -153,6 +150,6 @@ const url = baseUrl + '?fixture_demo=1';
         }
         assert.deepEqual(errors, []);
         await page.close();
-        console.log('PASS: 3/15 categorias, carrossel, item unico centralizado, dados vazios, blocos desativados, filtros desativados e console sem erros.');
+        console.log('PASS: 3/15 categorias, carrossel, item unico centralizado, dados vazios, filtros desativados e console sem erros.');
     } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

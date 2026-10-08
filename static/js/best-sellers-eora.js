@@ -7,7 +7,6 @@
         var all = function (selector, parent) { return Array.from((parent || root).querySelectorAll(selector)); };
         var one = function (selector) { return root.querySelector(selector); };
         var normalize = function (value) { return String(value || '').trim().toLocaleLowerCase('pt-BR'); };
-        var mobile = window.matchMedia('(max-width: 767px)');
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
         var grid = one('[data-bs-grid]');
         var status = one('[data-bs-status]');
@@ -29,16 +28,15 @@
         var preview = new URL(window.location.href).searchParams.get('preview');
         if (preview) nextUrl.searchParams.set('preview', preview);
         var visited = new Set();
-        var catalogPosition = 0;
         var catalogLoading = false;
         var catalogError = false;
-        var disabledBlocks;
-        try { disabledBlocks = JSON.parse(root.dataset.bsDisabledBlocks || '[]'); } catch (_) { disabledBlocks = []; }
-        if (!Array.isArray(disabledBlocks)) disabledBlocks = [];
         var category = 'all';
         var filters = {};
         var sorting = 'user';
-        var limit = mobile.matches ? 6 : 12;
+        var pageSize = 24;
+        var limit = pageSize;
+        var renderedProducts = [];
+        var pendingMoreIndex = null;
         var communityId = null;
         var disposeCommunity = function () {};
         var previousFocus;
@@ -62,31 +60,37 @@
             all('[data-be-product]', feed.content).forEach(function (card) {
                 if (seen.has(card.dataset.beProduct)) return;
                 seen.add(card.dataset.beProduct);
-                var order = catalogPosition++;
-                if (disabledBlocks.indexOf(Math.floor(order / 12) + 1) !== -1) return;
                 var tags;
                 try { tags = JSON.parse(card.dataset.beTags); } catch (_) { tags = []; }
-                products.push({card: card, tags: Array.isArray(tags) ? tags.map(normalize) : [], price: Number(card.dataset.bePrice), order: order});
+                products.push({card: card, tags: Array.isArray(tags) ? tags.map(normalize) : [], price: Number(card.dataset.bePrice), order: products.length});
             });
-            discoverModels();
+        }
+        function requestCategoryPage(url) {
+            var controller = new AbortController();
+            var timeout = setTimeout(function () { controller.abort(); }, 20000);
+            var promise = (async function () {
+                try {
+                    var response = await fetch(url, {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
+                    if (!response.ok) throw new Error('Category HTTP ' + response.status);
+                    checkedCategoryUrl(response.url || url);
+                    return await response.text();
+                } finally { clearTimeout(timeout); }
+            }());
+            // A próxima resposta pode falhar enquanto a página atual é exibida.
+            // O await do carregador continua responsável por tratar esse erro.
+            promise.catch(function () {});
+            return {promise: promise, controller: controller};
         }
         async function loadCatalog() {
             if (catalogLoading || !nextUrl) return;
             catalogLoading = true; catalogError = false; render();
+            var pending;
             try {
+                pending = requestCategoryPage(checkedCategoryUrl(nextUrl));
                 while (nextUrl) {
                     var url = checkedCategoryUrl(nextUrl);
                     if (visited.has(url.href)) throw new Error('Repeated category page');
-                    var controller = new AbortController();
-                    var timeout = setTimeout(function () { controller.abort(); }, 20000);
-                    var response;
-                    var html;
-                    try {
-                        response = await fetch(url, {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
-                        if (!response.ok) throw new Error('Category HTTP ' + response.status);
-                        checkedCategoryUrl(response.url || url);
-                        html = await response.text();
-                    } finally { clearTimeout(timeout); }
+                    var html = await pending.promise;
                     // Somente o feed inerte vira DOM; cabecalho, scripts e vitrines
                     // da resposta completa nunca entram no catalogo da campanha.
                     var match = html.match(/<template\b[^>]*\bdata-bs-category-feed\b[^>]*>[\s\S]*?<\/template\s*>/i);
@@ -101,13 +105,19 @@
                         following = checkedCategoryUrl(feed.dataset.next);
                         if (following.href === url.href || visited.has(following.href)) throw new Error('Repeated category page');
                     }
+                    // Começa a próxima requisição antes de montar os cards atuais.
+                    pending = following ? requestCategoryPage(following) : null;
                     appendProducts(feed);
                     visited.add(url.href); nextUrl = following;
                     render();
                 }
+                discoverModels();
                 root.dataset.bsCatalogReady = '1';
             } catch (_) { catalogError = true; }
-            finally { catalogLoading = false; render(); }
+            finally {
+                if (pending) pending.controller.abort();
+                catalogLoading = false; render();
+            }
         }
 
         function initCarousel(section) {
@@ -236,6 +246,25 @@
                 disposeCommunity = initCarousel(container.firstElementChild);
             }
         }
+        function renderProducts(list) {
+            var visible = list.slice(0, limit);
+            if (visible.length === renderedProducts.length && visible.every(function (product, index) { return product === renderedProducts[index]; })) return;
+            var wanted = new Set(visible.map(function (product) { return product.card; }));
+            Array.from(grid.children).forEach(function (card) { if (!wanted.has(card)) card.remove(); });
+            var next = grid.firstElementChild;
+            var fragment = document.createDocumentFragment();
+            visible.forEach(function (product) {
+                if (!product.galleryReady) {
+                    all('[data-be-product-gallery]', product.card).forEach(initGallery);
+                    product.galleryReady = true;
+                }
+                if (product.card === next) next = next.nextElementSibling;
+                else if (next) grid.insertBefore(product.card, next);
+                else fragment.appendChild(product.card);
+            });
+            grid.appendChild(fragment);
+            renderedProducts = visible;
+        }
         function render() {
             macros.forEach(function (macro) {
                 var active = macro.dataset.bsCategory === category;
@@ -247,40 +276,43 @@
             one('[data-bs-reset]').setAttribute('aria-pressed', String(category === 'all'));
             var macro = byId.get(category);
             one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : 'Todos os best sellers';
-            var list = categoryProducts(category).filter(function (product) {
+            var filterKeys = Object.keys(filters);
+            var list = categoryProducts(category);
+            if (filterKeys.length) list = list.filter(function (product) {
                 var type = productType(product);
-                if (type === 'bag' && Object.keys(filters).some(function (key) { return key.indexOf('oe_') === 0; })) return false;
-                if (type === 'eyewear' && Object.keys(filters).some(function (key) { return key.indexOf('be_') === 0; })) return false;
+                if (type === 'bag' && filterKeys.some(function (key) { return key.indexOf('oe_') === 0; })) return false;
+                if (type === 'eyewear' && filterKeys.some(function (key) { return key.indexOf('be_') === 0; })) return false;
                 if (filters.bs_model && product.tags.indexOf(normalize(filters.bs_model)) === -1) return false;
                 if (filters.min_price && product.price < Number(filters.min_price) * 100) return false;
                 if (filters.max_price && product.price > Number(filters.max_price) * 100) return false;
                 return engines.every(function (engine) { return engine.matches(product.card, filters, product.tags); });
-            }).slice();
-            list.sort(function (a, b) {
+            });
+            if (sorting !== 'user') list = list.slice().sort(function (a, b) {
                 if (sorting === 'price-ascending') return a.price - b.price || a.order - b.order;
                 if (sorting === 'price-descending') return b.price - a.price || a.order - b.order;
                 if (sorting === 'alpha-ascending') return a.card.dataset.beName.localeCompare(b.card.dataset.beName, 'pt-BR') || a.order - b.order;
                 if (sorting === 'created-descending') return String(b.card.dataset.beCreated).localeCompare(a.card.dataset.beCreated, 'pt-BR', {numeric: true}) || a.order - b.order;
                 return a.order - b.order;
             });
-            grid.replaceChildren();
-            var fragment = document.createDocumentFragment();
-            list.slice(0, limit).forEach(function (product) {
-                var card = product.card.cloneNode(true);
-                all('[data-be-product-gallery]', card).forEach(initGallery);
-                fragment.appendChild(card);
-            });
-            grid.appendChild(fragment);
-            status.textContent = catalogLoading ? 'Carregando produtos da categoria Best Sellers…' : catalogError ? 'Não foi possível carregar todos os produtos de Best Sellers. Tente novamente.' : !list.length ? 'Nenhum produto encontrado. Experimente outra categoria ou limpe os filtros.' : Object.keys(filters).length ? list.length + (list.length === 1 ? ' produto encontrado' : ' produtos encontrados') : '';
+            renderProducts(list);
+            if (pendingMoreIndex !== null && grid.children[pendingMoreIndex]) {
+                if (document.activeElement === more) grid.children[pendingMoreIndex].querySelector('h3 a').focus({preventScroll: true});
+                pendingMoreIndex = null;
+            }
+            status.textContent = catalogLoading ? (list.length ? '' : 'Carregando produtos da categoria Best Sellers…') : catalogError ? 'Não foi possível carregar todos os produtos de Best Sellers. Tente novamente.' : !list.length ? 'Nenhum produto encontrado. Experimente outra categoria ou limpe os filtros.' : filterKeys.length ? list.length + (list.length === 1 ? ' produto encontrado' : ' produtos encontrados') : '';
             one('.bs-catalog').setAttribute('aria-busy', String(catalogLoading));
             one('[data-bs-retry]').hidden = !catalogError;
             sort.disabled = !!nextUrl;
             var openFilters = one('[data-bs-open-filters]');
             if (openFilters) openFilters.disabled = !!nextUrl;
-            more.hidden = list.length <= limit;
+            more.hidden = list.length <= limit && (!nextUrl || catalogError || !products.length);
+            var waitingMore = catalogLoading && list.length < limit;
+            more.setAttribute('aria-disabled', String(waitingMore));
+            more.textContent = waitingMore && products.length ? 'Carregando…' : 'Mostrar mais produtos';
             sort.value = sorting;
             refreshCommunity();
         }
+        function resetLimit() { limit = pageSize; pendingMoreIndex = null; }
         function writeUrl() {
             var url = new URL(window.location.href);
             ['bs_category', 'bs_filters', 'bs_sort'].forEach(function (key) { url.searchParams.delete(key); });
@@ -301,22 +333,21 @@
                 });
             } catch (_) {}
             filters = engines.reduce(function (value, engine) { return engine.normalizeFilters(value); }, filters);
-            limit = mobile.matches ? 6 : 12;
+            resetLimit();
             render();
         }
         macros.forEach(function (macro) {
             macro.addEventListener('click', function (event) {
                 if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
-                event.preventDefault(); category = macro.dataset.bsCategory; filters = {}; limit = mobile.matches ? 6 : 12; render(); writeUrl();
+                event.preventDefault(); category = macro.dataset.bsCategory; filters = {}; resetLimit(); render(); writeUrl();
             });
         });
-        one('[data-bs-reset]').addEventListener('click', function () { category = 'all'; filters = {}; limit = mobile.matches ? 6 : 12; render(); writeUrl(); });
-        sort.addEventListener('change', function () { sorting = sort.value; limit = mobile.matches ? 6 : 12; render(); writeUrl(); });
+        one('[data-bs-reset]').addEventListener('click', function () { category = 'all'; filters = {}; resetLimit(); render(); writeUrl(); });
+        sort.addEventListener('change', function () { sorting = sort.value; resetLimit(); render(); writeUrl(); });
         more.addEventListener('click', function () {
-            var previous = grid.children.length;
-            limit += mobile.matches ? 6 : 12; render();
-            var first = grid.children[previous];
-            if (first) first.querySelector('h3 a').focus({preventScroll: true});
+            if (more.getAttribute('aria-disabled') === 'true') return;
+            pendingMoreIndex = grid.children.length;
+            limit += pageSize; render();
         });
         function collect() {
             var values = {};
@@ -366,11 +397,10 @@
                 event.preventDefault();
                 var values = collect();
                 if (values.min_price && values.max_price && Number(values.min_price) > Number(values.max_price)) { form.elements.max_price.setCustomValidity('O preço máximo deve ser maior ou igual ao mínimo.'); form.reportValidity(); return; }
-                category = form.elements.bs_category.value; filters = values; limit = mobile.matches ? 6 : 12; render(); writeUrl(); close();
+                category = form.elements.bs_category.value; filters = values; resetLimit(); render(); writeUrl(); close();
             });
         }
         window.addEventListener('popstate', readUrl);
-        mobile.addEventListener('change', function () { limit = mobile.matches ? 6 : 12; render(); });
         readUrl();
         one('[data-bs-retry]').addEventListener('click', loadCatalog);
         loadCatalog();

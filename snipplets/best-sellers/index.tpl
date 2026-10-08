@@ -1,14 +1,7 @@
 {# Briefing Best Sellers — outubro/2026. Produtos da categoria /best-sellers/. #}
-{% set bs_disabled_blocks = [] %}
-{% for i in 1..10 %}
-    {% set block_setting = 'best_sellers_eora_catalog_' ~ i ~ '_enabled' %}
-    {% if attribute(settings, block_setting) is defined and not attribute(settings, block_setting) %}
-        {% set bs_disabled_blocks = bs_disabled_blocks | merge([i]) %}
-    {% endif %}
-{% endfor %}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260922-1">
 <link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261006-3">
-<main class="be-page bs-page" data-bs-page data-bs-category-url="/best-sellers/" data-bs-disabled-blocks="{{ bs_disabled_blocks | json_encode | escape }}">
+<main class="be-page bs-page" data-bs-page data-bs-category-url="/best-sellers/">
     <header class="bs-heading"><h1>{{ settings.best_sellers_eora_title | default('Best sellers') | escape }}</h1></header>
     <nav class="bs-macros" data-bs-carousel aria-label="Categorias de best sellers">
         <div class="bs-macros__track be-track" data-bs-track tabindex="0" aria-label="Percorrer categorias">
@@ -74,4 +67,4 @@
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261006-4" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-1" defer></script>

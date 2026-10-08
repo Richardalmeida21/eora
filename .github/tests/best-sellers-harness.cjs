@@ -46,7 +46,6 @@ function context(options = {}) {
         data.settings[prefix + '_order'] = i;
         data.settings[prefix + '_community'] = Array.from({length: 18}, (_, j) => ({image: modelImage(tag, 'lifestyle', asset(j + i)), title: tag + ' — nossa comunidade', link: '/quem-usa/' + tag + '-' + j}));
     }
-    for (let i = 1; i <= 10; i++) data.settings['best_sellers_eora_catalog_' + i + '_enabled'] = !options.disabled;
     data.category_products = Array.from({length: options.empty ? 0 : options.amount ?? 120}, (_, n) => {
             const tag = tags[n % 4];
             const bag = tag === 'minivertice';
@@ -83,9 +82,7 @@ function validate() {
     assert.match(html, /data-bs-category-url="\/best-sellers\/"/);
     assert.doesNotMatch(html, /data-be-product="(?:888|889|890)"/, 'home, campanha antiga e destaques nao sao fontes de produtos');
     assert.equal((html.match(/<template data-bs-community-template=/g) || []).length, 5);
-    const disabled = context();
-    for (let i = 1; i <= 10; i++) disabled.settings['best_sellers_eora_catalog_' + i + '_enabled'] = false;
-    assert.match(render(disabled), /data-bs-disabled-blocks="\[1,2,3,4,5,6,7,8,9,10\]"/);
+    assert.doesNotMatch(html, /data-bs-disabled-blocks/);
     const feed = categoryFeed(new URL('http://127.0.0.1:4176/best-sellers/?bs_category_feed=1'));
     assert.equal((feed.match(/data-be-product=/g) || []).length, 24);
     assert.match(feed, /data-next="[^\"]*page=2/);
@@ -96,7 +93,7 @@ function validate() {
     const names = [...fs.readFileSync(path.join(root, 'config/settings.txt'), 'utf8').matchAll(/^\s*name = (best_sellers_eora_\S+)/gm)].map(match => match[1]);
     assert.equal(new Set(names).size, names.length, 'configuracoes sem nomes duplicados');
     assert.equal(names.filter(name => /^best_sellers_eora_macro_\d+_enabled$/.test(name)).length, 15);
-    assert.equal(names.filter(name => /^best_sellers_eora_catalog_\d+_enabled$/.test(name)).length, 10);
+    assert.equal(names.filter(name => /^best_sellers_eora_catalog_\d+_enabled$/.test(name)).length, 0);
     for (const file of ['templates/page.tpl', 'snipplets/templates/page.tpl']) {
         const source = fs.readFileSync(path.join(root, file), 'utf8');
         assert(source.indexOf("include 'snipplets/best-sellers/index.tpl'") < source.indexOf('{% elseif is_on_page %}'), 'rota dedicada precede campanhas genericas');
@@ -112,7 +109,7 @@ function validate() {
         variables.page.handle = 'campanha'; variables.page_current_01 = 'campanha';
         assert.equal(template.render(variables).trim(), 'legacy');
     }
-    console.log('PASS: Twig, fonte exclusiva da categoria Best Sellers, feed paginado, 15 filtros, 10 blocos e rotas.');
+    console.log('PASS: Twig, fonte exclusiva da categoria Best Sellers, feed de 24 produtos, 15 categorias, painel sem blocos e rotas.');
 }
 if (process.argv.includes('--check')) validate();
 if (process.argv.includes('--serve')) {
@@ -131,7 +128,7 @@ if (process.argv.includes('--serve')) {
             const isFeed = /^\/best-sellers(?:\/page\/[1-9]\d*)?\/?$/.test(url.pathname);
             const fixtureUrl = isFeed ? new URL(req.headers.referer || 'http://127.0.0.1:4176/') : url;
             const isFixture = Array.from(fixtureUrl.searchParams.keys()).some(key => key.startsWith('fixture_'));
-            const options = {macros: Number(fixtureUrl.searchParams.get('fixture_macros') ?? 4), amount: Number(fixtureUrl.searchParams.get('fixture_products') ?? 120), disabled: fixtureUrl.searchParams.has('fixture_disabled'), empty: fixtureUrl.searchParams.has('fixture_empty'), noFilters: fixtureUrl.searchParams.has('fixture_no_filters'), noCommunity: fixtureUrl.searchParams.has('fixture_no_community'), prettyPages: fixtureUrl.searchParams.has('fixture_pretty_pages'), galleryItems: Number(fixtureUrl.searchParams.get('fixture_gallery_items') ?? 18), bannerItems: Number(fixtureUrl.searchParams.get('fixture_banner_items') ?? 5)};
+            const options = {macros: Number(fixtureUrl.searchParams.get('fixture_macros') ?? 4), amount: Number(fixtureUrl.searchParams.get('fixture_products') ?? 120), empty: fixtureUrl.searchParams.has('fixture_empty'), noFilters: fixtureUrl.searchParams.has('fixture_no_filters'), noCommunity: fixtureUrl.searchParams.has('fixture_no_community'), prettyPages: fixtureUrl.searchParams.has('fixture_pretty_pages'), galleryItems: Number(fixtureUrl.searchParams.get('fixture_gallery_items') ?? 18), bannerItems: Number(fixtureUrl.searchParams.get('fixture_banner_items') ?? 5)};
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             if (isFeed && isFixture) return res.end(categoryFeed(url, options));
             if (isFeed) {

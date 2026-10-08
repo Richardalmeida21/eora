@@ -11087,86 +11087,38 @@ Página Best Sellers Eora
 		icon = star
 		advanced = false
 	collapse
-		title = Página
-	text
-		name = best_sellers_eora_page_url
-		description = Endereço da página, sem domínio (padrão: best-sellers1)
-	i18n_input
-		name = best_sellers_eora_title
-		description = Título da página
-	collapse
-		title = Catálogo e filtros
+		title = Filtro Best Sellers
 	checkbox
 		name = best_sellers_eora_filters_enabled
 		description = Mostrar botão de filtros
 	description
-		description = Edite os produtos e sua ordem na categoria Best Sellers (/best-sellers/). A página carrega os produtos dessa categoria automaticamente. As categorias visuais filtram por tag dentro desse catálogo.
-	description
-		description = Fotos dos produtos: recomendado 1200 x 1600 px (3:4), mínimo 1024 px de largura. Edite as fotos no cadastro de cada produto e mantenha o produto inteiro na imagem.
-	title
-		title = Blocos do catálogo (opcional)
-	description
-		description = Cada bloco reúne 12 produtos na ordem da categoria. Desmarque para ocultar as posições indicadas. Produtos após a posição 120 continuam disponíveis. A página mostra 4 produtos por linha no computador e 2 no celular.
-	checkbox
-		name = best_sellers_eora_catalog_1_enabled
-		description = Bloco 1 — produtos 1 a 12
-	checkbox
-		name = best_sellers_eora_catalog_2_enabled
-		description = Bloco 2 — produtos 13 a 24
-	checkbox
-		name = best_sellers_eora_catalog_3_enabled
-		description = Bloco 3 — produtos 25 a 36
-	checkbox
-		name = best_sellers_eora_catalog_4_enabled
-		description = Bloco 4 — produtos 37 a 48
-	checkbox
-		name = best_sellers_eora_catalog_5_enabled
-		description = Bloco 5 — produtos 49 a 60
-	checkbox
-		name = best_sellers_eora_catalog_6_enabled
-		description = Bloco 6 — produtos 61 a 72
-	checkbox
-		name = best_sellers_eora_catalog_7_enabled
-		description = Bloco 7 — produtos 73 a 84
-	checkbox
-		name = best_sellers_eora_catalog_8_enabled
-		description = Bloco 8 — produtos 85 a 96
-	checkbox
-		name = best_sellers_eora_catalog_9_enabled
-		description = Bloco 9 — produtos 97 a 108
-	checkbox
-		name = best_sellers_eora_catalog_10_enabled
-		description = Bloco 10 — produtos 109 a 120
-	collapse
-		title = Categorias visuais
-	description
-		description = Ative e preencha as categorias que deseja exibir, até 15. Use a tag exata cadastrada nos produtos de Best Sellers. O campo Ordem define a posição no carrossel; o menor número aparece primeiro.
+		description = Ative e preencha as opções de filtro que deseja exibir, até 15. Use a tag exata cadastrada nos produtos de Best Sellers. O campo Ordem define a posição no carrossel; o menor número aparece primeiro.
 	description
 		description = Computador: 2160 x 960 px, mínimo 1080 x 480 px (9:4). Celular: 1920 x 2560 px, mínimo 960 x 1280 px (3:4). Sem a versão para celular, a foto do computador será recortada pelo centro. Use JPG ou PNG nítidos, de preferência até 1 MB por imagem.
 	title
-		title = Categoria 1
+		title = Filtro 1
 	checkbox
 		name = best_sellers_eora_macro_1_enabled
-		description = Ativar categoria 1
+		description = Ativar filtro 1
 	image
 		original = best_sellers_eora_macro_1.jpg
-		title = Categoria 1 — computador: 2160 x 960 px
+		title = Filtro 1 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_1_mobile.jpg
-		title = Categoria 1 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 1 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_1_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_1_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_1_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_1_order
@@ -11175,29 +11127,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_1_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 2
+		title = Filtro 2
 	checkbox
 		name = best_sellers_eora_macro_2_enabled
-		description = Ativar categoria 2
+		description = Ativar filtro 2
 	image
 		original = best_sellers_eora_macro_2.jpg
-		title = Categoria 2 — computador: 2160 x 960 px
+		title = Filtro 2 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_2_mobile.jpg
-		title = Categoria 2 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 2 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_2_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_2_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_2_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_2_order
@@ -11206,29 +11158,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_2_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 3
+		title = Filtro 3
 	checkbox
 		name = best_sellers_eora_macro_3_enabled
-		description = Ativar categoria 3
+		description = Ativar filtro 3
 	image
 		original = best_sellers_eora_macro_3.jpg
-		title = Categoria 3 — computador: 2160 x 960 px
+		title = Filtro 3 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_3_mobile.jpg
-		title = Categoria 3 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 3 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_3_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_3_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_3_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_3_order
@@ -11237,29 +11189,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_3_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 4
+		title = Filtro 4
 	checkbox
 		name = best_sellers_eora_macro_4_enabled
-		description = Ativar categoria 4
+		description = Ativar filtro 4
 	image
 		original = best_sellers_eora_macro_4.jpg
-		title = Categoria 4 — computador: 2160 x 960 px
+		title = Filtro 4 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_4_mobile.jpg
-		title = Categoria 4 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 4 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_4_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_4_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_4_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_4_order
@@ -11268,29 +11220,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_4_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 5
+		title = Filtro 5
 	checkbox
 		name = best_sellers_eora_macro_5_enabled
-		description = Ativar categoria 5
+		description = Ativar filtro 5
 	image
 		original = best_sellers_eora_macro_5.jpg
-		title = Categoria 5 — computador: 2160 x 960 px
+		title = Filtro 5 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_5_mobile.jpg
-		title = Categoria 5 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 5 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_5_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_5_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_5_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_5_order
@@ -11299,29 +11251,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_5_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 6
+		title = Filtro 6
 	checkbox
 		name = best_sellers_eora_macro_6_enabled
-		description = Ativar categoria 6
+		description = Ativar filtro 6
 	image
 		original = best_sellers_eora_macro_6.jpg
-		title = Categoria 6 — computador: 2160 x 960 px
+		title = Filtro 6 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_6_mobile.jpg
-		title = Categoria 6 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 6 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_6_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_6_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_6_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_6_order
@@ -11330,29 +11282,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_6_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 7
+		title = Filtro 7
 	checkbox
 		name = best_sellers_eora_macro_7_enabled
-		description = Ativar categoria 7
+		description = Ativar filtro 7
 	image
 		original = best_sellers_eora_macro_7.jpg
-		title = Categoria 7 — computador: 2160 x 960 px
+		title = Filtro 7 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_7_mobile.jpg
-		title = Categoria 7 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 7 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_7_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_7_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_7_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_7_order
@@ -11361,29 +11313,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_7_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 8
+		title = Filtro 8
 	checkbox
 		name = best_sellers_eora_macro_8_enabled
-		description = Ativar categoria 8
+		description = Ativar filtro 8
 	image
 		original = best_sellers_eora_macro_8.jpg
-		title = Categoria 8 — computador: 2160 x 960 px
+		title = Filtro 8 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_8_mobile.jpg
-		title = Categoria 8 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 8 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_8_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_8_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_8_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_8_order
@@ -11392,29 +11344,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_8_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 9
+		title = Filtro 9
 	checkbox
 		name = best_sellers_eora_macro_9_enabled
-		description = Ativar categoria 9
+		description = Ativar filtro 9
 	image
 		original = best_sellers_eora_macro_9.jpg
-		title = Categoria 9 — computador: 2160 x 960 px
+		title = Filtro 9 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_9_mobile.jpg
-		title = Categoria 9 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 9 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_9_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_9_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_9_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_9_order
@@ -11423,29 +11375,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_9_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 10
+		title = Filtro 10
 	checkbox
 		name = best_sellers_eora_macro_10_enabled
-		description = Ativar categoria 10
+		description = Ativar filtro 10
 	image
 		original = best_sellers_eora_macro_10.jpg
-		title = Categoria 10 — computador: 2160 x 960 px
+		title = Filtro 10 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_10_mobile.jpg
-		title = Categoria 10 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 10 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_10_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_10_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_10_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_10_order
@@ -11454,29 +11406,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_10_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 11
+		title = Filtro 11
 	checkbox
 		name = best_sellers_eora_macro_11_enabled
-		description = Ativar categoria 11
+		description = Ativar filtro 11
 	image
 		original = best_sellers_eora_macro_11.jpg
-		title = Categoria 11 — computador: 2160 x 960 px
+		title = Filtro 11 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_11_mobile.jpg
-		title = Categoria 11 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 11 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_11_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_11_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_11_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_11_order
@@ -11485,29 +11437,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_11_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 12
+		title = Filtro 12
 	checkbox
 		name = best_sellers_eora_macro_12_enabled
-		description = Ativar categoria 12
+		description = Ativar filtro 12
 	image
 		original = best_sellers_eora_macro_12.jpg
-		title = Categoria 12 — computador: 2160 x 960 px
+		title = Filtro 12 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_12_mobile.jpg
-		title = Categoria 12 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 12 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_12_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_12_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_12_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_12_order
@@ -11516,29 +11468,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_12_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 13
+		title = Filtro 13
 	checkbox
 		name = best_sellers_eora_macro_13_enabled
-		description = Ativar categoria 13
+		description = Ativar filtro 13
 	image
 		original = best_sellers_eora_macro_13.jpg
-		title = Categoria 13 — computador: 2160 x 960 px
+		title = Filtro 13 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_13_mobile.jpg
-		title = Categoria 13 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 13 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_13_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_13_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_13_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_13_order
@@ -11547,29 +11499,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_13_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 14
+		title = Filtro 14
 	checkbox
 		name = best_sellers_eora_macro_14_enabled
-		description = Ativar categoria 14
+		description = Ativar filtro 14
 	image
 		original = best_sellers_eora_macro_14.jpg
-		title = Categoria 14 — computador: 2160 x 960 px
+		title = Filtro 14 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_14_mobile.jpg
-		title = Categoria 14 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 14 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_14_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_14_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_14_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_14_order
@@ -11578,29 +11530,29 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_14_link
 		description = Link ao abrir em nova aba (opcional)
 	title
-		title = Categoria 15
+		title = Filtro 15
 	checkbox
 		name = best_sellers_eora_macro_15_enabled
-		description = Ativar categoria 15
+		description = Ativar filtro 15
 	image
 		original = best_sellers_eora_macro_15.jpg
-		title = Categoria 15 — computador: 2160 x 960 px
+		title = Filtro 15 — computador: 2160 x 960 px
 		width = 2160
 		height = 960
 	image
 		original = best_sellers_eora_macro_15_mobile.jpg
-		title = Categoria 15 — celular: 1920 x 2560 px (opcional)
+		title = Filtro 15 — celular: 1920 x 2560 px (opcional)
 		width = 1920
 		height = 2560
 	i18n_input
 		name = best_sellers_eora_macro_15_title
-		description = Nome da categoria
+		description = Nome do filtro
 	text
 		name = best_sellers_eora_macro_15_tag
 		description = Tag dos produtos (ex.: onyx ou minivertice)
 	i18n_input
 		name = best_sellers_eora_macro_15_description
-		description = Descrição ao selecionar a categoria (opcional)
+		description = Descrição ao selecionar o filtro (opcional)
 		rows = 3
 	text
 		name = best_sellers_eora_macro_15_order
@@ -11609,7 +11561,19 @@ Página Best Sellers Eora
 		name = best_sellers_eora_macro_15_link
 		description = Link ao abrir em nova aba (opcional)
 	collapse
-		title = Quem usa
+		title = Catálogo
+	text
+		name = best_sellers_eora_page_url
+		description = Endereço da página, sem domínio (padrão: best-sellers1)
+	i18n_input
+		name = best_sellers_eora_title
+		description = Título da página
+	description
+		description = Edite os produtos e sua ordem na categoria Best Sellers (/best-sellers/). A página carrega os produtos dessa categoria automaticamente. As opções de Filtro Best Sellers filtram por tag dentro desse catálogo.
+	description
+		description = Fotos dos produtos: recomendado 1200 x 1600 px (3:4), mínimo 1024 px de largura. Edite as fotos no cadastro de cada produto e mantenha o produto inteiro na imagem.
+	collapse
+		title = Carrossel Quem usa
 	checkbox
 		name = best_sellers_eora_community_enabled
 		description = Mostrar Quem usa
@@ -11636,11 +11600,11 @@ Página Best Sellers Eora
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Fotos por categoria
+		title = Fotos por filtro
 	description
-		description = Use o mesmo número da aba Categorias visuais. Cada categoria tem suas próprias fotos; sem fotos, ela não mostra Quem usa. Título, subtítulo e link em branco usam os valores padrão acima.
+		description = Use o mesmo número da aba Filtro Best Sellers. Cada filtro tem suas próprias fotos; sem fotos, ele não mostra Quem usa. Título, subtítulo e link em branco usam os valores padrão acima.
 	title
-		title = Categoria 1 — fotos
+		title = Filtro 1 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_1_community_title
 		description = Título (opcional)
@@ -11652,13 +11616,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_1_community
-		gallery_image = Adicionar foto da categoria 1 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 1 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 2 — fotos
+		title = Filtro 2 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_2_community_title
 		description = Título (opcional)
@@ -11670,13 +11634,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_2_community
-		gallery_image = Adicionar foto da categoria 2 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 2 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 3 — fotos
+		title = Filtro 3 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_3_community_title
 		description = Título (opcional)
@@ -11688,13 +11652,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_3_community
-		gallery_image = Adicionar foto da categoria 3 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 3 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 4 — fotos
+		title = Filtro 4 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_4_community_title
 		description = Título (opcional)
@@ -11706,13 +11670,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_4_community
-		gallery_image = Adicionar foto da categoria 4 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 4 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 5 — fotos
+		title = Filtro 5 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_5_community_title
 		description = Título (opcional)
@@ -11724,13 +11688,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_5_community
-		gallery_image = Adicionar foto da categoria 5 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 5 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 6 — fotos
+		title = Filtro 6 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_6_community_title
 		description = Título (opcional)
@@ -11742,13 +11706,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_6_community
-		gallery_image = Adicionar foto da categoria 6 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 6 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 7 — fotos
+		title = Filtro 7 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_7_community_title
 		description = Título (opcional)
@@ -11760,13 +11724,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_7_community
-		gallery_image = Adicionar foto da categoria 7 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 7 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 8 — fotos
+		title = Filtro 8 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_8_community_title
 		description = Título (opcional)
@@ -11778,13 +11742,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_8_community
-		gallery_image = Adicionar foto da categoria 8 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 8 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 9 — fotos
+		title = Filtro 9 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_9_community_title
 		description = Título (opcional)
@@ -11796,13 +11760,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_9_community
-		gallery_image = Adicionar foto da categoria 9 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 9 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 10 — fotos
+		title = Filtro 10 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_10_community_title
 		description = Título (opcional)
@@ -11814,13 +11778,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_10_community
-		gallery_image = Adicionar foto da categoria 10 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 10 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 11 — fotos
+		title = Filtro 11 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_11_community_title
 		description = Título (opcional)
@@ -11832,13 +11796,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_11_community
-		gallery_image = Adicionar foto da categoria 11 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 11 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 12 — fotos
+		title = Filtro 12 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_12_community_title
 		description = Título (opcional)
@@ -11850,13 +11814,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_12_community
-		gallery_image = Adicionar foto da categoria 12 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 12 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 13 — fotos
+		title = Filtro 13 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_13_community_title
 		description = Título (opcional)
@@ -11868,13 +11832,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_13_community
-		gallery_image = Adicionar foto da categoria 13 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 13 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 14 — fotos
+		title = Filtro 14 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_14_community_title
 		description = Título (opcional)
@@ -11886,13 +11850,13 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_14_community
-		gallery_image = Adicionar foto da categoria 14 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 14 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
 		gallery_more_info = true
 	title
-		title = Categoria 15 — fotos
+		title = Filtro 15 — fotos
 	i18n_input
 		name = best_sellers_eora_macro_15_community_title
 		description = Título (opcional)
@@ -11904,7 +11868,7 @@ Página Best Sellers Eora
 		description = Link da seção (opcional)
 	gallery
 		name = best_sellers_eora_macro_15_community
-		gallery_image = Adicionar foto da categoria 15 — 1920 x 1920 px
+		gallery_image = Adicionar foto do filtro 15 — 1920 x 1920 px
 		gallery_link = Link da foto
 		gallery_width = 1920
 		gallery_height = 1920
