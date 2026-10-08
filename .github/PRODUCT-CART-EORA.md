@@ -43,6 +43,18 @@ As mudanças foram feitas e verificadas localmente. Não houve envio por FTP, pu
 
 Os arquivos `.tpl` pertencem ao tema e são publicados pelo fluxo normal do projeto. `maxivertice.html` é conteúdo da descrição dos produtos Maxi Vértice; enviar esse arquivo ao FTP não substitui automaticamente a descrição no cadastro. A parte corrigida do script deve ser incorporada às descrições que usam esse layout, preservando os textos, fotos e tabelas de cada referência.
 
+## Nome automático da variação — 08/10/2026
+
+O script de `maxivertice.html` agora prioriza o texto das opções selecionadas no formulário nativo do produto, por exemplo `Marrom Cacau / Dourado`. Quando não há select, usa as variantes daquele mesmo produto e o ID selecionado. A extração também funciona no documento de outra referência recebido por fetch, sem usar os dados globais da referência anterior.
+
+O nome é recalculado ao iniciar o layout, trocar de referência ou alterar uma opção nativa. O cache deixa de prevalecer sobre o cadastro, e o prefetch atualiza apenas o nome da miniatura correspondente, sem mudar o nome do produto ainda exibido. O texto é inserido com `textContent` e não altera os campos enviados ao carrinho.
+
+A tabela de exemplo `nome_variacao` foi removida do arquivo. Nos produtos que já têm essa tabela, o cadastro da variação passa a ter prioridade após atualizar o bloco `<script>...</script>`; a tabela pode ser apagada. Textos, fotos e outras tabelas de cada referência devem ser preservados. Para descrições antigas sem opções disponíveis, os fallbacks de tabela/nome/tags continuam limitados ao produto atual.
+
+Validação: `product-maxi-variation-name.cjs` passou 13 cenários, incluindo tabela manual incorreta, produto/quickshop distintos, metadados por ID, documento recebido por fetch, cache antigo, alteração nativa, prefetch e texto literal. A versão anterior reproduziu a prioridade indevida da tabela. `product-maxi-variants.cjs` e a sintaxe do script também passaram.
+
+A conferência na loja, substituindo somente o script da descrição pelo arquivo local no navegador, passou em 390 e 1440 px: `Berinjela / Prata` mudou para `Croco Marrom / Prata`, permaneceu estável após os timers e manteve produto, variante e selects corretos, sem `pageerror`. Um nome manual incorreto simulado no DOM não prevaleceu sobre o cadastro. A tentativa opcional de adicionar nessa última conferência foi interceptada pelo popup de newsletter antes do POST; a validação de compra permanece a da auditoria anterior e dos testes locais, sem atribuir uma nova inclusão a esse teste de nome. Evidência: `C:/Temp/eora-product-cart-validation/auto-variation-summary.json`. Estas mudanças continuam locais e precisam ser incorporadas à descrição no cadastro.
+
 ## Executar os testes
 
 São necessários Node.js, `playwright`, `twig` e Chromium. Neste computador as dependências estão em `C:/Temp/eora-best-sellers-validation/node_modules`. `BE_BROWSER` permite indicar outro executável Chromium. O teste de carrinho guarda evidências em `PRODUCT_CART_VALIDATION_DIR` (padrão `C:/Temp/eora-product-cart-validation`) e usa a biblioteca pública da plataforma disponível em `PRODUCT_CART_PLATFORM_ASSET`, baixando-a se faltar.
@@ -51,6 +63,7 @@ São necessários Node.js, `playwright`, `twig` e Chromium. Neste computador as 
 $env:NODE_PATH = 'C:/Temp/eora-best-sellers-validation/node_modules'
 node .github/tests/product-add-to-cart.cjs
 node .github/tests/product-maxi-variants.cjs
+node .github/tests/product-maxi-variation-name.cjs
 node .github/tests/product-cart-hooks.cjs
 node .github/tests/theme-editor-settings.cjs
 git diff --check

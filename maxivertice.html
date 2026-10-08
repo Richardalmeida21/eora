@@ -197,26 +197,38 @@
     }
 
     function getVariationNameFromLS(doc, variantId) {
+        var productRoot = doc.querySelector('#single-product') || (doc.id === 'single-product' ? doc : null);
+        if (!productRoot) return '';
+        var form = productRoot.querySelector('#product_form, .js-product-form') || productRoot;
+        var productField = form.querySelector('input[name="add_to_cart"]');
+        var productId = productField && productField.value;
+        var variantField = form.querySelector('input[name="variant_id"]');
+        var selectedId = variantId || (variantField && variantField.value);
+
+        function nameFromVariants(variants) {
+            if (!Array.isArray(variants)) return '';
+            var currentVariants = variants.filter(function (variant) {
+                return variant && (!productId || String(variant.product_id) === String(productId));
+            });
+            var selected = currentVariants.find(function (variant) {
+                return selectedId && String(variant.id) === String(selectedId);
+            });
+            if (!selected && currentVariants.length === 1) selected = currentVariants[0];
+            if (!selected) return '';
+            return [selected.option0, selected.option1, selected.option2].filter(function (value) {
+                return value != null && String(value).trim();
+            }).map(function (value) { return String(value).trim(); }).join(' / ');
+        }
+
+        var localName = nameFromVariants(readProductVariants(productRoot));
+        if (localName) return localName;
         var parsedLS = null;
         try {
             if (doc === document && typeof LS !== 'undefined') {
                 var p = LS.product || (window.LS && window.LS.product);
                 var vars = LS.variants || (p && p.variants);
-                if (vars && vars.length) {
-                    var vIdEl = doc.querySelector('input[name="variant_id"]') || doc.querySelector('[name="variant_id"]');
-                    var vId = vIdEl ? vIdEl.value : variantId;
-                    if (vId) {
-                        var match = vars.find(function (v) { return String(v.id) === String(vId); });
-                        if (match) {
-                            var opts = [match.option0, match.option1, match.option2].filter(Boolean);
-                            if (opts.length) return opts.join(' / ');
-                        }
-                    }
-                    if (vars.length === 1) {
-                        var opts = [vars[0].option0, vars[0].option1, vars[0].option2].filter(Boolean);
-                        if (opts.length) return opts.join(' / ');
-                    }
-                }
+                var currentName = nameFromVariants(vars);
+                if (currentName) return currentName;
             }
         } catch (e) {}
 
@@ -231,21 +243,8 @@
                     }
                 }
             });
-            if (parsedLS && parsedLS.variants && parsedLS.variants.length) {
-                var vIdEl = doc.querySelector('input[name="variant_id"]') || doc.querySelector('[name="variant_id"]');
-                var vId = vIdEl ? vIdEl.value : variantId;
-                if (vId) {
-                    var match = parsedLS.variants.find(function (v) { return String(v.id) === String(vId); });
-                    if (match) {
-                        var opts = [match.option0, match.option1, match.option2].filter(Boolean);
-                        if (opts.length) return opts.join(' / ');
-                    }
-                }
-                if (parsedLS.variants.length === 1) {
-                    var opts = [parsedLS.variants[0].option0, parsedLS.variants[0].option1, parsedLS.variants[0].option2].filter(Boolean);
-                    if (opts.length) return opts.join(' / ');
-                }
-            }
+            var parsedName = nameFromVariants(parsedLS && parsedLS.variants);
+            if (parsedName) return parsedName;
         } catch (e) {}
         return '';
     }
@@ -292,12 +291,32 @@
 
     function autoGetVariationName(doc) {
         var root = doc || document;
+        var productRoot = root.querySelector('#single-product') || (root.id === 'single-product' ? root : null);
+        if (!productRoot) return '';
+        var form = productRoot.querySelector('#product_form, .js-product-form') || productRoot;
 
-        // 1. Tenta extrair da tabela de configuração (nome_variacao / cor)
+        // Usa primeiro os nomes cadastrados nas opções do produto atual.
+        var selects = form.querySelectorAll('select.js-variation-option, select[name^="variation"]');
+        var selectedOpts = [];
+        selects.forEach(function (select) {
+            if (select.classList.contains('js-shipping-select')) return;
+            if ((select.id || '').toLowerCase().indexOf('shipping') !== -1) return;
+            var opt = select.options[select.selectedIndex];
+            if (opt && opt.value) {
+                var text = (opt.textContent || opt.text || '').trim();
+                if (text) selectedOpts.push(text);
+            }
+        });
+        if (selectedOpts.length) return selectedOpts.join(' / ');
+
+        var nameFromLS = getVariationNameFromLS(root);
+        if (nameFromLS) return nameFromLS;
+
+        // Mantém a tabela como fallback para descrições antigas sem opções cadastradas.
         try {
             var varName = '';
             var possibleKeys = ['nome_variacao', 'nome variacao', 'nome da variacao', 'nome_variacao_produto', 'cor'];
-            var tables = root.querySelectorAll('.js-product-description-base table, table');
+            var tables = productRoot.querySelectorAll('.js-product-description-base table, table');
             for (var i = 0; i < tables.length; i++) {
                 var rows = tables[i].querySelectorAll('tr');
                 for (var j = 0; j < rows.length; j++) {
@@ -319,7 +338,6 @@
         // O nome do produto segue o padrão "NOME BASE - Cor / Variacao"
         // Se tiver " - ", o sufixo é o nome da variação.
         // Busca dentro de #single-product (produto original) ou no root (quando é um newDoc de fetch).
-        var productRoot = root.querySelector('#single-product') || root;
         var nameEl = productRoot.querySelector('.js-product-name, h1.product-name, .product-name h1, h1');
         if (nameEl) {
             var txt = (nameEl.textContent || '').trim();
@@ -330,7 +348,7 @@
         }
 
         // Tenta extrair das tags do produto (útil para variações mapeadas como produtos separados)
-        var tagRoot = root.querySelector('#single-product') || root;
+        var tagRoot = productRoot;
         if (tagRoot) {
             var rawTags = tagRoot.getAttribute('data-product-tags');
             if (rawTags) {
@@ -348,38 +366,13 @@
             }
         }
 
-        // Fallback: tenta LS.product.variants (funciona quando scripts Nuvemshop já rodaram)
-        var vIdInput = root.querySelector('input[name="variant_id"]') || root.querySelector('[name="variant_id"]');
-        var vId = vIdInput ? vIdInput.value : '';
-        var nameFromLS = getVariationNameFromLS(root, vId);
-        if (nameFromLS) return nameFromLS;
-
-        // Fallback: selects de variação renderizados
-        var selects = root.querySelectorAll('select.js-variation-option, select[name^="variation"]');
-        var selectedOpts = [];
-        selects.forEach(function (select) {
-            if (select.classList.contains('js-shipping-select')) return;
-            if ((select.id || '').toLowerCase().indexOf('shipping') !== -1) return;
-            var opt = select.options[select.selectedIndex];
-            if (opt && opt.value) {
-                var text = (opt.textContent || opt.text || '').trim();
-                if (text) selectedOpts.push(text);
-            }
-        });
-        if (selectedOpts.length > 0) return selectedOpts.join(' / ');
-
         return '';
     }
 
     function updateVariationName(doc) {
         var root = doc || document;
         
-        // Se já temos o nome da variação ativa no cache global, prioriza ele para evitar que timeouts ou scripts nativos revertam
-        var nomeVariacao = window.eoraActiveVariationName || '';
-
-        if (!nomeVariacao) {
-            nomeVariacao = autoGetVariationName(root);
-        }
+        var nomeVariacao = autoGetVariationName(root);
 
         if (!nomeVariacao) {
             var currentPath = normalizePathname(window.location.href);
@@ -399,9 +392,7 @@
             }
         }
 
-        if (nomeVariacao) {
-            window.eoraActiveVariationName = nomeVariacao;
-        }
+        window.eoraActiveVariationName = nomeVariacao;
 
         var infoEl = document.querySelector('.eora-product-info');
         if (infoEl) {
@@ -409,7 +400,7 @@
             if (h2) {
                 var txt = h2.textContent || '';
                 if (txt.indexOf(' - ') !== -1) {
-                    h2.innerHTML = txt.split(' - ')[0].trim();
+                    h2.textContent = txt.split(' - ')[0].trim();
                 }
             }
             
@@ -417,8 +408,9 @@
             if (varTitleEl) {
                 if (nomeVariacao) {
                     varTitleEl.style.display = 'block';
-                    varTitleEl.innerHTML = nomeVariacao;
+                    varTitleEl.textContent = nomeVariacao;
                 } else {
+                    varTitleEl.textContent = '';
                     varTitleEl.style.display = 'none';
                 }
             } else if (nomeVariacao && h2) {
@@ -428,10 +420,20 @@
                 div.style.marginBottom = '16px';
                 div.style.fontSize = '12px';
                 div.style.color = '#666';
-                div.innerHTML = nomeVariacao;
+                div.textContent = nomeVariacao;
                 h2.parentNode.insertBefore(div, h2.nextSibling);
             }
         }
+    }
+
+    function bindVariationNameUpdates() {
+        document.addEventListener('change', function (event) {
+            var field = event.target;
+            if (!field || !field.matches('select.js-variation-option, select[name^="variation"], input[name="variant_id"]')) return;
+            if (!field.closest('#single-product')) return;
+            updateVariationName(document);
+        });
+        updateVariationName(document);
     }
 
     function criarBlocoTitulo(titulo) {
@@ -1105,14 +1107,6 @@
                                 var swatch = document.querySelector('.eora-bolsa-var-item[data-href-path="' + path + '"]');
                                 if (swatch) {
                                     swatch.setAttribute('data-name', extractedName);
-                                    if (swatch.classList.contains('eora-active')) {
-                                        window.eoraActiveVariationName = extractedName;
-                                        var varTitleEl = document.querySelector('.eora-nome-variacao');
-                                        if (varTitleEl) {
-                                            varTitleEl.style.display = 'block';
-                                            varTitleEl.innerHTML = extractedName;
-                                        }
-                                    }
                                 }
                             }
                         } catch (e) {
@@ -4132,6 +4126,7 @@
     function setup() {
         snapshotConfigTables();
         init();
+        bindVariationNameUpdates();
         [400, 900, 1500, 2400, 4200, 6200].forEach(function (delay) {
             setTimeout(cleanupLegacyDescriptionAndMoveSocial, delay);
             setTimeout(buildCustomInstitutionalMessage, delay + 10);
@@ -4162,16 +4157,6 @@
 //-->
 </script>
 </p>
-<div>
-<table style="border-collapse: collapse; width: 100%;" border="1">
-<tbody>
-<tr>
-<td style="width: 48.057%;">nome_variacao</td>
-<td style="width: 48.057%;">Lizard / Verde</td>
-</tr>
-</tbody>
-</table>
-</div>
 <div>
 <table style="border-collapse: collapse; width: 100%;" border="1">
 <tbody>
