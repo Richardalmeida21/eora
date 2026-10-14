@@ -1,0 +1,49 @@
+name: Atualizar titulos em portugues
+
+on:
+  schedule:
+    - cron: '2-57/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/build-portuguese-product-titles.cjs'
+      - '.github/scripts/publish-portuguese-product-titles.cjs'
+      - '.github/tests/portuguese-product-titles.cjs'
+      - '.github/workflows/product-name-sync.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eora-portuguese-title-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Testar gerador sem alterar produtos
+        env:
+          NODE_PATH: ${{ runner.temp }}/title-test-deps/node_modules
+        run: |
+          npm install --prefix "$RUNNER_TEMP/title-test-deps" --no-audit --no-fund twig@3.0.0
+          node --test .github/tests/portuguese-product-titles.cjs
+      - name: Ler nomes em portugues
+        env:
+          NUVEMSHOP_STORE_ID: ${{ secrets.NUVEMSHOP_STORE_ID }}
+          NUVEMSHOP_ACCESS_TOKEN: ${{ secrets.NUVEMSHOP_ACCESS_TOKEN }}
+        run: node .github/scripts/build-portuguese-product-titles.cjs --output title-data/product-name-pt-data.tpl
+      - name: Atualizar somente o arquivo de titulos no tema
+        env:
+          NODE_PATH: ${{ runner.temp }}/title-test-deps/node_modules
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          npm install --prefix "$RUNNER_TEMP/title-test-deps" --no-audit --no-fund basic-ftp@6.2.3
+          node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl

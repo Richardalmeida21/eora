@@ -24,3 +24,5 @@ jobs:
             **/.git*
             **/.git*/**
             **/.github/**
+            **/product-name-pt-data.tpl
+            **/.product-name-pt-data.pending.tpl
