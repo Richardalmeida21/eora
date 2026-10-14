@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
+{% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 {# /*============================================================================
   #Item grid
 ==============================================================================*/
@@ -109,7 +111,7 @@
                 {% endif %}
 
                 <div style="padding-bottom: {{ item_img_spacing }}%;" class="js-item-image-padding position-relative" data-store="product-item-image-{{ product.id }}">
-                    <a class="" href="{{ product_url_with_selected_variant }}" title="{{ product.name }}" aria-label="{{ product.name }}" >
+                    <a class="" href="{{ product_url_with_selected_variant }}" title="{{ oe_product_name | escape }}" aria-label="{{ oe_product_name | escape }}" >
                         <img alt="{{ item_img_alt }}" data-expand="-10" src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ item_img_srcset | product_image_url('small')}} 240w, {{ item_img_srcset | product_image_url('medium')}} 320w, {{ item_img_srcset | product_image_url('large')}} 480w, {{ item_img_srcset | product_image_url('huge')}} 640w, {{ item_img_srcset | product_image_url('original')}} 1024w" class="js-item-image lazyautosizes lazyload img-absolute img-absolute-centered fade-in {% if show_secondary_image %}item-image-primary{% endif %}" width="{{ item_img_width }}" height="{{ item_img_height }}" sizes="(max-width: 768px) {{ mobile_image_viewport_space }}vw, (min-width: 769px) {{ desktop_image_viewport_space }}vw"/> 
 
                         {% if show_secondary_image %}
@@ -181,11 +183,11 @@
                                     {% endfor %}
                                 </div> #}
                                 {# Open quickshop popup if has variants  DESATIVADO #}
-                                {# <span data-toggle="#quickshop-modal" href="#" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} js-modal-open btn btn-item" title="{{ 'Compra rápida de' | translate }} {{ product.name }}" aria-label="{{ 'Compra rápida de' | translate }} {{ product.name }}" data-component="product-list-item.add-to-cart" data-component-value="{{product.id}}">
+                                {# <span data-toggle="#quickshop-modal" href="#" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} js-modal-open btn btn-item" title="{{ 'Compra rápida de' | translate }} {{ oe_product_name | escape }}" aria-label="{{ 'Compra rápida de' | translate }} {{ oe_product_name | escape }}" data-component="product-list-item.add-to-cart" data-component-value="{{product.id}}">
                                     <span class="js-open-quickshop-wording">compre agora</span>
                                 </span> #}
                                 {#  deixado somente como botão de enviar para o produto #}
-                                <a href="{{ product_url_with_selected_variant }}" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} btn btn-item" title="{{ 'Compra' | translate }} {{ product.name }}" aria-label="{{ 'Compra' | translate }} {{ product.name }}" >
+                                <a href="{{ product_url_with_selected_variant }}" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} btn btn-item" title="{{ 'Compra' | translate }} {{ oe_product_name | escape }}" aria-label="{{ 'Compra' | translate }} {{ oe_product_name | escape }}" >
                                     <span>compre agora</span>
                                 </a>
                             {% else %}
@@ -237,7 +239,7 @@
             {% endif %}
             {% set show_labels = not product.has_stock or product.compare_at_price or product.promotional_offer %}
             <div class="item-description" data-store="product-item-info-{{ product.id }}">
-                <a href="{{ product_url_with_selected_variant }}" title="{{ product.name }}" aria-label="{{ product.name }}" class="item-link">
+                <a href="{{ product_url_with_selected_variant }}" title="{{ oe_product_name | escape }}" aria-label="{{ oe_product_name | escape }}" class="item-link">
                     {# --- pega a tag de cor do card --- #}
                     {% set has_card_color_tag = false %}
                     {% set all_card_color_tag = [] %}
@@ -263,7 +265,7 @@
                     {% endif %}
 
                     <div class="mb-2">
-                        <div class="js-item-name item-name mb-1" data-store="product-item-name-{{ product.id }}">{{ product.name }}</div>
+                        <div class="js-item-name item-name mb-1" data-store="product-item-name-{{ product.id }}">{{ oe_product_name | escape }}</div>
                         {% if product.display_price %}
                             <div class="item-price-container {% if settings.quick_shop %}mb-3{% endif %}" data-store="product-item-price-{{ product.id }}">
                                 <div class="item-price-block">
@@ -306,7 +308,7 @@
 
                                     {# Open quickshop popup if has variants #}
 
-                                    <span data-toggle="#quickshop-modal" href="#" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} js-modal-open btn btn-item" title="{{ 'Compra rápida de' | translate }} {{ product.name }}" aria-label="{{ 'Compra rápida de' | translate }} {{ product.name }}" data-component="product-list-item.add-to-cart" data-component-value="{{product.id}}">
+                                    <span data-toggle="#quickshop-modal" href="#" class="js-quickshop-modal-open {% if slide_item %}js-quickshop-slide{% endif %} js-modal-open btn btn-item" title="{{ 'Compra rápida de' | translate }} {{ oe_product_name | escape }}" aria-label="{{ 'Compra rápida de' | translate }} {{ oe_product_name | escape }}" data-component="product-list-item.add-to-cart" data-component-value="{{product.id}}">
                                         <span class="js-open-quickshop-wording">compre agora</span>
                                     </span>
                                 {% else %}

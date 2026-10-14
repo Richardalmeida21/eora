@@ -34,6 +34,29 @@ async function publishTemplate({client,localPath,bootstrap=false}) {
     return {bytes:contents.length,sha256:expected};
 }
 
+async function verifyNativeFallback({client,fetcher=fetch}) {
+    const live='product-name-pt-v2-data.tpl',backup='product-name-pt-v2-data.backup.tpl';
+    const readTitle=async path=>{
+        const response=await fetcher('https://www.eoraeyewear.com'+path+'?oe_fallback_check='+Date.now(),{
+            headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(30000)});
+        const html=await response.text();
+        const title=html.match(/<h2[^>]*class="[^"]*js-product-name[^"]*"[^>]*>([\s\S]*?)<\/h2>/)?.[1].trim();
+        if(!response.ok||!title)throw new Error('Native fallback page did not render a title');
+        return title;
+    };
+    const expected=await readTitle('/produtos/beam/');
+    await client.cd('/snipplets');
+    await client.remove(backup,true);
+    await client.rename(live,backup);
+    try {
+        if((await client.list()).some(file=>file.name===live))throw new Error('Fallback probe requires the live file to be absent');
+        for(const path of ['/us/products/beam/','/es/productos/beam/']){
+            if(await readTitle(path)!==expected)throw new Error('Native fallback title did not match Portuguese');
+        }
+        console.log('Native English and Spanish titles verified while the live data file was absent.');
+    }finally{await client.rename(backup,live);}
+}
+
 async function main() {
     if(!process.env.FTP_USER||!process.env.FTP_PASSWORD)throw new Error('Missing FTP credentials');
     const {Client}=require('basic-ftp');
@@ -41,11 +64,14 @@ async function main() {
     try {
         await client.access({host:'ftp.nuvemshop.com.br',user:process.env.FTP_USER,password:process.env.FTP_PASSWORD,
             secure:true,secureOptions:{minVersion:'TLSv1.2'}});
-        const result=await publishTemplate({client,localPath:process.argv[2],bootstrap:process.argv.includes('--bootstrap')});
-        console.log('Verified and published '+result.bytes+' bytes of private Portuguese title data.');
+        if(process.argv.includes('--verify-fallback'))await verifyNativeFallback({client});
+        else {
+            const result=await publishTemplate({client,localPath:process.argv[2],bootstrap:process.argv.includes('--bootstrap')});
+            console.log('Verified and published '+result.bytes+' bytes of private Portuguese title data.');
+        }
     } finally {client.close();}
 }
-module.exports={publishTemplate};
+module.exports={publishTemplate,verifyNativeFallback};
 if(require.main===module)main().catch(error=>{
     let message=String(error.message);
     for(const secret of [process.env.FTP_USER,process.env.FTP_PASSWORD])if(secret)message=message.split(secret).join('[REDACTED]');

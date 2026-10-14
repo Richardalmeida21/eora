@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
+{% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 {% if product_modal %}
 
 	{# Product video modal wrapper #}
@@ -24,7 +26,7 @@
 			{# Video thumbnail #}
 			
 			<div class="js-video-image">
-				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="" class="lazyload video-image fade-in" alt="{{ 'Video de' | translate }} {% if template != 'product' %}{{ product.name }}{% else %}{{ store.name }}{% endif %}" style="display: none;">
+				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="" class="lazyload video-image fade-in" alt="{{ 'Video de' | translate }} {% if template != 'product' %}{{ oe_product_name | escape }}{% else %}{{ store.name }}{% endif %}" style="display: none;">
 				<div class="placeholder-fade">
 				</div>
 			</div>

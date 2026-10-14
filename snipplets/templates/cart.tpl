@@ -1,3 +1,4 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
 <div id="shoppingCartPage" data-minimum="{{ settings.cart_minimum_value }}" data-store="cart-page">
     {% embed "snipplets/page-header.tpl" with {'breadcrumbs': true} %}
         {% block page_header_text %}{{ "Carrito de compras" | translate }}{% endblock page_header_text %}
@@ -16,7 +17,8 @@
             </div>
         {% endif %}
         {% for error in error.update %}
-            <div class="alert alert-warning">{{ "No podemos ofrecerte {1} unidades de {2}. Solamente tenemos {3} unidades." | translate(error.requested, error.item.name, error.stock) }}</div>
+            {% set oe_error_name = oe_product_titles.full(error.item.product.id, error.item.short_name | default(error.item.product.name), error.item.name, current_language, languages) ~ '' %}
+            <div class="alert alert-warning">{{ "No podemos ofrecerte {1} unidades de {2}. Solamente tenemos {3} unidades." | translate(error.requested, oe_error_name | escape, error.stock) }}</div>
         {% endfor %}
         {% if cart.items %}
 

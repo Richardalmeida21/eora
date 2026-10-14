@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
+{% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 {% embed "snipplets/page-header.tpl" %}
 	{% if is_order_cancellation %}
 		{% set form_title = "Pedí la cancelación de tu última compra" | translate %}
@@ -53,10 +55,10 @@
 				{% if product %}  
 					<div class="row align-items-center mb-4">
 						<div class="col-auto">
-							<img src="{{ product.featured_image | product_image_url('thumb') }}" title="{{ product.name }}" alt="{{ product.name }}" class="d-flex img-fluid" />
+							<img src="{{ product.featured_image | product_image_url('thumb') }}" title="{{ oe_product_name | escape }}" alt="{{ oe_product_name | escape }}" class="d-flex img-fluid" />
 						</div>
 						<div class="col-auto pl-3">
-							<p>{{ "Estás consultando por el producto:" | translate }} </br> {{ product.name | a_tag(product.url) }}</p>
+							<p>{{ "Estás consultando por el producto:" | translate }} </br> <a href="{{ product.url | escape }}">{{ oe_product_name | escape }}</a></p>
 						</div>
 					</div>
 			{% endif %}

@@ -12,7 +12,7 @@ Missing IDs or missing language context preserve the native name. An empty, inva
 
 ## Scope
 
-The lookup is used by product pages, grid/search/recommendation cards, campaign cards, homepage sliders, contact product references and theme-rendered cart items. It affects title text and associated accessible labels/attributes. Other translated interface text and product descriptions retain their existing language handling.
+The lookup is used by product pages, grid/search/recommendation cards, campaign cards, homepage sliders, contact product references and theme-rendered cart items and stock errors. Stock-error item names retain their variant suffix. It affects title text and associated accessible labels/attributes. Other translated interface text and product descriptions retain their existing language handling.
 
 Checkout belongs to the platform and is outside this theme rule. Existing order snapshots also retain their historical item names. Do not claim those native surfaces are synchronized by this implementation. A native catalog synchronization would require locale-only writes or working server-side concurrency protection; the tested classic PUT API requires resending Portuguese fields and ignores write preconditions, so it is unsuitable for unattended writes.
 

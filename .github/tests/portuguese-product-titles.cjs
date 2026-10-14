@@ -5,7 +5,7 @@ const path=require('node:path');
 const Twig=require('twig');
 const os=require('node:os');
 const {once}=require('node:events');
-const {publishTemplate}=require('../scripts/publish-portuguese-product-titles.cjs');
+const {publishTemplate,verifyNativeFallback}=require('../scripts/publish-portuguese-product-titles.cjs');
 const {buildTemplate,readCatalog}=require('../scripts/build-portuguese-product-titles.cjs');
 const product=(id,title)=>({id,name:{pt:title,en:'Foreign title',es:'Otro titulo'}});
 
@@ -16,6 +16,17 @@ test('builds a deterministic server template using only Portuguese titles',()=>{
     assert.equal(result,buildTemplate([product(1,'MAXI VÉRTICE'),product(2,'HOBO')]));
     assert(result.includes("language starts with 'pt'"));
     assert(result.includes('default(fallback)'));
+});
+test('native fallback probe always restores the live data file after an HTTP failure',async()=>{
+    let live=true,backup=false,calls=0;
+    const client={cd:async()=>{},remove:async()=>{backup=false;},list:async()=>live?[{name:'product-name-pt-v2-data.tpl'}]:[],rename:async(from,to)=>{
+        if(from==='product-name-pt-v2-data.tpl'){live=false;backup=true;}else{assert(backup);live=true;backup=false;}
+    }};
+    await assert.rejects(verifyNativeFallback({client,fetcher:async()=>{
+        calls++;
+        return calls===1?new Response('<h2 class="js-product-name">BEAM</h2>'):new Response('error',{status:500});
+    }}));
+    assert(live);assert(!backup);
 });
 test('escapes Twig string delimiters while preserving exact title content',()=>{
     const result=buildTemplate([product(1,"D'ÁGUA \\ edição #{neverEvaluate} <em> & \"x\"")]);

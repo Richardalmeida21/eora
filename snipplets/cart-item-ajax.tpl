@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
+{% set oe_product_title = oe_product_titles.get(item.product.id, item.short_name, current_language, languages) ~ "" %}
 <div class="js-cart-item {% if item.product.is_non_shippable %}js-cart-item-non-shippable{% else %}js-cart-item-shippable{% endif %} cart-item row no-gutters {% if cart_page %}align-items-md-center{% endif %}" data-item-id="{{ item.id }}" data-store="cart-item-{{ item.product.id }}" data-component="cart.line-item">
 
   {# Cart item image #}
@@ -20,7 +22,7 @@
 
             <div class="cart-item-name-container col-12 {% if cart_page %}col-md-8 font-md-body d-md-block mb-2{% endif %}" data-component="line-item.name">
               <a href="{{ item.url }}" data-component="name.short-name" class="cart-item-name d-block">
-                {{ item.short_name }}
+                {{ oe_product_title | escape }}
               </a>
             </div>
             {% if not cart_page %}

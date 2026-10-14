@@ -1,4 +1,4 @@
-{% import "snipplets/product-name-pt-data.tpl" as oe_product_titles %}
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
 {% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 <div class="product-infos">    
     {% set brand_product = product.brand %}

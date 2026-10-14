@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
+{% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 {#
 ====================================================================
   CLIENTES EORA — Carrossel de fotos de clientes por produto
@@ -79,7 +81,7 @@
                                          data-srcset="{{ image | product_image_url('large') }} 480w, {{ image | product_image_url('huge') }} 800w, {{ image | product_image_url('original') }} 1200w"
                                          data-sizes="auto"
                                          class="lazyautosizes lazyload"
-                                         alt="{% if image.alt %}{{ image.alt }}{% else %}Cliente Eora usando {{ product.name }}{% endif %}">
+                                         alt="{% if image.alt %}{{ image.alt }}{% else %}Cliente Eora usando {{ oe_product_name | escape }}{% endif %}">
                                 </div>
                             </div>
                         {% endfor %}
@@ -88,7 +90,7 @@
                             <div class="swiper-slide">
                                 <div class="clientes-eora-slide">
                                     <img src="{{ url }}"
-                                         alt="Cliente Eora usando {{ product.name }}"
+                                         alt="Cliente Eora usando {{ oe_product_name | escape }}"
                                          loading="lazy">
                                 </div>
                             </div>

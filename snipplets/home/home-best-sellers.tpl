@@ -1,3 +1,4 @@
+{% import "snipplets/product-name-pt.tpl" as oe_product_titles %}
 {# -------------------------------------------------------------------
    Home – Best-Seller Slider (somente slide)
 ------------------------------------------------------------------- #}
@@ -50,6 +51,7 @@
         <div class="swiper-wrapper flex-nowrap">
 
             {% for product in sections_products %}
+                {% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
                 {# =========================================================================
                 Slider Item — versão simplificada
                 • Envolve cada produto em um único .swiper-slide
@@ -60,13 +62,13 @@
                 {% set img_width   = product.featured_image.dimensions['width']  %}
                 {% set img_height  = product.featured_image.dimensions['height'] %}
                 {% set img_srcset  = product.featured_image %}
-                {% set img_alt     = product.featured_image.alt | default(product.name) %}
+                {% set img_alt     = product.featured_image.alt | default(oe_product_name) %}
                 
                 
                 <div class="swiper-slide item-product" data-product-id="{{ product.id }}">
                     <div class="item">
                         {# ---------- Imagem ---------- #}
-                        <a href="{{ product.url }}" title="{{ product.name }}" aria-label="{{ product.name }}">
+                        <a href="{{ product.url }}" title="{{ oe_product_name | escape }}" aria-label="{{ oe_product_name | escape }}">
 
                             
                             <figure class="image -square">
@@ -92,8 +94,8 @@
                         </a>    
                             {# ---------- Nome ---------- #}
                         <div class="item-description pt-2">
-                            <a href="{{ product.url }}" class="item-link" title="{{ product.name }}" aria-label="{{ product.name }}">
-                                <div class="item-name">{{ product.name }}</div>
+                            <a href="{{ product.url }}" class="item-link" title="{{ oe_product_name | escape }}" aria-label="{{ oe_product_name | escape }}">
+                                <div class="item-name">{{ oe_product_name | escape }}</div>
                             </a>
                         </div>
                     </div>

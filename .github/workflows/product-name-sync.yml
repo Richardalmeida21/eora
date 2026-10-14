@@ -4,12 +4,18 @@ on:
   schedule:
     - cron: '2-57/5 * * * *'
   workflow_dispatch:
+    inputs:
+      verify_fallback:
+        description: 'Verificar a fonte anterior nas paginas publicas'
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths:
       - '.github/scripts/build-portuguese-product-titles.cjs'
       - '.github/scripts/publish-portuguese-product-titles.cjs'
       - '.github/tests/portuguese-product-titles.cjs'
+      - '.github/tests/portuguese-product-titles-theme.cjs'
       - '.github/workflows/product-name-sync.yml'
 
 permissions:
@@ -33,7 +39,7 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/title-test-deps/node_modules
         run: |
           npm install --prefix "$RUNNER_TEMP/title-test-deps" --no-audit --no-fund twig@3.0.0
-          node --test .github/tests/portuguese-product-titles.cjs
+          node --test .github/tests/portuguese-product-titles.cjs .github/tests/portuguese-product-titles-theme.cjs
       - name: Ler nomes em portugues
         env:
           NUVEMSHOP_STORE_ID: ${{ secrets.NUVEMSHOP_STORE_ID }}
@@ -44,6 +50,11 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/title-test-deps/node_modules
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          VERIFY_FALLBACK: ${{ github.event.inputs.verify_fallback }}
         run: |
           npm install --prefix "$RUNNER_TEMP/title-test-deps" --no-audit --no-fund basic-ftp@6.2.3
-          node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl --bootstrap
+          if [ "$VERIFY_FALLBACK" = "true" ]; then
+            node .github/scripts/publish-portuguese-product-titles.cjs --verify-fallback
+          else
+            node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl --bootstrap
+          fi
