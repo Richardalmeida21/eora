@@ -1,3 +1,5 @@
+{% import "snipplets/product-name-pt-data.tpl" as oe_product_titles %}
+{% set oe_product_name = oe_product_titles.get(product.id, product.name, current_language, languages) ~ "" %}
 <div class="product-infos">    
     {% set brand_product = product.brand %}
     {% if brand_product %}
@@ -5,7 +7,7 @@
     {% endif %}
 
     {# Product name #}
-    <h2 class="js-product-name mb-3">{{ product.name }}</h2>    
+    <h2 class="js-product-name mb-3">{{ oe_product_name | escape }}</h2>
 
     {# Product SKU #}
 
