@@ -26,3 +26,6 @@ jobs:
             **/.github/**
             **/product-name-pt-data.tpl
             **/.product-name-pt-data.pending.tpl
+            **/product-name-pt-v2-data.tpl
+            **/product-name-pt-v2-data.backup.tpl
+            **/.product-name-pt-v2-data.pending.tpl

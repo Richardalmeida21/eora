@@ -75,17 +75,26 @@ test('publishes only after complete upload and byte verification, without deleti
     const localPath=path.join(folder,'titles.tpl');
     const contents=Buffer.from(buildTemplate([product(1,'BEAM')]));fs.writeFileSync(localPath,contents);
     try {
-        for(const failure of [null,'upload','verify','rename']){
-            const calls=[];let live='OLD';
+        for(const failure of [null,'upload','verify','rename','restore']){
+            const calls=[];
+            const staging='.product-name-pt-v2-data.pending.tpl',destination='product-name-pt-v2-data.tpl',backup='product-name-pt-v2-data.backup.tpl';
+            const remote=new Map([[destination,Buffer.from('OLD')],[backup,Buffer.from('OLDER')]]);
             const client={
                 cd:async dir=>{assert.equal(dir,'/snipplets');calls.push('cd');},
-                uploadFrom:async(file,name)=>{assert.equal(file,localPath);assert.equal(name,'.product-name-pt-data.pending.tpl');calls.push('upload');if(failure==='upload')throw new Error('Interrupted transfer');},
-                downloadTo:async(target,name)=>{assert.equal(name,'.product-name-pt-data.pending.tpl');calls.push('verify');target.end(failure==='verify'?Buffer.from('truncated'):contents);await once(target,'finish');},
-                rename:async(from,to)=>{assert.equal(from,'.product-name-pt-data.pending.tpl');assert.equal(to,'product-name-pt-data.tpl');calls.push('rename');if(failure==='rename')throw new Error('Rename rejected');live=contents.toString();}
+                list:async()=>[...remote.keys()].map(name=>({name})),
+                uploadFrom:async(file,name)=>{assert.equal(file,localPath);assert.equal(name,staging);calls.push('upload');remote.set(name,contents);if(failure==='upload')throw new Error('Interrupted transfer');},
+                downloadTo:async(target,name)=>{assert.equal(name,staging);calls.push('verify');target.end(failure==='verify'?Buffer.from('truncated'):contents);await once(target,'finish');},
+                remove:async name=>{assert.equal(name,backup);calls.push('remove-backup');remote.delete(name);},
+                rename:async(from,to)=>{
+                    calls.push('rename:'+from);
+                    if((failure==='rename'||failure==='restore')&&from===staging||failure==='restore'&&from===backup)throw new Error('Rename rejected');
+                    assert(!remote.has(to),'native FTP rejects overwriting existing files');
+                    remote.set(to,remote.get(from));remote.delete(from);
+                }
             };
-            if(failure){await assert.rejects(publishTemplate({client,localPath}));assert.equal(live,'OLD');}
-            else {await publishTemplate({client,localPath});assert.equal(live,contents.toString());assert.deepEqual(calls,['cd','upload','verify','rename']);}
-            if(failure==='upload'||failure==='verify')assert(!calls.includes('rename'));
+            if(failure){await assert.rejects(publishTemplate({client,localPath}));assert.equal((remote.get(destination)||remote.get(backup)).toString(),'OLD');}
+            else {await publishTemplate({client,localPath});assert.equal(remote.get(destination).toString(),contents.toString());assert.equal(remote.get(backup).toString(),'OLD');}
+            if(failure==='upload'||failure==='verify')assert(!calls.some(call=>call.startsWith('rename:')));
         }
     }finally{fs.unlinkSync(localPath);fs.rmdirSync(folder);}
 });

@@ -27,7 +27,10 @@ function buildTemplate(rows) {
         "{%- if language starts with 'pt' or not language -%}{{- fallback | raw -}}{%- else -%}\n"+
         "{%- set titles = {\n"+entries+"\n} -%}\n"+
         "{{- titles[product_id ~ ''] | default(fallback) | raw -}}\n"+
-        "{%- endif -%}\n{%- endmacro -%}\n";
+        "{%- endif -%}\n{%- endmacro -%}\n"+
+        "{%- if oe_title_lookup -%}{%- import _self as oe_generated_titles -%}\n"+
+        "{{- oe_generated_titles.get(oe_title_product_id, oe_title_fallback, oe_title_current_language, oe_title_languages) | raw -}}\n"+
+        "{%- endif -%}\n";
 }
 async function readCatalog(request) {
     const rows=[];

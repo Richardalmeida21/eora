@@ -46,4 +46,4 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           npm install --prefix "$RUNNER_TEMP/title-test-deps" --no-audit --no-fund basic-ftp@6.2.3
-          node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl
+          node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl --bootstrap
