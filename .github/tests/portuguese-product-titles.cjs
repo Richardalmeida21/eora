@@ -94,7 +94,7 @@ test('publishes only after complete upload and byte verification, without deleti
                 cd:async dir=>{assert.equal(dir,'/snipplets');calls.push('cd');},
                 list:async()=>[...remote.keys()].map(name=>({name})),
                 uploadFrom:async(file,name)=>{assert.equal(file,localPath);assert.equal(name,staging);calls.push('upload');remote.set(name,contents);if(failure==='upload')throw new Error('Interrupted transfer');},
-                downloadTo:async(target,name)=>{assert.equal(name,staging);calls.push('verify');target.end(failure==='verify'?Buffer.from('truncated'):contents);await once(target,'finish');},
+                downloadTo:async(target,name)=>{assert([destination,staging].includes(name));calls.push(name===destination?'read-live':'verify');target.end(name===destination?remote.get(destination):failure==='verify'?Buffer.from('truncated'):contents);await once(target,'finish');},
                 remove:async name=>{assert.equal(name,backup);calls.push('remove-backup');remote.delete(name);},
                 rename:async(from,to)=>{
                     calls.push('rename:'+from);
@@ -107,5 +107,14 @@ test('publishes only after complete upload and byte verification, without deleti
             else {await publishTemplate({client,localPath});assert.equal(remote.get(destination).toString(),contents.toString());assert.equal(remote.get(backup).toString(),'OLD');}
             if(failure==='upload'||failure==='verify')assert(!calls.some(call=>call.startsWith('rename:')));
         }
+    }finally{fs.unlinkSync(localPath);fs.rmdirSync(folder);}
+});
+test('unchanged titles never upload, rotate files, or invalidate the theme cache',async()=>{
+    const folder=fs.mkdtempSync(path.join(os.tmpdir(),'eora-title-test-'));const localPath=path.join(folder,'titles.tpl');
+    const contents=Buffer.from(buildTemplate([product(1,'BEAM')]));fs.writeFileSync(localPath,contents);
+    try{
+        const client={cd:async()=>{},list:async()=>[{name:'product-name-pt-v2-data.tpl'}],downloadTo:async target=>{target.end(contents);await once(target,'finish');},
+            uploadFrom:async()=>assert.fail('must not upload unchanged data'),rename:async()=>assert.fail('must not rotate unchanged data'),remove:async()=>assert.fail('must not remove unchanged data')};
+        assert.equal((await publishTemplate({client,localPath})).unchanged,true);
     }finally{fs.unlinkSync(localPath);fs.rmdirSync(folder);}
 });

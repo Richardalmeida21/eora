@@ -3,6 +3,17 @@ const fs=require('node:fs');
 const crypto=require('node:crypto');
 const {Writable}=require('node:stream');
 
+async function downloadDigest(client,name) {
+    const chunks=[];let size=0;
+    const target=new Writable({write(chunk,encoding,callback){
+        size+=chunk.length;
+        if(size>2*1024*1024){callback(new Error('Unexpected downloaded template size'));return;}
+        chunks.push(Buffer.from(chunk));callback();
+    }});
+    await client.downloadTo(target,name);
+    return crypto.createHash('sha256').update(Buffer.concat(chunks)).digest('hex');
+}
+
 async function publishTemplate({client,localPath,bootstrap=false}) {
     const contents=fs.readFileSync(localPath);
     if(contents.length===0||contents.length>2*1024*1024)throw new Error('Invalid title template size');
@@ -13,15 +24,9 @@ async function publishTemplate({client,localPath,bootstrap=false}) {
     await client.cd('/snipplets');
     const exists=(await client.list()).some(file=>file.name===destination);
     if(bootstrap&&exists)return {bytes:contents.length,bootstrapAlreadyPresent:true};
+    if(exists&&await downloadDigest(client,destination)===expected)return {bytes:contents.length,unchanged:true};
     await client.uploadFrom(localPath,staging);
-    const chunks=[];let size=0;
-    const target=new Writable({write(chunk,encoding,callback){
-        size+=chunk.length;
-        if(size>2*1024*1024){callback(new Error('Unexpected downloaded template size'));return;}
-        chunks.push(Buffer.from(chunk));callback();
-    }});
-    await client.downloadTo(target,staging);
-    const actual=crypto.createHash('sha256').update(Buffer.concat(chunks)).digest('hex');
+    const actual=await downloadDigest(client,staging);
     if(actual!==expected)throw new Error('Uploaded title template verification failed');
     // Nuvemshop forbids rename over an existing destination. The stable theme
     // helper can read the previous complete snapshot during this short switch.
@@ -67,7 +72,7 @@ async function main() {
         if(process.argv.includes('--verify-fallback'))await verifyNativeFallback({client});
         else {
             const result=await publishTemplate({client,localPath:process.argv[2],bootstrap:process.argv.includes('--bootstrap')});
-            console.log('Verified and published '+result.bytes+' bytes of private Portuguese title data.');
+            console.log(result.unchanged?'No title changes; existing snapshot and cache preserved.':'Verified and published '+result.bytes+' bytes of private Portuguese title data.');
         }
     } finally {client.close();}
 }

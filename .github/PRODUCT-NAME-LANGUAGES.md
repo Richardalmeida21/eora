@@ -10,6 +10,8 @@ The initial V2 snapshot is bootstrapped before deploying the stable `snipplets/p
 
 Missing IDs or missing language context preserve the native name. An empty, invalid or incomplete catalog aborts generation before upload and leaves the last good production file in place. The generator supports only GET catalog requests; it cannot overwrite names or any other product fields in the admin panel.
 
+Before publishing, the existing remote file is checked by SHA-256. If no Portuguese names changed, no file is uploaded or rotated, preserving the current theme cache.
+
 The workflow renews its enabled state through the GitHub Actions API to avoid automatic suspension of scheduled workflows after repository inactivity. It only does so while already active, respecting a manually disabled workflow. This requires `actions: write` for the temporary GitHub job token and does not create dummy commits.
 
 ## Scope
@@ -25,5 +27,7 @@ Tests also ruled out empty foreign names as a native fallback: the new catalog P
 Run `node --test .github/tests/portuguese-product-titles.cjs .github/tests/portuguese-product-titles-theme.cjs` with Twig.js available. The local Twig.js emulator does not decode escaped backslashes like PHP Twig; literal source escaping is tested separately. Template delimiters are split into harmless string expressions, and displayed title text is escaped at the HTML sinks.
 
 Verify the deployed product titles in Portuguese, English and Spanish, including the theme-rendered cart, and check URL/form preservation. Compare loading behavior before and after; no client resources are added by this change.
+
+Published validation on 2026-10-14: 90 card-title occurrences across Portuguese/English/Spanish product, home and search pages matched the native Portuguese catalog. BEAM, Maxi Vertice and Vertice product headings matched in English and Spanish. The same script resources and form actions remained present. Read-only desktop English and narrow Spanish browser checks found no JavaScript exceptions. The native backup test passed with the live V2 file absent (Actions run 38636217510), and subsequent real rotations succeeded. Thirteen automated generator, transport, fallback and template scenarios passed. Cart addition by a headless browser was rejected by the site's protection with HTTP 403; live purchase completion is not claimed. Local stock/cart regressions passed. HTTP timing samples were uncontrolled and variable; no claim of identical server response times is made.
 
 To roll back, revert the theme-consumer commit and disable the title-data workflow. The generated server file can remain unused. No catalog rollback is required because the production rule never writes catalog data.
