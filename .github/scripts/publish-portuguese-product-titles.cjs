@@ -37,4 +37,9 @@ async function main() {
     } finally {client.close();}
 }
 module.exports={publishTemplate};
-if(require.main===module)main().catch(()=>{console.error('Title upload failed; inspect workflow before assuming refresh completed.');process.exitCode=1;});
+if(require.main===module)main().catch(error=>{
+    let message=String(error.message);
+    for(const secret of [process.env.FTP_USER,process.env.FTP_PASSWORD])if(secret)message=message.split(secret).join('[REDACTED]');
+    console.error('Title upload failed: '+message);
+    process.exitCode=1;
+});
