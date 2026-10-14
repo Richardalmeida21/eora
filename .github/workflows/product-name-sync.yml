@@ -56,5 +56,5 @@ jobs:
           if [ "$VERIFY_FALLBACK" = "true" ]; then
             node .github/scripts/publish-portuguese-product-titles.cjs --verify-fallback
           else
-            node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl --bootstrap
+            node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl
           fi
