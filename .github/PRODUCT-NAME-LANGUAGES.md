@@ -10,6 +10,8 @@ The initial V2 snapshot is bootstrapped before deploying the stable `snipplets/p
 
 Missing IDs or missing language context preserve the native name. An empty, invalid or incomplete catalog aborts generation before upload and leaves the last good production file in place. The generator supports only GET catalog requests; it cannot overwrite names or any other product fields in the admin panel.
 
+The workflow renews its enabled state through the GitHub Actions API to avoid automatic suspension of scheduled workflows after repository inactivity. It only does so while already active, respecting a manually disabled workflow. This requires `actions: write` for the temporary GitHub job token and does not create dummy commits.
+
 ## Scope
 
 The lookup is used by product pages, grid/search/recommendation cards, campaign cards, homepage sliders, contact product references and theme-rendered cart items and stock errors. Stock-error item names retain their variant suffix. It affects title text and associated accessible labels/attributes. Other translated interface text and product descriptions retain their existing language handling.

@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: eora-portuguese-title-data
@@ -57,4 +58,13 @@ jobs:
             node .github/scripts/publish-portuguese-product-titles.cjs --verify-fallback
           else
             node .github/scripts/publish-portuguese-product-titles.cjs title-data/product-name-pt-data.tpl
+          fi
+      - name: Manter o agendamento ativo sem commits artificiais
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title_workflow_state=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/product-name-sync.yml" --jq '.state')
+          if [ "$title_workflow_state" = "active" ]; then
+            gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/product-name-sync.yml/enable"
           fi
