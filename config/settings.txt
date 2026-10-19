@@ -10962,7 +10962,7 @@ Bolsas Eora
 		gallery_height = 800
 		gallery_more_info = true
 	collapse
-		title = Banners de categorias
+		title = Banners de categorias — Bolsas Eora
 	checkbox
 		name = bolsas_eora_categories_enabled
 		description = Mostrar banners de categorias
@@ -11052,7 +11052,7 @@ Bolsas Eora
 		gallery_height = 800
 		gallery_more_info = true
 	collapse
-		title = Banners de categorias
+		title = Banners de categorias — Óculos Eora
 	checkbox
 		name = oculos_eora_categories_enabled
 		description = Mostrar banners de categorias
@@ -11874,7 +11874,7 @@ Página Best Sellers Eora
 		gallery_height = 1920
 		gallery_more_info = true
 	collapse
-		title = Banners de categorias
+		title = Banners de categorias — Best Sellers Eora
 	checkbox
 		name = best_sellers_eora_categories_enabled
 		description = Mostrar banners de categorias
