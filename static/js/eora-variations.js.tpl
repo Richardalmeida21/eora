@@ -18,6 +18,91 @@
         } catch (e) { return ''; }
     }
 
+    function installVerticeOrder() {
+        // Referências da Vértice; esta lista não inclui Maxi, Mini, Hobo ou Clutch.
+        var paths = [
+            '/produtos/vertice/', '/produtos/vertice-bordo-mix/',
+            '/produtos/vertice1/', '/produtos/vertice6/',
+            '/produtos/vertice3/', '/produtos/vertice-marrom-avela-mix/',
+            '/produtos/vertice4/', '/produtos/vertice-croco-rato-mix/', '/produtos/vertice-detog/'
+        ];
+        var positions = Object.create(null);
+        paths.forEach(function (path, index) { positions[path] = index; });
+        if (positions[normalizePath(window.location.href)] === undefined) return;
+
+        var product = document.querySelector('#single-product, .eora-product-wrap');
+        var root = product && product.parentNode || document.body;
+        if (!root) return;
+        var scheduled = false;
+
+        function applyOrder() {
+            scheduled = false;
+            if (positions[normalizePath(window.location.href)] === undefined) return;
+            root.querySelectorAll('.eora-product-wrap .eora-bolsa-vars').forEach(function (container) {
+                var nodes = Array.prototype.slice.call(container.querySelectorAll('.eora-bolsa-var-item[data-href-path]'));
+                var entries = nodes.map(function (node, index) {
+                    var position = positions[normalizePath(node.getAttribute('data-href-path'))];
+                    return {node: node, index: index, position: position === undefined ? paths.length : position};
+                }).sort(function (a, b) { return a.position - b.position || a.index - b.index; });
+                var pairs = Object.create(null);
+                entries.forEach(function (entry) {
+                    if (entry.position >= 6) return;
+                    var pair = Math.floor(entry.position / 2);
+                    if (!pairs[pair]) pairs[pair] = [];
+                    pairs[pair].push(entry.node);
+                });
+                var missingPair = Object.keys(pairs).some(function (key) {
+                    var pair = pairs[key];
+                    if (pair.length < 2) return false;
+                    var parent = pair[0].parentElement;
+                    return !parent.classList.contains('eora-bolsa-var-pair') ||
+                        pair.some(function (node) { return node.parentElement !== parent; }) ||
+                        parent.querySelectorAll('.eora-bolsa-var-item').length !== pair.length;
+                });
+                if (!missingPair && entries.every(function (entry, index) { return entry.node === nodes[index]; })) return;
+
+                var oldPairs = container.querySelectorAll('.eora-bolsa-var-pair');
+                var fragment = document.createDocumentFragment();
+                var pairContainers = Object.create(null);
+                entries.forEach(function (entry) {
+                    var pair = Math.floor(entry.position / 2);
+                    if (entry.position < 6 && pairs[pair].length > 1) {
+                        if (!pairContainers[pair]) {
+                            var group = document.createElement('span');
+                            group.className = 'eora-bolsa-var-pair';
+                            group.style.cssText = 'display:inline-flex;flex-wrap:nowrap;gap:8px;flex:0 0 auto';
+                            pairContainers[pair] = group;
+                            fragment.appendChild(group);
+                        }
+                        pairContainers[pair].appendChild(entry.node);
+                    } else {
+                        fragment.appendChild(entry.node);
+                    }
+                });
+                oldPairs.forEach(function (pair) { if (!pair.children.length) pair.remove(); });
+                // Move os nós existentes para preservar seleção, fotos e listeners.
+                container.appendChild(fragment);
+            });
+        }
+
+        function scheduleOrder() {
+            if (scheduled) return;
+            scheduled = true;
+            window.requestAnimationFrame(applyOrder);
+        }
+
+        new MutationObserver(function (records) {
+            var relevant = records.some(function (record) {
+                if (record.target.closest && record.target.closest('.eora-bolsa-vars')) return true;
+                return Array.prototype.some.call(record.addedNodes, function (node) {
+                    return node.nodeType === 1 && (node.matches('.eora-bolsa-vars') || node.querySelector('.eora-bolsa-vars'));
+                });
+            });
+            if (relevant) scheduleOrder();
+        }).observe(root, {childList: true, subtree: true});
+        applyOrder();
+    }
+
     function isCustomProduct() {
         return !!document.querySelector('.eora-product-wrap');
     }
@@ -183,6 +268,7 @@
         }, transitionDuration);
     }
 
+    installVerticeOrder();
     installTransitionStyles();
     runEntryTransition();
 

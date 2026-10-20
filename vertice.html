@@ -1939,30 +1939,7 @@
     function buildVariantSwatches(infoEl, relatedItems) {
         var grid = document.createElement('div'); grid.className = 'eora-bolsa-vars';
         var currentPath = normalizePathname(window.location.href);
-        // Algumas referências de cores distintas compartilham as mesmas tags.
-        // Agrupa os pares pelos seus links, mantendo a ordem do catálogo em cada cor.
-        var colorPairs = {
-            '/produtos/vertice/': 'bordo',
-            '/produtos/vertice-bordo-mix/': 'bordo',
-            '/produtos/vertice1/': 'preto',
-            '/produtos/vertice6/': 'preto',
-            '/produtos/vertice3/': 'marrom',
-            '/produtos/vertice-marrom-avela-mix/': 'marrom'
-        };
-        var colorGroups = [];
-        var groupsByColor = Object.create(null);
-        relatedItems.forEach(function (item) {
-            var itemPath = normalizePathname(item.href);
-            var color = colorPairs[itemPath] || itemPath;
-            if (!groupsByColor[color]) {
-                groupsByColor[color] = [];
-                colorGroups.push(groupsByColor[color]);
-            }
-            groupsByColor[color].push(item);
-        });
-        var orderedItems = [].concat.apply([], colorGroups);
-        var pairContainers = Object.create(null);
-        orderedItems.forEach(function (item, i) {
+        relatedItems.forEach(function (item, i) {
             var itemPath = normalizePathname(item.href);
             var isActive = (itemPath === currentPath);
             
@@ -2018,19 +1995,7 @@
                     navigateToVariation(itemPath, item.href);
                 });
             }
-            var pairColor = colorPairs[itemPath];
-            if (pairColor) {
-                if (!pairContainers[pairColor]) {
-                    var pair = document.createElement('span');
-                    pair.className = 'eora-bolsa-var-pair';
-                    pair.style.cssText = 'display:inline-flex;flex-wrap:nowrap;gap:8px;flex:0 0 auto';
-                    pairContainers[pairColor] = pair;
-                    grid.appendChild(pair);
-                }
-                pairContainers[pairColor].appendChild(el);
-            } else {
-                grid.appendChild(el);
-            }
+            grid.appendChild(el);
         });
 
         /* Tenta inserir ANTES do botao comprar (form) */
@@ -4160,11 +4125,11 @@
 <td>foto_8</td>
 </tr>
 <tr>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (15).jpg" alt="" width="100" height="125" /></td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (17).jpg" alt="" width="100" height="125" /></td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (16).jpg" alt="" width="100" height="125" /></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td><a title="Vertice" href="https://www.eoraeyewear.com/produtos/vertice-bordo-mix/"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (15).jpg" alt="" width="100" height="125" /></a></td>
+<td><a title="Vertice" href="https://www.eoraeyewear.com/produtos/vertice3/"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (17).jpg" alt="" width="100" height="125" /></a></td>
+<td><a title="Vertice" href="https://www.eoraeyewear.com/produtos/vertice-croco-rato-mix/"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (16).jpg" alt="" width="100" height="125" /></a></td>
+<td><a title="Vertice" href="https://www.eoraeyewear.com/produtos/vertice-detog/"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/CARROSSEL(1).jpg" alt="" width="100" height="125" /></a></td>
+<td><a title="Vertice" href="https://www.eoraeyewear.com/produtos/vertice4/"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/CARROSSEL(3).jpg" alt="" width="100" height="125" /></a></td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
@@ -4185,11 +4150,11 @@
 </tr>
 <tr>
 <td>video</td>
-<td>https://vimeo.com/1236660413</td>
+<td>https://vimeo.com/1237394478</td>
 </tr>
 <tr>
 <td>video_mobile</td>
-<td>https://vimeo.com/1236661005</td>
+<td>https://vimeo.com/1237394175</td>
 </tr>
 <tr>
 <td>imagem</td>
@@ -4270,7 +4235,7 @@
 </tr>
 <tr>
 <td>video_1 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LIFESTYLE.jpg" alt="" width="100" height="125" /></td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/TELA 3 18.10.jpg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_1_mobile</td>
@@ -4278,7 +4243,7 @@
 </tr>
 <tr>
 <td>video_2 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Faca email Perfit (7).jpg" alt="" width="100" height="125" /></td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/faca produto (18).jpg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_2_mobile</td>
@@ -4286,7 +4251,7 @@
 </tr>
 <tr>
 <td>video_3 ou imagem</td>
-<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/LIFESTYLE (1).jpg" alt="" width="100" height="125" /></td>
+<td><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/faca produto (19).jpg" alt="" width="100" height="125" /></td>
 </tr>
 <tr>
 <td>video_3_mobile</td>
@@ -4305,7 +4270,7 @@
 <tr>
 <td style="width: 23.091%;">banners_alternados</td>
 <td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/Design sem nome (7).png" alt="" width="100" height="59" /></td>
-<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/1.png" alt="" width="100" height="59" /></td>
+<td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/STILL VERTICE PRETA DOURADO METAL.jpg" alt="" width="100" height="59" /></td>
 <td style="width: 23.091%;"><img src="https://d1a9qnv764bsoo.cloudfront.net/stores/006/201/247/rte/PAGINA PRODUTO MATERIA PRIMA.jpg" alt="" width="100" height="59" /></td>
 </tr>
 <tr>
