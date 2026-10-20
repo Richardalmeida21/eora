@@ -1,5 +1,5 @@
 {% set oculos_eora_category_url = settings.oculos_eora_category_url | default('') | trim %}
-<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20260922-1">
+<link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261020-1">
 <main class="be-page" data-be-page data-search-url="{{ store.search_url | escape }}" data-category-url="{{ oculos_eora_category_url | escape }}" data-be-filter-global="EoraEyewearFilters" data-be-filter-prefix="oe" data-be-category-feed-tag="__oculos_eora_category__" data-be-all-title="Todos os óculos">
     {% if settings.oculos_eora_models %}
         <nav class="be-models" data-be-carousel aria-label="Modelos de óculos">

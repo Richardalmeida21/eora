@@ -68,7 +68,9 @@
 .be-page .be-product__gallery-button--next { right: 8px; }
 .be-page .be-product__image:hover .be-product__gallery-button:not(:disabled),
 .be-page .be-product__image:focus-within .be-product__gallery-button:not(:disabled) { opacity: 1; }
-.be-page .be-product__badge { position: absolute; z-index: 3; top: 10px; left: 10px; padding: 5px 8px; font-size: 10px; text-transform: uppercase; background: #fff; pointer-events: none; }
+.be-page .be-product__badges { position: absolute; z-index: 3; top: 10px; left: 10px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none; }
+.be-page .be-product__badge { padding: 5px 8px; font-size: 10px; text-transform: uppercase; background: #fff; pointer-events: none; }
+.be-page .be-product__badge--new { padding: 4px 9px; background: #000; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; line-height: 1.4; }
 .be-page .be-product__info { display: flex; justify-content: space-between; gap: 10px; padding: 14px 2px 4px; }
 .be-page .be-product__info h3 { font-family: inherit; font-size: 11px; line-height: 1.5; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
 .be-page .be-product__price { display: flex; flex-direction: column; align-items: flex-end; white-space: nowrap; font-size: 11px; line-height: 1.5; }

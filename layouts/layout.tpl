@@ -28,7 +28,21 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{ page_title }}</title>
-        <meta name="description" content="{{ page_description }}" />
+        {# Descrições com código/configurações não podem virar texto de compartilhamento. #}
+        {% set oe_description_source = product.description | default('') | lower %}
+        {% set oe_custom_product_meta = template == 'product' and ('<script' in oe_description_source or '<style' in oe_description_source or '<table' in oe_description_source) %}
+        {% if oe_custom_product_meta %}
+            {% set oe_share_description = product.seo_description | default('') | striptags | trim %}
+            {% set oe_seo_source = product.seo_description | default('') | lower %}
+            {% if not oe_share_description or '<script' in oe_seo_source or '<style' in oe_seo_source %}
+                {% import 'snipplets/product-name-pt.tpl' as oe_share_titles %}
+                {% set oe_share_name = oe_share_titles.get(product.id, product.name, current_language, languages) ~ '' %}
+                {% set oe_share_description = 'Conheça ' ~ oe_share_name ~ ' na ' ~ (store.name | default('EORA')) ~ '. Veja fotos, detalhes e disponibilidade.' %}
+            {% endif %}
+            <meta name="description" content="{{ oe_share_description | escape }}" />
+        {% else %}
+            <meta name="description" content="{{ page_description }}" />
+        {% endif %}
         <script>
             (function () {
                 try {
@@ -47,7 +61,11 @@
             {% snipplet 'preload-images.tpl' %}
         {% endif %}
 
-        {{ component('social-meta') }}
+        {% if oe_custom_product_meta %}
+            {% include 'snipplets/social/product-share-meta.tpl' %}
+        {% else %}
+            {{ component('social-meta') }}
+        {% endif %}
 
         {#/*============================================================================
             #CSS and fonts

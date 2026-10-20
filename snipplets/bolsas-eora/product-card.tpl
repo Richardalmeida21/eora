@@ -10,8 +10,11 @@
     {% set be_product_url = '/produtos/luar/?vi=' ~ be_luar_variant_links[be_product_slug] %}
 {% endif %}
 {% set be_product_tags = [] %}
+{% set be_product_is_new = false %}
 {% for product_tag in product.tags %}
-    {% set be_product_tags = be_product_tags | merge([product_tag.tag | default(product_tag)]) %}
+    {% set be_product_tag = product_tag.tag | default(product_tag) %}
+    {% set be_product_tags = be_product_tags | merge([be_product_tag]) %}
+    {% if be_product_tag | trim | lower == 'novo' %}{% set be_product_is_new = true %}{% endif %}
 {% endfor %}
 {% set be_product_image_limit = be_product_image_limit | default(0) %}
 {% set be_product_images = [] %}
@@ -51,7 +54,12 @@
             <button class="be-product__gallery-button be-product__gallery-button--prev" type="button" data-be-gallery-prev aria-label="Foto anterior" disabled><svg aria-hidden="true"><use xlink:href="#chevron"/></svg></button>
             <button class="be-product__gallery-button be-product__gallery-button--next" type="button" data-be-gallery-next aria-label="Próxima foto"><svg aria-hidden="true"><use xlink:href="#chevron"/></svg></button>
         {% endif %}
-        {% if not product.available %}<span class="be-product__badge">Esgotado</span>{% endif %}
+        {% if be_product_is_new or not product.available %}
+            <div class="be-product__badges">
+                {% if be_product_is_new %}<span class="be-product__badge be-product__badge--new" aria-label="Produto novo">NOVO</span>{% endif %}
+                {% if not product.available %}<span class="be-product__badge">Esgotado</span>{% endif %}
+            </div>
+        {% endif %}
     </div>
     <div class="be-product__info">
         <h3 data-store="product-item-name-{{ product.id }}"><a href="{{ be_product_url | escape }}">{{ oe_product_name | escape }}</a></h3>
