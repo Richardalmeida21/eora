@@ -153,3 +153,8 @@ bolsas_eora_best
 oculos_eora_best
 	name = Óculos Eora — Best sellers
 	description = Selecione e ordene os produtos do carrossel best sellers da página Óculos Eora.
+
+
+sobre_eora_community
+	name = Sobre EORA — Favoritos da comunidade
+	description = Selecione e ordene os produtos favoritos da comunidade na página Sobre EORA.

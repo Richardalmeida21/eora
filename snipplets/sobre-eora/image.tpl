@@ -1,0 +1,1 @@
+<img src="{{ image | static_url | settings_image_url('original') }}" alt="{{ image_alt | default('EORA') | escape }}" width="{{ image_width | default(1000) }}" height="{{ image_height | default(1250) }}" loading="lazy" decoding="async">
