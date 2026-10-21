@@ -1,8 +1,6 @@
 # Página Sobre EORA
 
-Implementação para a nova página `/sobre/`, com base no briefing de setembro de 2026. A página antiga `/sobre1/` mantém o template e o conteúdo atuais, inclusive se o campo de URL estiver configurado incorretamente como `sobre1`. Trabalho na branch `feat/sobre-eora-preview`.
-
-A rota precisa existir como página de conteúdo na Nuvemshop. Na verificação de 21/10/2026, `/sobre/` respondia como categoria, com canonical `/visao-eora/sobre/`; resolver esse conflito no painel antes de criar/publicar a página nova. Não alterar nem redirecionar `/sobre1/` e manter os menus apontando para a antiga durante a configuração.
+Implementação para `/sobre1/`, com base no briefing de setembro de 2026. Trabalho na branch `feat/sobre-eora-preview`. Não publicar na `main` antes da revisão da prévia.
 
 ## Edição na loja
 

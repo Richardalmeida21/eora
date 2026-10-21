@@ -198,7 +198,7 @@ best_sellers_eora_macro_13_order = 13
 best_sellers_eora_macro_14_order = 14
 best_sellers_eora_macro_15_order = 15
 
-sobre_eora_page_url = sobre
+sobre_eora_page_url = sobre1
 sobre_eora_intro_enabled = 1
 sobre_eora_intro_title_pt = Sobre a EORA
 sobre_eora_founders_enabled = 1

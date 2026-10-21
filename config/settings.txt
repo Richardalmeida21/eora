@@ -12372,7 +12372,7 @@ Sobre EORA
 		title = Sobre EORA — Página e apresentação
 	text
 		name = sobre_eora_page_url
-		description = Identificador da nova página (sem barras). Padrão: sobre. A página antiga sobre1 é preservada.
+		description = Identificador da página (sem barras). Padrão: sobre1
 	description
 		description = Edite esta página em Sobre EORA. Se uma seção estiver desativada ou sem materiais, ela não deixa um espaço vazio na loja.
 	checkbox

@@ -26,7 +26,7 @@ function context() {
         const match = line.match(/^(sobre_eora_\S+)\s*=\s*(.*)$/);
         if (match) settings[match[1].replace(/_pt$/, '')] = match[2] === '1' ? true : match[2] === '0' ? false : match[2];
     }
-    return {settings, page: {handle: 'sobre', name: 'Sobre', content: '<p>História original da EORA.</p>'}, sections: {}, current_language: {lang: 'pt'}, languages: {pt: {active: true}}};
+    return {settings, page: {handle: 'sobre1', name: 'Sobre', content: '<p>História original da EORA.</p>'}, sections: {}, current_language: {lang: 'pt'}, languages: {pt: {active: true}}};
 }
 function demoContext() {
     const data = context(), s = data.settings;
