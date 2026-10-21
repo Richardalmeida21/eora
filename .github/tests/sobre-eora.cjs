@@ -25,12 +25,22 @@ assert(!h.render(data).includes('data-be-product='), 'Seleção de produtos resp
 // Executa o roteador de produção; as outras páginas continuam em seus próprios templates.
 for (const [id, marker] of [['best-sellers/index.tpl', 'best'], ['gift-guide-banners.tpl', 'gifts'], ['campaign/index.tpl', 'campaign'], ['page-content/behind-the-lens-index.tpl', 'lentes'], ['garantia-eora.tpl', 'garantia'], ['bolsas-eora/index.tpl', 'bolsas'], ['oculos-eora/index.tpl', 'oculos'], ['page-content/who-uses.tpl', 'quem']]) h.compile('snipplets/' + id, '<div data-route="' + marker + '"></div>');
 const router = h.compile('sobre-page-router', fs.readFileSync(path.join(h.root, 'templates/page.tpl'), 'utf8'));
-for (const handle of ['sobre1', 'nossa-marca']) {
+for (const handle of ['sobre', 'nossa-marca']) {
     const input = h.context();
     input.page.handle = handle;
     input.settings.sobre_eora_page_url = 'nossa-marca';
     input.settings.campaign_page_01_url = handle;
     assert(router.render(input).includes('data-se-page'), 'Roteia a página Sobre mesmo se antes usava uma campanha');
+}
+for (const configured of ['sobre', 'sobre1', '/sobre1/']) {
+    const input = h.context();
+    input.page.handle = 'sobre1';
+    input.page.content = '<p>Conteúdo atual da página antiga.</p><img src="/foto-antiga.jpg" alt="Fundadores">';
+    input.settings.sobre_eora_page_url = configured;
+    const result = router.render(input);
+    assert(!result.includes('data-se-page'), 'A nova página nunca substitui /sobre1/, inclusive com uma configuração antiga');
+    assert(result.includes(input.page.content), 'Texto e imagem da página antiga permanecem intactos');
+    assert(!result.includes('css/sobre-eora.css') && !result.includes('js/sobre-eora.js'), 'Não carrega os estilos e scripts novos na página antiga');
 }
 for (const [handle, marker] of [['best-sellers1', 'best'], ['bolsas-eora', 'bolsas'], ['oculos-eora', 'oculos'], ['garantia-eora', 'garantia']]) {
     const input = h.context(); input.page.handle = handle;
