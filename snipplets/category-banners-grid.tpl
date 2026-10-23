@@ -19,14 +19,14 @@
 				<div class="swiper-slide">
 					<div class="cat-banner-img-wrap">
 						{% if loop.first %}
-							<img src="{{ banner.image | static_url | settings_image_url('original') }}"
+							<img srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('original') }} 1024w, {{ banner.image | static_url | settings_image_url('xlarge') }} 1400w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w"  src="{{ banner.image | static_url | settings_image_url('original') }}"
 								class="img-fluid d-block w-100"
 								alt="{{ banner.title|default('') }}"
-								style="width:100%;display:block;" />
+								style="width:100%;display:block;" sizes="(max-width: 767px) 89.3vw, (max-width: 991px) calc((100vw - 80px) / 3), calc((100vw - 112px) / 3)" />
 						{% else %}
 							<img src="{{ 'images/empty-placeholder.png' | static_url }}"
-								data-srcset="{{ banner.image | static_url | settings_image_url('original') }}"
-								class="lazyload fade-in img-fluid d-block w-100"
+								data-srcset="{{ banner.image | static_url | settings_image_url('large') }} 480w, {{ banner.image | static_url | settings_image_url('huge') }} 640w, {{ banner.image | static_url | settings_image_url('original') }} 1024w, {{ banner.image | static_url | settings_image_url('xlarge') }} 1400w, {{ banner.image | static_url | settings_image_url('1080p') }} 1920w"
+								data-sizes="auto" class="lazyautosizes lazyload fade-in img-fluid d-block w-100"
 								alt="{{ banner.title|default('') }}"
 								style="width:100%;display:block;" />
 						{% endif %}

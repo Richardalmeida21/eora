@@ -79,7 +79,7 @@
 				{% endif %}
 					{% if "header_menu_imagem.jpg" | has_custom_image %}
 						<figure class="image -custom">
-							<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "header_menu_imagem.jpg" | static_url | settings_image_url('large') }} 480w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('1080p') }} 1920w' class='lazyload'/>
+							<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "header_menu_imagem.jpg" | static_url | settings_image_url('large') }} 480w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
 						</figure>
 					{% endif %}					
 					{% if settings.header_menu_imagem_upper_title %}

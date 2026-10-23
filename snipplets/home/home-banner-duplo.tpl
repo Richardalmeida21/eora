@@ -34,8 +34,8 @@
                class="banner-duplo-item">
                 <div class="banner-duplo-image">
                     <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                         data-src="{{ bd1_image | static_url | settings_image_url('huge') }}"
-                         data-srcset="{{ bd1_image | static_url | settings_image_url('large') }} 640w, {{ bd1_image | static_url | settings_image_url('huge') }} 960w, {{ bd1_image | static_url | settings_image_url('original') }} 1280w"
+                         data-src="{{ bd1_image | static_url | settings_image_url('1080p') }}"
+                         data-srcset="{{ bd1_image | static_url | settings_image_url('large') }} 480w, {{ bd1_image | static_url | settings_image_url('huge') }} 640w, {{ bd1_image | static_url | settings_image_url('original') }} 1024w, {{ bd1_image | static_url | settings_image_url('xlarge') }} 1400w, {{ bd1_image | static_url | settings_image_url('1080p') }} 1920w"
                          data-sizes="auto"
                          class="lazyautosizes lazyload"
                          alt="{% if bd1_label %}{{ bd1_label }}{% else %}Banner 1{% endif %}">
@@ -52,8 +52,8 @@
                class="banner-duplo-item">
                 <div class="banner-duplo-image">
                     <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                         data-src="{{ bd2_image | static_url | settings_image_url('huge') }}"
-                         data-srcset="{{ bd2_image | static_url | settings_image_url('large') }} 640w, {{ bd2_image | static_url | settings_image_url('huge') }} 960w, {{ bd2_image | static_url | settings_image_url('original') }} 1280w"
+                         data-src="{{ bd2_image | static_url | settings_image_url('1080p') }}"
+                         data-srcset="{{ bd2_image | static_url | settings_image_url('large') }} 480w, {{ bd2_image | static_url | settings_image_url('huge') }} 640w, {{ bd2_image | static_url | settings_image_url('original') }} 1024w, {{ bd2_image | static_url | settings_image_url('xlarge') }} 1400w, {{ bd2_image | static_url | settings_image_url('1080p') }} 1920w"
                          data-sizes="auto"
                          class="lazyautosizes lazyload"
                          alt="{% if bd2_label %}{{ bd2_label }}{% else %}Banner 2{% endif %}">

@@ -35,7 +35,7 @@
 				{% endif %}
 
 				<figure class="image -custom" style="--padding-bottom-banner-categoria: {{ padding_bottom }}%">
-					<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ (banner.image ~ ".jpg") | static_url | settings_image_url("large") }} 480w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url("huge") }} 640w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url("original") }} 1024w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url("1080p") }} 1920w' class='lazyload'/>
+					<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ (banner.image ~ ".jpg") | static_url | settings_image_url('large') }} 480w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url('huge') }} 640w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url('original') }} 1024w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url('xlarge') }} 1400w, {{ (banner.image ~ ".jpg") | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
 					<div class="banner-categoria-content">
 						<div class="banner-categoria-title">{{ banner.title }}</div>
 						<svg class="banner-floating-icon" viewbox="0 0 10 10" fill="none" style="transform: scaleX(-1);">
@@ -62,7 +62,7 @@
 					<a href="{{ link }}" class="banner-categoria-link">
 					{% endif %}
 					<figure class="banner-categoria-figure">
-						<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="{{ image | static_url | settings_image_url('1080p') }}" alt="{{ title }}" class="lazyload banner-categoria-img" width="930" height="465"/>
+						<img data-srcset="{{ image | static_url | settings_image_url('large') }} 480w, {{ image | static_url | settings_image_url('huge') }} 640w, {{ image | static_url | settings_image_url('original') }} 1024w, {{ image | static_url | settings_image_url('xlarge') }} 1400w, {{ image | static_url | settings_image_url('1080p') }} 1920w"  src="{{ 'images/empty-placeholder.png' | static_url }}" data-src="{{ image | static_url | settings_image_url('1080p') }}" alt="{{ title }}" data-sizes="auto" class="lazyautosizes lazyload banner-categoria-img" width="930" height="465"/>
 						<figcaption class="banner-categoria-caption">
 							<span class="banner-categoria-title">{{ title }}</span>
 						</figcaption>

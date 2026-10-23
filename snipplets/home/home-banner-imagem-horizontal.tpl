@@ -18,7 +18,7 @@
 
 		{% if mobile %}
 			<figure class="image -custom d-md-none" style="--padding-bottom-banner-horizontal: {{ padding_bottom }}%">
-				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url("original") }} 1024w, {{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url("1080p") }} 1920w' class='lazyload'/>
+				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url('large') }} 480w, {{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "banner_horizontal_image_mobile.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
 				<div class="banner-floating-wrapper">
 					{% include 'snipplets/banner-floating-button.tpl' with {
 						'title': settings.banner_horizontal_button_text_title,
@@ -30,7 +30,7 @@
 
 		{% else %}
 			<figure class="image -custom d-none d-md-flex" style="--padding-bottom-banner-horizontal: {{ padding_bottom }}%">
-				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "banner_horizontal_image.jpg" | static_url | settings_image_url("original") }} 1024w, {{ "banner_horizontal_image.jpg" | static_url | settings_image_url("1080p") }} 1920w' class='lazyload'/>
+				<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "banner_horizontal_image.jpg" | static_url | settings_image_url('large') }} 480w, {{ "banner_horizontal_image.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "banner_horizontal_image.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "banner_horizontal_image.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "banner_horizontal_image.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
 				<div class="banner-floating-wrapper">
 					{% include 'snipplets/banner-floating-button.tpl' with {
 						'title': settings.banner_horizontal_button_text_title,

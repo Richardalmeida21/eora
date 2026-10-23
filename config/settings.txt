@@ -655,8 +655,8 @@ Página de inicio
 		name = slider_mobile
 		gallery_image = Agregar imagen
 		gallery_link = Link (ou cole URL do YouTube/Vimeo para usar como vídeo no mobile)
-		gallery_width = 820
-		gallery_height = 1000
+		gallery_width = 1640
+		gallery_height = 2000
 		gallery_more_info = true
 	subtitle 
 		subtitle = Tamanho de imagens no mobile
@@ -821,9 +821,9 @@ Página de inicio
 		description = Link
 	image
 		original = banner_horizontal_image.jpg
-		title = Imagem (JPG, GIF, PNG)
-		width = 1440
-		height = 550
+		title = Imagem (JPG, GIF, PNG) — 2880 × 1100 px
+		width = 2880
+		height = 1100
 	subtitle
 		subtitle = Tamanho da imagem no desktop
 	i18n_input
@@ -837,9 +837,9 @@ Página de inicio
 		description = Mostrar outra imagem do banner horizontal na página principal para celulares
 	image
 		original = banner_horizontal_image_mobile.jpg
-		title = Imagem (JPG, GIF, PNG)
-		width = 400
-		height = 760
+		title = Imagem (JPG, GIF, PNG) — 1600 × 3040 px
+		width = 1600
+		height = 3040
 	subtitle
 		subtitle = Tamanho da imagem no mobile
 	i18n_input
@@ -2034,9 +2034,9 @@ Página de inicio
 		subtitle = Banner 1 (esquerda)
 	image
 		original = banner_duplo_1_image.png
-		title = Imagem (JPG, PNG)
-		width = 960
-		height = 1200
+		title = Imagem (JPG, PNG) — 1920 × 2400 px
+		width = 1920
+		height = 2400
 	i18n_input
 		name = banner_duplo_1_link
 		description = Link ao clicar no banner 1
@@ -2047,9 +2047,9 @@ Página de inicio
 		subtitle = Banner 2 (direita)
 	image
 		original = banner_duplo_2_image.png
-		title = Imagem (JPG, PNG)
-		width = 960
-		height = 1200
+		title = Imagem (JPG, PNG) — 1920 × 2400 px
+		width = 1920
+		height = 2400
 	i18n_input
 		name = banner_duplo_2_link
 		description = Link ao clicar no banner 2
@@ -12374,7 +12374,7 @@ Sobre EORA
 		name = sobre_eora_page_url
 		description = Identificador da página (sem barras). Padrão: sobre1
 	description
-		description = Edite esta página em Sobre EORA. Se uma seção estiver desativada ou sem materiais, ela não deixa um espaço vazio na loja.
+		description = Edite esta página em Sobre EORA. Se uma seção estiver desativada ou sem materiais, ela não deixa um espaço vazio na loja. Fotos: desktop 1920 × 2400 px; mobile 1600 × 2000 px, ambos 4:5. O mobile é opcional e aparece até 767 px; sem ele, usa a foto desktop. Envie arquivos nessa resolução ou maior, mantendo 4:5, para nitidez em telas de alta densidade.
 	checkbox
 		name = sobre_eora_intro_enabled
 		description = Exibir seção
@@ -12394,9 +12394,14 @@ Sobre EORA
 		description = Título
 	image
 		original = sobre_eora_founders.jpg
-		title = Foto dos fundadores — uma imagem
-		width = 1400
-		height = 1750
+		title = Foto dos fundadores — Desktop: 1920 × 2400 px (4:5)
+		width = 1920
+		height = 2400
+	image
+		original = sobre_eora_founders_mobile.jpg
+		title = Foto dos fundadores — Mobile: 1600 × 2000 px (4:5, opcional)
+		width = 1600
+		height = 2000
 	textarea
 		name = sobre_eora_founders_text
 		description = Texto dos fundadores
@@ -12411,227 +12416,23 @@ Sobre EORA
 		name = sobre_eora_press_title
 		description = Título
 	description
-		description = Até 10 itens. Ative ou desative cada espaço. A ordem da página segue a numeração. Sem imagem cadastrada, o item não aparece. São 3 itens visíveis no computador e aproximadamente 1,5 no celular.
-	title
-		title = Press — 1
-	checkbox
-		name = sobre_eora_press_1_enabled
-		description = Exibir item 1
-	image
-		original = sobre_eora_press_1.jpg
-		title = Imagem — Press 1
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_1_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_1_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_1_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_1_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 2
-	checkbox
-		name = sobre_eora_press_2_enabled
-		description = Exibir item 2
-	image
-		original = sobre_eora_press_2.jpg
-		title = Imagem — Press 2
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_2_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_2_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_2_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_2_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 3
-	checkbox
-		name = sobre_eora_press_3_enabled
-		description = Exibir item 3
-	image
-		original = sobre_eora_press_3.jpg
-		title = Imagem — Press 3
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_3_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_3_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_3_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_3_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 4
-	checkbox
-		name = sobre_eora_press_4_enabled
-		description = Exibir item 4
-	image
-		original = sobre_eora_press_4.jpg
-		title = Imagem — Press 4
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_4_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_4_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_4_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_4_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 5
-	checkbox
-		name = sobre_eora_press_5_enabled
-		description = Exibir item 5
-	image
-		original = sobre_eora_press_5.jpg
-		title = Imagem — Press 5
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_5_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_5_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_5_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_5_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 6
-	checkbox
-		name = sobre_eora_press_6_enabled
-		description = Exibir item 6
-	image
-		original = sobre_eora_press_6.jpg
-		title = Imagem — Press 6
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_6_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_6_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_6_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_6_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 7
-	checkbox
-		name = sobre_eora_press_7_enabled
-		description = Exibir item 7
-	image
-		original = sobre_eora_press_7.jpg
-		title = Imagem — Press 7
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_7_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_7_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_7_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_7_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 8
-	checkbox
-		name = sobre_eora_press_8_enabled
-		description = Exibir item 8
-	image
-		original = sobre_eora_press_8.jpg
-		title = Imagem — Press 8
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_8_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_8_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_8_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_8_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 9
-	checkbox
-		name = sobre_eora_press_9_enabled
-		description = Exibir item 9
-	image
-		original = sobre_eora_press_9.jpg
-		title = Imagem — Press 9
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_9_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_9_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_9_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_9_button
-		description = Texto do link (opcional)
-	title
-		title = Press — 10
-	checkbox
-		name = sobre_eora_press_10_enabled
-		description = Exibir item 10
-	image
-		original = sobre_eora_press_10.jpg
-		title = Imagem — Press 10
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_press_10_title
-		description = Título do item
-	textarea
-		name = sobre_eora_press_10_text
-		description = Texto do item
-	text
-		name = sobre_eora_press_10_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_press_10_button
-		description = Texto do link (opcional)
+		description = Adicione apenas os itens necessários em + Adicionar imagem. Arraste para ordenar. No lápis de cada imagem, edite título, descrição, link e botão. Mobile opcional: mantenha a mesma quantidade e ordem da desktop, inclusive ao remover ou reordenar. Se uma foto não precisa de recorte diferente, repita a desktop. Galeria mobile vazia ou incompleta usa as fotos desktop.
+	subtitle
+		subtitle = Imagens desktop — 1920 × 2400 px (4:5)
+	gallery
+		name = sobre_eora_press_images
+		gallery_image = Adicionar imagem desktop
+		gallery_link = Link de destino (opcional)
+		gallery_width = 1920
+		gallery_height = 2400
+		gallery_more_info = true
+	subtitle
+		subtitle = Imagens mobile (opcional) — 1600 × 2000 px (4:5)
+	gallery
+		name = sobre_eora_press_images_mobile
+		gallery_image = Adicionar imagem mobile
+		gallery_width = 1600
+		gallery_height = 2000
 	collapse
 		title = Sobre EORA — Frase dos fundadores
 	checkbox
@@ -12654,227 +12455,23 @@ Sobre EORA
 		name = sobre_eora_sustainability_title
 		description = Título
 	description
-		description = Até 10 itens. Ative ou desative cada espaço. A ordem da página segue a numeração. Sem imagem cadastrada, o item não aparece. São 3 itens visíveis no computador e aproximadamente 1,5 no celular.
-	title
-		title = Sustentabilidade — 1
-	checkbox
-		name = sobre_eora_sustainability_1_enabled
-		description = Exibir item 1
-	image
-		original = sobre_eora_sustainability_1.jpg
-		title = Imagem — Sustentabilidade 1
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_1_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_1_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_1_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_1_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 2
-	checkbox
-		name = sobre_eora_sustainability_2_enabled
-		description = Exibir item 2
-	image
-		original = sobre_eora_sustainability_2.jpg
-		title = Imagem — Sustentabilidade 2
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_2_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_2_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_2_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_2_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 3
-	checkbox
-		name = sobre_eora_sustainability_3_enabled
-		description = Exibir item 3
-	image
-		original = sobre_eora_sustainability_3.jpg
-		title = Imagem — Sustentabilidade 3
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_3_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_3_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_3_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_3_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 4
-	checkbox
-		name = sobre_eora_sustainability_4_enabled
-		description = Exibir item 4
-	image
-		original = sobre_eora_sustainability_4.jpg
-		title = Imagem — Sustentabilidade 4
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_4_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_4_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_4_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_4_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 5
-	checkbox
-		name = sobre_eora_sustainability_5_enabled
-		description = Exibir item 5
-	image
-		original = sobre_eora_sustainability_5.jpg
-		title = Imagem — Sustentabilidade 5
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_5_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_5_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_5_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_5_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 6
-	checkbox
-		name = sobre_eora_sustainability_6_enabled
-		description = Exibir item 6
-	image
-		original = sobre_eora_sustainability_6.jpg
-		title = Imagem — Sustentabilidade 6
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_6_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_6_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_6_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_6_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 7
-	checkbox
-		name = sobre_eora_sustainability_7_enabled
-		description = Exibir item 7
-	image
-		original = sobre_eora_sustainability_7.jpg
-		title = Imagem — Sustentabilidade 7
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_7_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_7_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_7_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_7_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 8
-	checkbox
-		name = sobre_eora_sustainability_8_enabled
-		description = Exibir item 8
-	image
-		original = sobre_eora_sustainability_8.jpg
-		title = Imagem — Sustentabilidade 8
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_8_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_8_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_8_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_8_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 9
-	checkbox
-		name = sobre_eora_sustainability_9_enabled
-		description = Exibir item 9
-	image
-		original = sobre_eora_sustainability_9.jpg
-		title = Imagem — Sustentabilidade 9
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_9_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_9_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_9_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_9_button
-		description = Texto do link (opcional)
-	title
-		title = Sustentabilidade — 10
-	checkbox
-		name = sobre_eora_sustainability_10_enabled
-		description = Exibir item 10
-	image
-		original = sobre_eora_sustainability_10.jpg
-		title = Imagem — Sustentabilidade 10
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_sustainability_10_title
-		description = Título do item
-	textarea
-		name = sobre_eora_sustainability_10_text
-		description = Texto do item
-	text
-		name = sobre_eora_sustainability_10_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_sustainability_10_button
-		description = Texto do link (opcional)
+		description = Adicione apenas os itens necessários em + Adicionar imagem. Arraste para ordenar. No lápis de cada imagem, edite título, descrição, link e botão. Mobile opcional: mantenha a mesma quantidade e ordem da desktop, inclusive ao remover ou reordenar. Se uma foto não precisa de recorte diferente, repita a desktop. Galeria mobile vazia ou incompleta usa as fotos desktop.
+	subtitle
+		subtitle = Imagens desktop — 1920 × 2400 px (4:5)
+	gallery
+		name = sobre_eora_sustainability_images
+		gallery_image = Adicionar imagem desktop
+		gallery_link = Link de destino (opcional)
+		gallery_width = 1920
+		gallery_height = 2400
+		gallery_more_info = true
+	subtitle
+		subtitle = Imagens mobile (opcional) — 1600 × 2000 px (4:5)
+	gallery
+		name = sobre_eora_sustainability_images_mobile
+		gallery_image = Adicionar imagem mobile
+		gallery_width = 1600
+		gallery_height = 2000
 	collapse
 		title = Sobre EORA — Linha do tempo
 	checkbox
@@ -12884,227 +12481,23 @@ Sobre EORA
 		name = sobre_eora_timeline_title
 		description = Título
 	description
-		description = Até 10 itens. Ative ou desative cada espaço. A ordem da página segue a numeração. Sem imagem cadastrada, o item não aparece. Uma etapa por vez no computador, com foto e texto sincronizados; aproximadamente 1,5 no celular.
-	title
-		title = Linha do tempo — 1
-	checkbox
-		name = sobre_eora_timeline_1_enabled
-		description = Exibir item 1
-	image
-		original = sobre_eora_timeline_1.jpg
-		title = Imagem — Linha do tempo 1
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_1_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_1_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_1_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_1_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 2
-	checkbox
-		name = sobre_eora_timeline_2_enabled
-		description = Exibir item 2
-	image
-		original = sobre_eora_timeline_2.jpg
-		title = Imagem — Linha do tempo 2
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_2_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_2_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_2_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_2_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 3
-	checkbox
-		name = sobre_eora_timeline_3_enabled
-		description = Exibir item 3
-	image
-		original = sobre_eora_timeline_3.jpg
-		title = Imagem — Linha do tempo 3
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_3_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_3_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_3_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_3_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 4
-	checkbox
-		name = sobre_eora_timeline_4_enabled
-		description = Exibir item 4
-	image
-		original = sobre_eora_timeline_4.jpg
-		title = Imagem — Linha do tempo 4
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_4_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_4_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_4_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_4_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 5
-	checkbox
-		name = sobre_eora_timeline_5_enabled
-		description = Exibir item 5
-	image
-		original = sobre_eora_timeline_5.jpg
-		title = Imagem — Linha do tempo 5
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_5_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_5_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_5_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_5_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 6
-	checkbox
-		name = sobre_eora_timeline_6_enabled
-		description = Exibir item 6
-	image
-		original = sobre_eora_timeline_6.jpg
-		title = Imagem — Linha do tempo 6
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_6_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_6_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_6_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_6_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 7
-	checkbox
-		name = sobre_eora_timeline_7_enabled
-		description = Exibir item 7
-	image
-		original = sobre_eora_timeline_7.jpg
-		title = Imagem — Linha do tempo 7
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_7_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_7_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_7_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_7_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 8
-	checkbox
-		name = sobre_eora_timeline_8_enabled
-		description = Exibir item 8
-	image
-		original = sobre_eora_timeline_8.jpg
-		title = Imagem — Linha do tempo 8
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_8_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_8_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_8_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_8_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 9
-	checkbox
-		name = sobre_eora_timeline_9_enabled
-		description = Exibir item 9
-	image
-		original = sobre_eora_timeline_9.jpg
-		title = Imagem — Linha do tempo 9
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_9_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_9_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_9_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_9_button
-		description = Texto do link (opcional)
-	title
-		title = Linha do tempo — 10
-	checkbox
-		name = sobre_eora_timeline_10_enabled
-		description = Exibir item 10
-	image
-		original = sobre_eora_timeline_10.jpg
-		title = Imagem — Linha do tempo 10
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_timeline_10_title
-		description = Título / ano
-	textarea
-		name = sobre_eora_timeline_10_text
-		description = Texto do item
-	text
-		name = sobre_eora_timeline_10_link
-		description = Link de destino (opcional)
-	i18n_input
-		name = sobre_eora_timeline_10_button
-		description = Texto do link (opcional)
+		description = Adicione apenas os itens necessários em + Adicionar imagem. Arraste para ordenar. No lápis de cada imagem, edite título, descrição, link e botão. Mobile opcional: mantenha a mesma quantidade e ordem da desktop, inclusive ao remover ou reordenar. Se uma foto não precisa de recorte diferente, repita a desktop. Galeria mobile vazia ou incompleta usa as fotos desktop.
+	subtitle
+		subtitle = Imagens desktop — 1920 × 2400 px (4:5)
+	gallery
+		name = sobre_eora_timeline_images
+		gallery_image = Adicionar imagem desktop
+		gallery_link = Link de destino (opcional)
+		gallery_width = 1920
+		gallery_height = 2400
+		gallery_more_info = true
+	subtitle
+		subtitle = Imagens mobile (opcional) — 1600 × 2000 px (4:5)
+	gallery
+		name = sobre_eora_timeline_images_mobile
+		gallery_image = Adicionar imagem mobile
+		gallery_width = 1600
+		gallery_height = 2000
 	collapse
 		title = Sobre EORA — Valores
 	checkbox
@@ -13114,55 +12507,23 @@ Sobre EORA
 		name = sobre_eora_values_title
 		description = Título
 	description
-		description = Três blocos de imagem e texto, lado a lado no computador e empilhados no celular. Cada bloco pode ser desativado.
-	title
-		title = Valores — 1
-	checkbox
-		name = sobre_eora_values_1_enabled
-		description = Exibir item 1
-	image
-		original = sobre_eora_values_1.jpg
-		title = Imagem — Valores 1
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_values_1_title
-		description = Título do item
-	textarea
-		name = sobre_eora_values_1_text
-		description = Texto do item
-	title
-		title = Valores — 2
-	checkbox
-		name = sobre_eora_values_2_enabled
-		description = Exibir item 2
-	image
-		original = sobre_eora_values_2.jpg
-		title = Imagem — Valores 2
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_values_2_title
-		description = Título do item
-	textarea
-		name = sobre_eora_values_2_text
-		description = Texto do item
-	title
-		title = Valores — 3
-	checkbox
-		name = sobre_eora_values_3_enabled
-		description = Exibir item 3
-	image
-		original = sobre_eora_values_3.jpg
-		title = Imagem — Valores 3
-		width = 1400
-		height = 1750
-	i18n_input
-		name = sobre_eora_values_3_title
-		description = Título do item
-	textarea
-		name = sobre_eora_values_3_text
-		description = Texto do item
+		description = Adicione apenas os itens necessários em + Adicionar imagem. Arraste para ordenar. No lápis de cada imagem, edite título, descrição, link e botão. Mobile opcional: mantenha a mesma quantidade e ordem da desktop, inclusive ao remover ou reordenar. Se uma foto não precisa de recorte diferente, repita a desktop. Galeria mobile vazia ou incompleta usa as fotos desktop.
+	subtitle
+		subtitle = Imagens desktop — 1920 × 2400 px (4:5)
+	gallery
+		name = sobre_eora_values_images
+		gallery_image = Adicionar imagem desktop
+		gallery_link = Link de destino (opcional)
+		gallery_width = 1920
+		gallery_height = 2400
+		gallery_more_info = true
+	subtitle
+		subtitle = Imagens mobile (opcional) — 1600 × 2000 px (4:5)
+	gallery
+		name = sobre_eora_values_images_mobile
+		gallery_image = Adicionar imagem mobile
+		gallery_width = 1600
+		gallery_height = 2000
 	collapse
 		title = Sobre EORA — Favoritos da comunidade
 	checkbox

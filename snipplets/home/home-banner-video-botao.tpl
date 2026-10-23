@@ -81,8 +81,8 @@
                     </div>
                 {% elseif vb_image %}
                     <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                         data-src="{{ vb_image | static_url | settings_image_url('huge') }}"
-                         data-srcset="{{ vb_image | static_url | settings_image_url('large') }} 768w, {{ vb_image | static_url | settings_image_url('huge') }} 1280w, {{ vb_image | static_url | settings_image_url('1080p') }} 1920w"
+                         data-src="{{ vb_image | static_url | settings_image_url('1080p') }}"
+                         data-srcset="{{ vb_image | static_url | settings_image_url('large') }} 480w, {{ vb_image | static_url | settings_image_url('huge') }} 640w, {{ vb_image | static_url | settings_image_url('original') }} 1024w, {{ vb_image | static_url | settings_image_url('xlarge') }} 1400w, {{ vb_image | static_url | settings_image_url('1080p') }} 1920w"
                          data-sizes="auto"
                          class="banner-video-botao-image lazyautosizes lazyload"
                          alt="{% if vb_title %}{{ vb_title }}{% else %}{{ store.name }}{% endif %}">

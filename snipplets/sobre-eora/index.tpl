@@ -12,7 +12,7 @@
 
     {% if settings.sobre_eora_founders_enabled and 'sobre_eora_founders.jpg' | has_custom_image and settings.sobre_eora_founders_text %}
         <section class="se-founders se-section" aria-labelledby="se-founders-title">
-            <div class="se-founders__image">{% include 'snipplets/sobre-eora/image.tpl' with {image: 'sobre_eora_founders.jpg', image_alt: settings.sobre_eora_founders_title | default('Fundadores da EORA')} %}</div>
+            <div class="se-founders__image">{% include 'snipplets/sobre-eora/image.tpl' with {image: 'sobre_eora_founders.jpg', image_mobile: ('sobre_eora_founders_mobile.jpg' | has_custom_image) ? 'sobre_eora_founders_mobile.jpg' : '', image_alt: settings.sobre_eora_founders_title | default('Fundadores da EORA'), image_sizes: '(max-width: 767px) calc(100vw - 40px), (max-width: 1600px) 41.85vw, calc(744px - 4.65vw)'} %}</div>
             <div class="se-founders__copy">
                 <h2 class="se-heading" id="se-founders-title">{{ settings.sobre_eora_founders_title | default('Nossos fundadores') | escape }}</h2>
                 <div class="se-rich-text">{% include 'snipplets/sobre-eora/rich-text.tpl' with {text: settings.sobre_eora_founders_text} %}</div>
@@ -44,11 +44,11 @@
                 {% endif %}
             {% else %}
                 {% set items = [] %}
-                {% for slot in 1..(kind == 'values' ? 3 : 10) %}
-                    {% set key = prefix ~ '_' ~ slot %}
-                    {% set image = key ~ '.jpg' %}
-                    {% if settings[key ~ '_enabled'] and image | has_custom_image %}
-                        {% set items = items | merge([{slot: slot, image: image, title: settings[key ~ '_title'], text: settings[key ~ '_text'], link: settings[key ~ '_link'], button: settings[key ~ '_button']}]) %}
+                {% set mobile_gallery_complete = (settings[prefix ~ '_images_mobile'] | length) == (settings[prefix ~ '_images'] | length) %}
+                {% for slide in settings[prefix ~ '_images'] %}
+                    {% if slide.image %}
+                        {% set mobile_slide = mobile_gallery_complete ? settings[prefix ~ '_images_mobile'][loop.index0] : {} %}
+                        {% set items = items | merge([{slot: loop.index, image: slide.image, image_mobile: mobile_slide.image | default(''), title: slide.title, text: slide.description, link: slide.link, button: slide.button}]) %}
                     {% endif %}
                 {% endfor %}
                 {% if items %}
@@ -58,9 +58,14 @@
                             <div class="se-values__grid">
                                 {% for item in items %}
                                     <article class="se-card">
-                                        <div class="se-card__image">{% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_alt: item.title | default('Valores da EORA')} %}</div>
+                                        <div class="se-card__image">
+                                            {% if item.link %}<a href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %} aria-label="{{ item.title | default('Valores da EORA') | escape }}">{% endif %}
+                                                {% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_mobile: item.image_mobile, image_alt: item.title | default('Valores da EORA'), image_sizes: '(max-width: 767px) calc(100vw - 40px), (max-width: 1600px) calc((90vw - 48px) / 3), calc((1600px - 10vw - 48px) / 3)'} %}
+                                            {% if item.link %}</a>{% endif %}
+                                        </div>
                                         {% if item.title %}<h3>{{ item.title | escape }}</h3>{% endif %}
                                         {% if item.text %}<p>{{ item.text | escape }}</p>{% endif %}
+                                        {% if item.link %}<a class="se-link" href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.button | default('Saiba mais') | escape }}<span aria-hidden="true"> ↗</span></a>{% endif %}
                                     </article>
                                 {% endfor %}
                             </div>

@@ -17,7 +17,7 @@
                 <div class="kings-na-midia__content__item">
                     <div class="kings-na-midia__content__item__image">
                         <figure class="image -square">
-                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "loja_media_01.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_01.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_01.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_01.jpg" | static_url | settings_image_url('1080p') }} 1920w' class='lazyload'/>
+                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "loja_media_01.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_01.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_01.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_01.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "loja_media_01.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
                         </figure>
                     </div>
                     <div class="kings-na-midia__content__item__text">
@@ -33,7 +33,7 @@
                 <div class="kings-na-midia__content__item">
                     <div class="kings-na-midia__content__item__image">
                         <figure class="image -square">
-                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "loja_media_02.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_02.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_02.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_02.jpg" | static_url | settings_image_url('1080p') }} 1920w' class='lazyload'/>
+                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "loja_media_02.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_02.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_02.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_02.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "loja_media_02.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
                         </figure>
                     </div>
                     <div class="kings-na-midia__content__item__text">
@@ -48,7 +48,7 @@
                 <div class="kings-na-midia__content__item">
                     <div class="kings-na-midia__content__item__image">
                         <figure class="image -square">
-                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "loja_media_03.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_03.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_03.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_03.jpg" | static_url | settings_image_url('1080p') }} 1920w' class='lazyload'/>
+                            <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "loja_media_03.jpg" | static_url | settings_image_url('large') }} 480w, {{ "loja_media_03.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "loja_media_03.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "loja_media_03.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "loja_media_03.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
                         </figure>
                     </div>
                     <div class="kings-na-midia__content__item__text">

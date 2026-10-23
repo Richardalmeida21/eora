@@ -157,9 +157,7 @@
       {% if loop.first %}
         <img
           src="{{ slide.image | static_url | settings_image_url('1080p') }}"
-          srcset="{{ slide.image | static_url | settings_image_url('huge') }} 800w,
-                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w,
-                  {{ slide.image | static_url }} 3200w"
+          srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w{% if slide.width > 1920 %}, {{ slide.image | static_url }} {{ slide.width }}w{% endif %}"
           class="slider-image {% if settings.slider_animation %}slider-image-animation{% endif %}"
           alt="{{ 'Carrusel' | translate }} {{ loop.index }}"
           style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"
@@ -173,10 +171,8 @@
         <img
           src="{{ 'images/empty-placeholder.png' | static_url }}"
           data-src="{{ slide.image | static_url | settings_image_url('1080p') }}"
-          data-srcset="{{ slide.image | static_url | settings_image_url('huge') }} 800w,
-                  {{ slide.image | static_url | settings_image_url('1080p') }} 1920w,
-                  {{ slide.image | static_url }} 3200w"
-          class="slider-image lazyload {% if settings.slider_animation %}slider-image-animation{% endif %}"
+          data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w{% if slide.width > 1920 %}, {{ slide.image | static_url }} {{ slide.width }}w{% endif %}"
+          data-sizes="auto" class="lazyautosizes slider-image lazyload {% if settings.slider_animation %}slider-image-animation{% endif %}"
           alt="{{ 'Carrusel' | translate }} {{ loop.index }}"
           style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;"
           width="{{ mobile ? width_mobile : width_desktop }}"

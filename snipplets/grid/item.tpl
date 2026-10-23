@@ -46,8 +46,8 @@
                     <img 
                         {% if imagens_item.width and imagens_item.height %} width="{{ imagens_item.width }}" height="{{ imagens_item.height }}" {% endif %}
                         data-src="{{ slide_src }}"
-                        data-srcset="{{ imagens_item.image | static_url | settings_image_url('large') }} 480w, {{ imagens_item.image | static_url | settings_image_url('huge') }} 640w, {{ imagens_item.image | static_url | settings_image_url('original') }} 1024w, {{ imagens_item.image | static_url | settings_image_url('1080p') }} 1920w"  
-                        class="js-item-image lazyautosizes lazyload img-absolute img-absolute-centered fade-in"
+                        data-srcset="{{ imagens_item.image | static_url | settings_image_url('large') }} 480w, {{ imagens_item.image | static_url | settings_image_url('huge') }} 640w, {{ imagens_item.image | static_url | settings_image_url('original') }} 1024w, {{ imagens_item.image | static_url | settings_image_url('xlarge') }} 1400w, {{ imagens_item.image | static_url | settings_image_url('1080p') }} 1920w"
+                        data-sizes="auto" class="js-item-image lazyautosizes lazyload img-absolute img-absolute-centered fade-in"
                     />
                 </div>
                 <div class="block-text">

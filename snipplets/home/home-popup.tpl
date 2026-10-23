@@ -8,7 +8,7 @@
 
         {% if "home_popup_image.jpg" | has_custom_image %}
             <div class="row">
-                <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ "home_popup_image.jpg" | static_url | settings_image_url('large') }} 480w, {{ "home_popup_image.jpg" | static_url | settings_image_url('huge') }} 640w' class="lazyload fade-in modal-img-full d-block"/>
+                <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "home_popup_image.jpg" | static_url | settings_image_url('large') }} 480w, {{ "home_popup_image.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "home_popup_image.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "home_popup_image.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "home_popup_image.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class="lazyautosizes lazyload fade-in modal-img-full d-block"/>
             </div>
         {% endif %}
 

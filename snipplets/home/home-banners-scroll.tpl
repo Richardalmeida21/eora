@@ -49,7 +49,7 @@
                                              style="padding-bottom: {{ bs_padding_bottom }}%;">
                                             <img src="{{ 'images/empty-placeholder.png' | static_url }}"
                                                  data-src="{{ slide.image | static_url | settings_image_url('large') }}"
-                                                 data-srcset="{{ slide.image | static_url | settings_image_url('medium') }} 320w, {{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w"
+                                                 data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
                                                  data-sizes="auto"
                                                  class="lazyautosizes lazyload"
                                                  alt="{% if slide.title %}{{ slide.title }}{% else %}Banner {{ loop.index }}{% endif %}">

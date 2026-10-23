@@ -61,8 +61,8 @@
                 </div>
             {% elseif pb_image %}
                 <img src="{{ 'images/empty-placeholder.png' | static_url }}"
-                     data-src="{{ pb_image | static_url | settings_image_url('huge') }}"
-                     data-srcset="{{ pb_image | static_url | settings_image_url('large') }} 768w, {{ pb_image | static_url | settings_image_url('huge') }} 1280w, {{ pb_image | static_url | settings_image_url('1080p') }} 1920w"
+                     data-src="{{ pb_image | static_url | settings_image_url('1080p') }}"
+                     data-srcset="{{ pb_image | static_url | settings_image_url('large') }} 480w, {{ pb_image | static_url | settings_image_url('huge') }} 640w, {{ pb_image | static_url | settings_image_url('original') }} 1024w, {{ pb_image | static_url | settings_image_url('xlarge') }} 1400w, {{ pb_image | static_url | settings_image_url('1080p') }} 1920w"
                      data-sizes="auto"
                      class="product-banner-vb-image lazyautosizes lazyload"
                      alt="{% if pb_title %}{{ pb_title }}{% else %}{{ store.name }}{% endif %}">

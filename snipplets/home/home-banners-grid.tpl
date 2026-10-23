@@ -154,7 +154,7 @@
 							<img {% if slide.width and slide.height %} width="{{ slide.width }}" height="{{ slide.height }}" {% endif %}
 								src="{% if not section_slider %}{{ 'images/empty-placeholder.png' | static_url }}{% endif %}"
 								data-sizes="auto" data-expand="-10"
-								data-srcset="{{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w, {{ slide.image | static_url }} 3200w"
+								data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w{% if slide.width > 1920 %}, {{ slide.image | static_url }} {{ slide.width }}w{% endif %}"
 								class="textbanner-image-effect {% if section_same_size %}textbanner-image-background{% else %}img-fluid d-block w-100{% endif %} lazyautosizes lazyload fade-in"
 								{% if slide.title %} alt="{{ slide.title }}" {% else %} alt="{{ 'Banner de' | translate }} {{ store.name }}" {% endif %} />
 

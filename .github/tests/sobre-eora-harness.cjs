@@ -35,6 +35,7 @@ function demoContext() {
     s.sobre_eora_quote_text = 'Uma história feita de <strong>encontros, ideias e vontade de criar.</strong>\nUm olhar para o mundo. <em>Raízes no Brasil.</em>';
     uploaded.add('sobre_eora_founders.jpg');
     for (const kind of ['press', 'sustainability', 'timeline']) {
+        s['sobre_eora_' + kind + '_images'] = [];
         for (let i = 1; i <= 5; i++) {
             const key = 'sobre_eora_' + kind + '_' + i;
             uploaded.add(key + '.jpg');
@@ -43,13 +44,16 @@ function demoContext() {
             s[key + '_text'] = kind === 'press' ? 'Espaço de demonstração para a chamada e o veículo da matéria. Substituir pelo conteúdo e link da publicação real.' : kind === 'timeline' ? 'Conte aqui um momento importante da história da EORA. A foto e este texto avançam juntos no carrossel.' : 'Espaço de demonstração para apresentar uma iniciativa da marca. O texto deve ser preenchido com as políticas e ações reais da EORA.';
             s[key + '_link'] = kind === 'press' ? 'https://www.eoraeyewear.com/sobre1/' : '';
             s[key + '_button'] = kind === 'press' ? 'Ler matéria' : '';
+            s['sobre_eora_' + kind + '_images'].push({image: key + '.jpg', title: s[key + '_title'], description: s[key + '_text'], link: s[key + '_link'], button: s[key + '_button']});
         }
     }
+    s.sobre_eora_values_images = [];
     for (let i = 1; i <= 3; i++) {
         const key = 'sobre_eora_values_' + i;
         uploaded.add(key + '.jpg');
         s[key + '_title'] = ['Identidade', 'Conexão', 'Cuidado'][i - 1];
         s[key + '_text'] = 'Texto ilustrativo para apresentar um dos valores da marca. Este conteúdo poderá ser editado no personalizador.';
+        s.sobre_eora_values_images.push({image: key + '.jpg', title: s[key + '_title'], description: s[key + '_text']});
     }
     data.sections.sobre_eora_community = {products: ['VÉRTICE', 'ONYX', 'MINI VÉRTICE', 'LUAR', 'PRISM', 'VÉRTICE'].map((name, i) => ({id: 9000 + i, name, url: 'https://www.eoraeyewear.com/produtos/' + ['vertice', 'onyx', 'minivertice', 'luar', 'prism', 'vertice-detog'][i] + '/', available: true, display_price: true, price: [274990, 64990, 199990, 74990, 64990, 274990][i], tags: [], featured_image: {url: '/preview-assets/product-' + i + '.webp', dimensions: {width: 900, height: 1200}}, other_images: []}))};
     return data;

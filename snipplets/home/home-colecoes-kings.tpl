@@ -32,7 +32,7 @@
                     <div class="swiper-slide">
                         <a href="{{ slide.link }}" class="banner-colecoes-kings__link" >
                             <figure class="image -custom" style="--padding-bottom-colecoes-kings: {{ padding_bottom }}%">
-                                <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset='{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w' class='lazyload'/>
+                                <img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
                             </figure>
                             <div class="banner-colecoes-kings__content">
                                 <h2 class="banner-colecoes-kings__title">{{ slide.title }}</h2>

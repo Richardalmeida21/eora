@@ -106,14 +106,14 @@
                         <div class="textbanner-image{% if not section_same_size %} p-0{% endif %} position-relative overflow-hidden">
                             <figure class="image -custom" style="--padding-bottom-banner: {{ pb_d }}%">
                                 {% if loop.first %}
-                                    <img src="{{ slide.image | static_url | settings_image_url('original') }}" 
+                                    <img srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"  src="{{ slide.image | static_url | settings_image_url('original') }}"
                                          class="img-fluid d-block w-100 {% if section_same_size %}textbanner-image-background{% endif %}" 
                                          style="width: 100%; display: block;" 
-                                         alt="{{ slide.title }}" />
+                                         alt="{{ slide.title }}" sizes="(max-width: 767px) 100vw, {{ 100 / (d_cols | default(1)) }}vw" />
                                 {% else %}
                                     <img src="{{ placeholder }}" 
-                                         data-srcset="{{ slide.image | static_url | settings_image_url('original') }}" 
-                                         class="img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}" 
+                                         data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
+                                         data-sizes="auto" class="lazyautosizes img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}"
                                          alt="{{ slide.title }}" 
                                          style="width: 100%; display: block;" />
                                 {% endif %}
@@ -189,14 +189,14 @@
                             <div class="textbanner-image{% if not section_same_size %} p-0{% endif %} position-relative overflow-hidden">
                                 <figure class="image -custom" style="--padding-bottom-banner: {{ pb_m }}%">
                                     {% if loop.first %}
-                                        <img src="{{ slide.image | static_url | settings_image_url('original') }}" 
+                                        <img srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"  src="{{ slide.image | static_url | settings_image_url('original') }}"
                                              class="img-fluid d-block w-100 {% if section_same_size %}textbanner-image-background{% endif %}" 
                                              alt="{{ slide.title }}"
-                                             style="width: 100%; display: block; opacity: 1 !important;" />
+                                             style="width: 100%; display: block; opacity: 1 !important;" sizes="100vw" />
                                     {% else %}
                                         <img src="{{ placeholder }}" 
-                                             data-srcset="{{ slide.image | static_url | settings_image_url('original') }}" 
-                                             class="img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}" 
+                                             data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
+                                             data-sizes="auto" class="lazyautosizes img-fluid d-block w-100 textbanner-image-effect lazyload fade-in {% if section_same_size %}textbanner-image-background{% endif %}"
                                              alt="{{ slide.title }}"
                                              style="width: 100%; display: block;" />
                                     {% endif %}
