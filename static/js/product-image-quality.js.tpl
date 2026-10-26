@@ -27,7 +27,7 @@
         var node = document.querySelector('#single-product [data-eora-product-image-sources]');
         if (!node) return;
         try {
-            var data = JSON.parse(node.textContent);
+            var data = JSON.parse(node.content.textContent);
             if (!Array.isArray(data.tags) || data.tags.indexOf('vertice') === -1 || !Array.isArray(data.images)) return;
             data.images.forEach(function (entry) {
                 var resized = new URL(entry.resized_url, document.baseURI);

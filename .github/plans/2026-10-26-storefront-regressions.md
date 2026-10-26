@@ -8,6 +8,8 @@ Preservar a alteração local prévia de `vertice.html` (vídeo e descrição), 
 
 - [x] Regressões RED/GREEN das três causas: Settings objeto em PHP/Twig 1.44.8, URLs atuais e IDs estáveis, seleção de originais com DPR 1/2/3 e fallback sem repetição.
 - [x] QA no navegador com páginas reais e tamanhos desktop/mobile, seleção/navegação e erro do original. Sobre validada com PHP real e carrosséis; Vértice com os nove produtos atuais. CDN real confirmou originais 2560 × 3472 e carregamento apenas da foto visível.
-- [ ] Revisão, testes relevantes, integrar na main e acompanhar deploy; conferir conteúdo publicado.
+- [x] Revisão independente, testes relevantes e integração na main. Deploy de `c3008ae` concluído com sucesso; conferência pública mostrou quatro matérias cadastradas, frase e sete produtos da comunidade, os nove produtos Vértice na ordem desejada e originais 2560 × 3472 em desktop/mobile e após troca de cor.
 
 Validação local: 36 testes de Sobre/Twig e banners, suítes de ordem Vértice, qualidade das fotos, carrinho, links da descrição, layout/preview e performance passaram. Evidências de navegador em `C:/Temp/eora-regressions-20261026/` (`order-fixed.json`, `quality-helper-live-report.json`, capturas desktop/mobile).
+
+A conferência publicada também identificou que o legado reexecuta todos os scripts de `#single-product` sem preservar `type`. O JSON de metadados passou para um `<template>` inerte com escape de HTML e entidades; regressão reproduziu o erro de sintaxe e passou em browser e PHP real após o ajuste. A validação pública `verify-production.cjs` exige ausência de erros JS na troca de cor e carregamento das quatro imagens cadastradas da imprensa.

@@ -28,7 +28,7 @@ const files = new Map([
     [base+jpg, {body:bitmap(2560,3472,'image/jpeg'), contentType:'image/jpeg'}],
     [base+png, {body:bitmap(2400,1200,'image/png'), contentType:'image/png'}]
 ]);
-const configuration = data => `<script type="application/json" data-eora-product-image-sources>${JSON.stringify(data)}</script>`;
+const configuration = data => `<template data-eora-product-image-sources>${JSON.stringify(data).replace(/</g,'\\u003c').replace(/&/g,'\\u0026')}</template>`;
 const gallery = url => `<div class="eora-product-wrap"><div class="eora-product-gallery"><div class="eora-blg-thumb"><img src="${url}"></div><div class="eora-blg-track"><div class="eora-blg-slide"><img src="${url}"></div></div></div></div>`;
 const browserPath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe';
 async function fixture(browser, {dpr=2, width=607, height=607, data=metadata, failOriginal=false, url=thumb}={}) {
@@ -54,6 +54,19 @@ async function selection(page,url){
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:browserPath});
  try {
+    const reexecute=await fixture(browser);
+    await reexecute.page.evaluate(()=>{
+        const product=document.querySelector('#single-product');
+        product.insertAdjacentHTML('beforeend','<script>window.eoraLegacyCopied=true;</'+'script>');
+        product.querySelectorAll('script').forEach(script=>{
+            const copy=document.createElement('script');
+            copy.textContent=script.textContent;
+            document.body.appendChild(copy);
+        });
+    });
+    assert.equal(await reexecute.page.evaluate(()=>window.eoraLegacyCopied),true,'legacy still executes ordinary product scripts');
+    assert.deepEqual(reexecute.errors,[],'legacy script reexecution must not interpret image metadata as JavaScript');
+    await reexecute.page.close();
     // Fails if the helper leaves the original 1024 px cap on high density screens.
     for(const dpr of [2,3,1]){
         const f=await fixture(browser,{dpr});
@@ -99,7 +112,7 @@ async function selection(page,url){
     await selection(rebuild.page,base+jpg);
     // Real legacy navigation replaces #single-product and repopulates/replaces the custom gallery.
     await rebuild.page.evaluate(({data,markup})=>{
-        document.querySelector('#single-product').outerHTML='<div id="single-product"><script type="application/json" data-eora-product-image-sources>'+JSON.stringify(data)+'</'+'script></div>';
+        document.querySelector('#single-product').outerHTML='<div id="single-product"><template data-eora-product-image-sources>'+JSON.stringify(data)+'</template></div>';
         document.querySelector('.eora-product-wrap').outerHTML=markup;
     },{data:{...metadata,product_id:301374832,images:[metadata.images[1]]},markup:gallery(nextThumb)});
     await selection(rebuild.page,base+png);
@@ -120,19 +133,27 @@ async function selection(page,url){
     assert.equal(count,1,'one failed request only');assert.deepEqual(fallback.errors,[]);await fallback.page.close();
 
     Twig.extendFilter('product_image_url',(image)=>base+image.image.replace(/\.[^.]+$/,'-1024-1024.webp'));
-    // PHP json_encode(1) is JSON_HEX_TAG; Twig.js ignores the native filter option.
+    // Twig.js ignores PHP's JSON_HEX_TAG/JSON_HEX_AMP options; mirror those native flags.
     Twig.extendFilter('json_encode',(value,args)=>{
-        const json=JSON.stringify(value);
-        return args?.[0]===1 ? json.replace(/</g,'\\u003C').replace(/>/g,'\\u003E') : json;
+        let json=JSON.stringify(value);
+        if(args?.[0]&1)json=json.replace(/</g,'\\u003C').replace(/>/g,'\\u003E');
+        if(args?.[0]&2)json=json.replace(/&/g,'\\u0026');
+        return json;
     });
     const template=Twig.twig({data:read('snipplets/product/product-image-sources.tpl'),rethrow:true});
     const rendered=template.render({product:{id:374159103,tags:['vertice'],images:[{image:jpg,dimensions:{width:2560,height:3472}},{image:png,dimensions:{width:2400,height:1200}}]}});
-    const json=rendered.match(/<script[^>]*data-eora-product-image-sources[^>]*>([\s\S]*?)<\/script>/)?.[1];
+    const json=rendered.match(/<template[^>]*data-eora-product-image-sources[^>]*>([\s\S]*?)<\/template>/)?.[1];
     assert(json,'native template emits parseable inert metadata');
     assert.deepEqual(JSON.parse(json),{product_id:374159103,tags:['vertice'],images:metadata.images},'original filenames and dimensions survive template rendering');
-    const objectTags=template.render({product:{id:374159103,tags:[{tag:'vertice'},{tag:'safe</script>'}],images:[]}});
-    const tagJSON=objectTags.match(/<script[^>]*>([\s\S]*?)<\/script>/)?.[1];
-    assert.deepEqual(JSON.parse(tagJSON).tags,['vertice','safe</script>'],'native tag objects become safe JSON strings');
+    const specialTag='safe</template>&amp;';
+    const objectTags=template.render({product:{id:374159103,tags:[{tag:'vertice'},{tag:specialTag}],images:[]}});
+    const tagJSON=objectTags.match(/<template[^>]*>([\s\S]*?)<\/template>/)?.[1];
+    assert.deepEqual(JSON.parse(tagJSON).tags,['vertice',specialTag],'native tag objects become safe JSON strings');
+    const inert=await browser.newPage();
+    await inert.setContent('<div id="single-product">'+objectTags+'</div>');
+    const parsedInert=await inert.locator('[data-eora-product-image-sources]').evaluate(node=>JSON.parse(node.content.textContent));
+    assert.deepEqual(parsedInert.tags,['vertice',specialTag],'template DOM preserves literal angle brackets and ampersands');
+    await inert.close();
     if(process.env.SOBRE_PHP_BIN && process.env.SOBRE_TWIG_AUTOLOAD){
         const program=String.raw`
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
@@ -142,12 +163,12 @@ $twig=new Twig_Environment(new Twig_Loader_Filesystem($argv[2]), array('autoesca
 $twig->addFilter(new Twig_SimpleFilter('product_image_url', function($image){return 'https://acdn-us.mitiendanube.com/stores/006/201/247/products/'.preg_replace('/\.[^.]+$/','-1024-1024.webp',$image['image']);}));
 echo $twig->render('snipplets/product/product-image-sources.tpl', json_decode(stream_get_contents(STDIN),true));
 `;
-        const input={product:{id:374159103,tags:[{tag:'vertice'},{tag:'safe</script>'}],images:[{image:jpg,dimensions:{width:2560,height:3472}}]}};
+        const input={product:{id:374159103,tags:[{tag:'vertice'},{tag:specialTag}],images:[{image:jpg,dimensions:{width:2560,height:3472}}]}};
         const native=spawnSync(process.env.SOBRE_PHP_BIN,['-r',program,process.env.SOBRE_TWIG_AUTOLOAD,root],{input:JSON.stringify(input),encoding:'utf8'});
         assert.equal(native.status,0,native.stderr||native.error?.message);
         assert.equal(native.stderr,'','native PHP metadata has no warnings');
-        const parsed=JSON.parse(native.stdout.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1]);
-        assert.deepEqual(parsed.tags,['vertice','safe</script>']);
+        const parsed=JSON.parse(native.stdout.match(/<template[^>]*>([\s\S]*?)<\/template>/)[1]);
+        assert.deepEqual(parsed.tags,['vertice',specialTag]);
         assert.deepEqual(parsed.images,[metadata.images[0]],'native PHP preserves original filename, derivative and dimensions');
     }
     console.log('PASS product-image-quality: DPR 1/2/3, JPG/PNG, cover/resize, exclusions, deferred slides, navigation/rebuild, fallback without loop, native metadata');
