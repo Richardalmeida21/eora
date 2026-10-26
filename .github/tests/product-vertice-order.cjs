@@ -73,6 +73,36 @@ const items = catalog.map(slug => ({name: 'VÉRTICE', href: 'https://vertice.tes
                 assert.equal(await page.locator('.eora-bolsa-vars + form .js-addtocart').count(), 1);
             }
         }
+        // Os mesmos produtos tiveram suas URLs alteradas no catálogo.
+        const renamed = {
+            vertice: 'vertice-bordo-prata', vertice1: 'vertice-preto-dourado',
+            vertice3: 'vertice-tabaco-dourado', vertice4: 'vertice-manteiga-mix',
+            vertice6: 'vertice-preto-prata', 'vertice-detog': 'vertice-alcaparra-prata'
+        };
+        const currentItems = items.map(item => ({...item, href: item.href.replace(/\/produtos\/([^/]+)\//, (_, slug) => productPath(renamed[slug] || slug))}));
+        const currentOrder = expected.map(slug => productPath(renamed[slug] || slug));
+        for (const width of [1440, 390]) {
+            await page.setViewportSize({width, height: 900});
+            for (const item of currentItems) {
+                await page.evaluate(({items, path}) => { history.replaceState({}, '', path); window.renderVariants(items); }, {items: currentItems, path: new URL(item.href).pathname});
+                await expectPaths(currentOrder);
+                assert.equal(await page.locator('.eora-active').getAttribute('data-href-path'), new URL(item.href).pathname);
+            }
+        }
+        // IDs da plataforma mantêm a ordem mesmo em uma próxima mudança de slug.
+        const ids = [301013237, 301374832, 301374937, 301375238, 322659163, 374159103, 374170272, 374880742, 374154591];
+        const futureItems = items.map((item, i) => ({...item, href: 'https://vertice.test/produtos/referencia-' + ids[i] + '/'}));
+        await page.evaluate(({items, ids}) => {
+            window.LS = {product: {id: 301013237}};
+            const native = document.createElement('div');
+            native.className = 'js-color-variants-container';
+            native.innerHTML = items.map((item, i) => `<a href="${item.href}" data-eora-variant-product-id="${ids[i]}"></a>`).join('');
+            document.querySelector('#single-product').appendChild(native);
+            history.replaceState({}, '', new URL(items[0].href).pathname);
+            window.renderVariants(items);
+        }, {items: futureItems, ids});
+        await expectPaths([301013237, 374159103, 301374832, 322659163, 301374937, 374154591, 301375238, 374170272, 374880742].map(id => '/produtos/referencia-' + id + '/'));
+        await page.evaluate(() => { delete window.LS; document.querySelector('#single-product .js-color-variants-container').remove(); history.replaceState({}, '', '/produtos/vertice/'); });
         // Catálogo parcial e novas cores continuam visíveis, sem depender das tags.
         const partial = [items[0], {name: 'VÉRTICE', href: '/produtos/nova-cor/', url: 'https://images.test/nova.webp'}, items[2], items[8]];
         await page.evaluate(items => window.renderVariants(items), partial);
@@ -88,7 +118,7 @@ const items = catalog.map(slug => ({name: 'VÉRTICE', href: 'https://vertice.tes
             assert.deepEqual(await renderedPaths(), catalog.map(productPath), 'Outras famílias não recebem a ordenação da Vértice');
         }
         assert.deepEqual(errors, []);
-        console.log('PASS tema Vértice: HTML antigo, lista tardia e recriada; 18 renderizações desktop/mobile; pares na mesma linha, nós/listeners, seleção, fotos, links, catálogo parcial e escopo por família.');
+        console.log('PASS tema Vértice: HTML antigo, lista tardia e recriada; URLs antigas/atuais e IDs; pares na mesma linha, nós/listeners, seleção, fotos, links, catálogo parcial e escopo por família.');
     } finally {
         await browser.close();
     }

@@ -22,7 +22,7 @@
 
     {% for kind in ['press', 'quote', 'sustainability', 'timeline', 'values', 'community'] %}
         {% set prefix = 'sobre_eora_' ~ kind %}
-        {% if settings[prefix ~ '_enabled'] %}
+        {% if attribute(settings, prefix ~ '_enabled') %}
             {% if kind == 'quote' %}
                 {% if settings.sobre_eora_quote_text %}
                     <section class="se-quote se-section" aria-label="Frase dos fundadores">
@@ -44,10 +44,10 @@
                 {% endif %}
             {% else %}
                 {% set items = [] %}
-                {% set mobile_gallery_complete = (settings[prefix ~ '_images_mobile'] | length) == (settings[prefix ~ '_images'] | length) %}
-                {% for slide in settings[prefix ~ '_images'] %}
+                {% set mobile_gallery_complete = (attribute(settings, prefix ~ '_images_mobile') | length) == (attribute(settings, prefix ~ '_images') | length) %}
+                {% for slide in attribute(settings, prefix ~ '_images') %}
                     {% if slide.image %}
-                        {% set mobile_slide = mobile_gallery_complete ? settings[prefix ~ '_images_mobile'][loop.index0] : {} %}
+                        {% set mobile_slide = mobile_gallery_complete ? attribute(settings, prefix ~ '_images_mobile')[loop.index0] : {} %}
                         {% set items = items | merge([{slot: loop.index, image: slide.image, image_mobile: mobile_slide.image | default(''), title: slide.title, text: slide.description, link: slide.link, button: slide.button}]) %}
                     {% endif %}
                 {% endfor %}
@@ -71,7 +71,7 @@
                             </div>
                         </section>
                     {% else %}
-                        {% include 'snipplets/sobre-eora/cards.tpl' with {items: items, kind: kind, title: settings[prefix ~ '_title']} %}
+                        {% include 'snipplets/sobre-eora/cards.tpl' with {items: items, kind: kind, title: attribute(settings, prefix ~ '_title')} %}
                     {% endif %}
                 {% endif %}
             {% endif %}

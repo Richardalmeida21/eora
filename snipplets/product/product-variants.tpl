@@ -109,7 +109,7 @@
                     {% endfor %}
                 {% endif %}
                 
-                <a href="{{ product_variant_var.url }}" target="_top" class="btn btn-variant btn-variant-color btn-variant-thumb{% if is_current %} selected{% endif %}" title="{{ product_variant_var.name }}">
+                <a href="{{ product_variant_var.url }}" data-eora-variant-product-id="{{ product_variant_var.id }}" target="_top" class="btn btn-variant btn-variant-color btn-variant-thumb{% if is_current %} selected{% endif %}" title="{{ product_variant_var.name }}">
                     <span class="btn-variant-content btn-variant-content-thumb" data-name="{{ product_variant_var.name }}">
                         {% set variant_img = product_variant_var.images|first %}
                         {% if variant_img %}

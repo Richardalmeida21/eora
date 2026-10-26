@@ -6,6 +6,8 @@ Implementação para `/sobre1/`, com base no briefing de setembro de 2026. Ajust
 
 No personalizador, abra **Sobre EORA**. A configuração é independente da home e das páginas de produtos.
 
+Os nomes dos campos e conteúdos cadastrados foram mantidos na correção de 26/10. Acessos dinâmicos a configurações devem usar `attribute(settings, chave)`: no Twig PHP da loja, Settings é um objeto e `settings[chave]` pode ocultar seções ativadas. O teste com Twig.js sozinho não detecta essa diferença. `.github/tests/sobre-eora-php.cjs` cobre configurações como objeto e array; execute com `SOBRE_PHP_BIN` e `SOBRE_TWIG_AUTOLOAD` apontando para PHP e o autoload de Twig.
+
 1. **Apresentação:** título e texto. Se o texto estiver vazio, mantém o conteúdo já cadastrado na página.
 2. **Fundadores:** imagem desktop, imagem mobile opcional, título e texto.
 3. **Press:** galeria com “+ Adicionar imagem”, na quantidade necessária. Arraste para ordenar e use o lápis de cada imagem para editar título, descrição, link e botão.

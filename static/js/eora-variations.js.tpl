@@ -19,16 +19,30 @@
     }
 
     function installVerticeOrder() {
-        // Referências da Vértice; esta lista não inclui Maxi, Mini, Hobo ou Clutch.
-        var paths = [
-            '/produtos/vertice/', '/produtos/vertice-bordo-mix/',
-            '/produtos/vertice1/', '/produtos/vertice6/',
-            '/produtos/vertice3/', '/produtos/vertice-marrom-avela-mix/',
-            '/produtos/vertice4/', '/produtos/vertice-croco-rato-mix/', '/produtos/vertice-detog/'
+        // IDs não mudam ao editar URLs; os aliases também atendem páginas antigas.
+        var references = [
+            {id: 301013237, slugs: ['vertice', 'vertice-bordo-prata']},
+            {id: 374159103, slugs: ['vertice-bordo-mix']},
+            {id: 301374832, slugs: ['vertice1', 'vertice-preto-dourado']},
+            {id: 322659163, slugs: ['vertice6', 'vertice-preto-prata']},
+            {id: 301374937, slugs: ['vertice3', 'vertice-tabaco-dourado']},
+            {id: 374154591, slugs: ['vertice-marrom-avela-mix']},
+            {id: 301375238, slugs: ['vertice4', 'vertice-manteiga-mix']},
+            {id: 374170272, slugs: ['vertice-croco-rato-mix']},
+            {id: 374880742, slugs: ['vertice-detog', 'vertice-alcaparra-prata']}
         ];
         var positions = Object.create(null);
-        paths.forEach(function (path, index) { positions[path] = index; });
-        if (positions[normalizePath(window.location.href)] === undefined) return;
+        var productPositions = Object.create(null);
+        references.forEach(function (reference, index) {
+            productPositions[reference.id] = index;
+            reference.slugs.forEach(function (slug) { positions['/produtos/' + slug + '/'] = index; });
+        });
+        function currentPosition() {
+            var pathPosition = positions[normalizePath(window.location.href)];
+            return pathPosition === undefined && window.LS && window.LS.product
+                ? productPositions[window.LS.product.id] : pathPosition;
+        }
+        if (currentPosition() === undefined) return;
 
         var product = document.querySelector('#single-product, .eora-product-wrap');
         var root = product && product.parentNode || document.body;
@@ -37,12 +51,16 @@
 
         function applyOrder() {
             scheduled = false;
-            if (positions[normalizePath(window.location.href)] === undefined) return;
+            if (currentPosition() === undefined) return;
+            document.querySelectorAll('a[data-eora-variant-product-id][href]').forEach(function (link) {
+                var position = productPositions[link.getAttribute('data-eora-variant-product-id')];
+                if (position !== undefined) positions[normalizePath(link.href)] = position;
+            });
             root.querySelectorAll('.eora-product-wrap .eora-bolsa-vars').forEach(function (container) {
                 var nodes = Array.prototype.slice.call(container.querySelectorAll('.eora-bolsa-var-item[data-href-path]'));
                 var entries = nodes.map(function (node, index) {
                     var position = positions[normalizePath(node.getAttribute('data-href-path'))];
-                    return {node: node, index: index, position: position === undefined ? paths.length : position};
+                    return {node: node, index: index, position: position === undefined ? references.length : position};
                 }).sort(function (a, b) { return a.position - b.position || a.index - b.index; });
                 var pairs = Object.create(null);
                 entries.forEach(function (entry) {

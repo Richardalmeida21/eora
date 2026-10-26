@@ -436,6 +436,7 @@
         {% if template == 'product' %}
             {# Capture editor image links before legacy description scripts remove the tables. #}
             <script>{% include 'static/js/product-description-image-links.js.tpl' %}</script>
+            <script>{% include 'static/js/product-image-quality.js.tpl' %}</script>
         {% endif %}
 
         {# Quickshop modal #}
