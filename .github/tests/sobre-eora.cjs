@@ -49,9 +49,16 @@ const server = h.server(0);
         assert(await page.locator('.se-page img').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0)), 'Todas as imagens da prévia carregam');
         for (const width of [1440, 390, 320]) {
             await page.setViewportSize({width, height: 950});
-            const box = await page.locator('#se-press [data-se-track]').boundingBox();
-            const card = await page.locator('#se-press [data-se-card]').first().boundingBox();
-            assert(Math.abs(box.width / card.width - (width >= 768 ? 3 : 1.5)) < .16, 'Press mostra 3 cartões no desktop e aproximadamente 1,5 no celular');
+            const peeks = await page.locator('[data-se-carousel]').evaluateAll(sections => sections.map(section => {
+                const track = section.querySelector('[data-se-track]');
+                const bounds = track.getBoundingClientRect();
+                const cards = [...track.querySelectorAll('[data-se-card]')].map(card => card.getBoundingClientRect());
+                return {id: section.id, overflow: track.scrollWidth > track.clientWidth + 2,
+                    peek: cards.some(card => card.left > bounds.left && card.left < bounds.right - 8 && card.right > bounds.right + 8)};
+            }));
+            for (const carousel of peeks.filter(carousel => carousel.overflow)) {
+                assert(carousel.peek, `${width}px: ${carousel.id} mostra parte do proximo slide`);
+            }
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Sem rolagem horizontal da página');
             const before = await page.locator('#se-timeline [data-se-track]').evaluate(el => el.scrollLeft);
             await page.locator('#se-timeline [data-se-next]').click();

@@ -27,7 +27,7 @@ Até 767 px, a página seleciona a foto da mesma posição na galeria mobile. **
 
 O navegador escolhe entre thumbnails de 480, 640, 1024, 1400 e 1920 px conforme a largura real da seção e a densidade da tela. As medidas recomendadas cobrem 2× na maior largura atual das fotos editoriais; não garantem nitidez ilimitada em qualquer densidade ou zoom. `original` na Nuvemshop é um thumbnail de até 1024 px, por isso não deve ser usado sozinho para as fotos maiores. Fontes menores não ganham detalhes: substitua uploads antigos com baixa resolução. Os arquivos fixos `static/sobre_eora_*.jpg` são suportes de 1 pixel; não são conteúdo da loja. As galerias não precisam de suportes fixos.
 
-Press e Sustentabilidade mostram três itens no computador e aproximadamente um e meio no celular. Linha do tempo mostra uma etapa no computador e aproximadamente uma e meia no celular. Valores usam três colunas no computador e um carrossel com aproximadamente um item e meio no celular. Produtos mostram quatro no computador e aproximadamente um e meio no celular. Rolagem por toque, teclado e controles; sem avanço automático. As imagens permanecem acessíveis sem JavaScript.
+Press e Sustentabilidade mostram três itens completos e parte do próximo no computador. Linha do tempo mostra uma etapa e parte da próxima. Produtos mostram quatro itens e parte do próximo. No celular, todos esses carrosséis mostram um item completo e uma pequena prévia do seguinte, assim como Valores (que mantém três colunas no computador). As barras de rolagem ficam ocultas; os marcadores usam 7 px e o ativo, preto, 9 px. Rolagem por toque, teclado e controles; sem avanço automático. As imagens permanecem acessíveis sem JavaScript.
 
 ## Prévia local
 

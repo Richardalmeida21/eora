@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-1">
+<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-2">
 <main class="se-page" data-se-page>
     {% set intro_text = settings.sobre_eora_intro_text | default(page.content) %}
     {% if settings.sobre_eora_intro_enabled and intro_text %}
@@ -36,7 +36,7 @@
                         <h2 class="se-heading" id="se-community-title">{{ settings.sobre_eora_community_title | default('Favoritos da comunidade') | escape }}</h2>
                         <div class="se-track" id="se-community-track" data-se-track tabindex="0" aria-label="Percorrer favoritos da comunidade">
                             {% for product in sections.sobre_eora_community.products %}
-                                <div class="se-product" data-se-card>{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 1, be_product_high_quality: true} %}</div>
+                                <div class="se-product" data-se-card>{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 1, be_product_high_quality: true, be_product_image_sizes: '(max-width: 767px) calc((100vw - 36px) / 1.2), (max-width: 1600px) calc((90vw - 96px) / 4.2), calc((1600px - 10vw - 96px) / 4.2)'} %}</div>
                             {% endfor %}
                         </div>
                         {% include 'snipplets/sobre-eora/controls.tpl' with {carousel_id: 'se-community', carousel_title: settings.sobre_eora_community_title | default('Favoritos da comunidade')} %}
@@ -60,7 +60,7 @@
                                     <article class="se-card" data-se-card>
                                         <div class="se-card__image">
                                             {% if item.link %}<a href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %} aria-label="{{ item.title | default('Valores da EORA') | escape }}">{% endif %}
-                                                {% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_mobile: item.image_mobile, image_alt: item.title | default('Valores da EORA')} %}
+                                                {% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_mobile: item.image_mobile, image_alt: item.title | default('Valores da EORA'), image_sizes: '(max-width: 767px) calc((100vw - 36px) / 1.2), (max-width: 1600px) calc((90vw - 48px) / 3), calc((1600px - 10vw - 48px) / 3)'} %}
                                             {% if item.link %}</a>{% endif %}
                                         </div>
                                         {% if item.title %}<h3>{{ item.title | escape }}</h3>{% endif %}
