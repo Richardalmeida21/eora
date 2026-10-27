@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-2">
+<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-3">
 <main class="se-page" data-se-page>
     {% set intro_text = settings.sobre_eora_intro_text | default(page.content) %}
     {% if settings.sobre_eora_intro_enabled and intro_text %}
@@ -25,7 +25,8 @@
         {% if attribute(settings, prefix ~ '_enabled') %}
             {% if kind == 'quote' %}
                 {% if settings.sobre_eora_quote_text %}
-                    <section class="se-quote se-section" aria-label="Frase dos fundadores">
+                    <section class="se-quote se-section"{% if settings.sobre_eora_quote_title %} aria-labelledby="se-quote-title"{% else %} aria-label="Frase dos fundadores"{% endif %}>
+                        {% if settings.sobre_eora_quote_title %}<h2 class="se-heading" id="se-quote-title">{{ settings.sobre_eora_quote_title | escape }}</h2>{% endif %}
                         <blockquote class="se-rich-text">{% include 'snipplets/sobre-eora/rich-text.tpl' with {text: settings.sobre_eora_quote_text} %}</blockquote>
                         {% if settings.sobre_eora_quote_author %}<p class="se-quote__author">{{ settings.sobre_eora_quote_author | escape }}</p>{% endif %}
                     </section>

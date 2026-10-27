@@ -15,6 +15,12 @@ assert(!output.includes(removed.title), 'Remover uma imagem da galeria remove se
 assert(output.includes('sobre_eora_press_3.jpg'), 'Remover um item preserva os outros');
 assert(output.includes('<strong>Design com identidade.</strong>'), 'Texto dos fundadores mantém negrito');
 assert(output.includes('<em>Raízes no Brasil.</em>'), 'Frase mantém itálico');
+assert(!output.includes('id="se-quote-title"'), 'Titulo da missao permanece opcional para cadastros existentes');
+data.settings.sobre_eora_quote_title = 'Nossa missao <EORA>';
+output = h.render(data);
+assert(output.includes('id="se-quote-title">Nossa missao &lt;EORA&gt;</h2>'), 'Titulo cadastrado aparece acima da missao com HTML escapado');
+assert(output.includes('aria-labelledby="se-quote-title"'), 'Missao recebe o titulo como nome acessivel');
+delete data.settings.sobre_eora_quote_title;
 data.settings.sobre_eora_sustainability_enabled = false;
 assert(!h.render(data).includes('id="se-sustainability"'), 'Bloco desativado não aparece na página');
 data.settings.sobre_eora_community_enabled = false;

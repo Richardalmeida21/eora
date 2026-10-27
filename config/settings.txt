@@ -12438,6 +12438,9 @@ Sobre EORA
 	checkbox
 		name = sobre_eora_quote_enabled
 		description = Exibir seção
+	i18n_input
+		name = sobre_eora_quote_title
+		description = Título (opcional)
 	textarea
 		name = sobre_eora_quote_text
 		description = Frase dos fundadores

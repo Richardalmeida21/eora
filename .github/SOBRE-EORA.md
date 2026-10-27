@@ -11,7 +11,7 @@ Os nomes dos campos e conteúdos cadastrados foram mantidos na correção de 26/
 1. **Apresentação:** título e texto. Se o texto estiver vazio, mantém o conteúdo já cadastrado na página.
 2. **Fundadores:** imagem desktop, imagem mobile opcional, título e texto.
 3. **Press:** galeria com “+ Adicionar imagem”, na quantidade necessária. Arraste para ordenar e use o lápis de cada imagem para editar título, descrição, link e botão.
-4. **Frase:** texto e autoria opcional.
+4. **Frase / Missão:** título opcional, texto e autoria opcional. O título fica acima do texto e usa o mesmo estilo dos demais tópicos.
 5. **Sustentabilidade:** galeria com os mesmos campos de Press.
 6. **Linha do tempo:** até dez etapas. A foto e o texto pertencem ao mesmo slide e avançam juntos.
 7. **Valores:** galeria de blocos de imagem e texto, com links opcionais. A grade forma novas linhas no computador; no celular, os itens formam um carrossel com toque, teclado e controles.
