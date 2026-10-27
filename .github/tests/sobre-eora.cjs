@@ -106,6 +106,24 @@ const server = h.server(0);
         assert.equal(await noJs.locator('#se-timeline [data-se-card]').count(), 5, 'Fotos e história continuam acessíveis sem JavaScript');
         assert.equal(await noJs.locator('#se-timeline [data-se-controls]').isVisible(), false, 'Não exibe botões sem funcionamento quando JS está desligado');
         assert(await noJs.locator('.se-values [data-se-track]').evaluate(track => track.scrollWidth > track.clientWidth), 'Valores permite rolagem nativa no mobile sem JavaScript');
+        const longCopy = h.demoContext();
+        longCopy.settings.sobre_eora_founders_text = '<p>' + 'Historia dos fundadores e da marca. '.repeat(180) + '</p>';
+        await page.setContent(h.html(longCopy).replace('<head>', '<head><base href="http://127.0.0.1:' + server.address().port + '/">'), {waitUntil: 'networkidle'});
+        for (const width of [1440, 390]) {
+            await page.setViewportSize({width, height: 950});
+            const toggle = page.locator('[data-se-founders-toggle]');
+            await toggle.waitFor({state: 'visible', timeout: 3000});
+            if (width >= 768) {
+                const photo = await page.locator('.se-founders__image').boundingBox();
+                const copy = await page.locator('.se-founders__copy').boundingBox();
+                assert(Math.abs(photo.height - copy.height) < 2, 'Texto recolhido acompanha a altura da foto');
+            }
+            await toggle.click();
+            assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
+            assert(await page.locator('#se-founders-text').evaluate(text => text.scrollHeight <= text.clientHeight + 1), 'Ver mais revela todo o texto');
+            await toggle.click();
+            assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+        }
         console.log('PASS: conteúdo real Twig, galerias vazias/removidas, seções desativadas, formatação, produtos/ordem, 3 larguras, carrosséis e modo sem JS.');
     } finally { await browser.close(); server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

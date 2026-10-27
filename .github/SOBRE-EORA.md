@@ -9,7 +9,7 @@ No personalizador, abra **Sobre EORA**. A configuração é independente da home
 Os nomes dos campos e conteúdos cadastrados foram mantidos na correção de 26/10. Acessos dinâmicos a configurações devem usar `attribute(settings, chave)`: no Twig PHP da loja, Settings é um objeto e `settings[chave]` pode ocultar seções ativadas. O teste com Twig.js sozinho não detecta essa diferença. `.github/tests/sobre-eora-php.cjs` cobre configurações como objeto e array; execute com `SOBRE_PHP_BIN` e `SOBRE_TWIG_AUTOLOAD` apontando para PHP e o autoload de Twig.
 
 1. **Apresentação:** título e texto. Se o texto estiver vazio, mantém o conteúdo já cadastrado na página.
-2. **Fundadores:** imagem desktop, imagem mobile opcional, título e texto.
+2. **Fundadores:** imagem desktop, imagem mobile opcional, título e texto. No computador, o texto recolhido acompanha a altura da foto; no celular, mostra até 12 linhas. Quando há mais conteúdo, aparece um degradê de transparência no final e o botão Ver mais. Ao expandir, exibe o texto inteiro sem degradê e permite recolher com Ver menos. Sem JavaScript, o texto permanece completo.
 3. **Press:** galeria com “+ Adicionar imagem”, na quantidade necessária. Arraste para ordenar e use o lápis de cada imagem para editar título, descrição, link e botão.
 4. **Frase / Missão:** título opcional, texto e autoria opcional. O título fica acima do texto e usa o mesmo estilo dos demais tópicos.
 5. **Sustentabilidade:** galeria com os mesmos campos de Press.

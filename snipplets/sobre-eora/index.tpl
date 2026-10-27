@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-3">
+<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-6">
 <main class="se-page" data-se-page>
     {% set intro_text = settings.sobre_eora_intro_text | default(page.content) %}
     {% if settings.sobre_eora_intro_enabled and intro_text %}
@@ -11,11 +11,12 @@
     {% endif %}
 
     {% if settings.sobre_eora_founders_enabled and 'sobre_eora_founders.jpg' | has_custom_image and settings.sobre_eora_founders_text %}
-        <section class="se-founders se-section" aria-labelledby="se-founders-title">
+        <section class="se-founders se-section" data-se-founders aria-labelledby="se-founders-title">
             <div class="se-founders__image">{% include 'snipplets/sobre-eora/image.tpl' with {image: 'sobre_eora_founders.jpg', image_mobile: ('sobre_eora_founders_mobile.jpg' | has_custom_image) ? 'sobre_eora_founders_mobile.jpg' : '', image_alt: settings.sobre_eora_founders_title | default('Fundadores da EORA'), image_sizes: '(max-width: 767px) calc(100vw - 40px), (max-width: 1600px) 41.85vw, calc(744px - 4.65vw)'} %}</div>
             <div class="se-founders__copy">
                 <h2 class="se-heading" id="se-founders-title">{{ settings.sobre_eora_founders_title | default('Nossos fundadores') | escape }}</h2>
-                <div class="se-rich-text">{% include 'snipplets/sobre-eora/rich-text.tpl' with {text: settings.sobre_eora_founders_text} %}</div>
+                <div class="se-rich-text" id="se-founders-text">{% include 'snipplets/sobre-eora/rich-text.tpl' with {text: settings.sobre_eora_founders_text} %}</div>
+                <button type="button" class="se-link se-founders__toggle" data-se-founders-toggle aria-expanded="false" aria-controls="se-founders-text" hidden>Ver mais</button>
             </div>
         </section>
     {% endif %}
@@ -80,4 +81,4 @@
         {% endif %}
     {% endfor %}
 </main>
-<script src="{{ 'js/sobre-eora.js' | static_url }}?v=20261021-1" defer></script>
+<script src="{{ 'js/sobre-eora.js' | static_url }}?v=20261027-1" defer></script>

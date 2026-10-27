@@ -4,6 +4,37 @@
         var root = document.querySelector('[data-se-page]');
         if (!root) return;
         var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var founders = root.querySelector('[data-se-founders]');
+        if (founders && !founders.dataset.seReady) {
+            founders.dataset.seReady = '1';
+            var founderImage = founders.querySelector('.se-founders__image');
+            var founderCopy = founders.querySelector('.se-founders__copy');
+            var founderText = founders.querySelector('#se-founders-text');
+            var founderToggle = founders.querySelector('[data-se-founders-toggle]');
+            function measureFounders() {
+                founderCopy.style.setProperty('--se-founders-height', founderImage.getBoundingClientRect().height + 'px');
+                founderCopy.dataset.seCollapsible = '1';
+                if (founderToggle.getAttribute('aria-expanded') === 'true') return;
+                founderToggle.hidden = false;
+                var truncated = founderText.scrollHeight > founderText.clientHeight + 1;
+                founderCopy.toggleAttribute('data-se-truncated', truncated);
+                founderToggle.hidden = !truncated;
+            }
+            founderToggle.addEventListener('click', function () {
+                var expanded = founderToggle.getAttribute('aria-expanded') !== 'true';
+                founderToggle.setAttribute('aria-expanded', String(expanded));
+                founderToggle.textContent = expanded ? 'Ver menos' : 'Ver mais';
+                if (expanded) founderCopy.dataset.seExpanded = '1';
+                else {
+                    delete founderCopy.dataset.seExpanded;
+                    measureFounders();
+                    founderToggle.focus({preventScroll: true});
+                }
+            });
+            if ('ResizeObserver' in window) new ResizeObserver(measureFounders).observe(founderImage);
+            else window.addEventListener('resize', measureFounders, {passive: true});
+            measureFounders();
+        }
         root.querySelectorAll('[data-se-carousel]').forEach(function (section) {
             if (section.dataset.seReady) return;
             section.dataset.seReady = '1';
