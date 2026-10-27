@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261021-1">
+<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261026-1">
 <main class="se-page" data-se-page>
     {% set intro_text = settings.sobre_eora_intro_text | default(page.content) %}
     {% if settings.sobre_eora_intro_enabled and intro_text %}
@@ -53,22 +53,23 @@
                 {% endfor %}
                 {% if items %}
                     {% if kind == 'values' %}
-                        <section class="se-section se-values" aria-labelledby="se-values-title">
+                        <section class="se-section se-values" id="se-values" data-se-carousel aria-labelledby="se-values-title">
                             <h2 class="se-heading" id="se-values-title">{{ settings.sobre_eora_values_title | default('Nossos valores') | escape }}</h2>
-                            <div class="se-values__grid">
+                            <div class="se-track se-values__grid" id="se-values-track" data-se-track tabindex="0" aria-label="Percorrer {{ settings.sobre_eora_values_title | default('Nossos valores') | escape }}">
                                 {% for item in items %}
-                                    <article class="se-card">
+                                    <article class="se-card" data-se-card>
                                         <div class="se-card__image">
                                             {% if item.link %}<a href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %} aria-label="{{ item.title | default('Valores da EORA') | escape }}">{% endif %}
-                                                {% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_mobile: item.image_mobile, image_alt: item.title | default('Valores da EORA'), image_sizes: '(max-width: 767px) calc(100vw - 40px), (max-width: 1600px) calc((90vw - 48px) / 3), calc((1600px - 10vw - 48px) / 3)'} %}
+                                                {% include 'snipplets/sobre-eora/image.tpl' with {image: item.image, image_mobile: item.image_mobile, image_alt: item.title | default('Valores da EORA')} %}
                                             {% if item.link %}</a>{% endif %}
                                         </div>
                                         {% if item.title %}<h3>{{ item.title | escape }}</h3>{% endif %}
                                         {% if item.text %}<p>{{ item.text | escape }}</p>{% endif %}
-                                        {% if item.link %}<a class="se-link" href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.button | default('Saiba mais') | escape }}<span aria-hidden="true"> ↗</span></a>{% endif %}
+                                        {% if item.link %}<a class="se-link" href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.button | default('Saiba mais') | escape }}</a>{% endif %}
                                     </article>
                                 {% endfor %}
                             </div>
+                            {% include 'snipplets/sobre-eora/controls.tpl' with {carousel_id: 'se-values', carousel_title: settings.sobre_eora_values_title | default('Nossos valores')} %}
                         </section>
                     {% else %}
                         {% include 'snipplets/sobre-eora/cards.tpl' with {items: items, kind: kind, title: attribute(settings, prefix ~ '_title')} %}

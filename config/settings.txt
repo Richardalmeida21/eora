@@ -12374,7 +12374,7 @@ Sobre EORA
 		name = sobre_eora_page_url
 		description = Identificador da página (sem barras). Padrão: sobre1
 	description
-		description = Edite esta página em Sobre EORA. Se uma seção estiver desativada ou sem materiais, ela não deixa um espaço vazio na loja. Fotos: desktop 1920 × 2400 px; mobile 1600 × 2000 px, ambos 4:5. O mobile é opcional e aparece até 767 px; sem ele, usa a foto desktop. Envie arquivos nessa resolução ou maior, mantendo 4:5, para nitidez em telas de alta densidade.
+		description = Edite esta página em Sobre EORA. Se uma seção estiver desativada ou sem materiais, ela não deixa um espaço vazio na loja. Fotos das galerias: desktop 1920 × 2400 px; mobile 1600 × 2000 px, ambos 4:5. Fundadores: desktop horizontal 2400 × 1920 px (5:4); mobile 1600 × 2000 px (4:5). O mobile é opcional e aparece até 767 px; sem ele, usa a foto desktop. Envie arquivos nessa resolução ou maior para nitidez em telas de alta densidade.
 	checkbox
 		name = sobre_eora_intro_enabled
 		description = Exibir seção
@@ -12394,9 +12394,9 @@ Sobre EORA
 		description = Título
 	image
 		original = sobre_eora_founders.jpg
-		title = Foto dos fundadores — Desktop: 1920 × 2400 px (4:5)
-		width = 1920
-		height = 2400
+		title = Foto dos fundadores — Desktop: 2400 × 1920 px (5:4)
+		width = 2400
+		height = 1920
 	image
 		original = sobre_eora_founders_mobile.jpg
 		title = Foto dos fundadores — Mobile: 1600 × 2000 px (4:5, opcional)

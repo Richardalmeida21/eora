@@ -14,20 +14,20 @@ Os nomes dos campos e conteúdos cadastrados foram mantidos na correção de 26/
 4. **Frase:** texto e autoria opcional.
 5. **Sustentabilidade:** galeria com os mesmos campos de Press.
 6. **Linha do tempo:** até dez etapas. A foto e o texto pertencem ao mesmo slide e avançam juntos.
-7. **Valores:** galeria de blocos de imagem e texto, com links opcionais. A grade forma novas linhas conforme a quantidade cadastrada.
+7. **Valores:** galeria de blocos de imagem e texto, com links opcionais. A grade forma novas linhas no computador; no celular, os itens formam um carrossel com toque, teclado e controles.
 8. **Favoritos da comunidade:** título e ativação. Escolha e ordene os produtos em **Organização dos produtos em destaque → Sobre EORA — Favoritos da comunidade**.
 
 Todas as seções podem ser desativadas. Remova uma imagem da galeria para remover aquele item da página. Itens sem imagem não aparecem. Fundadores só aparece quando há foto e texto; frase e comunidade precisam de conteúdo. Não há espaço reservado para blocos vazios.
 
 Nos textos de apresentação, fundadores e frase, use `<strong>negrito</strong>` e `<em>itálico</em>`. Uma linha em branco separa os parágrafos. A fonte é herdada do tema.
 
-Imagens de Fundadores, Press, Sustentabilidade, História e Valores: **desktop 1920 × 2400 px e mobile 1600 × 2000 px**, ambos na proporção 4:5. Fundadores tem apenas o par de fotos fixo. As outras quatro seções usam oito galerias no total: uma desktop e uma mobile opcional por seção. Sem posições numeradas fixas ou limite de dez itens no template.
+Foto dos Fundadores: **desktop 2400 × 1920 px (5:4, horizontal) e mobile 1600 × 2000 px (4:5)**. Fundadores tem apenas o par de fotos fixo. Imagens de Press, Sustentabilidade, História e Valores: **desktop 1920 × 2400 px e mobile 1600 × 2000 px**, ambos na proporção 4:5. Essas quatro seções usam oito galerias no total: uma desktop e uma mobile opcional por seção. Sem posições numeradas fixas ou limite de dez itens no template.
 
 Até 767 px, a página seleciona a foto da mesma posição na galeria mobile. **Se usar imagens mobile separadas, mantenha a mesma quantidade e ordem da desktop**, inclusive ao remover/reordenar fotos. Para um item que não precisa de recorte diferente, repita a respectiva foto desktop na galeria mobile. Os textos e links vêm da desktop. Se o enquadramento for o mesmo em toda a seção, deixe a galeria mobile vazia. Enquanto a lista mobile estiver incompleta, a seção usa desktop em todas as posições, evitando deslocar fotos para outros textos/links.
 
 O navegador escolhe entre thumbnails de 480, 640, 1024, 1400 e 1920 px conforme a largura real da seção e a densidade da tela. As medidas recomendadas cobrem 2× na maior largura atual das fotos editoriais; não garantem nitidez ilimitada em qualquer densidade ou zoom. `original` na Nuvemshop é um thumbnail de até 1024 px, por isso não deve ser usado sozinho para as fotos maiores. Fontes menores não ganham detalhes: substitua uploads antigos com baixa resolução. Os arquivos fixos `static/sobre_eora_*.jpg` são suportes de 1 pixel; não são conteúdo da loja. As galerias não precisam de suportes fixos.
 
-Press e Sustentabilidade mostram três itens no computador e aproximadamente um e meio no celular. Linha do tempo mostra uma etapa no computador e aproximadamente uma e meia no celular. Valores usam três colunas no computador e ficam empilhados no celular. Produtos mostram quatro no computador e aproximadamente um e meio no celular. Rolagem por toque, teclado e controles; sem avanço automático. As imagens permanecem acessíveis sem JavaScript.
+Press e Sustentabilidade mostram três itens no computador e aproximadamente um e meio no celular. Linha do tempo mostra uma etapa no computador e aproximadamente uma e meia no celular. Valores usam três colunas no computador e um carrossel com aproximadamente um item e meio no celular. Produtos mostram quatro no computador e aproximadamente um e meio no celular. Rolagem por toque, teclado e controles; sem avanço automático. As imagens permanecem acessíveis sem JavaScript.
 
 ## Prévia local
 

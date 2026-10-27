@@ -60,6 +60,19 @@ const server = h.server(0);
             assert(Number(active) > 0, 'Navegação avança imagem e texto da linha do tempo');
             await page.locator('#se-timeline [data-se-dot="0"]').click();
             await page.waitForFunction(() => document.querySelector('#se-timeline [data-se-track]').scrollLeft < 5);
+            const values = page.locator('.se-values');
+            assert.equal(await values.locator('[data-se-card]').count(), 3, 'Valores preserva todos os itens cadastrados');
+            if (width < 768) {
+                await values.locator('[data-se-next]').click();
+                await page.waitForFunction(() => document.querySelector('.se-values [data-se-track]').scrollLeft > 50);
+                await values.locator('[data-se-track]').focus();
+                await page.keyboard.press('End');
+                await page.waitForFunction(() => document.querySelector('.se-values [data-se-next]').disabled);
+                await page.keyboard.press('Home');
+                await page.waitForFunction(() => document.querySelector('.se-values [data-se-track]').scrollLeft < 5);
+            } else {
+                assert.equal(await values.locator('[data-se-controls]').isVisible(), false, 'Valores usa grade sem controles no desktop');
+            }
             await page.screenshot({path: 'C:/Temp/eora-sobre-preview/sobre-' + width + '.png', fullPage: true});
         }
         assert.deepEqual(errors, [], 'JavaScript da página não gera erros');
@@ -69,6 +82,8 @@ const server = h.server(0);
         await page.addStyleTag({content: globalMain});
         await page.setViewportSize({width: 1920, height: 1080});
         assert((await page.locator('.se-page').boundingBox()).width <= 1600, 'Os estilos globais do tema não expandem a página editorial em telas largas');
+        await page.waitForFunction(() => document.querySelector('.se-values [data-se-controls]').hidden);
+        assert(await page.locator('.se-values [data-se-track]').evaluate(track => track.scrollWidth <= track.clientWidth), 'Valores volta à grade sem rolagem ao ampliar a tela');
         await page.addScriptTag({path: path.join(h.root, 'static/js/sobre-eora.js')});
         assert.equal(await page.locator('#se-timeline [data-se-dot]').count(), 5, 'Reinicializar não duplica os controles');
         await page.goto('http://127.0.0.1:' + server.address().port + '/?empty=1');
@@ -77,6 +92,7 @@ const server = h.server(0);
         await noJs.goto('http://127.0.0.1:' + server.address().port);
         assert.equal(await noJs.locator('#se-timeline [data-se-card]').count(), 5, 'Fotos e história continuam acessíveis sem JavaScript');
         assert.equal(await noJs.locator('#se-timeline [data-se-controls]').isVisible(), false, 'Não exibe botões sem funcionamento quando JS está desligado');
+        assert(await noJs.locator('.se-values [data-se-track]').evaluate(track => track.scrollWidth > track.clientWidth), 'Valores permite rolagem nativa no mobile sem JavaScript');
         console.log('PASS: conteúdo real Twig, galerias vazias/removidas, seções desativadas, formatação, produtos/ordem, 3 larguras, carrosséis e modo sem JS.');
     } finally { await browser.close(); server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

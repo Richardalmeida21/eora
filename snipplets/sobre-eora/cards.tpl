@@ -11,7 +11,7 @@
                 <div class="se-card__copy">
                     {% if item.title %}<h3>{{ item.title | escape }}</h3>{% endif %}
                     {% if item.text %}<p>{{ item.text | escape }}</p>{% endif %}
-                    {% if item.link %}<a class="se-link" href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.button | default(kind == 'press' ? 'Ler matéria' : 'Saiba mais') | escape }}<span aria-hidden="true"> ↗</span></a>{% endif %}
+                    {% if item.link %}<a class="se-link" href="{{ item.link | escape }}"{% if item.link | is_external %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.button | default(kind == 'press' ? 'Ler matéria' : 'Saiba mais') | escape }}</a>{% endif %}
                 </div>
             </article>
         {% endfor %}

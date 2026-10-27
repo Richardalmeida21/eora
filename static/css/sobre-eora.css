@@ -3,8 +3,8 @@
 .se-page *, .se-page *::before, .se-page *::after { box-sizing:border-box; }
 .se-page h1, .se-page h2, .se-page h3, .se-page p, .se-page blockquote { margin:0; }
 .se-page a { color:inherit; }
-.se-page .se-heading { font-family:inherit; font-size:13px; line-height:1.5; font-weight:500; letter-spacing:.12em; text-transform:uppercase; text-align:center; margin:0 0 36px; }
-.se-page .se-intro { max-width:640px; margin:0 auto; padding:100px 0 90px; text-align:center; }
+.se-page .se-heading { font-family:inherit; font-size:18px; line-height:1.5; font-weight:700; letter-spacing:.12em; text-transform:uppercase; text-align:center; margin:0 0 36px; }
+.se-page .se-intro { max-width:960px; margin:0 auto; padding:100px 0 90px; text-align:center; }
 .se-page .se-rich-text { font-size:14px; line-height:1.9; white-space:pre-line; }
 .se-page .se-rich-text p + p { margin-top:22px; }
 .se-page .se-section { margin:0 0 100px; }
@@ -12,7 +12,7 @@
 .se-page .se-founders { display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:7%; }
 .se-page .se-founders__image { min-width:0; }
 .se-page img { display:block; max-width:100%; width:100%; height:auto; }
-.se-page .se-founders__image img { aspect-ratio:4/5; object-fit:cover; }
+.se-page .se-founders__image img { aspect-ratio:5/4; object-fit:cover; }
 .se-page .se-founders__copy { padding:28px 5% 28px 0; }
 .se-page .se-founders__copy .se-heading { text-align:left; margin-bottom:26px; }
 .se-page .se-track { display:flex; gap:var(--se-gap); overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scrollbar-width:thin; scrollbar-color:#b8b8b8 transparent; padding:0 0 16px; -webkit-overflow-scrolling:touch; }
@@ -21,19 +21,19 @@
 .se-page .se-track > * { flex:0 0 calc((100% - 2 * var(--se-gap)) / 3); min-width:0; scroll-snap-align:start; }
 .se-page .se-card__image { overflow:hidden; margin-bottom:22px; background:#f4f3f0; }
 .se-page .se-card__image img { aspect-ratio:4/5; object-fit:cover; }
-.se-page .se-card h3 { font-size:12px; font-family:inherit; line-height:1.5; letter-spacing:.07em; font-weight:600; text-transform:uppercase; margin-bottom:10px; }
+.se-page .se-card h3 { font-size:15px; font-family:inherit; line-height:1.5; letter-spacing:.07em; font-weight:700; text-transform:uppercase; margin-bottom:10px; }
 .se-page .se-card p { font-size:13px; line-height:1.8; white-space:pre-line; }
-.se-page .se-link { display:inline-block; font-size:11px; letter-spacing:.05em; text-transform:uppercase; margin-top:18px; text-underline-offset:4px; }
+.se-page .se-link { display:inline-block; font-size:11px; letter-spacing:.05em; text-transform:uppercase; margin-top:18px; text-decoration:underline; text-underline-offset:4px; }
 .se-page .se-quote { max-width:860px; margin-left:auto; margin-right:auto; padding:22px 10px; text-align:center; }
-.se-page .se-quote .se-rich-text { font-size:clamp(18px,2.2vw,30px); font-weight:400; line-height:1.55; letter-spacing:.035em; }
+.se-page .se-quote .se-rich-text { font-size:clamp(16px,1.6vw,22px); font-weight:400; line-height:1.55; letter-spacing:.035em; }
 .se-page .se-quote__author { font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-top:24px; }
 .se-page .se-timeline .se-track > * { flex-basis:100%; }
 .se-page .se-timeline__entry { display:grid; grid-template-columns:.9fr 1.1fr; align-items:center; gap:8%; }
 .se-page .se-timeline__entry .se-card__image { grid-column:2; grid-row:1; margin-bottom:0; }
 .se-page .se-timeline__entry .se-card__image img { max-height:620px; }
 .se-page .se-timeline__entry .se-card__copy { grid-column:1; grid-row:1; padding:20px 0 20px 10%; }
-.se-page .se-timeline__entry h3 { font-size:18px; margin-bottom:22px; }
-.se-page .se-values__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--se-gap); }
+.se-page .se-timeline__entry h3 { font-size:20px; margin-bottom:22px; }
+.se-page .se-values__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--se-gap); overflow:visible; padding:0; }
 .se-page .se-controls { display:flex; align-items:center; justify-content:center; gap:14px; min-height:44px; margin-top:16px; }
 .se-page [hidden] { display:none!important; }
 .se-page .se-controls > button { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; padding:0; border:0; border-radius:0; background:transparent; color:#111; cursor:pointer; }
@@ -47,6 +47,9 @@
 .se-page .se-count { font-size:11px; min-width:42px; text-align:center; font-variant-numeric:tabular-nums; }
 .se-page :focus-visible { outline:2px solid #111; outline-offset:4px; }
 .se-page .se-track:focus-visible { outline-offset:5px; }
+@media(min-width:768px) {
+    .se-page .se-sustainability .se-card p, .se-page .se-values .se-card p { font-size:15px; }
+}
 .se-page .se-products .se-track > * { flex-basis:calc((100% - 3 * var(--se-gap)) / 4); }
 .se-page .be-product__image { position:relative; margin-bottom:16px; }
 .se-page .be-product__slide { display:block; }
@@ -62,22 +65,24 @@
 @media(max-width:767px) {
     .se-page { --se-gap:16px; padding:0 20px 64px; }
     .se-page .se-intro { padding:64px 8px; }
-    .se-page .se-heading { font-size:12px; margin-bottom:28px; }
+    .se-page .se-heading { font-size:16px; margin-bottom:28px; }
     .se-page .se-rich-text { font-size:13px; line-height:1.85; }
     .se-page .se-section { margin-bottom:64px; }
     .se-page .se-founders { display:flex; flex-direction:column; gap:28px; }
     .se-page .se-founders__image { width:100%; }
+    .se-page .se-founders__image img { aspect-ratio:4/5; }
     .se-page .se-founders__copy { padding:0; }
     .se-page .se-track { margin-right:-20px; padding-right:20px; scroll-padding-right:20px; }
     .se-page .se-track > *, .se-page .se-products .se-track > *, .se-page .se-timeline .se-track > * { flex-basis:calc((100% + 20px - var(--se-gap)) / 1.5); }
     .se-page .se-card__image { margin-bottom:18px; }
+    .se-page .se-card h3 { font-size:14px; }
     .se-page .se-card p { font-size:12px; line-height:1.8; }
     .se-page .se-quote { padding:14px 0; }
-    .se-page .se-quote .se-rich-text { font-size:19px; }
+    .se-page .se-quote .se-rich-text { font-size:16px; }
     .se-page .se-timeline__entry { display:flex; flex-direction:column; align-items:stretch; gap:20px; }
     .se-page .se-timeline__entry .se-card__copy { padding:0; }
-    .se-page .se-timeline__entry h3 { font-size:13px; margin-bottom:12px; }
-    .se-page .se-values__grid { grid-template-columns:1fr; gap:40px; }
+    .se-page .se-timeline__entry h3 { font-size:16px; margin-bottom:12px; }
+    .se-page .se-values__grid { display:flex; overflow-x:auto; padding-bottom:16px; }
     .se-page .se-controls { gap:8px; margin-top:10px; }
     .se-page .se-dots { max-width:180px; }
     .se-page .se-dots button { flex-basis:22px; width:22px; }
