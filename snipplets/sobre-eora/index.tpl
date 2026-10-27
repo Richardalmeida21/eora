@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261026-1">
+<link rel="stylesheet" href="{{ 'css/sobre-eora.css' | static_url }}?v=20261027-1">
 <main class="se-page" data-se-page>
     {% set intro_text = settings.sobre_eora_intro_text | default(page.content) %}
     {% if settings.sobre_eora_intro_enabled and intro_text %}

@@ -30,7 +30,7 @@
 .se-page .se-timeline .se-track > * { flex-basis:100%; }
 .se-page .se-timeline__entry { display:grid; grid-template-columns:.9fr 1.1fr; align-items:center; gap:8%; }
 .se-page .se-timeline__entry .se-card__image { grid-column:2; grid-row:1; margin-bottom:0; }
-.se-page .se-timeline__entry .se-card__image img { max-height:620px; }
+.se-page .se-timeline__entry .se-card__image img { aspect-ratio:auto; object-fit:contain; }
 .se-page .se-timeline__entry .se-card__copy { grid-column:1; grid-row:1; padding:20px 0 20px 10%; }
 .se-page .se-timeline__entry h3 { font-size:20px; margin-bottom:22px; }
 .se-page .se-values__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--se-gap); overflow:visible; padding:0; }

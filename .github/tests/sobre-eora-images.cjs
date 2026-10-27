@@ -60,6 +60,13 @@ function fixture(mobile) {
                     assert(pixels >= Math.ceil(img.width * 2) - 2, `${width}px: ${pixels}px insuficientes para ${img.width}px em DPR 2`);
                 }
                 assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Sem overflow horizontal');
+                const timelineImages = await page.locator('.se-timeline img').evaluateAll(images => images.map(img => ({
+                    naturalRatio: img.naturalWidth / img.naturalHeight,
+                    displayedRatio: img.getBoundingClientRect().width / img.getBoundingClientRect().height,
+                })));
+                for (const img of timelineImages) {
+                    assert(Math.abs(img.displayedRatio - img.naturalRatio) < .01, `${width}px: linha do tempo preserva a proporcao inteira da foto, sem corte`);
+                }
                 if (mobile && [390, 1440].includes(width)) {
                     await page.locator('.se-page').screenshot({path: `C:/Temp/eora-sobre-preview/images-${width}.png`});
                 }
