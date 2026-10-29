@@ -4,6 +4,8 @@ Implementa o briefing de menu no computador e no celular. A revisão segura foi 
 
 No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em uma linha, com uma foto à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, mantém os três níveis por toque.
 
+Na home, o cabeçalho transparente usa inversão de cores e uma versão branca do logo. Enquanto o menu estiver aberto, a barra recebe o fundo e a cor configurados para o cabeçalho, a inversão é desativada e a versão do logo usada no hover é exibida. Ao fechar, o cabeçalho volta ao comportamento configurado. O teste `menu-header-contrast.cjs` verifica o cursor dentro do painel, inclusive com o cabeçalho comprimido após rolagem.
+
 ## Abrir a prévia
 
 ```powershell

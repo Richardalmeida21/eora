@@ -27,7 +27,13 @@
 .eora-menu--desktop .eora-menu__gallery { grid-template-columns: 1fr; }
 .eora-menu--desktop .eora-menu__card img { max-height: 200px; }
 body.eora-menu-open { overflow: hidden; }
-body.eora-menu-open .js-head-main { background: var(--header-background, #fff) !important; color: var(--header-foreground, #111) !important; }
+body.eora-menu-open .js-head-main { background: var(--header-background, #fff) !important; color: var(--header-foreground, #111) !important; mix-blend-mode: normal !important; isolation: auto !important; }
+body.eora-menu-open .js-head-main .head-logo-row,
+body.eora-menu-open .js-head-main .head-logo-row * { color: var(--header-foreground, #111) !important; fill: var(--header-foreground, #111) !important; }
+body.eora-menu-open .js-head-main .logo-img { mix-blend-mode: normal !important; transition: none !important; }
+body.eora-menu-open .js-head-main:has(.logo-header-transparent) .logo-img:not(.logo-header-transparent) { opacity: 0 !important; }
+body.eora-menu-open .js-head-main .logo-header-transparent { opacity: 1 !important; }
+body.eora-menu-open .js-head-main .head-logo-row .js-cart-widget-amount { color: var(--header-background, #fff) !important; }
 .eora-menu--mobile { color: var(--main-foreground, #111); padding: 0 24px 32px; }
 .eora-menu--mobile.is-ready [data-menu-screen]:not(.is-active) { display: none; }
 .eora-menu__mobile-primary { display: flex; flex-direction: column; text-transform: uppercase; }
