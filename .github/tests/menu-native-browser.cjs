@@ -34,6 +34,12 @@ const {context, render, read, startServer} = require('./menu-harness.cjs');
         }, {snapshot, desktop: render('snipplets/navigation/navigation.tpl', data), mobile: render('snipplets/navigation/eora-menu.tpl', {...data, mode: 'mobile'}), search: render('snipplets/header/search-discovery.tpl', data)});
         await page.addStyleTag({content: css + '\n' + tokens + '\n' + read('static/css/eora-menu.css')});
         await page.addScriptTag({content: read('static/js/eora-menu.js')});
+        for (const width of [1440, 1920]) {
+            await page.setViewportSize({width, height: 1000});
+            const left = await page.locator('[data-menu-toggle]').evaluate(el => el.getBoundingClientRect().left);
+            assert.ok(left >= 24 && left <= 80, 'left inset at ' + width + 'px: ' + left);
+        }
+        await page.setViewportSize({width: 1440, height: 1000});
         await page.locator('[data-menu-toggle]').click();
         const geometry = await page.evaluate(() => {
             const head = document.querySelector('header').getBoundingClientRect();
