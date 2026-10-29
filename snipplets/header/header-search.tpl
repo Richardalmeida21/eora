@@ -15,6 +15,10 @@
     }) 
 }}
 
+{% if search_modal %}
+    {% include 'snipplets/header/search-discovery.tpl' %}
+{% endif %}
+
 <div class="search-suggestions-container d-none d-xl-block">
     <div class="search-suggestions">
         <h2 class="search-title">SUGESTÕES DE BUSCA</h2>
@@ -31,4 +35,6 @@
     </div>
 </div>
 
-<h2 class="search-title -result-input d-none d-xl-block">PRODUTOS SUGERIDOS</h2>
+{% if not search_modal %}
+    <h2 class="search-title -result-input d-none d-xl-block">PRODUTOS SUGERIDOS</h2>
+{% endif %}

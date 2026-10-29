@@ -12539,3 +12539,205 @@ Sobre EORA
 		description = Selecione e arraste os produtos em Sobre EORA — Favoritos da comunidade, na organização dos produtos em destaque. O carrossel mantém essa ordem. São 4 produtos visíveis no computador e aproximadamente 1,5 no celular.
 	subtitle
 		subtitle = <a target='_blank' href='/admin/themes/settings/product_order/'>Selecionar e ordenar produtos favoritos</a>
+
+Menu e busca EORA
+	meta
+		icon = menu
+		advanced = true
+	description
+		description = Estrutura do briefing de outubro de 2026. Os links abaixo substituem somente o menu do cabeçalho. URLs vazias usam os destinos atuais da EORA.
+	i18n_input
+		name = eora_menu_label
+		description = Nome da entrada principal (Menu)
+	collapse
+		title = Textos e destinos dos links
+	i18n_input
+		name = eora_menu_best_label
+		description = Texto — Best Sellers
+	i18n_input
+		name = eora_menu_best_url
+		description = Link — Best Sellers (opcional)
+	i18n_input
+		name = eora_menu_about_label
+		description = Texto — Sobre
+	i18n_input
+		name = eora_menu_about_url
+		description = Link — Sobre (opcional)
+	i18n_input
+		name = eora_menu_shopper_label
+		description = Texto — Personal Shopper
+	i18n_input
+		name = eora_menu_shopper_url
+		description = Link — Personal Shopper (opcional)
+	i18n_input
+		name = eora_menu_glasses_label
+		description = Texto — Óculos
+	i18n_input
+		name = eora_menu_glasses_url
+		description = Link — Óculos (opcional)
+	i18n_input
+		name = eora_menu_bags_label
+		description = Texto — Bolsas
+	i18n_input
+		name = eora_menu_bags_url
+		description = Link — Bolsas (opcional)
+	i18n_input
+		name = eora_menu_accessories_label
+		description = Texto — Acessórios
+	i18n_input
+		name = eora_menu_accessories_url
+		description = Link — Acessórios (opcional)
+	i18n_input
+		name = eora_menu_belts_label
+		description = Texto — Cintos
+	i18n_input
+		name = eora_menu_belts_url
+		description = Link — Cintos (opcional)
+	i18n_input
+		name = eora_menu_favorites_label
+		description = Texto — Favoritos
+	i18n_input
+		name = eora_menu_favorites_url
+		description = Link — Favoritos (opcional)
+	i18n_input
+		name = eora_menu_gifts_label
+		description = Texto — Gifts
+	i18n_input
+		name = eora_menu_gifts_url
+		description = Link — Gifts (opcional)
+	i18n_input
+		name = eora_menu_care_label
+		description = Texto — Cuidados
+	i18n_input
+		name = eora_menu_care_url
+		description = Link — Cuidados (opcional)
+	i18n_input
+		name = eora_menu_repair_label
+		description = Texto — Conserto
+	i18n_input
+		name = eora_menu_repair_url
+		description = Link — Conserto (opcional)
+	i18n_input
+		name = eora_menu_exchange_label
+		description = Texto — Política de troca
+	i18n_input
+		name = eora_menu_exchange_url
+		description = Link — Política de troca (opcional)
+	i18n_input
+		name = eora_menu_launches_label
+		description = Texto — Lançamentos
+	i18n_input
+		name = eora_menu_launches_url
+		description = Link — Lançamentos (opcional)
+	i18n_input
+		name = eora_menu_preorder_label
+		description = Texto — Pré-venda
+	i18n_input
+		name = eora_menu_preorder_url
+		description = Link — Pré-venda (opcional)
+	i18n_input
+		name = eora_menu_restock_label
+		description = Texto — De volta ao estoque
+	i18n_input
+		name = eora_menu_restock_url
+		description = Link — De volta ao estoque (opcional)
+	i18n_input
+		name = eora_menu_community_label
+		description = Texto — Quem usa
+	i18n_input
+		name = eora_menu_community_url
+		description = Link — Quem usa (opcional)
+	i18n_input
+		name = eora_menu_press_label
+		description = Texto — Press
+	i18n_input
+		name = eora_menu_press_url
+		description = Link — Press (opcional)
+	collapse
+		title = Quatro fotos padrão
+	description
+		description = Até 4 fotos, usadas nas telas inicial e Menu do celular. Edite título e link no lápis de cada foto. Sem fotos novas, reutiliza a galeria padrão do menu anterior.
+	gallery
+		name = eora_menu_default_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Seção — Shop
+	i18n_input
+		name = eora_menu_shop_title
+		description = Título da seção
+	description
+		description = Até 4 fotos: a primeira aparece à direita dos links no computador; as quatro aparecem ao abrir esta seção no celular. Ordem de cadastro preservada. Sem fotos, usa as padrão. Fotos recomendadas: 1200 × 1500 px; no celular o recorte é quadrado.
+	gallery
+		name = eora_menu_shop_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Seção — Favoritos Marcela
+	i18n_input
+		name = eora_menu_favorites_title
+		description = Título da seção
+	description
+		description = Até 4 fotos: a primeira aparece à direita dos links no computador; as quatro aparecem ao abrir esta seção no celular. Ordem de cadastro preservada. Sem fotos, usa as padrão. Fotos recomendadas: 1200 × 1500 px; no celular o recorte é quadrado.
+	gallery
+		name = eora_menu_favorites_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Seção — Garantia EORA
+	i18n_input
+		name = eora_menu_warranty_title
+		description = Título da seção
+	description
+		description = Até 4 fotos: a primeira aparece à direita dos links no computador; as quatro aparecem ao abrir esta seção no celular. Ordem de cadastro preservada. Sem fotos, usa as padrão. Fotos recomendadas: 1200 × 1500 px; no celular o recorte é quadrado.
+	gallery
+		name = eora_menu_warranty_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Seção — New in
+	i18n_input
+		name = eora_menu_new_title
+		description = Título da seção
+	description
+		description = Até 4 fotos: a primeira aparece à direita dos links no computador; as quatro aparecem ao abrir esta seção no celular. Ordem de cadastro preservada. Sem fotos, usa as padrão. Fotos recomendadas: 1200 × 1500 px; no celular o recorte é quadrado.
+	gallery
+		name = eora_menu_new_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Seção — Quem usa
+	i18n_input
+		name = eora_menu_community_title
+		description = Título da seção
+	description
+		description = Até 4 fotos: a primeira aparece à direita dos links no computador; as quatro aparecem ao abrir esta seção no celular. Ordem de cadastro preservada. Sem fotos, usa as padrão. Fotos recomendadas: 1200 × 1500 px; no celular o recorte é quadrado.
+	gallery
+		name = eora_menu_community_images
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 1200
+		gallery_height = 1500
+		gallery_more_info = true
+	collapse
+		title = Produtos da busca
+	i18n_input
+		name = eora_search_title
+		description = Título do carrossel
+	description
+		description = Escolha e ordene até 6 produtos em Organização dos produtos em destaque → Busca — Menu EORA. Mostra 3 produtos por vez no computador e 2 no celular. Sem produtos, o bloco não aparece.

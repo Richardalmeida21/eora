@@ -1,8 +1,6 @@
 {% if primary_links %}
     <div class="nav-primary">
-        <ul class="nav-list" data-store="navigation" data-component="menu">
-            {% include 'snipplets/navigation/navigation-nav-list.tpl' with { 'hamburger' : true  } %}
-        </ul>
+        {% include 'snipplets/navigation/eora-menu.tpl' with {mode: 'mobile'} %}
     </div>
 {% else %}
     <div class="nav-secondary text-left" data-store="account-links">
