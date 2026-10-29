@@ -15,8 +15,8 @@
 .eora-menu__overlay { position: fixed; inset: var(--eora-menu-top, 90px) 0 0; z-index: 201; background: #0003; }
 .eora-menu__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; }
 .eora-menu .eora-menu__close { width: 44px; min-height: 44px; font-size: 30px; font-weight: 300; line-height: 1; }
-.eora-menu__groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px clamp(20px, 2vw, 32px); }
-.eora-menu__group { display: grid; grid-template-columns: minmax(100px, .9fr) minmax(0, 2fr); gap: 12px; align-items: start; min-width: 0; }
+.eora-menu__groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px clamp(12px, 1.5vw, 24px); }
+.eora-menu__group { display: grid; grid-template-columns: minmax(105px, .9fr) minmax(0, 2fr); gap: 8px; align-items: start; min-width: 0; }
 .eora-menu__group h2 { font: inherit; font-weight: 600; text-transform: uppercase; margin: 0 0 14px; letter-spacing: .06em; }
 .eora-menu ul { list-style: none; margin: 0; padding: 0; }
 .eora-menu__links a { display: block; padding: 7px 0; font-size: 12px; }
@@ -24,9 +24,10 @@
 .eora-menu__card { display: block; min-width: 0; }
 .eora-menu__card img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; background: #f4f4f4; }
 .eora-menu__card span { display: block; padding-top: 8px; font-size: 10px; line-height: 1.4; text-transform: uppercase; letter-spacing: .03em; }
-.eora-menu--desktop .eora-menu__gallery { grid-template-columns: repeat(2, minmax(0, 88px)); }
-.eora-menu--desktop .eora-menu__card img { max-width: 88px; }
-.eora-menu--desktop .eora-menu__links a { padding: 5px 0; }
+.eora-menu--desktop .eora-menu__gallery { grid-template-columns: repeat(2, minmax(0, 100px)); gap: 8px; }
+.eora-menu--desktop .eora-menu__group h2 { font-size: 14px; margin-bottom: 10px; }
+.eora-menu--desktop .eora-menu__links a { padding: 4px 0; font-size: 14px; }
+.eora-menu--desktop .eora-menu__card span { padding-top: 5px; font-size: 11px; }
 body.eora-menu-open { overflow: hidden; }
 body.eora-menu-open .js-head-main { background: var(--header-background, #fff) !important; color: var(--header-foreground, #111) !important; mix-blend-mode: normal !important; isolation: auto !important; }
 body.eora-menu-open .js-head-main .head-logo-row,

@@ -137,7 +137,7 @@
         <link rel="stylesheet" href="{{ 'css/style_above.scss' | static_url }}">
         
         <link rel="stylesheet" href="{{ 'css/style-critical.scss' | static_url }}">
-        <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-8">
+        <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-9">
 
         {% set behind_lens_page = settings.behind_lens_page_url %}
         {% set is_behind_lens_page = page.handle == behind_lens_page %}
