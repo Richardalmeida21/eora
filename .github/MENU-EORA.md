@@ -1,6 +1,8 @@
 # Menu e busca EORA — prévia de outubro de 2026
 
-Implementa o briefing de menu no computador e no celular. Branch `feat/menu-preview`, isolada em `.worktrees/menu-preview`. Não foi integrada à `main` nem enviada à loja.
+Implementa o briefing de menu no computador e no celular. A revisão segura foi ativada em 9ba45a1, após validação opt-in na Nuvemshop. A retirada dos controles antigos foi aplicada separadamente em bbeda0d e confirmada com HTTP 200 nas páginas e na prévia. Ver `.github/plans/2026-10-29-menu-safe.md`.
+
+No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em uma linha, com uma foto à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, mantém os três níveis por toque.
 
 ## Abrir a prévia
 
@@ -18,23 +20,32 @@ O teste `menu-native-browser.cjs` também verifica os componentes no HTML do cab
 Em **Menu e busca EORA**:
 
 - Textos e URLs das quatro entradas principais e de todos os links das cinco seções. Os campos de URL vazios usam os destinos da loja definidos no template.
-- **Quatro fotos padrão:** imagens para a tela inicial e a lista de seções no celular. Sem cadastro novo, reaproveita `desktop_menu_images_first`.
-- **Galeria de cada seção:** até quatro imagens, com título e link próprios. A primeira aparece ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, reaproveita a galeria antiga configurada com o mesmo nome e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.
+- **Quatro fotos padrão:** imagens para a tela inicial e a lista de seções no celular. Sem cadastro novo, usa as fotos preservadas da versão anterior.
+- **Galeria de cada seção:** até quatro imagens, com título e link próprios. A primeira aparece ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, usa as fotos preservadas daquela seção e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.
 - Fotos recomendadas: **1200 × 1500 px**, com conteúdo central seguro para o recorte quadrado do celular. Arraste para reordenar e use o lápis para título e link.
 - Título do carrossel da busca.
 
+Os antigos blocos Imagem do Menu de Navegação, Imagens do menu desktop e Menu Secundário A–D foram retirados do editor: 42 campos nomeados e 17 campos de imagem. Permanecem as configurações gerais de Cabeçalho. As dez fotos já utilizadas foram preservadas em cópias nativas de 640 px, com títulos, links e ordem anteriores; o renderizador não depende mais dos campos removidos. As cópias são servidas diretamente, sem pedir miniaturas que a plataforma não gera para imagens copiadas por FTP. As galerias novas têm prioridade. Para removê-las sem substituição, desative “Manter fotos anteriores nas galerias vazias”. Isso não cria registros nas galerias novas do painel: cadastre as imagens nessas galerias para passar a editá-las por lá.
+
 Em **Organização dos produtos em destaque → Busca — Menu EORA**, escolha e ordene os seis produtos. O template limita a seis produtos válidos e preserva a ordem. Sem seleção, o bloco fica oculto. Produtos, imagens e URLs não são gravados no catálogo por esta alteração.
 
-## Destinos que precisam de revisão antes de publicar
+## Destinos
 
 As rotas de Óculos, Bolsas, Acessórios, Cintos, Best Sellers, Sobre, Personal Shopper, Favoritos, Gifts, Quem usa e Política de troca seguem os destinos já existentes. Cuidados usa a âncora `#cuidados-com-a-peca` em Garantia; Press usa `#se-press` em Sobre.
 
-Lançamentos e Pré-venda não têm uma categoria identificada no sitemap público consultado: usam uma busca pelo termo como destino provisório. Conserto usa Garantia EORA como destino provisório. Cadastre os destinos definitivos nos respectivos campos antes de publicar. Os destinos são configuráveis, sem mudanças no código.
+Lançamentos abre Best Sellers com `bs_filters={"bs_new":"1"}`. O filtro New in seleciona somente produtos da categoria Best Sellers com a tag exata `novo`, ignorando caixa/espaços. O filtro aparece selecionado no formulário e funciona com Aplicar, limpar e histórico do navegador. Não confundir ordenação por data com a tag novo.
+
+Pré-venda abre `/search/?eora_preorder=1`, uma página dedicada de aviso, sem resultados vazios de busca. Esse endereço funciona sem criar um cadastro no painel. O mesmo conteúdo também está preparado para uma página nativa com identificador `pre-venda`, se ela for cadastrada depois. O aviso é: “Os produtos de pré-venda serão disponibilizados aqui em breve.”
+
+Consertos aponta para `/garantia-eora/#reparos-e-consertos`, a seção final da Garantia, mantendo o botão de WhatsApp já cadastrado. De volta ao estoque continua no destino existente. URLs personalizadas no painel continuam tendo prioridade sobre os padrões.
 
 ## Verificação
 
 ```powershell
 node .github/tests/menu.cjs
+node .github/tests/menu-cleanup.cjs
+node .github/tests/menu-preorder.cjs
+node .github/tests/menu-new-in.cjs
 node .github/tests/menu-browser.cjs
 node .github/tests/menu-php.cjs
 node .github/tests/menu-native-browser.cjs
