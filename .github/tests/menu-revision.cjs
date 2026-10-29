@@ -1,0 +1,11 @@
+const assert = require('node:assert/strict');
+const {context, render} = require('./menu-harness.cjs');
+const normal = render('snipplets/navigation/navigation.tpl', context());
+assert.ok(!normal.includes('data-menu-revision'), 'default route remains the stable menu during platform validation');
+const next = render('snipplets/navigation/navigation.tpl', {...context(), params: {menu_revision: '1'}});
+assert.ok(next.includes('data-menu-revision="1"'));
+assert.ok(next.includes('reparos-e-consertos'));
+assert.ok(next.includes('Consertos'));
+const preserved = render('snipplets/navigation/eora-menu-next.tpl', {...context({empty: true}), mode: 'mobile'});
+assert.equal((preserved.match(/<img /g) || []).length, 26, 'preserved photos do not depend on removed settings');
+console.log('PASS isolated revision: stable default, opt-in candidate, links, plural repair label, preserved photos.');

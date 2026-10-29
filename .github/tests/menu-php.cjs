@@ -17,8 +17,8 @@ $data = json_decode(stream_get_contents(STDIN), true);
 if ($data['objectSettings']) $data['settings'] = (object) $data['settings'];
 echo $twig->render($data['file'], $data);
 `;
-for (const objectSettings of [true, false]) for (const mode of ['desktop', 'mobile']) {
-    const data = {...context({settings: {eora_menu_bags_url: '/colecao-bolsas-custom/', eora_menu_shop_title: 'Shop EORA'}}), objectSettings, mode, file: 'snipplets/navigation/eora-menu.tpl'};
+for (const file of ['snipplets/navigation/eora-menu.tpl', 'snipplets/navigation/eora-menu-next.tpl']) for (const objectSettings of [true, false]) for (const mode of ['desktop', 'mobile']) {
+    const data = {...context({settings: {eora_menu_bags_url: '/colecao-bolsas-custom/', eora_menu_shop_title: 'Shop EORA'}}), objectSettings, mode, file};
     const output = spawnSync(php, ['-r', program, autoload, root], {input: JSON.stringify(data), encoding: 'utf8'});
     assert.equal(output.status, 0, output.stderr || output.error?.message);
     assert.equal(output.stderr, '');

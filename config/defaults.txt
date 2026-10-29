@@ -216,6 +216,7 @@ sobre_eora_community_enabled = 1
 sobre_eora_community_title_pt = Favoritos da comunidade
 
 eora_menu_label_pt = Menu
+eora_menu_previous_images_enabled = 1
 eora_search_title_pt = Você também pode gostar
 eora_menu_best_label_pt = Best Sellers
 eora_menu_about_label_pt = Sobre

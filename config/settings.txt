@@ -12549,6 +12549,9 @@ Menu e busca EORA
 	i18n_input
 		name = eora_menu_label
 		description = Nome da entrada principal (Menu)
+	checkbox
+		name = eora_menu_previous_images_enabled
+		description = Manter fotos anteriores nas galerias vazias
 	collapse
 		title = Textos e destinos dos links
 	i18n_input
