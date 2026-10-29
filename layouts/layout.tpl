@@ -27,7 +27,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{{ page_title }}</title>
+        <title>{% if template == 'search' and params.eora_preorder == '1' %}Pré-venda | {{ store.name }}{% else %}{{ page_title }}{% endif %}</title>
         {# Descrições com código/configurações não podem virar texto de compartilhamento. #}
         {% set oe_description_source = product.description | default('') | lower %}
         {% set oe_custom_product_meta = template == 'product' and ('<script' in oe_description_source or '<style' in oe_description_source or '<table' in oe_description_source) %}
@@ -137,7 +137,7 @@
         <link rel="stylesheet" href="{{ 'css/style_above.scss' | static_url }}">
         
         <link rel="stylesheet" href="{{ 'css/style-critical.scss' | static_url }}">
-        <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-1">
+        <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-3">
 
         {% set behind_lens_page = settings.behind_lens_page_url %}
         {% set is_behind_lens_page = page.handle == behind_lens_page %}
@@ -472,7 +472,7 @@
         {# Critical libraries #}
 
         {{ 'js/external-no-dependencies.js.tpl' | static_url | script_tag }}
-        <script src="{{ 'js/eora-menu.js' | static_url }}?v=20261029-1" defer></script>
+        <script src="{{ 'js/eora-menu.js' | static_url }}?v=20261029-2" defer></script>
 
         <script type="text/javascript">
 

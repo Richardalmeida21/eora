@@ -14,6 +14,26 @@ const {startServer} = require('./menu-harness.cjs');
     async function decoded() { await page.locator('img:visible').evaluateAll(images => Promise.all(images.map(image => image.decode().catch(() => {})))); }
     try {
         await page.goto(base);
+        await page.locator('[data-menu-toggle]').hover();
+        await page.locator('[data-menu-desktop]').waitFor({state: 'visible', timeout: 2000});
+        await page.locator('[data-menu-desktop]').hover();
+        await page.waitForTimeout(200);
+        assert.ok(await page.locator('[data-menu-desktop]').isVisible(), 'moving from trigger into the panel keeps it open');
+        const half = await page.locator('[data-menu-desktop]').evaluate(el => ({bottom: el.getBoundingClientRect().bottom, viewport: innerHeight}));
+        assert.ok(half.bottom <= half.viewport * .6, 'desktop menu ends around the middle of the viewport');
+        await page.mouse.move(720, 990);
+        await page.locator('[data-menu-desktop]').waitFor({state: 'hidden', timeout: 2000});
+        await page.locator('[data-menu-toggle]').hover();
+        await page.locator('[data-eora-menu="desktop"] .eora-menu__primary > a').first().hover();
+        await page.locator('[data-menu-desktop]').waitFor({state: 'hidden', timeout: 2000});
+        await page.locator('.preview-logo').focus();
+        await page.locator('[data-menu-toggle]').hover();
+        await page.keyboard.press('Escape');
+        assert.ok(await page.locator('[data-menu-desktop]').isHidden(), 'Escape dismisses a hover-open panel while focus is outside');
+        await page.locator('[data-menu-toggle]').click();
+        await page.mouse.move(720, 990);
+        await page.locator('[data-menu-desktop]').waitFor({state: 'hidden', timeout: 2000});
+        assert.ok(await page.locator('[data-menu-toggle]').evaluate(el => el === document.activeElement), 'pointer close restores focus when a focused panel control becomes hidden');
         // Native theme applies transform:scale(1) to .head-main, creating a fixed containing block.
         await page.locator('header').evaluate(el => { el.style.transform = 'scale(1)'; });
         await page.locator('[data-menu-toggle]').click();

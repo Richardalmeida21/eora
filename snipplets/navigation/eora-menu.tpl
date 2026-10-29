@@ -12,12 +12,12 @@
     ]},
     {key: 'warranty', title: 'Garantia EORA', items: [
         {key: 'care', label: 'Cuidados', url: '/garantia-eora/#cuidados-com-a-peca'},
-        {key: 'repair', label: 'Conserto', url: '/garantia-eora/'},
+        {key: 'repair', label: 'Consertos', url: '/garantia-eora/#reparos-e-consertos'},
         {key: 'exchange', label: 'Política de troca', url: '/politica-de-troca-e-reembolso/'}
     ]},
     {key: 'new', title: 'New in', items: [
-        {key: 'launches', label: 'Lançamentos', url: '/search/?q=lan%C3%A7amento'},
-        {key: 'preorder', label: 'Pré-venda', url: '/search/?q=pr%C3%A9-venda'},
+        {key: 'launches', label: 'Lançamentos', url: '/best-sellers1/?bs_filters=%7B%22bs_new%22%3A%221%22%7D'},
+        {key: 'preorder', label: 'Pré-venda', url: '/search/?eora_preorder=1'},
         {key: 'restock', label: 'De volta ao estoque', url: '/de-volta-ao-estoque/'}
     ]},
     {key: 'community', title: 'Quem usa', items: [
