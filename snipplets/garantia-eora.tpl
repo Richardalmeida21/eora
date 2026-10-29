@@ -823,7 +823,7 @@
 
     {# 5. Banner Reparos #}
     {% if settings.garantia_repair_show %}
-        <section id="reparos-e-consertos" class="ge-repair-banner" style="scroll-margin-top: 130px; background-image: url('{{ "garantia_repair_img.jpg" | static_url }}');">
+        <section class="ge-repair-banner" style="background-image: url('{{ "garantia_repair_img.jpg" | static_url }}');">
             <div class="ge-container">
                 <div class="ge-repair-content" style="max-width: 560px;">
                     <h2 style="font-size: 1.4rem; margin-bottom: 12px;">{{ settings.garantia_repair_title | default('REPAROS E CONSERTOS') }}</h2>

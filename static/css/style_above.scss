@@ -336,6 +336,38 @@
     font-weight: 500;
 }
 
+.header-image-menu {
+    padding: 20px;
+
+    .image.-custom {
+        padding-bottom: 55.63%;
+    }
+
+    h3 {
+        margin-top: 10px;
+        font-family: var(--heading-font);
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 100%;
+        letter-spacing: 0%;
+        text-align: left;
+        text-transform: uppercase;
+        color: #a7a7a7;
+    }
+
+    h2 {
+        margin-top: 10px;
+        font-family: var(--heading-font);
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 100%;
+        letter-spacing: 0%;
+        text-align: left;
+        text-transform: uppercase;
+        color: #000;
+    }
+}
+
 #nav-search {
     .modal-body.nav-body {
         display: flex;

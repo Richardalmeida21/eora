@@ -8,15 +8,14 @@
 .eora-menu :focus-visible, .eora-search-discovery :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 .eora-menu__primary { display: flex; align-items: center; gap: clamp(16px, 2vw, 32px); white-space: nowrap; text-transform: uppercase; font-size: 12px; font-weight: 500; }
 .eora-menu__primary > * { display: inline-flex; align-items: center; min-height: 44px; text-transform: uppercase; }
-.js-head-main .eora-menu__primary { padding-left: clamp(24px, 2.5vw, 48px); }
 .eora-menu__primary button[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 6px; }
 .eora-menu--portal { position: relative; z-index: 1041; }
-.eora-menu__desktop { position: fixed; inset: var(--eora-menu-top, 90px) 0 auto; z-index: 202; width: 100vw; height: max(250px, calc(50dvh - var(--eora-menu-top, 90px))); max-height: calc(100dvh - var(--eora-menu-top, 90px)); overflow-y: auto; overscroll-behavior: contain; background: var(--main-background, #fff); color: var(--main-foreground, #111); padding: 12px clamp(24px, 3vw, 48px) 24px; border-top: 1px solid #e7e7e7; }
+.eora-menu__desktop { position: fixed; inset: var(--eora-menu-top, 90px) 0 0; z-index: 202; width: 100vw; height: calc(100dvh - var(--eora-menu-top, 90px)); overflow-y: auto; overscroll-behavior: contain; background: var(--main-background, #fff); color: var(--main-foreground, #111); padding: 20px 4vw 48px; border-top: 1px solid #e7e7e7; }
 .eora-menu__overlay { position: fixed; inset: var(--eora-menu-top, 90px) 0 0; z-index: 201; background: #0003; }
-.eora-menu__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; }
+.eora-menu__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; }
 .eora-menu .eora-menu__close { width: 44px; min-height: 44px; font-size: 30px; font-weight: 300; line-height: 1; }
-.eora-menu__groups { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(16px, 2vw, 32px); }
-.eora-menu__group { display: grid; grid-template-columns: minmax(78px, .95fr) minmax(72px, 1fr); gap: 12px; align-items: start; min-width: 0; }
+.eora-menu__groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 3vw; }
+.eora-menu__group { display: grid; grid-template-columns: minmax(110px, .85fr) minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
 .eora-menu__group h2 { font: inherit; font-weight: 600; text-transform: uppercase; margin: 0 0 14px; letter-spacing: .06em; }
 .eora-menu ul { list-style: none; margin: 0; padding: 0; }
 .eora-menu__links a { display: block; padding: 7px 0; font-size: 12px; }
@@ -25,7 +24,7 @@
 .eora-menu__card img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; background: #f4f4f4; }
 .eora-menu__card span { display: block; padding-top: 8px; font-size: 10px; line-height: 1.4; text-transform: uppercase; letter-spacing: .03em; }
 .eora-menu--desktop .eora-menu__gallery { grid-template-columns: 1fr; }
-.eora-menu--desktop .eora-menu__card img { max-height: 200px; }
+.eora-menu--desktop .eora-menu__card img { max-height: 245px; }
 body.eora-menu-open { overflow: hidden; }
 body.eora-menu-open .js-head-main { background: var(--header-background, #fff) !important; color: var(--header-foreground, #111) !important; }
 .eora-menu--mobile { color: var(--main-foreground, #111); padding: 0 24px 32px; }
@@ -40,6 +39,7 @@ body.eora-menu-open .js-head-main { background: var(--header-background, #fff) !
 .eora-menu__mobile-title { margin: 20px 0 12px; font: inherit; text-transform: uppercase; font-weight: 600; letter-spacing: .06em; }
 .eora-menu--mobile .eora-menu__gallery { margin-top: 24px; }
 .eora-menu--mobile .eora-menu__card img { aspect-ratio: 1 / 1; }
+#nav-hamburger:has(.eora-menu) .header-image-menu { display: none; }
 #nav-hamburger .nav-body:has(.eora-menu) { padding: 0; }
 .eora-search-discovery { min-width: 0; margin: 28px 0; font-family: var(--body-font, sans-serif); color: var(--main-foreground, #111); }
 #nav-search .eora-search-discovery { order: 2; flex: 0 0 auto; }

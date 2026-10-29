@@ -9,9 +9,6 @@
                 var toggle = root.querySelector('[data-menu-toggle]');
                 var panel = root.querySelector('[data-menu-desktop]');
                 var overlay = root.querySelector('[data-menu-overlay]');
-                var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
-                var closeTimer;
-                var openedByHover = false;
                 // The native header is transformed; fixed descendants must live outside it.
                 var portal = document.createElement('div');
                 portal.className = 'eora-menu eora-menu--desktop eora-menu--portal';
@@ -24,46 +21,24 @@
                     portal.style.setProperty('--eora-menu-top', Math.max(0, bottom) + 'px');
                 }
                 function close(restore) {
-                    clearTimeout(closeTimer);
                     if (panel.hidden) return;
-                    var focusInside = panel.contains(document.activeElement);
                     panel.hidden = overlay.hidden = true;
                     toggle.setAttribute('aria-expanded', 'false');
                     document.body.classList.remove('eora-menu-open');
-                    if ((restore || focusInside) && desktopMedia.matches) toggle.focus({preventScroll: true});
-                    openedByHover = false;
+                    if (restore && desktopMedia.matches) toggle.focus();
                 }
-                function open(focus, hover) {
-                    clearTimeout(closeTimer);
-                    if (!desktopMedia.matches) return;
+                toggle.addEventListener('click', function () {
+                    if (!panel.hidden) return close(true);
                     position();
                     panel.hidden = overlay.hidden = false;
                     toggle.setAttribute('aria-expanded', 'true');
                     document.body.classList.add('eora-menu-open');
-                    openedByHover = hover;
-                    if (focus) panel.querySelector('[data-menu-close]').focus();
-                }
-                function scheduleClose(event) {
-                    var next = event.relatedTarget;
-                    if (next && (toggle.contains(next) || panel.contains(next))) return;
-                    clearTimeout(closeTimer);
-                    closeTimer = setTimeout(function () { close(false); }, 160);
-                }
-                toggle.addEventListener('mouseenter', function () { if (hoverMedia.matches) open(false, true); });
-                toggle.addEventListener('mouseleave', scheduleClose);
-                panel.addEventListener('mouseenter', function () { clearTimeout(closeTimer); });
-                panel.addEventListener('mouseleave', scheduleClose);
-                toggle.addEventListener('click', function () {
-                    if (!panel.hidden && !openedByHover) return close(true);
-                    open(true, false);
+                    panel.querySelector('[data-menu-close]').focus();
                 });
                 panel.querySelector('[data-menu-close]').addEventListener('click', function () { close(true); });
                 overlay.addEventListener('click', function () { close(true); });
                 document.addEventListener('click', function (event) {
                     if (!root.contains(event.target) && !portal.contains(event.target)) close(false);
-                });
-                document.addEventListener('keydown', function (event) {
-                    if (event.key === 'Escape' && !panel.hidden) { event.preventDefault(); close(true); }
                 });
                 panel.addEventListener('keydown', function (event) {
                     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(true); }

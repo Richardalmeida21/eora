@@ -1,6 +1,3 @@
-{% if params.eora_preorder == '1' and params.be_feed != '4' and params.oe_feed != '4' %}
-    {% include 'snipplets/pre-venda.tpl' %}
-{% else %}
 {% if settings.pagination == 'infinite' %}
 	{% paginate by 12 %}
 {% else %}
@@ -45,4 +42,3 @@
 
 {% include 'snipplets/bolsas-eora/search-feed.tpl' %}
 {% include 'snipplets/oculos-eora/search-feed.tpl' %}
-{% endif %}

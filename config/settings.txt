@@ -354,6 +354,212 @@ Encabezado
 		name = ad_bar_03_url
 		description = Link (opcional)
 	collapse
+		title = Imagem do Menu de Navegação
+	description
+		description = ativado ao usar o menu vertical como em celulare
+	checkbox
+		name = header_menu_image
+		description = Mostrar imagem no menu
+	image
+		original = header_menu_imagem.jpg
+		title = Imagem do menu (JPG, GIF, PNG)
+		width = 368
+		height = 173
+	i18n_input
+		name = header_menu_imagem_upper_title
+		description = Título de cima
+	i18n_input
+		name = header_menu_imagem_lower_title
+		description = Título de baixo
+	i18n_input
+		name = header_menu_imagem_url
+		description = Link da imagem
+	collapse
+		title = Imagens do menu desktop
+	checkbox
+		name = desktop_menu_images_show
+		description = Mostrar imagens no menu desktop
+	subtitle
+		subtitle = Imagens Dinâmicas do Menu
+	description
+		description = Digite o nome exato do link do menu e adicione as fotos correspondentes (Máximo 10 menus).
+	
+	gallery
+		name = desktop_menu_images_first
+		gallery_image = Adicionar fotos
+		gallery_link = Link da imagem
+		gallery_width = 400
+		gallery_height = 400
+		gallery_more_info = true
+
+	collapse
+		title = Menu Secundário A (Configurar)
+	i18n_input
+		name = custom_menu_name_a
+		description = Nome do Menu A (Ex: VISÃO EORA)
+	image
+		original = custom_menu_a_img_1.jpg
+		title = Menu A - Foto 1
+	i18n_input
+		name = custom_menu_a_title_1
+		description = Título da Foto 1
+	i18n_input
+		name = custom_menu_a_link_1
+		description = Link da Foto 1
+	image
+		original = custom_menu_a_img_2.jpg
+		title = Menu A - Foto 2
+	i18n_input
+		name = custom_menu_a_title_2
+		description = Título da Foto 2
+	i18n_input
+		name = custom_menu_a_link_2
+		description = Link da Foto 2
+	image
+		original = custom_menu_a_img_3.jpg
+		title = Menu A - Foto 3
+	i18n_input
+		name = custom_menu_a_title_3
+		description = Título da Foto 3
+	i18n_input
+		name = custom_menu_a_link_3
+		description = Link da Foto 3
+	image
+		original = custom_menu_a_img_4.jpg
+		title = Menu A - Foto 4
+	i18n_input
+		name = custom_menu_a_title_4
+		description = Título da Foto 4
+	i18n_input
+		name = custom_menu_a_link_4
+		description = Link da Foto 4
+
+	collapse
+		title = Menu Secundário B (Configurar)
+	i18n_input
+		name = custom_menu_name_b
+		description = Nome do Menu B
+	image
+		original = custom_menu_b_img_1.jpg
+		title = Menu B - Foto 1
+	i18n_input
+		name = custom_menu_b_title_1
+		description = Título da Foto 1
+	i18n_input
+		name = custom_menu_b_link_1
+		description = Link da Foto 1
+	image
+		original = custom_menu_b_img_2.jpg
+		title = Menu B - Foto 2
+	i18n_input
+		name = custom_menu_b_title_2
+		description = Título da Foto 2
+	i18n_input
+		name = custom_menu_b_link_2
+		description = Link da Foto 2
+	image
+		original = custom_menu_b_img_3.jpg
+		title = Menu B - Foto 3
+	i18n_input
+		name = custom_menu_b_title_3
+		description = Título da Foto 3
+	i18n_input
+		name = custom_menu_b_link_3
+		description = Link da Foto 3
+	image
+		original = custom_menu_b_img_4.jpg
+		title = Menu B - Foto 4
+	i18n_input
+		name = custom_menu_b_title_4
+		description = Título da Foto 4
+	i18n_input
+		name = custom_menu_b_link_4
+		description = Link da Foto 4
+
+	collapse
+		title = Menu Secundário C (Configurar)
+	i18n_input
+		name = custom_menu_name_c
+		description = Nome do Menu C
+	image
+		original = custom_menu_c_img_1.jpg
+		title = Menu C - Foto 1
+	i18n_input
+		name = custom_menu_c_title_1
+		description = Título da Foto 1
+	i18n_input
+		name = custom_menu_c_link_1
+		description = Link da Foto 1
+	image
+		original = custom_menu_c_img_2.jpg
+		title = Menu C - Foto 2
+	i18n_input
+		name = custom_menu_c_title_2
+		description = Título da Foto 2
+	i18n_input
+		name = custom_menu_c_link_2
+		description = Link da Foto 2
+	image
+		original = custom_menu_c_img_3.jpg
+		title = Menu C - Foto 3
+	i18n_input
+		name = custom_menu_c_title_3
+		description = Título da Foto 3
+	i18n_input
+		name = custom_menu_c_link_3
+		description = Link da Foto 3
+	image
+		original = custom_menu_c_img_4.jpg
+		title = Menu C - Foto 4
+	i18n_input
+		name = custom_menu_c_title_4
+		description = Título da Foto 4
+	i18n_input
+		name = custom_menu_c_link_4
+		description = Link da Foto 4
+
+	collapse
+		title = Menu Secundário D (Configurar)
+	i18n_input
+		name = custom_menu_name_d
+		description = Nome do Menu D
+	image
+		original = custom_menu_d_img_1.jpg
+		title = Menu D - Foto 1
+	i18n_input
+		name = custom_menu_d_title_1
+		description = Título da Foto 1
+	i18n_input
+		name = custom_menu_d_link_1
+		description = Link da Foto 1
+	image
+		original = custom_menu_d_img_2.jpg
+		title = Menu D - Foto 2
+	i18n_input
+		name = custom_menu_d_title_2
+		description = Título da Foto 2
+	i18n_input
+		name = custom_menu_d_link_2
+		description = Link da Foto 2
+	image
+		original = custom_menu_d_img_3.jpg
+		title = Menu D - Foto 3
+	i18n_input
+		name = custom_menu_d_title_3
+		description = Título da Foto 3
+	i18n_input
+		name = custom_menu_d_link_3
+		description = Link da Foto 3
+	image
+		original = custom_menu_d_img_4.jpg
+		title = Menu D - Foto 4
+	i18n_input
+		name = custom_menu_d_title_4
+		description = Título da Foto 4
+	i18n_input
+		name = custom_menu_d_link_4
+		description = Link da Foto 4
+	collapse
 		title = Menu de buscador
 	i18n_input
 		name = header_placeholder

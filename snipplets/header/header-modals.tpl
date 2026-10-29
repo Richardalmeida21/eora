@@ -72,6 +72,27 @@
 			</div>
 		{% endif %}
 
+		{% if settings.header_menu_image %}
+			<div class="header-image-menu">
+				{% if settings.header_menu_imagem_url %}
+					<a href="{{ settings.header_menu_imagem_url }}" class="header-image-menu-link" target="_top">
+				{% endif %}
+					{% if "header_menu_imagem.jpg" | has_custom_image %}
+						<figure class="image -custom">
+							<img src="{{ 'images/empty-placeholder.png' | static_url }}" data-srcset="{{ "header_menu_imagem.jpg" | static_url | settings_image_url('large') }} 480w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('huge') }} 640w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('original') }} 1024w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('xlarge') }} 1400w, {{ "header_menu_imagem.jpg" | static_url | settings_image_url('1080p') }} 1920w" data-sizes="auto" class='lazyautosizes lazyload'/>
+						</figure>
+					{% endif %}					
+					{% if settings.header_menu_imagem_upper_title %}
+						<h3> {{ settings.header_menu_imagem_upper_title }} </h3>
+					{% endif %}
+					{% if settings.header_menu_imagem_lower_title %}
+						<h2> {{ settings.header_menu_imagem_lower_title }} </h2>
+					{% endif %}
+				{% if settings.header_menu_imagem_url %}
+					</a>
+				{% endif %}
+			</div>
+		{% endif %}
 	{% endblock %}
 	
 {% endembed %}

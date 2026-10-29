@@ -1,6 +1,6 @@
 {# Briefing Best Sellers — outubro/2026. Produtos da categoria /best-sellers/. #}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261020-1">
-<link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261029-1">
+<link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261008-2">
 <main class="be-page bs-page" data-bs-page data-bs-category-url="/best-sellers/">
     <header class="bs-heading"><h1>{{ settings.best_sellers_eora_title | default('Best sellers') | escape }}</h1></header>
     {% set bs_macro_count = 0 %}
@@ -84,4 +84,4 @@
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261029-1" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261008-4" defer></script>
