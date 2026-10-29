@@ -2,7 +2,7 @@
 
 Implementa o briefing de menu no computador e no celular. A revisão segura foi ativada em 9ba45a1, após validação opt-in na Nuvemshop. A retirada dos controles antigos foi aplicada separadamente em bbeda0d e confirmada com HTTP 200 nas páginas e na prévia. Ver `.github/plans/2026-10-29-menu-safe.md`.
 
-No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em uma linha, com uma foto à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, mantém os três níveis por toque.
+No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em duas linhas (três e dois), com até duas fotos à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, os tópicos aparecem diretamente ao abrir o menu.
 
 Na home, o cabeçalho transparente usa inversão de cores e uma versão branca do logo. Enquanto o menu estiver aberto, a barra recebe o fundo e a cor configurados para o cabeçalho, a inversão é desativada e a versão do logo usada no hover é exibida. Ao fechar, o cabeçalho volta ao comportamento configurado. O teste `menu-header-contrast.cjs` verifica o cursor dentro do painel, inclusive com o cabeçalho comprimido após rolagem.
 
@@ -23,7 +23,7 @@ Em **Menu e busca EORA**:
 
 - Textos e URLs das quatro entradas principais e de todos os links das cinco seções. Os campos de URL vazios usam os destinos da loja definidos no template.
 - **Quatro fotos padrão:** imagens para a tela inicial e a lista de seções no celular. Sem cadastro novo, usa as fotos preservadas da versão anterior.
-- **Galeria de cada seção:** até quatro imagens, com título e link próprios. A primeira aparece ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, usa as fotos preservadas daquela seção e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.
+- **Galeria de cada seção:** até quatro imagens, com título e link próprios. As duas primeiras aparecem ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, usa as fotos preservadas daquela seção e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.
 - Fotos recomendadas: **1200 × 1500 px**, com conteúdo central seguro para o recorte quadrado do celular. Arraste para reordenar e use o lápis para título e link.
 - Título do carrossel da busca.
 

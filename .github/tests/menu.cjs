@@ -10,7 +10,8 @@ for (const label of ['Óculos', 'Bolsas', 'Cintos', 'Favoritos', 'Gifts', 'Cuida
 assert.equal((desktop.match(/data-menu-group=/g) || []).length, 5);
 const mobile = render('snipplets/navigation/navigation-panel.tpl', {...context(), primary_links: true});
 assert.match(mobile, /data-menu-screen="primary"/);
-assert.match(mobile, /data-menu-screen="secondary"/);
+assert.doesNotMatch(mobile, /data-menu-screen="secondary"/);
+assert.match(mobile, /data-menu-go="shop"/);
 assert.match(mobile, /data-menu-screen="shop"/);
 const empty = render('snipplets/navigation/navigation.tpl', context({empty: true}));
 assert.ok(!empty.includes('<img'), 'empty uploads do not create broken images');

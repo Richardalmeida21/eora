@@ -103,7 +103,7 @@
                 });
                 root.addEventListener('keydown', function (event) {
                     if (event.key !== 'Escape') return;
-                    if (active !== 'primary') { event.preventDefault(); event.stopPropagation(); show(active === 'secondary' ? 'primary' : 'secondary', true); }
+                    if (active !== 'primary') { event.preventDefault(); event.stopPropagation(); show('primary', true); }
                 });
                 document.addEventListener('click', function (event) {
                     var control = event.target.closest('.js-modal-close, .js-modal-overlay, [data-toggle="#nav-hamburger"]');
@@ -112,7 +112,7 @@
                         opener = control;
                         opener.setAttribute('aria-expanded', 'true');
                         show('primary', false);
-                        requestAnimationFrame(function () {
+                        if (event.detail === 0) requestAnimationFrame(function () {
                             if (modal && !modal.hidden && window.getComputedStyle(modal).display !== 'none') root.querySelector('[data-menu-screen="primary"] button').focus({preventScroll: true});
                         });
                     } else if (modal && (modal.contains(control) || control.getAttribute('data-modal-id') === '#nav-hamburger')) {

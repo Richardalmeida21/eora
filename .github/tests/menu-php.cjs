@@ -24,6 +24,6 @@ for (const file of ['snipplets/navigation/eora-menu.tpl', 'snipplets/navigation/
     assert.equal(output.stderr, '');
     assert.ok(output.stdout.includes('href="/colecao-bolsas-custom/"'));
     assert.ok(output.stdout.includes('Shop EORA'));
-    assert.equal((output.stdout.match(/<img /g) || []).length, mode === 'desktop' ? 5 : 28);
+    assert.equal((output.stdout.match(/<img /g) || []).length, mode === 'desktop' ? (file.includes('-next') ? 5 : 10) : (file.includes('-next') ? 28 : 24));
 }
 console.log('PASS PHP Twig: settings object/array, desktop/mobile, configurable links/titles and all galleries.');

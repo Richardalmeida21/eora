@@ -66,19 +66,11 @@
     {% else %}
         <div data-menu-screen="primary" class="is-active">
             <div class="eora-menu__mobile-primary">
-                <button type="button" data-menu-go="secondary" aria-expanded="false">{{ settings.eora_menu_label | default('Menu') }}<span aria-hidden="true">›</span></button>
+                {% for group in groups %}
+                    <button type="button" data-menu-go="{{ group.key }}" aria-expanded="false">{{ attribute(settings, 'eora_menu_' ~ group.key ~ '_title') | default(group.title) }}<span aria-hidden="true">›</span></button>
+                {% endfor %}
                 {{ links.primary(settings) }}
             </div>
-            {% include 'snipplets/navigation/eora-gallery.tpl' with {images: default_images, image_fallback_url: '/shop/', image_fallback_title: 'Conheça EORA'} %}
-        </div>
-        <div data-menu-screen="secondary">
-            <button type="button" class="eora-menu__back" data-menu-go="primary"><span aria-hidden="true">‹</span> Voltar</button>
-            <h2 class="eora-menu__mobile-title">{{ settings.eora_menu_label | default('Menu') }}</h2>
-            <ul class="eora-menu__sections">
-                {% for group in groups %}
-                    <li><button type="button" data-menu-go="{{ group.key }}" aria-expanded="false">{{ attribute(settings, 'eora_menu_' ~ group.key ~ '_title') | default(group.title) }}<span aria-hidden="true">›</span></button></li>
-                {% endfor %}
-            </ul>
             {% include 'snipplets/navigation/eora-gallery.tpl' with {images: default_images, image_fallback_url: '/shop/', image_fallback_title: 'Conheça EORA'} %}
         </div>
     {% endif %}
@@ -95,14 +87,14 @@
         {% if group_images is empty %}{% set group_images = default_images %}{% endif %}
         {% set group_images = group_images | slice(0, 4) %}
         {% if mode == 'desktop' %}
-            {% set group_images = group_images | slice(0, 1) %}
+            {% set group_images = group_images | slice(0, 2) %}
             <section class="eora-menu__group" data-menu-group="{{ group.key }}">
                 <div><h2>{{ group_title }}</h2>{{ links.children(group.items, settings) }}</div>
                 {% include 'snipplets/navigation/eora-gallery.tpl' with {images: group_images, image_fallback_url: links.url(group.items[0].key, group.items[0].url, settings) | trim, image_fallback_title: group_title} %}
             </section>
         {% else %}
             <div data-menu-screen="{{ group.key }}">
-                <button type="button" class="eora-menu__back" data-menu-go="secondary"><span aria-hidden="true">‹</span> Menu</button>
+                <button type="button" class="eora-menu__back" data-menu-go="primary"><span aria-hidden="true">‹</span> Menu</button>
                 <h2 class="eora-menu__mobile-title">{{ group_title }}</h2>
                 {{ links.children(group.items, settings) }}
                 {% include 'snipplets/navigation/eora-gallery.tpl' with {images: group_images, image_fallback_url: links.url(group.items[0].key, group.items[0].url, settings) | trim, image_fallback_title: group_title} %}
