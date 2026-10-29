@@ -1,0 +1,11 @@
+const assert = require('node:assert/strict');
+const {context, render, read} = require('./menu-harness.cjs');
+const fields = read('config/settings.txt').split(/\r?\n/).map(line => line.match(/^\t\t(?:name|original)\s*=\s*(.+?)\s*$/)?.[1]).filter(Boolean);
+assert.equal(fields.filter(name => /^(header_menu_image|header_menu_imagem|desktop_menu_images|custom_menu_)/.test(name)).length, 0);
+for (const name of ['head_transparent', 'logo_position_mobile', 'logo_position_desktop', 'ad_bar', 'header_placeholder', 'header_sugestoes_busca', 'header_has_actions', 'eora_menu_default_images', 'eora_menu_shop_images']) assert.ok(fields.includes(name), 'preserve ' + name);
+const html = render('snipplets/navigation/navigation.tpl', context());
+assert.ok(html.includes('/best-sellers1/?bs_filters=%7B%22bs_new%22%3A%221%22%7D'));
+assert.ok(html.includes('/search/?eora_preorder=1'));
+assert.ok(html.includes('/garantia-eora/#reparos-e-consertos'));
+assert.ok(html.includes('Consertos'));
+console.log('PASS consolidated editor schema and final menu destinations.');
