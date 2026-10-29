@@ -288,7 +288,7 @@
                 if (mobileDescription.textContent !== descriptionText) mobileDescription.textContent = descriptionText;
                 mobileDescription.hidden = !descriptionText.trim();
             }
-            one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : 'Todos os best sellers';
+            one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : filters.bs_new === '1' ? 'Lançamentos' : 'Todos os best sellers';
             var filterKeys = Object.keys(filters);
             var list = categoryProducts(category);
             if (filterKeys.length) list = list.filter(function (product) {
@@ -296,6 +296,7 @@
                 if (type === 'bag' && filterKeys.some(function (key) { return key.indexOf('oe_') === 0; })) return false;
                 if (type === 'eyewear' && filterKeys.some(function (key) { return key.indexOf('be_') === 0; })) return false;
                 if (filters.bs_model && product.tags.indexOf(normalize(filters.bs_model)) === -1) return false;
+                if (filters.bs_new === '1' && product.tags.indexOf('novo') === -1) return false;
                 if (filters.min_price && product.price < Number(filters.min_price) * 100) return false;
                 if (filters.max_price && product.price > Number(filters.max_price) * 100) return false;
                 return engines.every(function (engine) { return engine.matches(product.card, filters, product.tags); });
@@ -342,7 +343,7 @@
             try {
                 var value = JSON.parse(params.get('bs_filters') || '{}');
                 if (value && typeof value === 'object' && !Array.isArray(value)) Object.keys(value).forEach(function (key) {
-                    if (/^(bs_model|be_[a-z_]+|oe_[a-z_]+|min_price|max_price)$/.test(key) && typeof value[key] === 'string' && value[key].length < 500) filters[key] = value[key];
+                    if (/^(bs_model|bs_new|be_[a-z_]+|oe_[a-z_]+|min_price|max_price)$/.test(key) && typeof value[key] === 'string' && value[key].length < 500 && (key !== 'bs_new' || value[key] === '1')) filters[key] = value[key];
                 });
             } catch (_) {}
             filters = engines.reduce(function (value, engine) { return engine.normalizeFilters(value); }, filters);
@@ -373,6 +374,7 @@
         function fillForm(id, selected) {
             form.reset();
             form.elements.bs_category.value = id;
+            form.elements.bs_new.checked = selected.bs_new === '1';
             var candidates = categoryProducts(id);
             var facets = form.querySelector('[data-be-facets]');
             facets.replaceChildren();

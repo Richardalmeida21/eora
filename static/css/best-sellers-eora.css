@@ -52,3 +52,5 @@
     .bs-page .be-gallery--community.bs-gallery--overflow, .bs-page .be-gallery--categories.bs-gallery--overflow { --be-card-visible: 1.12; }
 }
 @media (prefers-reduced-motion: reduce) { .bs-page *, .bs-page *::before, .bs-page *::after { scroll-behavior: auto !important; transition: none !important; } }
+.bs-page .bs-new-filter { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 12px 0 20px; padding: 0; border: 0; cursor: pointer; }
+.bs-new-filter input { width: 16px; height: 16px; accent-color: #111; }

@@ -11,6 +11,7 @@
                     {% if model.link %}<option value="{{ model.link | trim | escape }}">{{ model.title | default(model.link) | escape }}</option>{% endif %}
                 {% endfor %}
             </select></label>
+            <label class="be-facet bs-new-filter"><input type="checkbox" name="bs_new" value="1"> <span>New in — Lançamentos</span></label>
             <div data-be-facets></div>
             <fieldset class="be-facet"><legend>Preço</legend><div class="be-price-fields">
                 <label>De R$ <input type="number" name="min_price" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
