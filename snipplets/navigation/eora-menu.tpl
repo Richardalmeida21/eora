@@ -12,12 +12,12 @@
     ]},
     {key: 'warranty', title: 'Garantia EORA', items: [
         {key: 'care', label: 'Cuidados', url: '/garantia-eora/#cuidados-com-a-peca'},
-        {key: 'repair', label: 'Conserto', url: '/garantia-eora/'},
+        {key: 'repair', label: 'Consertos', url: '/garantia-eora/#reparos-e-consertos'},
         {key: 'exchange', label: 'Política de troca', url: '/politica-de-troca-e-reembolso/'}
     ]},
     {key: 'new', title: 'New in', items: [
-        {key: 'launches', label: 'Lançamentos', url: '/search/?q=lan%C3%A7amento'},
-        {key: 'preorder', label: 'Pré-venda', url: '/search/?q=pr%C3%A9-venda'},
+        {key: 'launches', label: 'Lançamentos', url: '/best-sellers1/?bs_filters=%7B%22bs_new%22%3A%221%22%7D'},
+        {key: 'preorder', label: 'Pré-venda', url: '/search/?eora_preorder=1'},
         {key: 'restock', label: 'De volta ao estoque', url: '/de-volta-ao-estoque/'}
     ]},
     {key: 'community', title: 'Quem usa', items: [
@@ -25,15 +25,35 @@
         {key: 'press', label: 'Press', url: '/sobre1/#se-press'}
     ]}
 ] %}
+{# Previous storefront photos retained independently of removed editor fields. #}
+{% set previous_menu_images = {
+    default: [
+        {"image":"menu-preserved-1.webp","title":"Óculos de sol","link":"https://www.eoraeyewear.com/oculos-eora"},
+        {"image":"menu-preserved-2.webp","title":"ACESSÓRIOS","link":"https://www.eoraeyewear.com/acessorios/"},
+        {"image":"menu-preserved-3.webp","title":"BOLSAS","link":"https://www.eoraeyewear.com/bolsas-eora"},
+        {"image":"menu-preserved-4.webp","title":"LANÇAMENTO VÉRTICE","link":"https://www.eoraeyewear.com/produtos/vertice-bordo-prata/"}
+    ],
+    warranty: [
+        {"image":"menu-preserved-5.webp","title":"SOBRE","link":"https://www.eoraeyewear.com/sobre1"},
+        {"image":"menu-preserved-6.webp","title":"GARANTIA EORA","link":"https://www.eoraeyewear.com/garantia-eora"}
+    ],
+    community: [
+        {"image":"menu-preserved-7.webp","title":"BRUNA TAVARES","link":"https://www.eoraeyewear.com/quem-usa1/"},
+        {"image":"menu-preserved-8.webp","title":"JOÃO CAMARGO","link":"https://www.eoraeyewear.com/quem-usa1/"},
+        {"image":"menu-preserved-9.webp","title":"BRUNA MALHEIROS","link":"https://www.eoraeyewear.com/quem-usa1/"},
+        {"image":"menu-preserved-10.webp","title":"BIANCA ANDRADE","link":"https://www.eoraeyewear.com/quem-usa1/"}
+    ]
+} %}
+{% set use_previous_images = settings.eora_menu_previous_images_enabled is not defined or settings.eora_menu_previous_images_enabled %}
 {% set default_images = [] %}
 {% set standard_gallery = settings.eora_menu_default_images %}
-{% if standard_gallery is empty %}{% set standard_gallery = settings.desktop_menu_images_first %}{% endif %}
+{% if standard_gallery is empty and use_previous_images %}{% set standard_gallery = previous_menu_images.default %}{% endif %}
 {% for image in standard_gallery %}
     {% if image.image %}{% set default_images = default_images | merge([image]) %}{% endif %}
 {% endfor %}
 {% set default_images = default_images | slice(0, 4) %}
 
-<nav class="eora-menu eora-menu--{{ mode }}" data-eora-menu="{{ mode }}" aria-label="{{ mode == 'desktop' ? 'Navegação principal' : 'Menu da loja' }}" data-store="navigation" data-component="menu">
+<nav class="eora-menu eora-menu--{{ mode }}" data-eora-menu="{{ mode }}" data-menu-revision="1" aria-label="{{ mode == 'desktop' ? 'Navegação principal' : 'Menu da loja' }}" data-store="navigation" data-component="menu">
     {% if mode == 'desktop' %}
         <div class="eora-menu__primary">
             <button type="button" data-menu-toggle aria-expanded="false" aria-controls="eora-menu-desktop">{{ settings.eora_menu_label | default('Menu') }}</button>
@@ -69,19 +89,8 @@
         {% for image in attribute(settings, 'eora_menu_' ~ group.key ~ '_images') %}
             {% if image.image %}{% set group_images = group_images | merge([image]) %}{% endif %}
         {% endfor %}
-        {# Reaproveitar uploads do menu anterior quando o novo grupo ainda não foi cadastrado. #}
-        {% if group_images is empty %}
-            {% for letter in ['a', 'b', 'c', 'd'] %}
-                {% set legacy_name = attribute(settings, 'custom_menu_name_' ~ letter) | lower | trim %}
-                {% if legacy_name and (legacy_name == group.title | lower or (group.key == 'favorites' and legacy_name == 'favoritos da marcela')) %}
-                    {% for position in 1..4 %}
-                        {% set legacy_image = 'custom_menu_' ~ letter ~ '_img_' ~ position ~ '.jpg' %}
-                        {% if legacy_image | has_custom_image %}
-                            {% set group_images = group_images | merge([{image: legacy_image, title: attribute(settings, 'custom_menu_' ~ letter ~ '_title_' ~ position), link: attribute(settings, 'custom_menu_' ~ letter ~ '_link_' ~ position)}]) %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+        {% if group_images is empty and use_previous_images and attribute(previous_menu_images, group.key) %}
+            {% set group_images = attribute(previous_menu_images, group.key) %}
         {% endif %}
         {% if group_images is empty %}{% set group_images = default_images %}{% endif %}
         {% set group_images = group_images | slice(0, 4) %}

@@ -1,12 +1,12 @@
 const assert = require('node:assert/strict');
 const {context, render} = require('./menu-harness.cjs');
 const normal = render('snipplets/navigation/navigation.tpl', context());
-assert.ok(!normal.includes('data-menu-revision'), 'default route remains the stable menu during platform validation');
+assert.ok(normal.includes('data-menu-revision="1"'), 'the platform-validated revision is now the default menu');
 const next = render('snipplets/navigation/navigation.tpl', {...context(), params: {menu_revision: '1'}});
 assert.ok(next.includes('data-menu-revision="1"'));
 assert.ok(next.includes('reparos-e-consertos'));
 assert.ok(next.includes('Consertos'));
-const preserved = render('snipplets/navigation/eora-menu-next.tpl', {...context({empty: true}), mode: 'mobile'});
+const preserved = render('snipplets/navigation/eora-menu.tpl', {...context({empty: true, settings: {eora_menu_previous_images_enabled: true}}), mode: 'mobile'});
 assert.equal((preserved.match(/<img /g) || []).length, 26, 'preserved photos do not depend on removed settings');
 assert.ok(preserved.includes('src="/static/menu-preserved-1.webp"'));
 assert.ok(!preserved.includes('srcset="/static/menu-preserved-'), 'FTP copies are served directly, without requesting unavailable generated thumbnails');

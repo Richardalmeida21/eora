@@ -11,7 +11,9 @@
     {% import 'snipplets/navigation/eora-links.tpl' as links %}
     <ul class="eora-menu__links">
         {% for item in items %}
-            <li><a href="{{ links.url(item.key, item.url, settings) | trim }}">{{ attribute(settings, 'eora_menu_' ~ item.key ~ '_label') | default(item.label) }}</a></li>
+            {% set item_label = attribute(settings, 'eora_menu_' ~ item.key ~ '_label') | default(item.label) %}
+            {% if item.key == 'repair' and item_label | lower | trim == 'conserto' %}{% set item_label = 'Consertos' %}{% endif %}
+            <li><a href="{{ links.url(item.key, item.url, settings) | trim }}">{{ item_label }}</a></li>
         {% endfor %}
     </ul>
 {% endmacro %}

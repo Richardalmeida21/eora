@@ -1,10 +1,6 @@
 {% if primary_links %}
     <div class="nav-primary">
-        {% if params.menu_revision == '1' %}
-            {% include 'snipplets/navigation/eora-menu-next.tpl' with {mode: 'mobile'} %}
-        {% else %}
-            {% include 'snipplets/navigation/eora-menu.tpl' with {mode: 'mobile'} %}
-        {% endif %}
+        {% include 'snipplets/navigation/eora-menu.tpl' with {mode: 'mobile'} %}
     </div>
 {% else %}
     <div class="nav-secondary text-left" data-store="account-links">

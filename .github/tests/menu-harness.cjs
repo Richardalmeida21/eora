@@ -31,7 +31,10 @@ function context(options = {}) {
     for (const [j, key] of ['shop', 'favorites', 'warranty', 'new', 'community'].entries()) {
         settings['eora_menu_' + key + '_images'] = photos.map((_, i) => ({image: '/fixtures/' + photos[(i + j) % 4], title: captions[j][i], link: ['/oculos-eora/', '/bolsas-eora/', '/acessorios/', '/shop/'][i]}));
     }
-    if (options.empty) for (const key of Object.keys(settings)) if (key.endsWith('_images')) settings[key] = [];
+    if (options.empty) {
+        for (const key of Object.keys(settings)) if (key.endsWith('_images')) settings[key] = [];
+        settings.eora_menu_previous_images_enabled = false;
+    }
     const navigation = [{name: 'Shop', url: '#', subitems: [{name: 'Óculos de sol', url: '/oculos-eora/'}, {name: 'Bolsas', url: '/bolsas-eora/'}, {name: 'Acessórios', url: '/acessorios/'}]}, {name: 'Sobre', url: '/sobre1/'}];
     const products = Array.from({length: options.products ?? 8}, (_, i) => ({id: i + 1, name: ['Óculos Onyx', 'Bolsa Mini Vértice', 'Óculos Prism', 'Óculos Luar', 'Óculos Onyx', 'Bolsa Mini Vértice', 'Sétimo produto', 'Oitavo produto'][i], url: ['https://www.eoraeyewear.com/produtos/onyx/', 'https://www.eoraeyewear.com/bolsas-eora/', 'https://www.eoraeyewear.com/produtos/prism/', 'https://www.eoraeyewear.com/produtos/luar/'][i % 4], price: 49900 + i * 1000, featured_image: {url: '/fixtures/' + ['onyx-primary.webp', 'minivertice-primary.webp', 'prism-primary.webp', 'luar-primary.webp'][i % 4]}}));
     return {settings: {...settings, ...options.settings}, navigation, sections: {menu_search: {products}}, store: {name: 'EORA'}, mode: 'desktop'};

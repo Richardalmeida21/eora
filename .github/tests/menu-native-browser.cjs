@@ -37,7 +37,7 @@ const {context, render, read, startServer} = require('./menu-harness.cjs');
         for (const width of [1440, 1920]) {
             await page.setViewportSize({width, height: 1000});
             const left = await page.locator('[data-menu-toggle]').evaluate(el => el.getBoundingClientRect().left);
-            assert.ok(left >= 24 && left <= 80, 'left inset at ' + width + 'px: ' + left);
+            assert.ok(left >= 24 && left <= 80, 'menu keeps a comfortable left inset at ' + width + 'px: ' + left);
         }
         await page.setViewportSize({width: 1440, height: 1000});
         await page.locator('[data-menu-toggle]').click();
@@ -49,7 +49,7 @@ const {context, render, read, startServer} = require('./menu-harness.cjs');
         assert.notEqual(geometry.transform, 'none', 'Exercise the real transformed native header');
         assert.ok(Math.abs(geometry.top - geometry.headBottom) < 1, JSON.stringify(geometry));
         assert.ok(Math.abs(geometry.width - geometry.windowWidth) < 1, JSON.stringify(geometry));
-        assert.ok(Math.abs(geometry.top + geometry.height - geometry.windowHeight) < 1, JSON.stringify(geometry));
+        assert.ok(geometry.top + geometry.height <= geometry.windowHeight * .6, JSON.stringify(geometry));
         await page.locator('[data-menu-desktop] img').evaluateAll(images => Promise.all(images.map(i => i.decode().catch(() => {}))));
         await page.screenshot({path: dir + '/native-desktop.png'});
         await page.keyboard.press('Escape');

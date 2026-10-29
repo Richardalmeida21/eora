@@ -137,11 +137,7 @@
         <link rel="stylesheet" href="{{ 'css/style_above.scss' | static_url }}">
         
         <link rel="stylesheet" href="{{ 'css/style-critical.scss' | static_url }}">
-        {% if params.menu_revision == '1' %}
-            <link rel="stylesheet" href="{{ 'css/eora-menu-next.css' | static_url }}?v=20261029-1">
-        {% else %}
-            <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-4">
-        {% endif %}
+        <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-6">
 
         {% set behind_lens_page = settings.behind_lens_page_url %}
         {% set is_behind_lens_page = page.handle == behind_lens_page %}
@@ -476,11 +472,7 @@
         {# Critical libraries #}
 
         {{ 'js/external-no-dependencies.js.tpl' | static_url | script_tag }}
-        {% if params.menu_revision == '1' %}
-            <script src="{{ 'js/eora-menu-next.js' | static_url }}?v=20261029-1" defer></script>
-        {% else %}
-            <script src="{{ 'js/eora-menu.js' | static_url }}?v=20261029-1" defer></script>
-        {% endif %}
+        <script src="{{ 'js/eora-menu.js' | static_url }}?v=20261029-4" defer></script>
 
         <script type="text/javascript">
 
