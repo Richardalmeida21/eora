@@ -11,7 +11,7 @@
 .js-head-main .eora-menu__primary { padding-left: clamp(24px, 2.5vw, 48px); }
 .eora-menu__primary button[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 6px; }
 .eora-menu--portal { position: relative; z-index: 1041; }
-.eora-menu__desktop { position: fixed; inset: var(--eora-menu-top, 90px) 0 auto; z-index: 202; width: 100vw; height: max(250px, calc(50dvh - var(--eora-menu-top, 90px))); max-height: calc(100dvh - var(--eora-menu-top, 90px)); overflow-y: auto; overscroll-behavior: contain; background: var(--main-background, #fff); color: var(--main-foreground, #111); padding: 8px clamp(24px, 3vw, 48px) 12px; border-top: 1px solid #e7e7e7; }
+.eora-menu__desktop { position: fixed; inset: var(--eora-menu-top, 90px) 0 auto; z-index: 202; width: 100vw; min-height: max(250px, calc(50dvh - var(--eora-menu-top, 90px))); max-height: calc(100dvh - var(--eora-menu-top, 90px)); overflow-y: auto; overscroll-behavior: contain; background: var(--main-background, #fff); color: var(--main-foreground, #111); padding: 8px clamp(24px, 3vw, 48px) 12px; border-top: 1px solid #e7e7e7; }
 .eora-menu__overlay { position: fixed; inset: var(--eora-menu-top, 90px) 0 0; z-index: 201; background: #0003; }
 .eora-menu__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; }
 .eora-menu .eora-menu__close { width: 44px; min-height: 44px; font-size: 30px; font-weight: 300; line-height: 1; }

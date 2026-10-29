@@ -26,4 +26,13 @@ for (const file of ['snipplets/navigation/eora-menu.tpl', 'snipplets/navigation/
     assert.ok(output.stdout.includes('Shop EORA'));
     assert.equal((output.stdout.match(/<img /g) || []).length, mode === 'desktop' ? (file.includes('-next') ? 5 : 10) : (file.includes('-next') ? 28 : 24));
 }
+for (const objectSettings of [true, false]) {
+    const data = {...context({settings: {eora_mobile_menu_order_1: 'about', eora_mobile_menu_order_2: 'new', eora_mobile_menu_order_3: 'about'}}), objectSettings, mode: 'mobile', file: 'snipplets/navigation/eora-menu.tpl'};
+    const result = spawnSync(php, ['-r', program, autoload, root], {input: JSON.stringify(data), encoding: 'utf8'});
+    assert.equal(result.status, 0, result.stderr);
+    const primary = result.stdout.split('data-menu-screen="primary"')[1].split('data-menu-screen="shop"')[0];
+    assert.ok(primary.indexOf('>Sobre</a>') < primary.indexOf('data-menu-go="new"'));
+    assert.equal((primary.match(/>Sobre<\/a>/g) || []).length, 1);
+    assert.ok(primary.includes('data-menu-go="shop"'));
+}
 console.log('PASS PHP Twig: settings object/array, desktop/mobile, configurable links/titles and all galleries.');

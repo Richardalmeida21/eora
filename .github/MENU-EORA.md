@@ -21,6 +21,7 @@ O teste `menu-native-browser.cjs` também verifica os componentes no HTML do cab
 
 Em **Menu e busca EORA**:
 
+- **Ordem do menu no celular:** arraste os cinco tópicos e os três links principais para mudar sua sequência. A ordem do computador permanece independente.
 - Textos e URLs das quatro entradas principais e de todos os links das cinco seções. Os campos de URL vazios usam os destinos da loja definidos no template.
 - **Quatro fotos padrão:** imagens para a tela inicial e a lista de seções no celular. Sem cadastro novo, usa as fotos preservadas da versão anterior.
 - **Galeria de cada seção:** até quatro imagens, com título e link próprios. As duas primeiras aparecem ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, usa as fotos preservadas daquela seção e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.

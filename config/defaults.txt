@@ -217,6 +217,14 @@ sobre_eora_community_title_pt = Favoritos da comunidade
 
 eora_menu_label_pt = Menu
 eora_menu_previous_images_enabled = 1
+eora_mobile_menu_order_1 = shop
+eora_mobile_menu_order_2 = favorites
+eora_mobile_menu_order_3 = warranty
+eora_mobile_menu_order_4 = new
+eora_mobile_menu_order_5 = community
+eora_mobile_menu_order_6 = best
+eora_mobile_menu_order_7 = about
+eora_mobile_menu_order_8 = shopper
 eora_search_title_pt = Você também pode gostar
 eora_menu_best_label_pt = Best Sellers
 eora_menu_about_label_pt = Sobre

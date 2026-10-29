@@ -12347,6 +12347,20 @@ Menu e busca EORA
 		name = eora_menu_previous_images_enabled
 		description = Manter fotos anteriores nas galerias vazias
 	collapse
+		title = Ordem do menu no celular
+	section_order
+		name = eora_mobile_menu_order
+		start_index = 1
+		sections
+			shop = Shop
+			favorites = Favoritos Marcela
+			warranty = Garantia EORA
+			new = New In
+			community = Quem Usa
+			best = Best Sellers
+			about = Sobre
+			shopper = Personal Shopper
+	collapse
 		title = Textos e destinos dos links
 	i18n_input
 		name = eora_menu_best_label

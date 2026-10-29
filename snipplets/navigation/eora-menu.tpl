@@ -52,6 +52,15 @@
     {% if image.image %}{% set default_images = default_images | merge([image]) %}{% endif %}
 {% endfor %}
 {% set default_images = default_images | slice(0, 4) %}
+{% set mobile_order_default = ['shop', 'favorites', 'warranty', 'new', 'community', 'best', 'about', 'shopper'] %}
+{% set mobile_order = [] %}
+{% for position in 1..8 %}
+    {% set item = attribute(settings, 'eora_mobile_menu_order_' ~ position) %}
+    {% if item in mobile_order_default and item not in mobile_order %}{% set mobile_order = mobile_order | merge([item]) %}{% endif %}
+{% endfor %}
+{% for item in mobile_order_default %}
+    {% if item not in mobile_order %}{% set mobile_order = mobile_order | merge([item]) %}{% endif %}
+{% endfor %}
 
 <nav class="eora-menu eora-menu--{{ mode }}" data-eora-menu="{{ mode }}" data-menu-revision="1" aria-label="{{ mode == 'desktop' ? 'Navegação principal' : 'Menu da loja' }}" data-store="navigation" data-component="menu">
     {% if mode == 'desktop' %}
@@ -66,10 +75,14 @@
     {% else %}
         <div data-menu-screen="primary" class="is-active">
             <div class="eora-menu__mobile-primary">
-                {% for group in groups %}
-                    <button type="button" data-menu-go="{{ group.key }}" aria-expanded="false">{{ attribute(settings, 'eora_menu_' ~ group.key ~ '_title') | default(group.title) }}<span aria-hidden="true">›</span></button>
+                {% for item in mobile_order %}
+                    {% for group in groups %}
+                        {% if item == group.key %}<button type="button" data-menu-go="{{ group.key }}" aria-expanded="false">{{ attribute(settings, 'eora_menu_' ~ group.key ~ '_title') | default(group.title) }}<span aria-hidden="true">›</span></button>{% endif %}
+                    {% endfor %}
+                    {% if item == 'best' %}<a href="{{ links.url('best', '/best-sellers1/', settings) | trim }}">{{ settings.eora_menu_best_label | default('Best Sellers') }}</a>{% endif %}
+                    {% if item == 'about' %}<a href="{{ links.url('about', '/sobre1/', settings) | trim }}">{{ settings.eora_menu_about_label | default('Sobre') }}</a>{% endif %}
+                    {% if item == 'shopper' %}<a href="{{ links.url('shopper', '/personal-shopper/', settings) | trim }}">{{ settings.eora_menu_shopper_label | default('Personal Shopper') }}</a>{% endif %}
                 {% endfor %}
-                {{ links.primary(settings) }}
             </div>
             {% include 'snipplets/navigation/eora-gallery.tpl' with {images: default_images, image_fallback_url: '/shop/', image_fallback_title: 'Conheça EORA'} %}
         </div>
