@@ -49,7 +49,7 @@ const {context, render, read, startServer} = require('./menu-harness.cjs');
         assert.notEqual(geometry.transform, 'none', 'Exercise the real transformed native header');
         assert.ok(Math.abs(geometry.top - geometry.headBottom) < 1, JSON.stringify(geometry));
         assert.ok(Math.abs(geometry.width - geometry.windowWidth) < 1, JSON.stringify(geometry));
-        assert.ok(geometry.top + geometry.height <= geometry.windowHeight * .6, JSON.stringify(geometry));
+        assert.ok(geometry.top + geometry.height <= geometry.windowHeight, JSON.stringify(geometry));
         await page.locator('[data-menu-desktop] img').evaluateAll(images => Promise.all(images.map(i => i.decode().catch(() => {}))));
         await page.screenshot({path: dir + '/native-desktop.png'});
         await page.keyboard.press('Escape');

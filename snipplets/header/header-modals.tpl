@@ -27,13 +27,11 @@
 		{% import 'snipplets/navigation/eora-links.tpl' as links %}
 		<div class="eora-menu__mobile-bar">
 		<button type="button" class="eora-menu__mobile-label js-modal-close" aria-label="Fechar menu">
-			<svg width="18" height="17" viewBox="0 0 18 17" style="margin-right: 10px" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width="18" height="17" viewBox="0 0 18 17" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M1 1H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 				<path d="M1 8.5H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 				<path d="M1 16H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 			</svg>
-				
-			{{ settings.eora_menu_label | default('Menu') }}
 		</button>
 		<div class="eora-menu__mobile-shortcuts">{{ links.mobile(settings, [], true) }}</div>
 		</div>
