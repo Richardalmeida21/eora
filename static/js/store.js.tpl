@@ -4710,8 +4710,8 @@ let c_settings_name_04 = c_settings_name + '_04';
     function moveWishlistWidget() {
         // Function to process the widget once found
         function processWidget(widget) {
-            var targetContainer = jQueryNuvem('.block-actions-links');
-            var cartContainer = targetContainer.find('[data-component="cart-button"]').closest('.utilities-container');
+            var targetContainer = jQueryNuvem('.eora-header-wishlist');
+            if (!targetContainer.length) targetContainer = jQueryNuvem('.block-actions-links');
 
             if (widget.length && targetContainer.length && !widget.hasClass('wishlist-header-moved')) {
                 // Mark as processed to verify logic ran
@@ -4720,7 +4720,7 @@ let c_settings_name_04 = c_settings_name + '_04';
                 // Remove inline styles persistently
                 widget.attr('style', ''); 
                 
-                // Insert as the first item (before search/loupe)
+                // Keep the reserved header slot stable while Selly loads asynchronously.
                 targetContainer.prepend(widget);
             }
         }

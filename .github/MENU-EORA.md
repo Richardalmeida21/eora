@@ -6,6 +6,8 @@ No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, 
 
 Na home, o cabeçalho transparente usa inversão de cores e uma versão branca do logo. Enquanto o menu estiver aberto, a barra recebe o fundo e a cor configurados para o cabeçalho, a inversão é desativada e a versão do logo usada no hover é exibida. Ao fechar, o cabeçalho volta ao comportamento configurado. O teste `menu-header-contrast.cjs` verifica o cursor dentro do painel, inclusive com o cabeçalho comprimido após rolagem.
 
+O cabeçalho principal no celular reserva uma área para a wishlist antes de o Selly carregar. `eora-header.css` distribui menu, logo e ações conforme a largura disponível, sem os recuos globais que faziam o coração cobrir o logo em telas menores. O contador permanece dentro do botão. As posições explícitas da grade permitem notificações opcionais; se habilitado, o seletor de idiomas ocupa uma linha própria. O desktop mantém a disposição nativa. `header-wishlist-browser.cjs` usa o Twig e os SCSS reais e verifica 12 larguras entre 320 e 1199 px, rotação, DPR 1/3, carregamento/reinserção do widget, contadores, versões do logo, clique e configurações opcionais. Requer `sass`, `twig`, `jquery` e `playwright`; `EORA_HEADER_ENGINE=webkit` seleciona WebKit, e `BE_BROWSER` pode indicar o executável local.
+
 ## Abrir a prévia
 
 ```powershell

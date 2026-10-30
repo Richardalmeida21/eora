@@ -97,11 +97,11 @@
     {% endif %}
     <div class="head-logo-row position-relative transition-soft">
         <div class="container-fluid">
-            <div class="{% if not settings.head_fix_desktop %}js-nav-logo-bar{% endif %} row no-gutters align-items-center">
+            <div class="{% if not settings.head_fix_desktop %}js-nav-logo-bar{% endif %} row no-gutters align-items-center eora-header-row">
 
                 {# Menu icon #}
 
-                <div class="{{ menu_col_classes }} {{ menu_col_md_classes }} {{ menu_col_md_spacing_classes }} col-xl-4 col-utility {% if not settings.hamburger_desktop %}d-xl-none{% endif %} d-flex">
+                <div class="{{ menu_col_classes }} {{ menu_col_md_classes }} {{ menu_col_md_spacing_classes }} col-xl-4 col-utility {% if not settings.hamburger_desktop %}d-xl-none{% endif %} d-flex eora-header-menu">
                     {% include "snipplets/header/header-utilities.tpl" with {use_menu: true} %}
 
                 {# Search: Icon or box #}
@@ -140,7 +140,7 @@
                 {# Languages #}
 
                 {% if has_languages %}
-                    <div class="js-utility-col col-utility desktop-utility-col {{ languages_order_classes }}">
+                    <div class="js-utility-col col-utility desktop-utility-col {{ languages_order_classes }} eora-header-languages">
                         {% include "snipplets/header/header-utilities.tpl" with {use_languages: true} %}
                     </div>
                 {% endif %}
@@ -149,8 +149,9 @@
                 {# Cart icon #}
                 {# Links buttons #}
                 
-                <div class="js-utility-col col-utility desktop-utility-col text-right order-last {{ account_col_md_classes }} col-4">
+                <div class="js-utility-col col-utility desktop-utility-col text-right order-last {{ account_col_md_classes }} col-4 eora-header-actions">
                     <div class="align-items-center justify-content-end block-actions-links d-flex">
+                        <div class="eora-header-wishlist"></div>
 
                         <div class="d-none d-md-flex">
                             {% include "snipplets/header/header-utilities.tpl" with {use_search:true} %}
