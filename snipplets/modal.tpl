@@ -9,6 +9,7 @@
     // Width - Full and Box
     // modal_form_action - For modals that has a form
     // modal_fixed_footer - For modals with fixed footer. Need to include the fixed part inside the footer
+    // modal_close_button - Show the separate close icon (defaults to true)
 
 
 #Topbar
@@ -24,6 +25,7 @@
 
 {% set modal_header_title = modal_header_title ?? true %}
 {% set modal_header_close = modal_header_close ?? true %}
+{% set modal_close_button = modal_close_button ?? true %}
 
 <div id="{{ modal_id }}" class="js-modal {% if modal_mobile_full_screen %}js-fullscreen-modal{% endif %} {% if desktop_overlay_only %}js-modal-overlay-md{% endif %} modal modal-{{ modal_class }} modal-{{modal_position}} modal-{{modal_position_desktop}}-md transition-{{modal_transition}} modal-{{modal_width}} transition-soft {% if modal_zindex_top %}modal-zindex-top{% endif %}" style="display: none;" {% if data_component %}data-component="{{ data_component }}"{% endif %}>
     {% if modal_form_action %}
@@ -39,11 +41,11 @@
                             <div class="col p-3 text-center">
                                 {% block modal_head %}{% endblock %}
                             </div>
-                            <div class="col-auto">
+                            {% if modal_close_button %}<div class="col-auto">
                                 <a href="javascript:void(0)" role="button" class="js-modal-close modal-close" {% if modal_close_label %}aria-label="{{ modal_close_label }}"{% endif %}>
                                     <svg class="icon-inline icon-lg svg-icon-text"><use xlink:href="#times"/></svg>
                                 </a>
-                            </div>
+                            </div>{% endif %}
                         </div>
                     {% else %}
                         <svg class="icon-inline icon-lg svg-icon-text"><use xlink:href="#times"/></svg>

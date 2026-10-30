@@ -32,6 +32,8 @@ fs.mkdirSync(out, {recursive: true});
             data.settings[key] = data.settings[key].map((image,i)=>({...image,image:'menu-preserved-' + (i+1) + '.webp'}));
         }
         const modal = render('mobile-modal-test', data);
+        const regularModal = render('snipplets/modal.tpl', {...data, modal_id:'regular-modal'});
+        assert.match(regularModal, /class="js-modal-close modal-close"/, 'other modals retain their default close icon');
         await page.route('**/mobile-menu-test', route => route.fulfill({contentType: 'text/html; charset=utf-8', body: `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
             :root{--main-background:#fff;--main-foreground:#111}body{margin:0;font-family:Arial,sans-serif}.row{display:flex;flex-wrap:wrap}.col{flex:1 0 0}.col-auto{flex:0 0 auto}.p-3{padding:16px}.py-3{padding-top:16px;padding-bottom:16px}.align-items-center{align-items:center}.d-flex{display:flex}.no-gutters{margin:0}.icon-inline{width:20px;height:20px}.nav-login{padding:16px;background:#f3f3f3}.modal-close{display:flex;width:44px;min-height:44px;align-items:center;justify-content:center}.modal-overlay{position:fixed;inset:0;background:#0003;z-index:19999}.overflow-none{overflow:hidden}${nativeModalCss}
             ${nativeGridOverrides}</style><link rel="stylesheet" href="/static/css/eora-menu.css"></head><body><button class="js-modal-open" data-toggle="#nav-hamburger">Abrir menu</button>${modal}
@@ -41,6 +43,8 @@ fs.mkdirSync(out, {recursive: true});
         const opener = page.locator('[data-toggle="#nav-hamburger"]');
         await opener.click();
         const header = panel.locator('.modal-header');
+        assert.equal(await header.locator('.modal-close').count(), 0, 'mobile menu has no separate X');
+        assert.equal(await header.getByRole('button', {name:'Fechar menu',exact:true}).count(), 1, 'Menu itself is an accessible close button');
         assert.equal(await header.locator('a[href="/best-sellers1/"]').count(), 1, 'Best Sellers belongs beside Menu');
         assert.equal(await header.locator('a[href="/sobre1/"]').count(), 1, 'Sobre belongs beside Menu');
         assert.equal(await header.locator('a[href="/personal-shopper/"]').count(), 1, 'Personal Shopper belongs beside Menu');
@@ -48,15 +52,15 @@ fs.mkdirSync(out, {recursive: true});
         await page.waitForFunction(() => !document.querySelector('#nav-hamburger').getAnimations().length);
         for (const width of [320, 360, 390, 393, 430, 768, 1199]) {
             await page.setViewportSize({width, height: 844});
-            const boxes = await header.locator('.eora-menu__mobile-label, .eora-menu__mobile-shortcuts a, .modal-close').evaluateAll(nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,height:r.height}; }));
-            assert.equal(boxes.length, 5);
+            const boxes = await header.locator('.eora-menu__mobile-label, .eora-menu__mobile-shortcuts a').evaluateAll(nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,height:r.height}; }));
+            assert.equal(boxes.length, 4);
             assert.ok(boxes[0].left >= 20, 'Menu keeps a comfortable left inset despite the native row override: ' + JSON.stringify(boxes[0]));
-            assert.ok(boxes[4].right <= width - 20 + 1, 'close keeps the same right inset at ' + width);
+            assert.ok(boxes[3].right <= width - 20 + 1, 'shortcuts retain the right inset at ' + width);
             assert.ok(boxes.every(r => r.left >= 0 && r.right <= width + 1), 'header fits at ' + width + ': ' + JSON.stringify(boxes));
-            assert.ok(Math.max(...boxes.map(r=>r.top)) < Math.min(...boxes.map(r=>r.bottom)), 'Menu, shortcuts and close share one row');
+            assert.ok(Math.max(...boxes.map(r=>r.top)) < Math.min(...boxes.map(r=>r.bottom)), 'Menu and shortcuts share one row');
             for (let i=1;i<boxes.length;i++) assert.ok(boxes[i].left-boxes[i-1].right >= 8-1, 'header items have breathing room at ' + width + ': ' + JSON.stringify(boxes));
             assert.ok(await header.evaluate(el=>el.getBoundingClientRect().height >= 76), 'header has comfortable vertical padding');
-            assert.ok(boxes.slice(1).every(r=>r.height >= 44), 'links and close retain touch target height');
+            assert.ok(boxes.every(r=>r.height >= 44), 'Menu and links retain touch target height');
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'no horizontal overflow');
             if (width === 390) await page.screenshot({path: path.join(out, 'mobile.png')});
         }
@@ -68,7 +72,7 @@ fs.mkdirSync(out, {recursive: true});
         await header.locator('a[href="/sobre1/"]').click();
         assert.equal(await page.evaluate(() => window.shortcutPrevented), false, 'shortcuts must not inherit click-to-close/preventDefault');
         assert.ok(await panel.evaluate(el => el.classList.contains('modal-show')));
-        const close = panel.locator('a.modal-close');
+        const close = header.getByRole('button', {name:'Fechar menu',exact:true});
         await close.click();
         await panel.waitFor({state:'hidden'});
         await page.setViewportSize({width:390,height:844});
@@ -111,7 +115,7 @@ fs.mkdirSync(out, {recursive: true});
         assert.ok(await panel.isVisible(), 'an old hide timer must not hide a reopened menu');
         const laterClose = await panel.evaluate(async el=>{
             const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-            const close=el.querySelector('a.modal-close');
+            const close=el.querySelector('.eora-menu__mobile-label');
             close.click();
             await wait(100);
             document.querySelector('[data-toggle="#nav-hamburger"]').click();
@@ -128,7 +132,11 @@ fs.mkdirSync(out, {recursive: true});
         await page.waitForTimeout(50);
         assert.equal(await panel.evaluate(el=>el.getAnimations().filter(a=>a.effect.getTiming().duration>0).length),0,'reduced motion disables reveal animation');
         assert.equal(await panel.evaluate(el=>getComputedStyle(el).pointerEvents),'auto');
+        await close.focus();
+        await page.keyboard.press('Enter');
+        await panel.waitFor({state:'hidden'});
+        await page.waitForFunction(()=>document.activeElement.matches('[data-toggle="#nav-hamburger"]'));
         assert.deepEqual(errors,[]);
-        console.log('PASS mobile menu: real Twig/native handlers, header links/touch targets at 320–1199px, reversible reveal/exit, interrupted close, reduced motion, Escape/focus, fast reopen.');
+        console.log('PASS mobile menu: Menu closes by tap/keyboard, no X, header links/touch targets at 320–1199px, reversible reveal/exit, interrupted close, reduced motion, Escape/focus, fast reopen.');
     } finally { await browser.close(); await new Promise(resolve=>server.close(resolve)); }
 })().catch(error=>{console.error(error);process.exitCode=1;});

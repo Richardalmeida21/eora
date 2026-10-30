@@ -74,10 +74,8 @@ body.eora-menu-open .js-head-main .head-logo-row .js-cart-widget-amount { color:
     #nav-hamburger .eora-menu-header:hover, #nav-hamburger .eora-menu-header:focus { opacity: 1; }
     #nav-hamburger .eora-menu-header > .row { flex-wrap: nowrap; gap: 8px; width: 100%; margin: 0 !important; }
     #nav-hamburger .eora-menu-header .col { min-width: 0; padding: 0 !important; }
-    #nav-hamburger .eora-menu-header .col-auto { flex: 0 0 44px; padding: 0 !important; }
-    #nav-hamburger .eora-menu-header .modal-close { display: flex; align-items: center; justify-content: center; width: 44px; min-height: 44px; padding: 0; }
     .eora-menu__mobile-bar { display: flex; align-items: center; gap: clamp(10px, 3vw, 20px); min-width: 0; font-family: var(--body-font, sans-serif); font-size: clamp(11px, 2.8vw, 12px); line-height: 1.4; text-transform: uppercase; text-align: left; }
-    .eora-menu__mobile-label { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; min-height: 44px; }
+    .eora-menu__mobile-label { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; min-height: 44px; appearance: none; border: 0; border-radius: 0; background: none; color: inherit; padding: 0; font: inherit; text-transform: inherit; cursor: pointer; }
     .eora-menu__mobile-label svg { flex: 0 0 16px; width: 16px; margin: 0 !important; }
     .eora-menu__mobile-shortcuts { display: flex; flex: 1 1 auto; align-items: center; justify-content: space-evenly; gap: clamp(8px, 2.5vw, 18px); min-width: 0; }
     .eora-menu__mobile-shortcuts a { display: flex; flex: 0 1 auto; align-items: center; justify-content: center; min-width: min-content; min-height: 44px; color: inherit; text-align: center; text-decoration: none; overflow-wrap: normal; }
