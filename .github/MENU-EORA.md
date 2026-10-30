@@ -2,7 +2,7 @@
 
 Implementa o briefing de menu no computador e no celular. A revisão segura foi ativada em 9ba45a1, após validação opt-in na Nuvemshop. A retirada dos controles antigos foi aplicada separadamente em bbeda0d e confirmada com HTTP 200 nas páginas e na prévia. Ver `.github/plans/2026-10-29-menu-safe.md`.
 
-No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em duas linhas (três e dois), com até duas fotos à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, os tópicos aparecem diretamente ao abrir o menu.
+No desktop, abre ao passar o mouse em Menu e fecha ao sair do acionador/painel, com breve tolerância para atravessar o espaço entre os dois. O painel ocupa aproximadamente a metade superior da tela e dispõe os cinco grupos em duas linhas (três e dois), com até duas fotos à direita de cada grupo. Clique e teclado continuam disponíveis. No celular, Best Sellers, Sobre e Personal Shopper ficam ao lado de Menu no cabeçalho, e os cinco tópicos aparecem abaixo. O painel se revela do canto superior esquerdo para a direita e para baixo em 350 ms e fecha em 240 ms, respeitando movimento reduzido. Somente o X fecha pelo cabeçalho; os atalhos navegam normalmente. A reabertura cancela o efeito de temporizadores antigos de ocultação do modal.
 
 Na home, o cabeçalho transparente usa inversão de cores e uma versão branca do logo. Enquanto o menu estiver aberto, a barra recebe o fundo e a cor configurados para o cabeçalho, a inversão é desativada e a versão do logo usada no hover é exibida. Ao fechar, o cabeçalho volta ao comportamento configurado. O teste `menu-header-contrast.cjs` verifica o cursor dentro do painel, inclusive com o cabeçalho comprimido após rolagem.
 
@@ -21,7 +21,7 @@ O teste `menu-native-browser.cjs` também verifica os componentes no HTML do cab
 
 Em **Menu e busca EORA**:
 
-- **Ordem do menu no celular:** arraste os cinco tópicos e os três links principais para mudar sua sequência. A ordem do computador permanece independente.
+- **Ordem do menu no celular:** arraste os cinco tópicos e os três links principais para mudar sua sequência. A ordem relativa dos tópicos é aplicada à lista; a dos três links é aplicada ao cabeçalho. A ordem do computador permanece independente.
 - Textos e URLs das quatro entradas principais e de todos os links das cinco seções. Os campos de URL vazios usam os destinos da loja definidos no template.
 - **Quatro fotos padrão:** imagens para a tela inicial e a lista de seções no celular. Sem cadastro novo, usa as fotos preservadas da versão anterior.
 - **Galeria de cada seção:** até quatro imagens, com título e link próprios. As duas primeiras aparecem ao lado dos links no computador; as quatro aparecem ao abrir a seção no celular. Sem imagens novas, usa as fotos preservadas daquela seção e depois as imagens padrão. Uploads vazios são ignorados; galerias com menos de quatro fotos exibem somente as cadastradas.
@@ -50,6 +50,7 @@ node .github/tests/menu-cleanup.cjs
 node .github/tests/menu-preorder.cjs
 node .github/tests/menu-new-in.cjs
 node .github/tests/menu-browser.cjs
+node .github/tests/menu-mobile-browser.cjs
 node .github/tests/menu-php.cjs
 node .github/tests/menu-native-browser.cjs
 node .github/tests/theme-editor-settings.cjs
@@ -58,5 +59,7 @@ git diff --check
 ```
 
 PHP/Twig reais disponíveis em `C:\Temp\eora-sobre-php`. Os testes aceitam `SOBRE_PHP_BIN`, `SOBRE_TWIG_AUTOLOAD` e `BE_BROWSER` para outros caminhos. O teste nativo usa `MENU_NATIVE_SNAPSHOT` (padrão: captura em `C:\Temp\eora-best-sellers-validation\current.html`) e os CSS `native-*.css` em `C:\Temp\eora-menu-preview`. As capturas de desktop/mobile e busca ficam nessa mesma pasta. A pasta `.github` é excluída pelo deploy FTP.
+
+O teste `menu-mobile-browser.cjs` requer `twig`, `playwright` e `jquery` no caminho de módulos de teste. Ele renderiza o embed real do menu e executa os handlers nativos extraídos de `store.js.tpl`, além dos assets de menu. Verifica encaixe entre 320 e 1199 px, links, movimento, Escape/foco e reabertura rápida. Aceita `MENU_TEST_OUTPUT` para as capturas; por padrão usa a pasta temporária do sistema.
 
 O painel desktop é montado diretamente no body para evitar o contexto de posicionamento criado pelo `transform: scale(1)` do cabeçalho original. O modal móvel continua sendo aberto pelo script legado; o novo código gerencia os níveis, foco, Escape, retorno ao acionador e limite do Tab.

@@ -23,6 +23,7 @@
 #}
 
 {% set modal_header_title = modal_header_title ?? true %}
+{% set modal_header_close = modal_header_close ?? true %}
 
 <div id="{{ modal_id }}" class="js-modal {% if modal_mobile_full_screen %}js-fullscreen-modal{% endif %} {% if desktop_overlay_only %}js-modal-overlay-md{% endif %} modal modal-{{ modal_class }} modal-{{modal_position}} modal-{{modal_position_desktop}}-md transition-{{modal_transition}} modal-{{modal_width}} transition-soft {% if modal_zindex_top %}modal-zindex-top{% endif %}" style="display: none;" {% if data_component %}data-component="{{ data_component }}"{% endif %}>
     {% if modal_form_action %}
@@ -32,14 +33,14 @@
         <div class="modal-with-fixed-footer">
             <div class="modal-scrollable-area">
     {% endif %}
-                <div class="{% if not search_modal %}js-modal-close{% endif %} {% if modal_mobile_full_screen %}js-fullscreen-modal-close{% endif %} {% if modal_zindex_top %}js-close-over-modal{% endif %} modal-header {% if not modal_header_title %}modal-header-no-title{% endif %} {{ modal_header_class }}">
+                <div class="{% if not search_modal and modal_header_close %}js-modal-close{% endif %} {% if modal_mobile_full_screen %}js-fullscreen-modal-close{% endif %} {% if modal_zindex_top %}js-close-over-modal{% endif %} modal-header {% if not modal_header_title %}modal-header-no-title{% endif %} {{ modal_header_class }}">
                     {% if modal_header_title %}
                         <div class="row no-gutters align-items-center">
                             <div class="col p-3 text-center">
                                 {% block modal_head %}{% endblock %}
                             </div>
                             <div class="col-auto">
-                                <a href="javascript:void(0)" role="button" class="js-modal-close modal-close">
+                                <a href="javascript:void(0)" role="button" class="js-modal-close modal-close" {% if modal_close_label %}aria-label="{{ modal_close_label }}"{% endif %}>
                                     <svg class="icon-inline icon-lg svg-icon-text"><use xlink:href="#times"/></svg>
                                 </a>
                             </div>

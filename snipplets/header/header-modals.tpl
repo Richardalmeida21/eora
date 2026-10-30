@@ -22,17 +22,21 @@
 
 {# Modal Hamburger #}
 
-{% embed "snipplets/modal.tpl" with{modal_id: 'nav-hamburger',modal_class: 'nav-hamburger modal-docked-md pb-0', modal_position: modal_position_mobile_val, modal_header_title: true, modal_position_desktop: modal_position_desktop_val, modal_transition: 'slide', modal_width: 'full', modal_mobile_full_screen: false, modal_hide_close: 'true',modal_header_class: 'js-toggle-menu-close py-3', modal_body_class: 'nav-body', modal_footer_class: 'hamburger-footer mb-0 p-0', modal_fixed_footer: true, modal_footer: true, desktop_overlay_only: modal_with_desktop_only_overlay_val} %}
+{% embed "snipplets/modal.tpl" with{modal_id: 'nav-hamburger',modal_class: 'nav-hamburger modal-docked-md pb-0', modal_position: modal_position_mobile_val, modal_header_title: true, modal_header_close: false, modal_close_label: 'Fechar menu', modal_position_desktop: modal_position_desktop_val, modal_transition: 'slide', modal_width: 'full', modal_mobile_full_screen: false, modal_hide_close: 'true',modal_header_class: 'eora-menu-header py-3', modal_body_class: 'nav-body', modal_footer_class: 'hamburger-footer mb-0 p-0', modal_fixed_footer: true, modal_footer: true, desktop_overlay_only: modal_with_desktop_only_overlay_val} %}
 	{% block modal_head %}
-		<span class="d-flex align-items-center " >
+		{% import 'snipplets/navigation/eora-links.tpl' as links %}
+		<div class="eora-menu__mobile-bar">
+		<span class="eora-menu__mobile-label">
 			<svg width="18" height="17" viewBox="0 0 18 17" style="margin-right: 10px" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M1 1H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 				<path d="M1 8.5H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 				<path d="M1 16H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
 			</svg>
 				
-			Menu
+			{{ settings.eora_menu_label | default('Menu') }}
 		</span>
+		<div class="eora-menu__mobile-shortcuts">{{ links.mobile(settings, [], true) }}</div>
+		</div>
 	{% endblock %}	
 	{% block modal_body %}
 		{# {% if not settings.search_big_mobile %}

@@ -335,6 +335,16 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     }
 
+    function scheduleModalHide($modal) {
+        var node = $modal[0];
+        if (!node) return;
+        clearTimeout(node.eoraHideTimer);
+        node.eoraHideTimer = setTimeout(function () {
+            node.eoraHideTimer = null;
+            if (!$modal.hasClass("modal-show")) $modal.hide();
+        }, 500);
+    }
+
     modalOpen = function(modal_id){
         var $overlay_id = jQueryNuvem('.js-modal-overlay[data-modal-id="' + modal_id + '"]');
 
@@ -344,7 +354,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                 jQueryNuvem("body").removeClass("overflow-none");
             }
             let modal = jQueryNuvem(modal_id).removeClass("modal-show");
-            setTimeout(() => modal.hide(), 500);
+            scheduleModalHide(modal);
         } else {
 
             {# Lock body scroll if there is no modal visible on screen #}
@@ -357,7 +367,13 @@ DOMContentLoaded.addEventOrExecute(() => {
             }
 
             jQueryNuvem(modal_id).detach().appendTo("body");
-            jQueryNuvem(modal_id).show().addClass("modal-show");
+            var $opening_modal = jQueryNuvem(modal_id).show();
+            if ($opening_modal[0]) {
+                clearTimeout($opening_modal[0].eoraHideTimer);
+                // Establish the closed frame so the mobile reveal can reverse smoothly.
+                if (modal_id === "#nav-hamburger") $opening_modal[0].getBoundingClientRect();
+            }
+            $opening_modal.addClass("modal-show");
             
             {# Show overlay for all modals or tab modals only in desktop #}
             if (((jQueryNuvem(modal_id).hasClass("js-modal-overlay-md")) && (window.innerWidth > 768)) || (!jQueryNuvem(modal_id).hasClass("js-modal-overlay-md"))) {
@@ -387,7 +403,7 @@ DOMContentLoaded.addEventOrExecute(() => {
         var modal_id = $modal.attr('id');
         var $overlay_id = jQueryNuvem('.js-modal-overlay[data-modal-id="#' + modal_id + '"]');
         $modal.removeClass("modal-show");
-        setTimeout(() => $modal.hide(), 500);
+        scheduleModalHide($modal);
         $overlay_id.fadeOut(500);
         
         {# Close full screen modal: Remove url hash #}
@@ -419,7 +435,7 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         var modal_id = jQueryNuvem(this).data('modalId');
         let modal = jQueryNuvem(modal_id).removeClass("modal-show");
-        setTimeout(() => modal.hide(), 500);
+        scheduleModalHide(modal);
         jQueryNuvem(this).fadeOut(500);
 
         {# Reset al open searches when closing a modal #}

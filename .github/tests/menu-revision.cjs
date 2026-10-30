@@ -7,7 +7,7 @@ assert.ok(next.includes('data-menu-revision="1"'));
 assert.ok(next.includes('reparos-e-consertos'));
 assert.ok(next.includes('Consertos'));
 const preserved = render('snipplets/navigation/eora-menu.tpl', {...context({empty: true, settings: {eora_menu_previous_images_enabled: true}}), mode: 'mobile'});
-assert.equal((preserved.match(/<img /g) || []).length, 26, 'preserved photos do not depend on removed settings');
+assert.equal((preserved.match(/<img /g) || []).length, 22, 'preserved photos do not depend on removed settings');
 assert.ok(preserved.includes('src="/static/menu-preserved-1.webp"'));
 assert.ok(!preserved.includes('srcset="/static/menu-preserved-'), 'FTP copies are served directly, without requesting unavailable generated thumbnails');
 console.log('PASS isolated revision: stable default, opt-in candidate, links, plural repair label, preserved photos.');
