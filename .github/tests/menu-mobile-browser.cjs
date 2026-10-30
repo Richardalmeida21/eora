@@ -15,6 +15,8 @@ const nativeSource = read('static/js/store.js.tpl');
 const nativeHandlers = Twig.twig({data: nativeSource.slice(nativeSource.indexOf('    function scheduleModalHide('), nativeSource.indexOf("    {% if template == 'home' and settings.home_promotional_popup %}"))}).render(context());
 const modalStyles = read('static/css/style-async.scss');
 const nativeModalCss = modalStyles.slice(modalStyles.indexOf('.modal {'), modalStyles.indexOf('.modal-bottom-sheet {'));
+// Include the storefront override that wins over .no-gutters and caused clipping.
+const nativeGridOverrides = read('static/css/style-critical.scss').match(/\/\* Force row margins[\s\S]*?(?=\/\* Exclude product grids)/)[0];
 const out = process.env.MENU_TEST_OUTPUT || path.join(os.tmpdir(), 'eora-menu-mobile');
 fs.mkdirSync(out, {recursive: true});
 
@@ -32,7 +34,7 @@ fs.mkdirSync(out, {recursive: true});
         const modal = render('mobile-modal-test', data);
         await page.route('**/mobile-menu-test', route => route.fulfill({contentType: 'text/html; charset=utf-8', body: `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
             :root{--main-background:#fff;--main-foreground:#111}body{margin:0;font-family:Arial,sans-serif}.row{display:flex;flex-wrap:wrap}.col{flex:1 0 0}.col-auto{flex:0 0 auto}.p-3{padding:16px}.py-3{padding-top:16px;padding-bottom:16px}.align-items-center{align-items:center}.d-flex{display:flex}.no-gutters{margin:0}.icon-inline{width:20px;height:20px}.nav-login{padding:16px;background:#f3f3f3}.modal-close{display:flex;width:44px;min-height:44px;align-items:center;justify-content:center}.modal-overlay{position:fixed;inset:0;background:#0003;z-index:19999}.overflow-none{overflow:hidden}${nativeModalCss}
-            </style><link rel="stylesheet" href="/static/css/eora-menu.css"></head><body><button class="js-modal-open" data-toggle="#nav-hamburger">Abrir menu</button>${modal}
+            ${nativeGridOverrides}</style><link rel="stylesheet" href="/static/css/eora-menu.css"></head><body><button class="js-modal-open" data-toggle="#nav-hamburger">Abrir menu</button>${modal}
             <svg style="display:none"><symbol id="times" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2"/></symbol></svg><script>${fs.readFileSync(require.resolve('jquery/dist/jquery.js'), 'utf8')}</script><script>var jQueryNuvem=jQuery;var modalOpen;function resetSearchBox(){}${nativeHandlers}</script><script src="/static/js/eora-menu.js"></script></body></html>`}));
         await page.goto('http://127.0.0.1:' + server.address().port + '/mobile-menu-test');
         const panel = page.locator('#nav-hamburger');
@@ -44,12 +46,16 @@ fs.mkdirSync(out, {recursive: true});
         assert.equal(await header.locator('a[href="/personal-shopper/"]').count(), 1, 'Personal Shopper belongs beside Menu');
         assert.equal(await panel.locator('.eora-menu__mobile-primary > a').count(), 0, 'header shortcuts are not duplicated among categories');
         await page.waitForFunction(() => !document.querySelector('#nav-hamburger').getAnimations().length);
-        for (const width of [320, 360, 390, 768, 1199]) {
+        for (const width of [320, 360, 390, 393, 430, 768, 1199]) {
             await page.setViewportSize({width, height: 844});
             const boxes = await header.locator('.eora-menu__mobile-label, .eora-menu__mobile-shortcuts a, .modal-close').evaluateAll(nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,height:r.height}; }));
             assert.equal(boxes.length, 5);
+            assert.ok(boxes[0].left >= 20, 'Menu keeps a comfortable left inset despite the native row override: ' + JSON.stringify(boxes[0]));
+            assert.ok(boxes[4].right <= width - 20 + 1, 'close keeps the same right inset at ' + width);
             assert.ok(boxes.every(r => r.left >= 0 && r.right <= width + 1), 'header fits at ' + width + ': ' + JSON.stringify(boxes));
             assert.ok(Math.max(...boxes.map(r=>r.top)) < Math.min(...boxes.map(r=>r.bottom)), 'Menu, shortcuts and close share one row');
+            for (let i=1;i<boxes.length;i++) assert.ok(boxes[i].left-boxes[i-1].right >= 8-1, 'header items have breathing room at ' + width + ': ' + JSON.stringify(boxes));
+            assert.ok(await header.evaluate(el=>el.getBoundingClientRect().height >= 76), 'header has comfortable vertical padding');
             assert.ok(boxes.slice(1).every(r=>r.height >= 44), 'links and close retain touch target height');
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'no horizontal overflow');
             if (width === 390) await page.screenshot({path: path.join(out, 'mobile.png')});
