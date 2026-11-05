@@ -18,6 +18,7 @@ Twig.extendFilter('translate', value => value);
 Twig.extendFilter('t', value => value);
 Twig.extendFilter('a_tag', value => '<a>' + value + '</a>');
 Twig.extendFilter('static_url', value => '/static/' + value);
+Twig.extendFilter('setting_url', value => value);
 Twig.extendFilter('settings_image_url', value => value);
 Twig.extendFilter('product_image_url', value => typeof value === 'string' ? value : value.url);
 Twig.extendFilter('money', value => (Number(value) / 100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
@@ -27,6 +28,7 @@ Twig.extendFunction('component', () => '');
 // Unrelated product option, shipping and navigation contents are fixtures; item,
 // labels, header modals and their modal shell are the original theme templates.
 for (const id of ['snipplets/selo-brand.tpl', 'snipplets/placeholders/button-placeholder.tpl', 'snipplets/product/product-variants.tpl', 'snipplets/product/product-quantity.tpl', 'snipplets/grid/item-colors.tpl', 'snipplets/header/header-search.tpl', 'snipplets/navigation/navigation-panel.tpl', 'snipplets/cart-panel.tpl', 'snipplets/notification-cart.tpl']) compile(id, '');
+compile('snipplets/navigation/eora-links.tpl', read('snipplets/navigation/eora-links.tpl'));
 compile('snipplets/product/payment-summary.tpl', read('snipplets/product/payment-summary.tpl'));
 compile('snipplets/labels.tpl', read('snipplets/labels.tpl'));
 compile('snipplets/modal.tpl', read('snipplets/modal.tpl'));

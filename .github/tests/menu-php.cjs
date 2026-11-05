@@ -31,8 +31,8 @@ for (const objectSettings of [true, false]) {
     const result = spawnSync(php, ['-r', program, autoload, root], {input: JSON.stringify(data), encoding: 'utf8'});
     assert.equal(result.status, 0, result.stderr);
     const primary = result.stdout.split('data-menu-screen="primary"')[1].split('data-menu-screen="shop"')[0];
-    assert.ok(primary.indexOf('>Sobre</a>') < primary.indexOf('data-menu-go="new"'));
-    assert.equal((primary.match(/>Sobre<\/a>/g) || []).length, 1);
+    assert.ok(primary.indexOf('data-menu-go="new"') < primary.indexOf('data-menu-go="shop"'));
+    assert.equal((primary.match(/>Sobre<\/a>/g) || []).length, 0, 'shortcuts render in the modal header');
     assert.ok(primary.includes('data-menu-go="shop"'));
 }
 console.log('PASS PHP Twig: settings object/array, desktop/mobile, configurable links/titles and all galleries.');

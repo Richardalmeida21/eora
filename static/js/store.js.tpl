@@ -335,6 +335,16 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     }
 
+    function scheduleModalHide($modal) {
+        var node = $modal[0];
+        if (!node) return;
+        clearTimeout(node.eoraHideTimer);
+        node.eoraHideTimer = setTimeout(function () {
+            node.eoraHideTimer = null;
+            if (!$modal.hasClass("modal-show")) $modal.hide();
+        }, 500);
+    }
+
     modalOpen = function(modal_id){
         var $overlay_id = jQueryNuvem('.js-modal-overlay[data-modal-id="' + modal_id + '"]');
 
@@ -344,7 +354,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                 jQueryNuvem("body").removeClass("overflow-none");
             }
             let modal = jQueryNuvem(modal_id).removeClass("modal-show");
-            setTimeout(() => modal.hide(), 500);
+            scheduleModalHide(modal);
         } else {
 
             {# Lock body scroll if there is no modal visible on screen #}
@@ -357,7 +367,13 @@ DOMContentLoaded.addEventOrExecute(() => {
             }
 
             jQueryNuvem(modal_id).detach().appendTo("body");
-            jQueryNuvem(modal_id).show().addClass("modal-show");
+            var $opening_modal = jQueryNuvem(modal_id).show();
+            if ($opening_modal[0]) {
+                clearTimeout($opening_modal[0].eoraHideTimer);
+                // Establish the closed frame so the mobile reveal can reverse smoothly.
+                if (modal_id === "#nav-hamburger") $opening_modal[0].getBoundingClientRect();
+            }
+            $opening_modal.addClass("modal-show");
             
             {# Show overlay for all modals or tab modals only in desktop #}
             if (((jQueryNuvem(modal_id).hasClass("js-modal-overlay-md")) && (window.innerWidth > 768)) || (!jQueryNuvem(modal_id).hasClass("js-modal-overlay-md"))) {
@@ -387,7 +403,7 @@ DOMContentLoaded.addEventOrExecute(() => {
         var modal_id = $modal.attr('id');
         var $overlay_id = jQueryNuvem('.js-modal-overlay[data-modal-id="#' + modal_id + '"]');
         $modal.removeClass("modal-show");
-        setTimeout(() => $modal.hide(), 500);
+        scheduleModalHide($modal);
         $overlay_id.fadeOut(500);
         
         {# Close full screen modal: Remove url hash #}
@@ -419,7 +435,7 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         var modal_id = jQueryNuvem(this).data('modalId');
         let modal = jQueryNuvem(modal_id).removeClass("modal-show");
-        setTimeout(() => modal.hide(), 500);
+        scheduleModalHide(modal);
         jQueryNuvem(this).fadeOut(500);
 
         {# Reset al open searches when closing a modal #}
@@ -4694,8 +4710,8 @@ let c_settings_name_04 = c_settings_name + '_04';
     function moveWishlistWidget() {
         // Function to process the widget once found
         function processWidget(widget) {
-            var targetContainer = jQueryNuvem('.block-actions-links');
-            var cartContainer = targetContainer.find('[data-component="cart-button"]').closest('.utilities-container');
+            var targetContainer = jQueryNuvem('.eora-header-wishlist');
+            if (!targetContainer.length) targetContainer = jQueryNuvem('.block-actions-links');
 
             if (widget.length && targetContainer.length && !widget.hasClass('wishlist-header-moved')) {
                 // Mark as processed to verify logic ran
@@ -4704,7 +4720,7 @@ let c_settings_name_04 = c_settings_name + '_04';
                 // Remove inline styles persistently
                 widget.attr('style', ''); 
                 
-                // Insert as the first item (before search/loupe)
+                // Keep the reserved header slot stable while Selly loads asynchronously.
                 targetContainer.prepend(widget);
             }
         }
