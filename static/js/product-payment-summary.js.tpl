@@ -22,6 +22,7 @@
     }
     function update(root, variant) {
         root = root || document;
+        if (window.LS && window.LS.currency && window.LS.currency.code !== 'BRL') return;
         if (root.jquery || (root.length && !root.nodeType)) {
             Array.prototype.forEach.call(root, function (node) { update(node, variant); });
             return;

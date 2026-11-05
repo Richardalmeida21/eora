@@ -29,7 +29,7 @@
                             <div class="mb-4 mr-md-1" data-store="product-item-price-{{ product.id }}">
                                 <span class="js-price-display h2 font-family-body font-weight-bold"></span>
                                 <span class="js-compare-price-display price-compare h3 font-family-body font-weight-normal ml-2"></span>
-                                <div style="display:none">
+                                <div class="eora-native-quickshop-discount">
                                     {{ component('payment-discount-price', {
                                         visibility_condition: settings.payment_discount_price,
                                         location: 'product',

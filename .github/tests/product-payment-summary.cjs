@@ -29,7 +29,7 @@ Twig.extendFunction('component', () => '<span class="js-max-installments-contain
   const card=fixture.render('snipplets/bolsas-eora/product-card.tpl',{...fixture.context(),product:fixture.product(1)});
   for (const width of [1440,390]) {
    await page.setViewportSize({width,height:900});
-   await page.setContent('<style>'+read('static/css/bolsas-eora.css')+read('static/css/product-commerce.css')+'</style><main class="be-page"><div style="width:180px">'+card+'</div></main>');
+   await page.setContent('<html class="eora-commerce-brl"><style>'+read('static/css/bolsas-eora.css')+read('static/css/product-commerce.css')+'</style><main class="be-page"><div style="width:180px">'+card+'</div></main>');
    const boxes=await page.evaluate(()=>({price:document.querySelector('.be-product__price').getBoundingClientRect().toJSON(),summary:document.querySelector('[data-eora-payments]').getBoundingClientRect().toJSON(),card:document.querySelector('.be-product').getBoundingClientRect().toJSON()}));
    assert(boxes.summary.y>=boxes.price.bottom,'payment summary must follow price vertically on campaign cards');
    assert(boxes.summary.right<=boxes.card.right,'payment summary must fit a narrow product card');

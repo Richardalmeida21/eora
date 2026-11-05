@@ -33,7 +33,7 @@
                 })
             }}
             {% if settings.payment_discount_price and not reduced_item %}
-                <span class="discount-pix" style="display:none;">
+                <span class="discount-pix">
                     <svg class="icon-inline icon-w-14"><use xlink:href="#pix"/></svg>
                     {{ component('payment-discount-price', {
                             visibility_condition: settings.payment_discount_price and not reduced_item,

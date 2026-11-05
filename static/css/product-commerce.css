@@ -1,4 +1,6 @@
-.eora-product-payments{display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:12px;line-height:1.45;font-weight:400;color:#5d5853;letter-spacing:0;text-transform:none}
+html.eora-commerce-brl .eora-product-payments{display:flex}
+html.eora-commerce-brl .eora-native-list-installments,html.eora-commerce-brl .discount-pix,html.eora-commerce-brl .eora-native-quickshop-discount{display:none!important}
+.eora-product-payments{display:none;flex-direction:column;gap:6px;margin-top:8px;font-size:12px;line-height:1.45;font-weight:400;color:#5d5853;letter-spacing:0;text-transform:none}
 .eora-product-payments[hidden],.eora-product-payments [hidden]{display:none!important}
 .eora-product-payments__pix{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
 .eora-product-payments__pix strong{font-weight:600;color:#315d4d}

@@ -321,6 +321,7 @@
         {# Loads private Tiendanube JS #}
 
         {% head_content %}
+        <script>if (window.LS && LS.currency && LS.currency.code === 'BRL') document.documentElement.classList.add('eora-commerce-brl');</script>
 
         {# Martz must load after the GTM/GA4 integrations injected above. #}
         {% if not params.preview %}
