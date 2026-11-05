@@ -68,6 +68,7 @@
             var drop = drops[i], toggle = drop.querySelector('.dropdown-toggle');
             if (!toggle || !toggle.getClientRects().length) continue;
             if (!drop.classList.contains('open')) toggle.click();
+            if (!drop.classList.contains('open')) return false;
             var input = drop.querySelector('.js-shipping-input, input[name="zipcode"]');
             drop.scrollIntoView({behavior: 'smooth', block: 'center'});
             if (input && input.getClientRects().length) input.focus({preventScroll: true});
@@ -80,6 +81,11 @@
         if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         var url = new URL(link.href, window.location.href);
         if (url.origin === window.location.origin && url.pathname.replace(/\/$/, '') === window.location.pathname.replace(/\/$/, '') && openShipping()) event.preventDefault();
+    });
+    window.addEventListener('hashchange', function () {
+        if (window.location.hash !== '#shipping') return;
+        if (window.LS && window.LS.ready && typeof window.LS.ready.then === 'function') window.LS.ready.then(openShipping);
+        else openShipping();
     });
     if (window.location.hash === '#shipping') {
         var attempt = function () {
