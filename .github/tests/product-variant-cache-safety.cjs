@@ -1,1 +1,3 @@
 ﻿const fs=require('fs'),assert=require('assert');const layout=fs.readFileSync('layouts/layout.tpl','utf8'),script=fs.readFileSync('static/js/eora-variations.js.tpl','utf8');assert(!layout.includes("params.eora_variant_feed"),'product feed must not intercept store pages');assert(!script.includes("eora_variant_feed"),'variant loading must use the native page URL');console.log('PASS safe product variant loading');
+
+for(const p of ['maxivertice.html','hobo.html','vertice.html']) assert(!fs.readFileSync(p,'utf8').includes('eora_variant_feed'),p+' must not use unsupported query');

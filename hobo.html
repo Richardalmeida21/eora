@@ -1053,51 +1053,45 @@
     var eoraPageCache = {};
     
     function prefetchVariationPages(items) {
-        // Discover names with metadata; complete descriptions are only warmed on intent.
-        var metadata = prefetchVariationPages.metadata || (prefetchVariationPages.metadata = {});
         items.forEach(function (item) {
             var path = normalizePathname(item.href);
-            if (!path || path === normalizePathname(window.location.href)) return;
-
-            function updateName(html) {
-                var tempDoc = new DOMParser().parseFromString(html, 'text/html');
-                var extractedName = autoGetVariationName(tempDoc);
-                var swatch = document.querySelector('.eora-bolsa-var-item[data-href-path="' + path + '"]');
-                if (swatch && extractedName) swatch.setAttribute('data-name', extractedName);
-            }
-
-            var swatch = document.querySelector('.eora-bolsa-var-item[data-href-path="' + path + '"]');
-            if (swatch && !swatch.hasAttribute('data-eora-prefetch-ready')) {
-                swatch.setAttribute('data-eora-prefetch-ready', '');
-                function warmFullPage() {
-                    if (eoraPageCache[path]) return;
-                    // Store the promise immediately so touch, hover and navigation share it.
-                    var request = fetch(path).then(function (response) {
-                        if (!response.ok) throw new Error('product-prefetch-failed');
-                        return response.text();
-                    }).then(function (html) {
+            if (!path || eoraPageCache[path]) return;
+            
+            var doFetch = function () {
+                fetch(path)
+                    .then(function (r) { return r.text(); })
+                    .then(function (html) {
                         eoraPageCache[path] = html;
-                        updateName(html);
-                        return html;
-                    }).catch(function (error) {
-                        delete eoraPageCache[path];
-                        throw error;
-                    });
-                    eoraPageCache[path] = request;
-                    request.catch(function () {});
-                }
-                ['mouseover', 'focus', 'touchstart'].forEach(function (event) {
-                    swatch.addEventListener(event, warmFullPage, {passive: true});
-                });
+                        try {
+                            var parser = new DOMParser();
+                            var tempDoc = parser.parseFromString(html, 'text/html');
+                            var extractedName = autoGetVariationName(tempDoc);
+                            if (extractedName) {
+                                var swatch = document.querySelector('.eora-bolsa-var-item[data-href-path="' + path + '"]');
+                                if (swatch) {
+                                    swatch.setAttribute('data-name', extractedName);
+                                    if (swatch.classList.contains('eora-active')) {
+                                        window.eoraActiveVariationName = extractedName;
+                                        var varTitleEl = document.querySelector('.eora-nome-variacao');
+                                        if (varTitleEl) {
+                                            varTitleEl.style.display = 'block';
+                                            varTitleEl.innerHTML = extractedName;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Error post-processing prefetched variation page:', e);
+                        }
+                    })
+                    .catch(function () {});
+            };
+            
+            if (typeof requestIdleCallback === 'function') {
+                requestIdleCallback(doFetch);
+            } else {
+                setTimeout(doFetch, 1000);
             }
-
-            if (metadata[path]) return;
-            var url = new URL(path, window.location.origin);
-            url.searchParams.set('eora_variant_feed', '1');
-            metadata[path] = fetch(url.href, {credentials: 'same-origin'}).then(function (response) {
-                if (!response.ok) throw new Error('product-metadata-failed');
-                return response.text();
-            }).then(updateName).catch(function () { delete metadata[path]; });
         });
     }
 
