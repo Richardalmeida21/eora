@@ -14,3 +14,10 @@ html.eora-commerce-brl .eora-native-list-installments,html.eora-commerce-brl .di
 .eora-product-payments__pix>svg{width:14px;height:14px;flex:0 0 14px;color:#315d4d}
 .eora-product-payments__pix{color:#315d4d}
 .eora-product-payments__shipping{display:block;margin-top:6px}
+
+/* Space between featured products and the institutional message on mobile. */
+@media(max-width:767px){
+  .template-home [data-store="home-products-favorites"] .js-swiper-new-pagination{display:none!important}
+  .template-home [data-store="home-products-favorites"] .container-fluid.my-5{margin-bottom:12px!important}
+  .template-home [data-store="home-products-favorites"] + [data-store="home-institutional-message"]{margin-top:20px!important}
+}
