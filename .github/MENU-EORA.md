@@ -8,6 +8,8 @@ Na home, o cabeçalho transparente usa inversão de cores e uma versão branca d
 
 O cabeçalho principal no celular reserva uma área para a wishlist antes de o Selly carregar. `eora-header.css` distribui menu, logo e ações conforme a largura disponível, sem os recuos globais que faziam o coração cobrir o logo em telas menores. O contador permanece dentro do botão. As posições explícitas da grade permitem notificações opcionais; se habilitado, o seletor de idiomas ocupa uma linha própria. O desktop mantém a disposição nativa. `header-wishlist-browser.cjs` usa o Twig e os SCSS reais e verifica 12 larguras entre 320 e 1199 px, rotação, DPR 1/3, carregamento/reinserção do widget, contadores, versões do logo, clique e configurações opcionais. Requer `sass`, `twig`, `jquery` e `playwright`; `EORA_HEADER_ENGINE=webkit` seleciona WebKit, e `BE_BROWSER` pode indicar o executável local.
 
+Em telas até 767 px, o modo de transparência `all` mantém a sobreposição no banner principal e aplica `eora-header-solid` quando o conteúdo seguinte alcança a barra. O limite compara o banner visível com o fundo do cabeçalho, incluindo imagem mobile separada e margens negativas. A barra permanece opaca nas duas direções de rolagem; retornar ao início restaura o efeito original. `resize` e `pageshow` atualizam o estado. A regra também vence os antigos fundos transparentes de `.compress` e `.head-transparent-only`, com logo e ícones na cor configurada. O desktop conserva a transparência e o hover. Validação: `node --test .github/tests/home-mobile-recovery.cjs` (dependências `twig`, `jquery` e `jsdom`).
+
 ## Abrir a prévia
 
 ```powershell

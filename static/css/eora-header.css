@@ -2,6 +2,22 @@
 .eora-header-wishlist { display: inline-flex; align-items: center; }
 .eora-header-wishlist:empty { display: none; }
 
+@media (max-width: 767px) {
+  .head-main.eora-header-solid {
+    background: var(--header-background, #fff) !important;
+    mix-blend-mode: normal !important;
+    isolation: auto !important;
+  }
+  .head-main.eora-header-solid .head-logo-row,
+  .head-main.eora-header-solid .head-logo-row * {
+    color: var(--header-foreground, #111) !important;
+    fill: var(--header-foreground, #111) !important;
+  }
+  .head-main.eora-header-solid:has(.logo-header-transparent) .logo-img:not(.logo-header-transparent) { opacity: 0 !important; }
+  .head-main.eora-header-solid .logo-header-transparent { opacity: 1 !important; }
+  .head-main.eora-header-solid .head-logo-row .js-cart-widget-amount { color: var(--header-background, #fff) !important; }
+}
+
 @media (max-width: 1199px) {
   .head-main .eora-header-row {
     --eora-header-action-width: 36px;

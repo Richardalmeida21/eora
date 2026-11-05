@@ -49,6 +49,8 @@
                                              style="padding-bottom: {{ bs_padding_bottom }}%;">
                                             <img src="{{ 'images/empty-placeholder.png' | static_url }}"
                                                  data-src="{{ slide.image | static_url | settings_image_url('large') }}"
+                                                 data-banner-fallback="{{ slide.image | static_url | settings_image_url('large') }}"
+                                                 data-banner-fallback-secondary="{{ slide.image | static_url | settings_image_url('huge') }}"
                                                  data-srcset="{{ slide.image | static_url | settings_image_url('large') }} 480w, {{ slide.image | static_url | settings_image_url('huge') }} 640w, {{ slide.image | static_url | settings_image_url('original') }} 1024w, {{ slide.image | static_url | settings_image_url('xlarge') }} 1400w, {{ slide.image | static_url | settings_image_url('1080p') }} 1920w"
                                                  data-sizes="auto"
                                                  class="lazyautosizes lazyload"
@@ -197,6 +199,25 @@
 
     <script>
         (function () {
+            var section = document.querySelector('[data-store="home-banners-scroll"]');
+            if (section && !section.hasAttribute('data-banner-recovery')) {
+                section.setAttribute('data-banner-recovery', '1');
+                section.addEventListener('error', function (event) {
+                    var image = event.target;
+                    if (!image || image.tagName !== 'IMG') return;
+                    var retries = Number(image.getAttribute('data-banner-retries') || 0);
+                    var fallback = image.getAttribute(retries === 0 ? 'data-banner-fallback' : 'data-banner-fallback-secondary');
+                    if (!fallback || retries >= 2) return;
+                    image.setAttribute('data-banner-retries', String(retries + 1));
+                    // Stop the failed responsive candidate from being selected again.
+                    image.removeAttribute('srcset');
+                    image.removeAttribute('data-srcset');
+                    image.removeAttribute('data-src');
+                    image.classList.remove('lazyload', 'lazyloading');
+                    image.src = fallback;
+                }, true);
+            }
+
             function initBannersScroll() {
                 if (typeof Swiper === 'undefined') return false;
                 var el = document.querySelector('.js-swiper-banners-scroll');

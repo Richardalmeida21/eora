@@ -17,6 +17,8 @@ Os banners revisados oferecem candidatos de 480, 640, 1024, 1400 e 1920 px com d
 
 A Nuvemshop não amplia uploads pequenos: `settings_image_url('original')` significa até 1024 px, `xlarge` até 1400 e `1080p` até 1920. Referência: [WebP e thumbnails](https://docs.tiendanube.com/help/webp-y-thumbnails). Ajustar o código ou a medida sugerida no personalizador não regenera detalhes ausentes dos arquivos antigos.
 
+O carrossel Banners Scroll da home recupera somente a imagem que falhar: tenta o mesmo banner em 480 px e depois 640 px, preservando o link e limitando a recuperação a duas requisições. Os URLs do CDN são mantidos sem parâmetros adicionais. As imagens que carregam normalmente conservam o `srcset` de alta resolução. O relato de 05/11/2026 mostrou a Mini Vértice quebrada no iPhone; todos os cinco tamanhos do arquivo responderam e foram decodificados na investigação, portanto a falha original de rede/CDN permanece intermitente. O comportamento de recuperação foi validado com uma falha simulada, além dos testes em `home-mobile-recovery.cjs`.
+
 Validação local:
 
 ```powershell

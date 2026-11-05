@@ -628,9 +628,6 @@ DOMContentLoaded.addEventOrExecute(() => {
 
     {% if settings.head_transparent and ((template == 'home' and settings.head_transparent_type == 'slider_and_video') or settings.head_transparent_type == 'all') %}
         var fixedNavTransparent = jQueryNuvem(".js-head-mutator");
-        var fixedNavTransparentHeight = fixedNavTransparent.height();
-        var videoSection = jQueryNuvem(".js-section-video");
-        var sliderSection = jQueryNuvem(".js-home-main-slider-container");
 
         {# Components validations #}
 
@@ -648,45 +645,37 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         {% if remove_header_transparent_on_scroll_stop %}
 
-            if (window.innerWidth < 768) {
-
+            function updateMobileHeaderTransparency() {
+                var isMobile = window.innerWidth < 768;
+                if (!isMobile) {
+                    fixedNavTransparent.removeClass('eora-header-solid').addClass('head-transparent');
+                    return;
+                }
+                var solid = window.scrollY > fixedNavTransparent.height();
                 {% if template == 'home' and (has_video_above_the_fold or has_slider_above_the_fold) %}
-                    {% if has_slider_above_the_fold %}
-                        removeTransparentLimit = sliderSection.height();
-                    {% else %}
-                        removeTransparentLimit = videoSection.height();
-                    {% endif %}
-                {% else %}
-                    removeTransparentLimit = fixedNavTransparentHeight;
-                {% endif %}
-
-                var isScrolling;
-
-                window.addEventListener('scroll', function ( event ) {
-
-                    fixedNavTransparent.addClass('head-transparent');
-                    $category_controls.addClass('category-controls-transparent');
-
-                    // Clear our timeout throughout the scroll
-                    window.clearTimeout(isScrolling);
-
-                    // Set a timeout to run after scrolling ends
-                    isScrolling = setTimeout(function() {
-
-                        if((window.scrollY > removeTransparentLimit)){
-
-                            // Stopped scrolling
-                            fixedNavTransparent.removeClass('head-transparent');
-                            $category_controls.removeClass('category-controls-transparent');
-                        }else {
-
-                            // Stopped scrolling on window top
-                            fixedNavTransparent.addClass('head-transparent');
-                            $category_controls.addClass('category-controls-transparent');
+                    var headerElement = document.querySelector('.js-head-mutator');
+                    var heroSections = document.querySelectorAll('{% if has_slider_above_the_fold %}.js-home-main-slider-visibility, .js-home-mobile-slider-visibility{% else %}.js-section-video{% endif %}');
+                    for (var i = 0; i < heroSections.length; i++) {
+                        var heroBounds = heroSections[i].getBoundingClientRect();
+                        if (heroBounds.height > 0 && heroBounds.width > 0 && headerElement) {
+                            solid = heroBounds.bottom <= headerElement.getBoundingClientRect().bottom;
+                            break;
                         }
-                    },  500);
-                }, false);
+                    }
+                {% endif %}
+                if (solid) {
+                    fixedNavTransparent.addClass('eora-header-solid').removeClass('head-transparent');
+                    $category_controls.removeClass('category-controls-transparent');
+                } else {
+                    fixedNavTransparent.removeClass('eora-header-solid').addClass('head-transparent');
+                    $category_controls.addClass('category-controls-transparent');
+                }
             }
+            // Keep titles behind an opaque bar while moving in either direction.
+            updateMobileHeaderTransparency();
+            window.addEventListener('scroll', updateMobileHeaderTransparency, {passive: true});
+            window.addEventListener('resize', updateMobileHeaderTransparency);
+            window.addEventListener('pageshow', updateMobileHeaderTransparency);
 
         {% endif %}
 

@@ -137,7 +137,7 @@
         <link rel="stylesheet" href="{{ 'css/style_above.scss' | static_url }}">
         
         <link rel="stylesheet" href="{{ 'css/style-critical.scss' | static_url }}">
-        <link rel="stylesheet" href="{{ 'css/eora-header.css' | static_url }}?v=20261030-1">
+        <link rel="stylesheet" href="{{ 'css/eora-header.css' | static_url }}?v=20261105-1">
         <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261030-4">
         <link rel="stylesheet" href="{{ 'css/product-commerce.css' | static_url }}?v=20261105-3">
         {% if template == 'product' %}<link rel="stylesheet" href="{{ 'css/product-whatsapp.css' | static_url }}?v=20261105-1">{% endif %}
