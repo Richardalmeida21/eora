@@ -20,6 +20,7 @@
                     <img src="{{ item.featured_image | product_image_url('large') }}" srcset="{{ item.featured_image | product_image_url('large') }} 480w, {{ item.featured_image | product_image_url('huge') }} 640w" sizes="(min-width: 1200px) 220px, 45vw" loading="lazy" width="640" height="800" alt="{{ item_name | escape }}" />
                     <span>{{ item_name }}</span>
                     {% if item.display_price %}<span class="eora-search-discovery__price">{{ item.price | money }}</span>{% endif %}
+                    {% include 'snipplets/product/payment-summary.tpl' with {payment_product: item, product: item, payment_link: false} %}
                 </a>
             {% endfor %}
         </div>

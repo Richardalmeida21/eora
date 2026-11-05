@@ -1,6 +1,8 @@
 {# Consultas internas das campanhas recebem somente o feed de produtos.
    As paginas normais continuam com o layout completo da loja. #}
-{% if (template == 'category' and (params.be_category_feed == '1' or params.oe_category_feed == '1' or params.bs_category_feed == '1')) or (template == 'search' and (params.be_feed == '4' or params.oe_feed == '4')) %}
+{% if template == 'product' and params.eora_variant_feed == '1' %}
+    {% include 'snipplets/product/product-variant-feed.tpl' %}
+{% elseif (template == 'category' and (params.be_category_feed == '1' or params.oe_category_feed == '1' or params.bs_category_feed == '1')) or (template == 'search' and (params.be_feed == '4' or params.oe_feed == '4')) %}
     {% template_content %}
 {% else %}
 {# Slider and video presence for header transparency check #}
@@ -138,6 +140,8 @@
         
         <link rel="stylesheet" href="{{ 'css/style-critical.scss' | static_url }}">
         <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261029-10">
+        <link rel="stylesheet" href="{{ 'css/product-commerce.css' | static_url }}">
+        {% if template == 'product' %}<link rel="stylesheet" href="{{ 'css/product-whatsapp.css' | static_url }}">{% endif %}
 
         {% set behind_lens_page = settings.behind_lens_page_url %}
         {% set is_behind_lens_page = page.handle == behind_lens_page %}
@@ -436,9 +440,13 @@
 
         {% if template == 'product' %}
             {# Capture editor image links before legacy description scripts remove the tables. #}
+            <script>{% include 'static/js/product-video-loading.js.tpl' %}</script>
+            <script>{% include 'static/js/product-whatsapp.js.tpl' %}</script>
             <script>{% include 'static/js/product-description-image-links.js.tpl' %}</script>
             <script>{% include 'static/js/product-image-quality.js.tpl' %}</script>
         {% endif %}
+
+        <script>{% include 'static/js/product-payment-summary.js.tpl' %}</script>
 
         {# Quickshop modal #}
 

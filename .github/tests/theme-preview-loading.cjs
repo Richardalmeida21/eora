@@ -23,6 +23,7 @@ const layoutSource = read('layouts/layout.tpl');
 const cardSource = read('snipplets/grid/item.tpl');
 const fixtureIds = new Set([...layoutSource.matchAll(/(?:include|snipplet)\s+["']([^"']+)["']/g)].map(match => match[1].startsWith('static/') || match[1].startsWith('snipplets/') ? match[1] : 'snipplets/' + match[1]));
 for (const match of cardSource.matchAll(/include\s+["']([^"']+)["']/g)) fixtureIds.add(match[1]);
+fixtureIds.delete('snipplets/product/payment-summary.tpl'); // Real shared payment snippet is registered by the campaign harness.
 const fixtures = {
     'snipplets/martz-data-layer.tpl': read('snipplets/martz-data-layer.tpl'),
     'snipplets/header/header.tpl': '<header><a href="/search/">Buscar</a><button id="fixture-cart">Carrinho</button></header>',

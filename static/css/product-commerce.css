@@ -1,0 +1,14 @@
+.eora-product-payments{display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:12px;line-height:1.45;font-weight:400;color:#5d5853;letter-spacing:0;text-transform:none}
+.eora-product-payments[hidden],.eora-product-payments [hidden]{display:none!important}
+.eora-product-payments__pix{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.eora-product-payments__pix strong{font-weight:600;color:#315d4d}
+.eora-product-payments__badge{padding:2px 6px;background:#eaf2ed;border-radius:0;color:#315d4d;font-size:10px;font-weight:600;white-space:nowrap}
+.eora-product-payments__shipping{color:inherit;font-size:11px;text-decoration:underline;text-underline-offset:3px}
+.eora-product-payments .item-installments{margin:0;font-size:inherit;line-height:inherit}
+@media(max-width:767px){.eora-product-payments{font-size:11px;gap:5px}.eora-product-payments__shipping{font-size:10px}}
+
+.be-page .be-product .be-product__info{display:block}
+.be-page .be-product .be-product__price{align-items:flex-start;margin-top:4px}
+.eora-product-payments__pix>svg{width:14px;height:14px;flex:0 0 14px;color:#315d4d}
+.eora-product-payments__pix{color:#315d4d}
+.eora-product-payments__shipping{display:block;margin-top:6px;padding-top:10px;border-top:1px solid #e8e8e8}

@@ -17,6 +17,7 @@ Twig.extendFilter('translate', value => value);
 Twig.extendFilter('money', value => (Number(value) / 100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
 function compile(file) { return Twig.twig({id: file, data: read(file), rethrow: true, allowInlineIncludes: true}); }
 compile('snipplets/product-name-pt.tpl');
+compile('snipplets/product/payment-summary.tpl');
 for (const file of fs.readdirSync(path.join(root, 'snipplets/navigation'))) if (file.startsWith('eora-') || ['navigation.tpl', 'navigation-panel.tpl', 'navigation-nav-list.tpl'].includes(file)) compile('snipplets/navigation/' + file);
 if (fs.existsSync(path.join(root, 'snipplets/header/search-discovery.tpl'))) compile('snipplets/header/search-discovery.tpl');
 const photos = ['onyx-lifestyle.webp', 'minivertice-lifestyle.webp', 'prism-lifestyle.webp', 'luar-lifestyle.webp'];

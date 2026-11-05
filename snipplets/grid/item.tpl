@@ -278,25 +278,8 @@
                                         </span>
                                     {% endif %}
 
-                                    {% set show_product_installments = settings.product_installments is not defined or settings.product_installments %}
-                                    {% set product_can_show_installments = product.show_installments and product.display_price and product.get_max_installments.installment > 1 and show_product_installments and not reduced_item %}
-
-                                    {# {% if settings.payment_discount_price %}
-                                        <span class="discount-pix">
-                                            <svg class="icon-inline icon-w-14"><use xlink:href="#pix"/></svg>
-                                            {{ component('payment-discount-price', {
-                                                    visibility_condition: settings.payment_discount_price and not reduced_item,
-                                                    location: 'product',
-                                                    container_classes: "font-small",
-                                                }) 
-                                            }}
-                                        </span>
-                                    {% endif %} #}
                                 </div>
-
-                                {% if product_can_show_installments %}
-                                    {{ component('installments', {'location' : 'product_item' , 'short_wording' : true, container_classes: { installment: "item-installments mt-2"}}) }}
-                                {% endif %}
+                                {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_link: false} %}
                             </div>
                         {% endif %}
                     </div>

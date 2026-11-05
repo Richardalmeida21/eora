@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const Twig=require('twig');const {chromium}=require('playwright');
+const source=fs.readFileSync(path.resolve(__dirname,'../../static/js/store.js.tpl'),'utf8');const start=source.indexOf('        {# /* // Fixed category controls */ #}');const end=source.indexOf('        {# /* // Filters */ #}',start);const fixed=Twig.twig({data:source.slice(start,end),rethrow:true}).render({});
+const scrollStart=source.indexOf('        var headerScrollTimer');const scrollEnd=source.indexOf('    {% if has_only_mobile_with_fixed_nav %}',source.indexOf('        function hasScrolled()'));const header=Twig.twig({data:source.slice(scrollStart,scrollEnd),rethrow:true}).render({template:'category'});
+const wrapper=`window.jQueryNuvem=selector=>{const el=document.querySelector(selector);return {length:el?1:0,outerHeight:()=>el?.getBoundingClientRect().height||0,hasClass:c=>!!el?.classList.contains(c),addClass(c){el?.classList.add(c);return this},removeClass(c){el?.classList.remove(c);return this},css(k,v){if(el)el.style[k]=v;return this}}};var $category_controls=jQueryNuvem('.js-category-controls');var nav_height=70;var topbarHeight=20;`;
+(async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.BE_BROWSER||'C:/Users/rcalmeida/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe'});try{
+for(const detector of [false,true]){
+ const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.setContent('<header class="js-head-main" style="height:70px"></header><div class="js-adbar" style="height:20px"></div>'+(detector?'<div class="js-category-controls"></div><section class="js-category-controls-prev"></section>':'')+'<main style="height:6000px"></main>');
+ await p.addScriptTag({content:wrapper+fixed});await p.waitForTimeout(50);assert.deepEqual(errors,[],detector?'native detector remains supported':'custom category without sticky detector must initialize safely');
+ if(detector){await p.evaluate(()=>offsetCategories());assert.equal(await p.locator('.js-category-controls').evaluate(e=>e.style.top),'70px')}
+ await p.close();
+}
+const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.setContent('<header class="js-head-main" style="height:70px"></header><div class="js-adbar" style="height:20px"></div><main style="height:6000px"></main>');await p.addScriptTag({content:wrapper+header});await p.evaluate(()=>scrollTo(0,500));await p.waitForTimeout(700);assert.deepEqual(errors,[],'header must tolerate category offset setup not being available yet');await p.close();
+console.log('PASS category lifecycle: native detector, custom categories without controls and header scroll before category setup.');
+}finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

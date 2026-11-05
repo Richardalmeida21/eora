@@ -143,9 +143,10 @@ async function display(page) {
         await changing.page.close();
 
         const prefetched = await fixture(browser, {swatches: '<div class="eora-bolsa-vars"><a class="eora-bolsa-var-item eora-active" data-href-path="/croco/" data-name="Nome antigo">Croco</a></div>'});
-        await prefetched.page.route('http://maxi.test/croco/', route => route.fulfill({contentType: 'text/html', body: '<!doctype html>' + productHtml({variants: [croco]})}));
+        await prefetched.page.route('http://maxi.test/croco/**', route => route.fulfill({contentType: 'text/html', body: '<!doctype html>' + productHtml({variants: [croco]})}));
         await prefetched.page.evaluate(() => {updateVariationName(document);prefetchVariationPages([{href: '/croco/'}]);});
-        await prefetched.page.waitForFunction(() => !!eoraPageCache['/croco/']);
+        await prefetched.page.waitForFunction(expected => document.querySelector('[data-href-path="/croco/"]').getAttribute('data-name') === expected, croco.option0);
+        assert.equal(await prefetched.page.evaluate(() => Object.keys(eoraPageCache).length), 0, 'nomes usam metadados sem baixar descricoes completas');
         assert.equal((await display(prefetched.page)).text, berinjela.option0, 'prefetch de outra referencia nao altera produto atual mesmo com swatch ativo antigo');
         assert.equal(await prefetched.page.locator('[data-href-path="/croco/"]').getAttribute('data-name'), croco.option0);
         assert.deepEqual(prefetched.errors, []);

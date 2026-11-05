@@ -1,0 +1,19 @@
+﻿'use strict';
+const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const {chromium}=require('playwright');
+const read=p=>fs.readFileSync(p,'utf8');
+test('commerce is wired into product, listing and variant lifecycle without replacing native purchase controls',()=>{
+ const f=read('snipplets/product/product-form.tpl'),l=read('layouts/layout.tpl'),s=read('static/js/store-product.js.tpl');
+ assert.match(f,/include 'snipplets\/product\/payment-summary\.tpl'/);assert.match(f,/include 'snipplets\/product\/product-whatsapp\.tpl'/);
+ assert.match(f,/js-addtocart/);assert.match(f,/product-shipping-container/);assert.match(l,/product-commerce\.css/);assert.match(l,/product-payment-summary\.js\.tpl/);
+ assert.match(s,/EoraProductPayments\.update/);assert.match(s,/LS\.fillQuickshop/);
+});
+test('freight link opens the visible native calculator without submitting it',async()=>{
+ const browser=await chromium.launch({executablePath:'C:/Users/rcalmeida/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe',headless:true});try{
+ const page=await browser.newPage();await page.setContent('<div style="display:none"><div class="shipping-dropdown"><button class="dropdown-toggle">Hidden</button><input name="zipcode"></div></div><main id="single-product"><a data-eora-shipping-link href="#shipping">Frete</a><div class="shipping-dropdown"><button type="button" class="dropdown-toggle">Calcular</button><div><input name="zipcode"></div></div></main>');
+ await page.evaluate(()=>document.querySelector('#single-product .dropdown-toggle').addEventListener('click',e=>e.currentTarget.parentElement.classList.toggle('open')));await page.addScriptTag({content:read('static/js/product-payment-summary.js.tpl')});
+ await page.locator('[data-eora-shipping-link]').click();assert.equal(await page.locator('#single-product .shipping-dropdown.open').count(),1);assert.equal(await page.evaluate(()=>document.activeElement.name),'zipcode');
+ }finally{await browser.close()}
+});
+test('quickshop inherits the selected card terms and its freight link',async()=>{
+ const browser=await chromium.launch({executablePath:'C:/Users/rcalmeida/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe',headless:true});try{const page=await browser.newPage();await page.setContent('<base href="https://eora.test/"><article id="source"><a class="item-link" href="/produtos/bolsa/">Bolsa</a><div data-eora-payments data-price-cents="10000"><b>5% OFF</b><span class="eora-product-payments__shipping">Frete e prazo pelo CEP</span></div></article><section id="modal"><div data-eora-payments hidden></div></section>');await page.addScriptTag({content:read('static/js/product-payment-summary.js.tpl')});await page.evaluate(()=>window.EoraProductPayments.openQuickshop(document.querySelector('#source'),document.querySelector('#modal')));assert.match(await page.locator('#modal').innerText(),/5% OFF/);assert.match(await page.locator('#modal [data-eora-shipping-link]').getAttribute('href'),/produtos\/bolsa\/#shipping/);assert.equal(await page.locator('#source [data-eora-payments]').count(),1);}finally{await browser.close()}
+});

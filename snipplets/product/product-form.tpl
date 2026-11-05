@@ -33,7 +33,7 @@
                 })
             }}
             {% if settings.payment_discount_price and not reduced_item %}
-                <span class="discount-pix">
+                <span class="discount-pix" style="display:none;">
                     <svg class="icon-inline icon-w-14"><use xlink:href="#pix"/></svg>
                     {{ component('payment-discount-price', {
                             visibility_condition: settings.payment_discount_price and not reduced_item,
@@ -50,6 +50,7 @@
         {% set hasDiscount = product.maxPaymentDiscount.value > 0 %}
         {% set show_payments_info = settings.product_detail_installments and product.show_installments and product.display_price and installments_info %}
         {% set show_modal_payments = settings.modal_pagamentos %}
+        {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_shipping_url: '#shipping', payment_native_installments: show_payments_info} %}
         {% if not home_main_product and (show_payments_info or hasDiscount) %}
             <div {% if show_modal_payments and installments_info %}data-toggle="#installments-modal" data-modal-url="modal-fullscreen-payments"{% endif %} class="{% if show_modal_payments and installments_info %}js-modal-open js-fullscreen-modal-open{% endif %} js-product-payments-container" {% if not (product.get_max_installments and product.get_max_installments(false)) %}style="display: none;"{% endif %}>
         {% endif %}
@@ -164,6 +165,8 @@
                 {% include 'snipplets/placeholders/button-placeholder.tpl' with {custom_class: "btn-big btn-add-to-cart"} %}
 
             </div>
+
+            {% include 'snipplets/product/product-whatsapp.tpl' %}
 
             {% if settings.ajax_cart %}
                 <div class="col-12">

@@ -18,7 +18,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
             const data = {...initial, settings: {...initial.settings,
                 bolsas_eora_community: small ? initial.settings.bolsas_eora_community.slice(0, 2) : initial.settings.bolsas_eora_community,
             }};
-            return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding-top:90px;font-family:Arial}.js-head-main{position:fixed;top:0;height:90px;width:100%;background:white;z-index:10}</style><header class="js-head-main">EORA</header>' + render('snipplets/bolsas-eora/index.tpl', data)});
+            return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/static/css/product-commerce.css"><style>body{margin:0;padding-top:90px;font-family:Arial}.js-head-main{position:fixed;top:0;height:90px;width:100%;background:white;z-index:10}</style><header class="js-head-main">EORA</header>' + render('snipplets/bolsas-eora/index.tpl', data)});
         });
         const idle = () => expect(page.locator('[data-be-results]')).toHaveAttribute('aria-busy', 'false');
         for (const width of [320, 390, 767, 768, 1440, 1920]) {

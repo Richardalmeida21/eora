@@ -47,8 +47,8 @@
     <div class="product-video-container">
         <!-- O vídeo será injetado aqui -->
         <div class="video-container">
-            <iframe class="product-video-iframe"
-                src="https://player.vimeo.com/video/1131913524?autoplay=1&muted=1&background=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1" 
+            <iframe loading="lazy" class="product-video-iframe"
+                data-eora-video-src="https://player.vimeo.com/video/1131913524?autoplay=1&muted=1&background=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1"
                 frameborder="0" 
                 allow="autoplay; fullscreen; picture-in-picture" 
                 allowfullscreen>

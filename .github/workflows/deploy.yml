@@ -11,8 +11,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Enviar apenas alterações
+      - name: Prepare and verify theme dependencies
+        env:
+          NODE_PATH: ${{ runner.temp }}/eora-deploy-deps/node_modules
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          npm install --prefix "$RUNNER_TEMP/eora-deploy-deps" --no-audit --no-fund basic-ftp@6.2.3
+          node --test .github/tests/stage-theme-dependencies.cjs
+          node .github/scripts/stage-theme-dependencies.cjs
+
+      - name: Deploy theme changes
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.nuvemshop.com.br

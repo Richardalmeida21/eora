@@ -21,12 +21,12 @@ for (const row of routes) {
     for (const url of ['/produtos/' + slug, '/produtos/' + slug + '/', 'https://www.eoraeyewear.com/produtos/' + slug + '/?preview=1#foto']) {
         const html = render('snipplets/bolsas-eora/product-card.tpl', {product: {...fakeProduct(row), url}});
         const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
-        assert.deepEqual(links, Array(3).fill(destination(index)), slug);
+        assert.deepEqual(links, Array(3).fill(destination(index)).concat(destination(index) + '#shipping'), slug);
     }
 }
 for (const url of ['/produtos/luar/', '/produtos/luar/?vi=4', '/produtos/luar-novo/', '/produtos/nova7/', '/produtos/bolsa/']) {
     const html = render('snipplets/bolsas-eora/product-card.tpl', {product: product(999, 'teste', {url})});
-    assert([...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].every(match => match[1] === url), 'produto original/outros preservados: ' + url);
+    assert([...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].every(match => match[1] === url || match[1] === url + '#shipping'), 'produto original/outros preservados: ' + url);
 }
 const home = fs.readFileSync(path.join(root, 'layouts/layout.tpl'), 'utf8');
 for (const [slug, index] of routes.slice(1)) {

@@ -521,12 +521,12 @@ DOMContentLoaded.addEventOrExecute(() => {
       });
     };
 
-    // Attach observer to every [data-transition] element:
+    // All transitions share the same viewport observer and callback.
     const ELs_inViewport = document.querySelectorAll('[data-transition]');
+    const transitionObserver = ELs_inViewport.length ? new IntersectionObserver(inViewport) : null;
     ELs_inViewport.forEach(EL => {
       EL.observed = false; // Initialize the observed flag for each element
-      const Obs = new IntersectionObserver(inViewport);
-      Obs.observe(EL);
+      transitionObserver.observe(EL);
     });
 
     applyMarqueeAnimation = function(marqueeSelector, textSelector, textDirection){
@@ -912,22 +912,19 @@ DOMContentLoaded.addEventOrExecute(() => {
 
         {# Show and hide mobile nav on scroll #}
 
-        var didScroll;
+        var headerScrollTimer = null;
         var lastScrollTop = 0;
         var delta = 30;
         var navbarHeight = jQueryNuvem(".js-head-main").outerHeight();
         var topbarHeight = jQueryNuvem(".js-adbar").outerHeight();
 
-        window.addEventListener("scroll", function(event){
-            didScroll = true;
-        });
-
-        setInterval(function() {
-            if (didScroll) {
+        window.addEventListener("scroll", function(){
+            if (headerScrollTimer !== null) return;
+            headerScrollTimer = window.setTimeout(function() {
+                headerScrollTimer = null;
                 hasScrolled();
-                didScroll = false;
-            }
-        }, 250);
+            }, 250);
+        }, {passive: true});
 
         function hasScrolled() {
             var st = window.pageYOffset;
@@ -942,7 +939,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                 {% if template == 'category' %}
                     if (window.innerWidth < 768) {
                         setTimeout(function(){
-                            offsetCategories();
+                            if (typeof offsetCategories === 'function') offsetCategories();
                         },300);
                     }
                 {% endif %}
@@ -961,7 +958,7 @@ DOMContentLoaded.addEventOrExecute(() => {
                     {% if template == 'category' %}
                         if (window.innerWidth < 768) {
                             setTimeout(function(){
-                                offsetCategories();
+                                if (typeof offsetCategories === 'function') offsetCategories();
                             },300);
                         }
                     {% endif %}
@@ -2641,8 +2638,8 @@ DOMContentLoaded.addEventOrExecute(() => {
             if (destino && embedUrl) {
                 destino.innerHTML = `
                     <div class="product-video-container">
-                        <iframe 
-                            src="${embedUrl}" 
+                        <iframe loading="lazy"
+                            data-eora-video-src="${embedUrl}"
                             frameborder="0" 
                             allow="autoplay; fullscreen; picture-in-picture" 
                             allowfullscreen>
@@ -3106,14 +3103,17 @@ DOMContentLoaded.addEventOrExecute(() => {
 
                 {# Detect if category controls are sticky and add css #}
 
-                var observer = new IntersectionObserver(function(entries) {
-                    if(entries[0].intersectionRatio === 0)
-                        $category_controls.addClass("is-sticky");
-                    else if(entries[0].intersectionRatio === 1)
-                        $category_controls.removeClass("is-sticky");
-                    }, { threshold: [0,1]
-                });
-                observer.observe(document.querySelector(".js-category-controls-prev"));
+                var categoryControlsDetector = document.querySelector(".js-category-controls-prev");
+                if (categoryControlsDetector) {
+                    var observer = new IntersectionObserver(function(entries) {
+                        if(entries[0].intersectionRatio === 0)
+                            $category_controls.addClass("is-sticky");
+                        else if(entries[0].intersectionRatio === 1)
+                            $category_controls.removeClass("is-sticky");
+                        }, { threshold: [0,1]
+                    });
+                    observer.observe(categoryControlsDetector);
+                }
 
                 offsetCategories = function() {
                     var $sticky_category_controls = jQueryNuvem(".js-category-controls");

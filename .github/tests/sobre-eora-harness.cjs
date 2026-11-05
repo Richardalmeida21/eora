@@ -15,7 +15,7 @@ Twig.extendFilter('is_external', value => /^https?:\/\//.test(value || ''));
 const compile = (id, data) => Twig.twig({id, data, rethrow: true, allowInlineIncludes: true});
 const files = fs.existsSync(path.join(root, 'snipplets/sobre-eora')) ? fs.readdirSync(path.join(root, 'snipplets/sobre-eora')) : [];
 for (const file of files) compile('snipplets/sobre-eora/' + file, fs.readFileSync(path.join(root, 'snipplets/sobre-eora', file), 'utf8'));
-for (const file of ['product-name-pt.tpl', 'bolsas-eora/product-card.tpl']) compile('snipplets/' + file, fs.readFileSync(path.join(root, 'snipplets', file), 'utf8'));
+for (const file of ['product-name-pt.tpl', 'product/payment-summary.tpl', 'bolsas-eora/product-card.tpl']) compile('snipplets/' + file, fs.readFileSync(path.join(root, 'snipplets', file), 'utf8'));
 // A cópia privada de títulos não faz parte do repositório; o macro real usa o nome do catálogo.
 compile('snipplets/product-name-pt-v2-data.tpl', '');
 compile('snipplets/product-name-pt-v2-data.backup.tpl', '');

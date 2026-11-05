@@ -28,7 +28,7 @@ const executablePath = process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Loc
                 bolsas_eora_models: initial.settings.bolsas_eora_models.slice(0, 3),
                 bolsas_eora_banners: list.map(banner => ({...banner, description: showAll && !banner.description.includes(',todos') ? banner.description + ',todos' : banner.description})),
             }};
-            return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
+            return route.fulfill({contentType: 'text/html; charset=utf-8', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/static/css/product-commerce.css"><style>body{margin:0;font-family:Arial}</style>' + render('snipplets/bolsas-eora/index.tpl', data)});
         });
         const catalogBanners = page.locator('[data-be-results-grid] [data-be-catalog-banner]');
         const cards = page.locator('[data-be-results-grid] [data-be-product]');

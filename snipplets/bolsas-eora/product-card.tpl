@@ -68,6 +68,7 @@
                 {% if product.compare_at_price > product.price %}<del>{{ product.compare_at_price | money }}</del>{% endif %}
                 <span>{{ product.price | money }}</span>
             </div>
+            {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_shipping_url: be_product_url ~ '#shipping'} %}
         {% endif %}
     </div>
 </article>

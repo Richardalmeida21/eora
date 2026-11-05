@@ -96,6 +96,9 @@ DOMContentLoaded.addEventOrExecute(() => {
             {% endif %}
 
             LS.fillQuickshop($this);
+            if (window.EoraProductPayments) {
+                try { window.EoraProductPayments.openQuickshop(this.closest('.js-item-product'), document.querySelector('#quickshop-modal')); } catch (error) { console.warn('Eora payment summary:', error); }
+            }
 
             if (window.innerWidth < 768) {
                 {# Image dimensions #}
@@ -451,6 +454,11 @@ DOMContentLoaded.addEventOrExecute(() => {
             parent.find('.js-compare-price-display').text(variant.compare_at_price_short).show();
         } else {
             parent.find('.js-compare-price-display').hide();
+        }
+
+        if (window.EoraProductPayments) {
+            var paymentScope = variant.element ? parent : jQueryNuvem('#single-product, .eora-product-wrap');
+            try { window.EoraProductPayments.update(paymentScope, variant); } catch (error) { console.warn('Eora payment summary:', error); }
         }
 
         var button = parent.find('input[type="submit"].js-addtocart, button.js-addtocart:not(.js-addtocart-placeholder)');

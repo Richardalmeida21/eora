@@ -27,6 +27,7 @@ Twig.extendFunction('component', () => '');
 // Unrelated product option, shipping and navigation contents are fixtures; item,
 // labels, header modals and their modal shell are the original theme templates.
 for (const id of ['snipplets/selo-brand.tpl', 'snipplets/placeholders/button-placeholder.tpl', 'snipplets/product/product-variants.tpl', 'snipplets/product/product-quantity.tpl', 'snipplets/grid/item-colors.tpl', 'snipplets/header/header-search.tpl', 'snipplets/navigation/navigation-panel.tpl', 'snipplets/cart-panel.tpl', 'snipplets/notification-cart.tpl']) compile(id, '');
+compile('snipplets/product/payment-summary.tpl', read('snipplets/product/payment-summary.tpl'));
 compile('snipplets/labels.tpl', read('snipplets/labels.tpl'));
 compile('snipplets/modal.tpl', read('snipplets/modal.tpl'));
 const item = compile('cart-hook-item', process.env.PRODUCT_CART_ITEM_SOURCE ? fs.readFileSync(process.env.PRODUCT_CART_ITEM_SOURCE, 'utf8') : read('snipplets/grid/item.tpl'));
