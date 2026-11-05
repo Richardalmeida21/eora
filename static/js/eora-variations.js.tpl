@@ -224,6 +224,12 @@
     function discoverVariantsFromHtml(html) {
         var parsed = new DOMParser().parseFromString(html, 'text/html');
         var discovered = rememberVariants(parsed);
+        var mainImage = parsed.querySelector('#single-product .product-image-column .js-product-slide-img[data-srcset]');
+        if (mainImage) {
+            var candidates = mainImage.getAttribute('data-srcset').split(',');
+            var imageUrl = candidates[candidates.length - 1].trim().split(/\s+/)[0];
+            if (imageUrl) (new Image()).src = imageUrl;
+        }
         renderKnownVariants(document, normalizePath(window.location.href));
         discovered.forEach(prefetchPage);
     }
@@ -233,9 +239,7 @@
         if (!path || path === normalizePath(window.location.href) || prefetchedPaths[path]) return;
         if (pendingFetches[path]) return;
 
-        var metadataUrl = new URL(href, window.location.origin);
-        metadataUrl.searchParams.set('eora_variant_feed', '1');
-        pendingFetches[path] = fetch(metadataUrl.href, {
+        pendingFetches[path] = fetch(href, {
             credentials: 'same-origin',
             cache: 'force-cache'
         }).then(function (response) {
