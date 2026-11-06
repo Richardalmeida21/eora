@@ -190,11 +190,13 @@
         <div class="row {% if cart_page %}no-gutters{% endif %} mb-3 h4 font-family-body">
           <span class="col-auto {% if cart_page %}pl-md-0{% endif %}">{{ "Total" | translate }}:</span>
           <span class="js-cart-total {% if cart.free_shipping.cart_has_free_shipping %}js-free-shipping-achieved{% endif %} {% if cart.shipping_data.selected %}js-cart-saved-shipping{% endif %} col text-right {% if cart_page %}pr-md-0{% endif %}" data-component="cart.total" data-component-value={{ cart.total }}>{{ cart.total | money }}</span>
-          <span class="col-12 {% if cart_page %}pr-md-0{% endif %}">
+          {% if cart_page %}
+          <span class="col-12 pr-md-0">
             <div class="eora-cart-pix-whole" data-cart-total="{{ cart.total }}">
               <div class="eora-cart-pix-display text-right mt-1"></div>
             </div>
           </span>
+          {% endif %}
         </div>
 
         {# IMPORTANT Do not remove this hidden total, it is used by JS to calculate cart total #}
