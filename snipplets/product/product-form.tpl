@@ -50,7 +50,6 @@
         {% set hasDiscount = product.maxPaymentDiscount.value > 0 %}
         {% set show_payments_info = settings.product_detail_installments and product.show_installments and product.display_price and installments_info %}
         {% set show_modal_payments = settings.modal_pagamentos %}
-        {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_shipping_url: '#shipping', payment_native_installments: show_payments_info} %}
         {% if not home_main_product and (show_payments_info or hasDiscount) %}
             <div {% if show_modal_payments and installments_info %}data-toggle="#installments-modal" data-modal-url="modal-fullscreen-payments"{% endif %} class="{% if show_modal_payments and installments_info %}js-modal-open js-fullscreen-modal-open{% endif %} js-product-payments-container" {% if not (product.get_max_installments and product.get_max_installments(false)) %}style="display: none;"{% endif %}>
         {% endif %}
@@ -103,6 +102,7 @@
         {% endif %}
     </div>
 
+        {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_shipping_url: '#shipping', payment_native_installments: show_payments_info} %}
     </div>
     {# Product Description #}
     {% if settings.full_width_description %}
