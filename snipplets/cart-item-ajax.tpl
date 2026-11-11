@@ -44,6 +44,7 @@
                 labels_classes: {
                   group: 'my-2',
                   label: 'text-accent font-small mb-1',
+                  promotion: 'eora-cart-promotion-label',
                 },
               })
             }}
