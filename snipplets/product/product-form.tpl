@@ -104,12 +104,6 @@
 
         {% include 'snipplets/product/payment-summary.tpl' with {payment_product: product, payment_shipping_url: '#shipping', payment_native_installments: show_payments_info} %}
     </div>
-    {# Product Description #}
-    {% if settings.full_width_description %}
-        <div class="js-product-description-short product-description-short mb-3"></div>
-    {% endif %}
-
-
     {# Promotional text #}
 
     {{ component('promotions-details', {
@@ -128,6 +122,11 @@
         accordion_show_svg_id: 'chevron-down',
         accordion_hide_svg_id: 'chevron-down',
     }) }}
+
+    {# Keep the promotion above the short description, as in the campaign artwork. #}
+    {% if settings.full_width_description %}
+        <div class="js-product-description-short product-description-short mb-3"></div>
+    {% endif %}
 
     {# Product form, includes: Variants, CTA and Shipping calculator #}
 

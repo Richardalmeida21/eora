@@ -140,6 +140,7 @@
         <link rel="stylesheet" href="{{ 'css/eora-header.css' | static_url }}?v=20261105-1">
         <link rel="stylesheet" href="{{ 'css/eora-menu.css' | static_url }}?v=20261030-4">
         <link rel="stylesheet" href="{{ 'css/product-commerce.css' | static_url }}?v=20261105-3">
+        <link rel="stylesheet" href="{{ 'css/black-promotion.css' | static_url }}?v=20261111-1">
         {% if template == 'product' %}<link rel="stylesheet" href="{{ 'css/product-whatsapp.css' | static_url }}?v=20261105-1">{% endif %}
 
         {% set behind_lens_page = settings.behind_lens_page_url %}
@@ -447,6 +448,7 @@
         {% endif %}
 
         <script>{% include 'static/js/product-payment-summary.js.tpl' %}</script>
+        <script>{% include 'static/js/black-promotion.js.tpl' %}</script>
 
         {# Quickshop modal #}
 

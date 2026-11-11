@@ -1,0 +1,29 @@
+.eora-black-notice {
+    display: block;
+    margin: 24px 0 30px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: normal;
+    text-align: left;
+    text-transform: none;
+}
+.eora-black-notice__line { display: block; }
+.eora-black-notice strong { font-weight: 700; white-space: nowrap; }
+.eora-black-notice__deadline {
+    display: block;
+    margin-top: 16px;
+    color: #f76265;
+    font-weight: 700;
+}
+.eora-black-native { display: none !important; }
+.js-product-promo-container.eora-black-enhanced { width: 100%; max-width: none; }
+.js-cart-item .eora-black-notice,
+.js-total-promotions .eora-black-notice {
+    margin: 8px 0 12px;
+    font-size: 14px;
+}
+.js-cart-item .eora-black-notice__deadline,
+.js-total-promotions .eora-black-notice__deadline { margin-top: 12px; }
+.eora-cart-promotion-label.eora-black-enhanced { display: block; }
