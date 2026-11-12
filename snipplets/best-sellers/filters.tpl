@@ -5,7 +5,7 @@
     <header><h2 id="bs-filter-title">Filtros</h2><button type="button" data-bs-close-filters aria-label="Fechar filtros"><svg aria-hidden="true"><use xlink:href="#times"/></svg></button></header>
     <form data-bs-filter-form>
         <div class="be-filter-dialog__body">
-            <label class="be-model-select">Categoria<select name="bs_category"><option value="all">Todos os best sellers</option></select></label>
+            <label class="be-model-select">Categoria<select name="bs_category"><option value="all">{{ bs_all_label | default('Todos os best sellers') | escape }}</option></select></label>
             <label class="be-model-select">Modelo<select name="bs_model"><option value="">Todos os modelos</option>
                 {% for model in (settings.bolsas_eora_models | default([])) | merge(settings.oculos_eora_models | default([])) %}
                     {% if model.link %}<option value="{{ model.link | trim | escape }}">{{ model.title | default(model.link) | escape }}</option>{% endif %}

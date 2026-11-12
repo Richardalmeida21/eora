@@ -162,3 +162,64 @@ sobre_eora_community
 menu_search
 	name = Busca — Menu EORA
 	description = Escolha e ordene os 6 produtos do carrossel da busca. Três visíveis no computador, dois no celular.
+
+marcela_catalog_1
+	name = Favoritos da Marcela — Catálogo 1
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 1.
+marcela_catalog_2
+	name = Favoritos da Marcela — Catálogo 2
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 2.
+marcela_catalog_3
+	name = Favoritos da Marcela — Catálogo 3
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 3.
+marcela_catalog_4
+	name = Favoritos da Marcela — Catálogo 4
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 4.
+marcela_catalog_5
+	name = Favoritos da Marcela — Catálogo 5
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 5.
+marcela_catalog_6
+	name = Favoritos da Marcela — Catálogo 6
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 6.
+marcela_catalog_7
+	name = Favoritos da Marcela — Catálogo 7
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 7.
+marcela_catalog_8
+	name = Favoritos da Marcela — Catálogo 8
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 8.
+marcela_catalog_9
+	name = Favoritos da Marcela — Catálogo 9
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 9.
+marcela_catalog_10
+	name = Favoritos da Marcela — Catálogo 10
+	description = Selecione e arraste os produtos para definir a ordem do catálogo 10.
+marcela_look_1
+	name = Favoritos da Marcela — Look 1
+	description = Selecione e ordene até 2 produtos do look 1.
+marcela_look_2
+	name = Favoritos da Marcela — Look 2
+	description = Selecione e ordene até 2 produtos do look 2.
+marcela_look_3
+	name = Favoritos da Marcela — Look 3
+	description = Selecione e ordene até 2 produtos do look 3.
+marcela_look_4
+	name = Favoritos da Marcela — Look 4
+	description = Selecione e ordene até 2 produtos do look 4.
+marcela_look_5
+	name = Favoritos da Marcela — Look 5
+	description = Selecione e ordene até 2 produtos do look 5.
+marcela_look_6
+	name = Favoritos da Marcela — Look 6
+	description = Selecione e ordene até 2 produtos do look 6.
+marcela_look_7
+	name = Favoritos da Marcela — Look 7
+	description = Selecione e ordene até 2 produtos do look 7.
+marcela_look_8
+	name = Favoritos da Marcela — Look 8
+	description = Selecione e ordene até 2 produtos do look 8.
+marcela_look_9
+	name = Favoritos da Marcela — Look 9
+	description = Selecione e ordene até 2 produtos do look 9.
+marcela_look_10
+	name = Favoritos da Marcela — Look 10
+	description = Selecione e ordene até 2 produtos do look 10.

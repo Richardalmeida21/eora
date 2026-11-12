@@ -56,7 +56,9 @@
 	{% set settings_name = 'behind_lens_page' %}
 {% endif %}
 
-{% if page.handle == (settings.best_sellers_eora_page_url | default('best-sellers1') | trim('/')) or page.handle == 'best-sellers1' %}
+{% if page.handle == 'favoritosdamarcela' or page.handle == (settings.marcela_page_url | default('favoritosdamarcela') | trim('/')) %}
+    {% include 'snipplets/marcela/index.tpl' with {current_settings_name: settings_name | default('campaign_page_04')} %}
+{% elseif page.handle == (settings.best_sellers_eora_page_url | default('best-sellers1') | trim('/')) or page.handle == 'best-sellers1' %}
     {% include 'snipplets/best-sellers/index.tpl' with {current_settings_name: settings_name} %}
 {% elseif is_gift_guide_page %}
     <main>

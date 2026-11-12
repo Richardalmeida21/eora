@@ -10866,6 +10866,1238 @@ Bolsas Eora
 		gallery_height = 1000
 		gallery_more_info = true
 
+Favoritos da Marcela
+	meta
+		icon = star
+		advanced = true
+	description
+		description = Briefing outubro/2026: banner, categorias, catálogo, shop the look e conteúdos da Marcela. Fotos e GIFs: use o primeiro item de cada galeria. Os slots desativados ou incompletos não aparecem. Sem catálogo personalizado, mantém os produtos da Página de campanha 4.
+	text
+		name = marcela_page_url
+		description = Página associada (identificador da URL, sem barras)
+	i18n_input
+		name = marcela_title
+		description = Título da página
+	collapse
+		title = Banner principal — foto ou vídeo
+	checkbox
+		name = marcela_hero_enabled
+		description = Mostrar banner principal
+	gallery
+		name = marcela_hero_image
+		gallery_image = Foto desktop — 2400 × 800 px
+		gallery_link = Link opcional
+		gallery_width = 2400
+		gallery_height = 800
+		gallery_more_info = true
+	gallery
+		name = marcela_hero_image_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	text
+		name = marcela_hero_video
+		description = Vídeo desktop — link MP4, Vimeo ou YouTube (opcional)
+	text
+		name = marcela_hero_video_mobile
+		description = Vídeo mobile — link MP4, Vimeo ou YouTube (opcional)
+	i18n_input
+		name = marcela_hero_alt
+		description = Descrição acessível do banner
+	text
+		name = marcela_hero_link
+		description = Link do banner (opcional)
+	collapse
+		title = Categorias visuais — até 15 filtros por tag
+	i18n_input
+		name = marcela_categories_title
+		description = Título das categorias
+	description
+		description = 3 categorias visíveis no desktop e 2 no celular. Com mais de 3, aparece parte da próxima no desktop. Informe a tag exata dos produtos; ao clicar, o catálogo é filtrado e apenas a descrição escolhida fica aberta.
+	title
+		title = Categoria 1
+	checkbox
+		name = marcela_category_1_enabled
+		description = Ativar categoria 1
+	gallery
+		name = marcela_category_1_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_1_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_1_title
+		description = Nome da categoria
+	text
+		name = marcela_category_1_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_1_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_1_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_1_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 2
+	checkbox
+		name = marcela_category_2_enabled
+		description = Ativar categoria 2
+	gallery
+		name = marcela_category_2_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_2_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_2_title
+		description = Nome da categoria
+	text
+		name = marcela_category_2_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_2_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_2_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_2_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 3
+	checkbox
+		name = marcela_category_3_enabled
+		description = Ativar categoria 3
+	gallery
+		name = marcela_category_3_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_3_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_3_title
+		description = Nome da categoria
+	text
+		name = marcela_category_3_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_3_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_3_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_3_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 4
+	checkbox
+		name = marcela_category_4_enabled
+		description = Ativar categoria 4
+	gallery
+		name = marcela_category_4_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_4_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_4_title
+		description = Nome da categoria
+	text
+		name = marcela_category_4_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_4_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_4_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_4_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 5
+	checkbox
+		name = marcela_category_5_enabled
+		description = Ativar categoria 5
+	gallery
+		name = marcela_category_5_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_5_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_5_title
+		description = Nome da categoria
+	text
+		name = marcela_category_5_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_5_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_5_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_5_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 6
+	checkbox
+		name = marcela_category_6_enabled
+		description = Ativar categoria 6
+	gallery
+		name = marcela_category_6_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_6_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_6_title
+		description = Nome da categoria
+	text
+		name = marcela_category_6_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_6_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_6_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_6_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 7
+	checkbox
+		name = marcela_category_7_enabled
+		description = Ativar categoria 7
+	gallery
+		name = marcela_category_7_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_7_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_7_title
+		description = Nome da categoria
+	text
+		name = marcela_category_7_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_7_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_7_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_7_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 8
+	checkbox
+		name = marcela_category_8_enabled
+		description = Ativar categoria 8
+	gallery
+		name = marcela_category_8_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_8_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_8_title
+		description = Nome da categoria
+	text
+		name = marcela_category_8_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_8_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_8_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_8_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 9
+	checkbox
+		name = marcela_category_9_enabled
+		description = Ativar categoria 9
+	gallery
+		name = marcela_category_9_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_9_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_9_title
+		description = Nome da categoria
+	text
+		name = marcela_category_9_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_9_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_9_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_9_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 10
+	checkbox
+		name = marcela_category_10_enabled
+		description = Ativar categoria 10
+	gallery
+		name = marcela_category_10_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_10_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_10_title
+		description = Nome da categoria
+	text
+		name = marcela_category_10_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_10_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_10_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_10_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 11
+	checkbox
+		name = marcela_category_11_enabled
+		description = Ativar categoria 11
+	gallery
+		name = marcela_category_11_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_11_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_11_title
+		description = Nome da categoria
+	text
+		name = marcela_category_11_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_11_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_11_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_11_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 12
+	checkbox
+		name = marcela_category_12_enabled
+		description = Ativar categoria 12
+	gallery
+		name = marcela_category_12_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_12_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_12_title
+		description = Nome da categoria
+	text
+		name = marcela_category_12_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_12_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_12_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_12_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 13
+	checkbox
+		name = marcela_category_13_enabled
+		description = Ativar categoria 13
+	gallery
+		name = marcela_category_13_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_13_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_13_title
+		description = Nome da categoria
+	text
+		name = marcela_category_13_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_13_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_13_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_13_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 14
+	checkbox
+		name = marcela_category_14_enabled
+		description = Ativar categoria 14
+	gallery
+		name = marcela_category_14_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_14_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_14_title
+		description = Nome da categoria
+	text
+		name = marcela_category_14_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_14_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_14_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_14_order
+		description = Ordem no carrossel (menor número primeiro)
+	title
+		title = Categoria 15
+	checkbox
+		name = marcela_category_15_enabled
+		description = Ativar categoria 15
+	gallery
+		name = marcela_category_15_image
+		gallery_image = Foto desktop — 2160 × 960 px
+		gallery_link = Link opcional
+		gallery_width = 2160
+		gallery_height = 960
+		gallery_more_info = true
+	gallery
+		name = marcela_category_15_mobile
+		gallery_image = Foto mobile — 1600 × 2000 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2000
+		gallery_more_info = true
+	i18n_input
+		name = marcela_category_15_title
+		description = Nome da categoria
+	text
+		name = marcela_category_15_tag
+		description = Tag exata para filtrar (ex.: luar, prism ou bolsa)
+	textarea
+		name = marcela_category_15_description
+		description = Descrição exibida ao selecionar
+	text
+		name = marcela_category_15_link
+		description = Link ao abrir em nova aba (opcional)
+	text
+		name = marcela_category_15_order
+		description = Ordem no carrossel (menor número primeiro)
+	collapse
+		title = Catálogo — seleção e ordem dos produtos
+	checkbox
+		name = marcela_custom_catalog
+		description = Usar somente o catálogo abaixo (permite deixar a página sem produtos)
+	description
+		description = Selecione e arraste os produtos na organização de produtos em destaque: Favoritos da Marcela — Catálogo 1 a 10. Os slots aparecem na ordem de 1 a 10 e os produtos repetidos aparecem uma única vez. Começa com 3 fileiras: 12 produtos no desktop, 6 no celular. Mostrar mais expande outras 3 fileiras.
+	checkbox
+		name = marcela_catalog_1_enabled
+		description = Ativar catálogo 1
+	checkbox
+		name = marcela_catalog_2_enabled
+		description = Ativar catálogo 2
+	checkbox
+		name = marcela_catalog_3_enabled
+		description = Ativar catálogo 3
+	checkbox
+		name = marcela_catalog_4_enabled
+		description = Ativar catálogo 4
+	checkbox
+		name = marcela_catalog_5_enabled
+		description = Ativar catálogo 5
+	checkbox
+		name = marcela_catalog_6_enabled
+		description = Ativar catálogo 6
+	checkbox
+		name = marcela_catalog_7_enabled
+		description = Ativar catálogo 7
+	checkbox
+		name = marcela_catalog_8_enabled
+		description = Ativar catálogo 8
+	checkbox
+		name = marcela_catalog_9_enabled
+		description = Ativar catálogo 9
+	checkbox
+		name = marcela_catalog_10_enabled
+		description = Ativar catálogo 10
+	collapse
+		title = Shop the look — até 10 looks
+	i18n_input
+		name = marcela_looks_title
+		description = Título da seção de looks
+	description
+		description = 2 fotos por vez no desktop, com parte da terceira; 1 no celular. Cada foto abre até 2 produtos. Selecione e ordene os produtos em Favoritos da Marcela — Look 1 a 10, na organização de produtos em destaque.
+	title
+		title = Look 1
+	checkbox
+		name = marcela_look_1_enabled
+		description = Ativar look 1
+	gallery
+		name = marcela_look_1_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_1_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_1_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_1_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_1_order
+		description = Ordem no carrossel
+	title
+		title = Look 2
+	checkbox
+		name = marcela_look_2_enabled
+		description = Ativar look 2
+	gallery
+		name = marcela_look_2_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_2_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_2_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_2_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_2_order
+		description = Ordem no carrossel
+	title
+		title = Look 3
+	checkbox
+		name = marcela_look_3_enabled
+		description = Ativar look 3
+	gallery
+		name = marcela_look_3_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_3_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_3_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_3_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_3_order
+		description = Ordem no carrossel
+	title
+		title = Look 4
+	checkbox
+		name = marcela_look_4_enabled
+		description = Ativar look 4
+	gallery
+		name = marcela_look_4_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_4_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_4_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_4_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_4_order
+		description = Ordem no carrossel
+	title
+		title = Look 5
+	checkbox
+		name = marcela_look_5_enabled
+		description = Ativar look 5
+	gallery
+		name = marcela_look_5_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_5_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_5_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_5_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_5_order
+		description = Ordem no carrossel
+	title
+		title = Look 6
+	checkbox
+		name = marcela_look_6_enabled
+		description = Ativar look 6
+	gallery
+		name = marcela_look_6_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_6_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_6_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_6_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_6_order
+		description = Ordem no carrossel
+	title
+		title = Look 7
+	checkbox
+		name = marcela_look_7_enabled
+		description = Ativar look 7
+	gallery
+		name = marcela_look_7_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_7_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_7_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_7_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_7_order
+		description = Ordem no carrossel
+	title
+		title = Look 8
+	checkbox
+		name = marcela_look_8_enabled
+		description = Ativar look 8
+	gallery
+		name = marcela_look_8_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_8_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_8_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_8_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_8_order
+		description = Ordem no carrossel
+	title
+		title = Look 9
+	checkbox
+		name = marcela_look_9_enabled
+		description = Ativar look 9
+	gallery
+		name = marcela_look_9_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_9_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_9_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_9_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_9_order
+		description = Ordem no carrossel
+	title
+		title = Look 10
+	checkbox
+		name = marcela_look_10_enabled
+		description = Ativar look 10
+	gallery
+		name = marcela_look_10_image
+		gallery_image = Foto desktop — 1600 × 1600 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	gallery
+		name = marcela_look_10_mobile
+		gallery_image = Foto mobile — 1600 × 1600 px (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 1600
+		gallery_more_info = true
+	i18n_input
+		name = marcela_look_10_title
+		description = Título do look
+	i18n_input
+		name = marcela_look_10_button
+		description = Texto do botão (padrão: Ver o look)
+	text
+		name = marcela_look_10_order
+		description = Ordem no carrossel
+	collapse
+		title = Conteúdos da Marcela — até 10 fotos ou GIFs
+	i18n_input
+		name = marcela_founder_title
+		description = Título da seção de conteúdos
+	description
+		description = 4 conteúdos por vez no desktop, com parte do quinto; 1 no celular. Use fotos ou GIFs na proporção 2:3. O arquivo original é usado para preservar a animação do GIF.
+	title
+		title = Conteúdo 1
+	checkbox
+		name = marcela_founder_1_enabled
+		description = Ativar conteúdo 1
+	i18n_input
+		name = marcela_founder_1_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_1_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_1_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_1_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_1_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_1_link
+		description = Link do botão
+	text
+		name = marcela_founder_1_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 2
+	checkbox
+		name = marcela_founder_2_enabled
+		description = Ativar conteúdo 2
+	i18n_input
+		name = marcela_founder_2_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_2_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_2_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_2_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_2_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_2_link
+		description = Link do botão
+	text
+		name = marcela_founder_2_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 3
+	checkbox
+		name = marcela_founder_3_enabled
+		description = Ativar conteúdo 3
+	i18n_input
+		name = marcela_founder_3_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_3_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_3_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_3_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_3_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_3_link
+		description = Link do botão
+	text
+		name = marcela_founder_3_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 4
+	checkbox
+		name = marcela_founder_4_enabled
+		description = Ativar conteúdo 4
+	i18n_input
+		name = marcela_founder_4_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_4_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_4_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_4_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_4_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_4_link
+		description = Link do botão
+	text
+		name = marcela_founder_4_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 5
+	checkbox
+		name = marcela_founder_5_enabled
+		description = Ativar conteúdo 5
+	i18n_input
+		name = marcela_founder_5_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_5_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_5_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_5_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_5_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_5_link
+		description = Link do botão
+	text
+		name = marcela_founder_5_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 6
+	checkbox
+		name = marcela_founder_6_enabled
+		description = Ativar conteúdo 6
+	i18n_input
+		name = marcela_founder_6_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_6_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_6_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_6_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_6_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_6_link
+		description = Link do botão
+	text
+		name = marcela_founder_6_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 7
+	checkbox
+		name = marcela_founder_7_enabled
+		description = Ativar conteúdo 7
+	i18n_input
+		name = marcela_founder_7_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_7_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_7_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_7_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_7_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_7_link
+		description = Link do botão
+	text
+		name = marcela_founder_7_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 8
+	checkbox
+		name = marcela_founder_8_enabled
+		description = Ativar conteúdo 8
+	i18n_input
+		name = marcela_founder_8_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_8_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_8_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_8_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_8_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_8_link
+		description = Link do botão
+	text
+		name = marcela_founder_8_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 9
+	checkbox
+		name = marcela_founder_9_enabled
+		description = Ativar conteúdo 9
+	i18n_input
+		name = marcela_founder_9_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_9_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_9_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_9_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_9_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_9_link
+		description = Link do botão
+	text
+		name = marcela_founder_9_order
+		description = Ordem no carrossel
+	title
+		title = Conteúdo 10
+	checkbox
+		name = marcela_founder_10_enabled
+		description = Ativar conteúdo 10
+	i18n_input
+		name = marcela_founder_10_title
+		description = Título acima da foto ou GIF
+	gallery
+		name = marcela_founder_10_image
+		gallery_image = Foto ou GIF desktop — 1600 × 2400 px
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	gallery
+		name = marcela_founder_10_mobile
+		gallery_image = Foto ou GIF mobile (opcional)
+		gallery_link = Link opcional
+		gallery_width = 1600
+		gallery_height = 2400
+		gallery_more_info = true
+	textarea
+		name = marcela_founder_10_description
+		description = Descrição abaixo da foto ou GIF
+	i18n_input
+		name = marcela_founder_10_button
+		description = Texto do botão (padrão: Ver mais)
+	text
+		name = marcela_founder_10_link
+		description = Link do botão
+	text
+		name = marcela_founder_10_order
+		description = Ordem no carrossel
+
 Edición avanzada de CSS
 	meta
 		icon = code

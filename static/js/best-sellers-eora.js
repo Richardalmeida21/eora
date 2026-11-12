@@ -20,7 +20,7 @@
         var macroNav = one('.bs-macros');
         var mobileDescription = one('[data-bs-mobile-description]');
         macroNav.style.setProperty('--bs-macro-count', String(Math.max(1, macros.length)));
-        macroNav.classList.toggle('bs-macros--overflow', macros.length > 4);
+        macroNav.classList.toggle('bs-macros--overflow', macros.length > (Number(root.dataset.bsMacroVisible) || 4));
         macroNav.hidden = !macros.length;
         var byId = new Map(macros.map(function (item) { return [item.dataset.bsCategory, item]; }));
         var communityTemplates = new Map(all('[data-bs-community-template]').filter(function (template) {
@@ -30,16 +30,21 @@
         var products = [];
         var categoryBase = new URL(root.dataset.bsCategoryUrl, window.location.href);
         var nextUrl = new URL(categoryBase);
-        nextUrl.searchParams.set('bs_category_feed', '1');
+        var initialProducts = one('template[data-bs-initial-products]');
+        var inlineCatalog = root.hasAttribute('data-bs-inline-catalog');
+        if (inlineCatalog) nextUrl = null;
+        if (nextUrl) nextUrl.searchParams.set('bs_category_feed', '1');
         var preview = new URL(window.location.href).searchParams.get('preview');
-        if (preview) nextUrl.searchParams.set('preview', preview);
+        if (preview && nextUrl) nextUrl.searchParams.set('preview', preview);
         var visited = new Set();
         var catalogLoading = false;
         var catalogError = false;
         var category = 'all';
         var filters = {};
         var sorting = 'user';
-        var pageSize = 24;
+        var mobileCatalog = window.matchMedia('(max-width: 767px)');
+        function catalogPageSize() { return Number(mobileCatalog.matches ? root.dataset.bsMobilePageSize : root.dataset.bsPageSize) || 24; }
+        var pageSize = catalogPageSize();
         var limit = pageSize;
         var renderedProducts = [];
         var pendingMoreIndex = null;
@@ -288,7 +293,7 @@
                 if (mobileDescription.textContent !== descriptionText) mobileDescription.textContent = descriptionText;
                 mobileDescription.hidden = !descriptionText.trim();
             }
-            one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : filters.bs_new === '1' ? 'Lançamentos' : 'Todos os best sellers';
+            one('[data-bs-result-title]').textContent = macro ? macro.querySelector('.bs-macro__title').textContent : filters.bs_new === '1' ? 'Lançamentos' : (root.dataset.bsCatalogTitle || 'Todos os best sellers');
             var filterKeys = Object.keys(filters);
             var list = categoryProducts(category);
             if (filterKeys.length) list = list.filter(function (product) {
@@ -326,7 +331,8 @@
             sort.value = sorting;
             refreshCommunity();
         }
-        function resetLimit() { limit = pageSize; pendingMoreIndex = null; }
+        function resetLimit() { pageSize = catalogPageSize(); limit = pageSize; pendingMoreIndex = null; }
+        if (root.dataset.bsMobilePageSize) mobileCatalog.addEventListener('change', function () { resetLimit(); render(); });
         function writeUrl() {
             var url = new URL(window.location.href);
             ['bs_category', 'bs_filters', 'bs_sort'].forEach(function (key) { url.searchParams.delete(key); });
@@ -416,6 +422,11 @@
             });
         }
         window.addEventListener('popstate', readUrl);
+        if (inlineCatalog) {
+            if (initialProducts) appendProducts(initialProducts);
+            discoverModels();
+            root.dataset.bsCatalogReady = '1';
+        }
         readUrl();
         one('[data-bs-retry]').addEventListener('click', loadCatalog);
         loadCatalog();

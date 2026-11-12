@@ -1,0 +1,70 @@
+/* Favoritos da Marcela — briefing outubro/2026; regras restritas a esta pagina. */
+.mf-page { padding: 0 0 80px; }
+.mf-page .mf-content { padding: 0 clamp(12px, 2vw, 32px); }
+.mf-page .mf-hero { position: relative; width: 100%; aspect-ratio: 3 / 1; overflow: hidden; background: #f4f4f4; }
+.mf-hero picture, .mf-hero picture img, .mf-hero__video, .mf-hero__video > * { display: block; width: 100%; height: 100%; }
+.mf-hero picture img { object-fit: cover; }
+.mf-hero__video { position: absolute; inset: 0; pointer-events: none; }
+.mf-hero__video iframe { border: 0; }
+.mf-hero__video video { object-fit: cover; }
+.mf-hero__link { position: absolute; inset: 0; }
+.mf-media-toggle { position: absolute; bottom: 16px; right: 16px; z-index: 1; padding: 10px 14px; border: 1px solid #fff; color: #fff; background: rgba(0,0,0,.65); font-size: 12px; }
+.mf-page .mf-section-title { font-size: 16px; line-height: 1.4; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 20px; }
+.mf-page .bs-macros { margin: 32px 0 18px; --be-visible: min(var(--bs-macro-count), 3); --be-card-visible: min(var(--bs-macro-count), 3); }
+.mf-page .bs-macros--overflow { --be-visible: 3; --be-card-visible: 3.2; }
+.mf-page .bs-macros__track { --be-gap: 8px; }
+.mf-page .bs-macro__selection { border-width: 2px; }
+.mf-page .bs-macro__title { font-size: 12px; font-weight: 500; }
+.mf-page .bs-macro__description { font-size: 12px; text-align: left; }
+.mf-page .bs-toolbar { padding: 20px 0; margin-top: 6px; }
+.mf-page .bs-catalog .be-product-grid { column-gap: 6px; row-gap: 28px; }
+.mf-page .bs-catalog .be-product__info { padding: 12px 0 0; }
+.mf-page .be-results__more { display: block; margin: 32px auto 0; min-width: 148px; text-transform: uppercase; font-size: 11px; }
+.mf-page .mf-carousel { margin-top: 56px; }
+.mf-page .mf-track { display: flex; position: relative; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.mf-page .mf-track::-webkit-scrollbar { display: none; }
+.mf-track > * { flex: 0 0 calc((100% - (min(var(--mf-count), var(--mf-visible)) - 1) * 12px) / min(var(--mf-count), var(--mf-visible))); min-width: 0; scroll-snap-align: start; }
+.mf-carousel--overflow .mf-track > * { flex-basis: calc((100% - (var(--mf-visible) + .2 - 1) * 12px) / (var(--mf-visible) + .2)); }
+.mf-look__open { display: block; position: relative; width: 100%; padding: 0; border: 0; background: transparent; text-align: center; }
+.mf-look picture, .mf-founder-card picture { display: block; }
+.mf-look img, .mf-founder-card img { display: block; width: 100%; height: auto; object-fit: cover; }
+.mf-look img { aspect-ratio: 1; }
+.mf-founder-card img { aspect-ratio: 2 / 3; }
+.mf-look__caption { position: absolute; bottom: 12%; left: 10%; right: 10%; display: flex; align-items: center; flex-direction: column; gap: 16px; color: #fff; }
+.mf-look__caption strong { background: rgba(0,0,0,.45); padding: 6px 10px; font-size: 18px; font-weight: 500; text-transform: uppercase; }
+.mf-look__caption > span { padding: 10px 22px; border: 1px solid currentColor; background: rgba(0,0,0,.35); font-size: 12px; text-transform: uppercase; }
+.mf-founder-card { display: flex; flex-direction: column; align-items: stretch; text-align: center; }
+.mf-page .mf-founder-card h3 { margin: 0 0 16px; font-size: 13px; line-height: 1.5; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+.mf-page .mf-founder-card p { margin: 14px 10px; font-size: 12px; line-height: 1.7; white-space: pre-line; }
+.mf-founder-card > a { align-self: center; display: inline-block; margin: auto 0 0; padding: 10px; font-size: 11px; text-transform: uppercase; text-decoration: underline !important; text-underline-offset: 3px; }
+.mf-page .mf-look-dialog { position: fixed; inset: 0; margin: auto; width: min(1040px, calc(100% - 32px)); max-height: 90dvh; padding: 0; border: 0; color: #111; background: #fff; overflow-y: auto; overscroll-behavior: contain; }
+.mf-look-dialog::backdrop { background: rgba(0,0,0,.55); }
+.mf-look-dialog > header { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 24px; background: #fff; border-bottom: 1px solid #eee; }
+.mf-page .mf-look-dialog h2 { font-size: 14px; text-transform: uppercase; }
+.mf-look-dialog header button { display: grid; place-items: center; width: 44px; height: 44px; background: transparent; border: 0; }
+.mf-look-dialog__body { padding: 24px; }
+.mf-look-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.mf-look-detail > *, .mf-look-detail__selection { min-width: 0; }
+.mf-look-detail__photo img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.mf-page .mf-look-detail__selection > h3 { font-size: 16px; font-weight: 500; margin-bottom: 20px; }
+.mf-look-products { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+@media (max-width: 767px) {
+    .mf-page { padding-bottom: 64px; }
+    .mf-page .mf-content { padding: 0 12px; }
+    .mf-page .mf-hero { aspect-ratio: 4 / 5; }
+    .mf-page .mf-section-title { font-size: 13px; margin-bottom: 16px; }
+    .mf-page .bs-macros { margin-top: 24px; --be-visible: min(var(--bs-macro-count), 2); --be-card-visible: min(var(--bs-macro-count), 2); }
+    .mf-page .bs-macros--overflow { --be-visible: 2; --be-card-visible: 2; }
+    .mf-page .bs-macro__selection > picture > img { aspect-ratio: 3 / 4; }
+    .mf-page .bs-catalog .be-product-grid { column-gap: 6px; row-gap: 24px; }
+    .mf-page .mf-carousel { margin-top: 36px; --mf-visible: 1 !important; }
+    .mf-page .mf-carousel .mf-track > * { flex-basis: 100%; }
+    .mf-page .mf-look-dialog { width: calc(100% - 24px); max-height: 90dvh; }
+    .mf-look-dialog__body { padding: 16px; }
+    .mf-look-dialog > header { padding: 10px 16px; }
+    .mf-look-products { gap: 10px; }
+    .mf-look-detail { grid-template-columns: minmax(0,1fr); gap: 20px; }
+    .mf-look-detail__photo img { max-height: 36dvh; }
+    .mf-page .mf-founder-card p { margin: 16px 24px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .mf-page *, .mf-page *::before, .mf-page *::after { scroll-behavior: auto !important; } }

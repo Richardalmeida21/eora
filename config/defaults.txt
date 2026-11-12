@@ -248,3 +248,10 @@ eora_menu_favorites_title_pt = Favoritos Marcela
 eora_menu_warranty_title_pt = Garantia EORA
 eora_menu_new_title_pt = New in
 eora_menu_community_title_pt = Quem usa
+
+marcela_page_url = favoritosdamarcela
+marcela_title_pt = Favoritos da Marcela
+marcela_hero_enabled = 1
+marcela_categories_title_pt = Favoritos da Marcela
+marcela_looks_title_pt = Shop the look
+marcela_founder_title_pt = Conteúdos da Marcela
