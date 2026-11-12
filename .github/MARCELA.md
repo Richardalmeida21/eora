@@ -2,6 +2,13 @@
 
 Página `/favoritosdamarcela/`, conforme briefing de outubro/2026. As configurações ficam em **Favoritos da Marcela**, no menu principal do editor do tema.
 
+## Versão antiga no ar durante a preparação
+
+- Nova versão: `/favoritosdamarcela/`.
+- Versão antiga da campanha: `/favoritosdamarcela/?marcela_antiga=1`.
+- Enquanto **Ativar nova versão no menu** estiver desmarcado, os links e imagens do menu apontam para a versão antiga. A nova não é indexada enquanto estiver em preparação.
+- Quando estiver pronta, marque a opção e publique: o menu passa a apontar para o endereço normal. O endereço antigo continua disponível para conferência; removê-lo definitivamente será uma ação posterior.
+
 ## Cadastro
 
 1. **Banner principal:** primeira foto das galerias desktop e mobile, ou vídeo MP4/Vimeo/YouTube. Foto desktop 2400 × 800 px; mobile 1600 × 2000 px. O vídeo respeita redução de movimento e tem botão reproduzir/pausar. Sem nova foto, mantém o banner da campanha original.

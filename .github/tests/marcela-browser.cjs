@@ -30,14 +30,31 @@ for (const file of ['layouts/layout.tpl', 'static/js/store.js.tpl']) {
     const rules = read(file).match(/\{% set is_marcela_page =[^\n]+\n\s*\{% set is_best_sellers_eora_page =[^\n]+\n\s*\{% set is_on_campaign_page =[^\n]+/)[0];
     const Twig = require('twig');
     const template = Twig.twig({data: rules + '{{ is_on_campaign_page ? "legacy" : "dedicated" }}', rethrow: true});
-    const vars = {template: 'page', settings: {}, page: {handle: 'favoritosdamarcela'}, page_current_04: 'favoritosdamarcela', is_campaign_04: true};
-    assert.equal(template.render(vars).trim(), 'dedicated', 'new page must not initialize legacy campaign CSS/sliders');
+    const vars = {template: 'page', settings: {marcela_page_url: 'favoritosdamarcela'}, params: {}, page: {handle: 'favoritosdamarcela'}, page_current_04: 'favoritosdamarcela', is_campaign_04: true};
+    assert.equal(template.render(vars).trim(), 'dedicated', 'normal address belongs to the new page');
+    vars.params.marcela_antiga = '1';
+    assert.equal(template.render(vars).trim(), 'legacy', 'old address retains native campaign CSS/sliders');
+    vars.params = {}; vars.settings.marcela_page_url = 'pagina-marcela-configurada'; vars.page.handle = 'pagina-marcela-configurada';
+    assert.equal(template.render(vars).trim(), 'dedicated', 'configured new slug uses dedicated template');
     vars.page.handle = 'outra-campanha'; vars.page_current_04 = 'outra-campanha';
     assert.equal(template.render(vars).trim(), 'legacy');
 }
 for (const file of ['templates/page.tpl', 'snipplets/templates/page.tpl']) {
     assert(read(file).indexOf("include 'snipplets/marcela/index.tpl'") < read(file).indexOf('{% elseif is_on_page %}'));
+    const condition = read(file).match(/\{% if params\.marcela_antiga[^\n]+/)[0];
+    const Twig = require('twig');
+    const route = Twig.twig({data: condition + 'new{% else %}old{% endif %}', rethrow: true});
+    assert.equal(route.render({page: {handle: 'favoritosdamarcela'}, settings: {marcela_page_url: 'favoritosdamarcela'}, params: {}}).trim(), 'new');
+    assert.equal(route.render({page: {handle: 'favoritosdamarcela'}, settings: {}, params: {marcela_antiga: '1'}}).trim(), 'old');
 }
+const Twig = require('twig');
+Twig.twig({id: 'snipplets/navigation/eora-links.tpl', data: read('snipplets/navigation/eora-links.tpl'), rethrow: true, allowInlineIncludes: true});
+const menuLink = Twig.twig({data: "{% import 'snipplets/navigation/eora-links.tpl' as links %}{{ links.url('favorites', '/favoritosdamarcela/', settings) | trim }}", rethrow: true, allowInlineIncludes: true});
+assert.equal(menuLink.render({settings: {}}), '/favoritosdamarcela/?marcela_antiga=1');
+assert.equal(menuLink.render({settings: {eora_menu_favorites_url: 'https://www.eoraeyewear.com/favoritosdamarcela/'}}), '/favoritosdamarcela/?marcela_antiga=1');
+assert.equal(menuLink.render({settings: {marcela_launch_ready: true}}), '/favoritosdamarcela/');
+const menuGallery = Twig.twig({data: read('snipplets/navigation/eora-gallery.tpl'), rethrow: true, allowInlineIncludes: true});
+assert.match(menuGallery.render({settings: {}, images: [{image: 'mf-upload-hero.jpg', link: '/favoritosdamarcela/'}]}), /href="\/favoritosdamarcela\/\?marcela_antiga=1"/);
 const app = server(4180);
 
 (async () => {

@@ -16,6 +16,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://opengraphprotocol.org/schema/" lang="{% for language in languages %}{% if language.active %}{{ language.lang }}{% endif %}{% endfor %}">
     <head>
+        {% if template == 'page' and (params.marcela_antiga == '1' or (page.handle == 'favoritosdamarcela' and not settings.marcela_launch_ready)) %}<meta name="robots" content="noindex, nofollow">{% endif %}
         <link rel="preconnect" href="{{ store_resource_hints }}" />
         <link rel="dns-prefetch" href="{{ store_resource_hints }}" />
         <link rel="preconnect" href="https://vod-adaptive-ak.vimeocdn.com" />
@@ -81,7 +82,7 @@
         {% set page_current_08 = settings.campaign_page_08_url %}
         {% set page_current_09 = settings.campaign_page_09_url %}
         {% set page_current_10 = settings.campaign_page_10_url %}
-        {% set is_marcela_page = template == 'page' and (page.handle == 'favoritosdamarcela' or page.handle == (settings.marcela_page_url | default('favoritosdamarcela') | trim('/'))) %}
+        {% set is_marcela_page = template == 'page' and params.marcela_antiga != '1' and (page.handle == 'favoritosdamarcela' or page.handle == (settings.marcela_page_url | default('favoritosdamarcela') | trim('/'))) %}
         {% set is_best_sellers_eora_page = template == 'page' and (page.handle == (settings.best_sellers_eora_page_url | default('best-sellers1') | trim('/')) or page.handle == 'best-sellers1') %}
         {% set is_on_campaign_page = not (is_best_sellers_eora_page or is_marcela_page) and (page.handle == page_current_01 or page.handle == page_current_02 or page.handle == page_current_03 or page.handle == page_current_04 or page.handle == page_current_05 or page.handle == page_current_06 or page.handle == page_current_07 or page.handle == page_current_08 or page.handle == page_current_09 or page.handle == page_current_10) %}
 

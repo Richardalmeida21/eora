@@ -1,4 +1,14 @@
-{% macro url(key, fallback, settings) %}{{- attribute(settings, 'eora_menu_' ~ key ~ '_url') | default(fallback) | setting_url -}}{% endmacro %}
+{% macro storefront_url(url, settings) %}
+    {%- set slug = url | split('?') | first | split('#') | first | trim('/') | split('/') | last -%}
+    {%- if slug == 'favoritosdamarcela' and not settings.marcela_launch_ready -%}
+        /favoritosdamarcela/?marcela_antiga=1
+    {%- else -%}{{- url -}}{%- endif -%}
+{% endmacro %}
+
+{% macro url(key, fallback, settings) %}
+    {%- import 'snipplets/navigation/eora-links.tpl' as links -%}
+    {{- links.storefront_url(attribute(settings, 'eora_menu_' ~ key ~ '_url') | default(fallback) | setting_url, settings) | trim -}}
+{% endmacro %}
 
 {% macro primary(settings) %}
     {% import 'snipplets/navigation/eora-links.tpl' as links %}

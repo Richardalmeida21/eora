@@ -1,7 +1,8 @@
 {% if images | length %}
+    {% import 'snipplets/navigation/eora-links.tpl' as links %}
     <div class="eora-menu__gallery">
         {% for image in images | slice(0, 4) %}
-            <a class="eora-menu__card" href="{{ image.link | default(image_fallback_url) | setting_url }}">
+            <a class="eora-menu__card" href="{{ links.storefront_url(image.link | default(image_fallback_url) | setting_url, settings) | trim }}">
                 {% if image.image starts with 'menu-preserved-' %}
                     <img src="{{ image.image | static_url }}" width="640" height="800" loading="lazy" alt="{{ image.title | default(image_fallback_title) | escape }}" />
                 {% else %}

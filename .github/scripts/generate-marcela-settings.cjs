@@ -8,6 +8,8 @@ const gallery = (name, description, width = 1600, height = 2000) => field('galle
 let block = 'Favoritos da Marcela\n' + field('meta', {icon: 'star', advanced: true});
 block += field('description', {description: 'Briefing outubro/2026: banner, categorias, catálogo, shop the look e conteúdos da Marcela. Fotos e GIFs: use o primeiro item de cada galeria. Os slots desativados ou incompletos não aparecem. Sem catálogo personalizado, mantém os produtos da Página de campanha 4.'});
 block += text('marcela_page_url', 'Página associada (identificador da URL, sem barras)');
+block += text('marcela_launch_ready', 'Ativar nova versão no menu (deixe desmarcado enquanto estiver preparando)', 'checkbox');
+block += field('description', {description: 'Durante a preparação, o menu abre a versão antiga em /favoritosdamarcela/?marcela_antiga=1. A nova fica em /favoritosdamarcela/. Quando estiver pronta, marque a opção acima e publique para trocar o destino do menu.'});
 block += text('marcela_title', 'Título da página', 'i18n_input');
 block += field('collapse', {title: 'Banner principal — foto ou vídeo'});
 block += text('marcela_hero_enabled', 'Mostrar banner principal', 'checkbox');

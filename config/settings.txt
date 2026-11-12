@@ -10875,6 +10875,11 @@ Favoritos da Marcela
 	text
 		name = marcela_page_url
 		description = Página associada (identificador da URL, sem barras)
+	checkbox
+		name = marcela_launch_ready
+		description = Ativar nova versão no menu (deixe desmarcado enquanto estiver preparando)
+	description
+		description = Durante a preparação, o menu abre a versão antiga em /favoritosdamarcela/?marcela_antiga=1. A nova fica em /favoritosdamarcela/. Quando estiver pronta, marque a opção acima e publique para trocar o destino do menu.
 	i18n_input
 		name = marcela_title
 		description = Título da página

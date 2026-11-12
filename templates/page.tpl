@@ -56,7 +56,7 @@
 	{% set settings_name = 'behind_lens_page' %}
 {% endif %}
 
-{% if page.handle == 'favoritosdamarcela' or page.handle == (settings.marcela_page_url | default('favoritosdamarcela') | trim('/')) %}
+{% if params.marcela_antiga != '1' and (page.handle == 'favoritosdamarcela' or page.handle == (settings.marcela_page_url | default('favoritosdamarcela') | trim('/'))) %}
     {% include 'snipplets/marcela/index.tpl' with {current_settings_name: settings_name | default('campaign_page_04')} %}
 {% elseif page.handle == 'pre-venda' %}
     {% include 'snipplets/pre-venda.tpl' %}
