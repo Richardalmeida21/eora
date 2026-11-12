@@ -29,9 +29,14 @@
     {% endif %}
 
     {% if settings.product_by_reference %}
-        <div class="js-product-variants-group js-color-variants-container col-12 mb-2">
+        {% set eora_model_tag = '' %}
+        {% for model_tag in current_product.tags %}
+            {% set model_tag_value = model_tag.tag | default(model_tag) | trim | lower %}
+            {% if model_tag_value starts with 'modelo:' %}{% set eora_model_tag = model_tag_value %}{% endif %}
+        {% endfor %}
+        <div class="js-product-variants-group js-color-variants-container col-12 mb-2" data-eora-model-tag="{{ eora_model_tag | escape }}">
             
-            {# Criar uma nova lista incluindo o produto atual e os complementares #}
+            {# Renderizar o produto atual antes de carregar a familia pela tag #}
             {% set newList = [] %}
             
             {# Adicionar o produto atual à lista primeiro #}
@@ -54,27 +59,7 @@
                 'is_current': true
             }]) %}
             
-            {# Criar lista com produtos complementares e suas cores extraídas para ordenação #}
-            {% for product in complementary_product_list %}
-                {% set product_colors = [] %}
-                {% set first_color = '' %}
-                {% for item in product.tags %}
-                    {% set item_tag = item.tag %}
-                    {% if item_tag starts with 'produto-gradiente:' %}
-                        {% set parts = item_tag|split(':') %}
-                        {% set colors = parts[1]|split('-') %}
-                        {% set product_colors = colors %}
-                        {% set first_color = colors[0] ?? '' %}
-                    {% endif %}
-                {% endfor %}
-                {% set newList = newList|merge([{
-                    'product': product,
-                    'colors': product_colors,
-                    'first_color': first_color,
-                    'sort_key': first_color ~ '|' ~ product.name ~ '|' ~ product.id,
-                    'is_current': false
-                }]) %}
-            {% endfor %}
+            {# Os demais produtos sao carregados exclusivamente pela tag do modelo. #}
 
             {#
                 A primeira cor pode estar vazia (por exemplo, nas Mini Vertice que

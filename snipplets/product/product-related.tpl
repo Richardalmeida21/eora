@@ -38,13 +38,9 @@
 
 {% set complementary_products = complementary_product_list | length > 0 %}
 
-{# Show alternative products when there are default category alternatives with no complementaries or manually selected alternatives #}
-{% set alternative_products = related_products | length > 0 and not (complementary_products and source_alternative == 'default') %}
-
 {# Set related products classes #}
 
 {% set section_class = 'section-home section-products-related position-relative ' %}
-{% set alternative_section_class = complementary_products ? 'mb-4' %}
 {% set container_class = 'container-fluid position-relative py-5' %}
 {% set title_container_class = 'row align-items-end' %}
 {% set title_class = 'section-title section-title-products-home mb-4 col' %}
@@ -57,43 +53,16 @@
 {% set control_next_svg_id = 'arrow-long' %}
 {% set control_prev_svg_id = 'arrow-long' %}
 
-{# Alternative products #}
-
-{% set alternative_data_component = source_alternative == 'default' ? 'related-products' : 'alternative-products' %}
-
-{% if alternative_products %}
-    {{ component(
-        'products-section',{
-            title: settings.products_related_title,
-            id: 'related-products',
-            products_amount: related_products | length,
-            products_array: related_products,
-            data_component: alternative_data_component,
-            product_template_path: 'snipplets/grid/item.tpl',
-            product_template_params: {'slide_item': true},
-            slider_controls_position: 'with-section-title',
-            slider_controls_container: true,
-            section_classes: {
-                section: 'js-related-products ' ~ section_class,
-                container: container_class,
-                title_container: title_container_class,
-                title: title_class,
-                slider_container: 'js-swiper-related ' ~ slider_container_class,
-                slider_wrapper: swiper_wrapper_class,
-                slider_control: slider_control_class,
-                slider_control_prev_container: 'js-swiper-related-prev ' ~ slider_control_prev_class,
-                slider_control_prev: 'icon-flip-horizontal',
-                slider_control_next_container: 'js-swiper-related-next ' ~ slider_control_next_class,
-            },
-            control_next_svg_id: control_next_svg_id,
-            control_prev_svg_id: control_prev_svg_id,
-        }) 
-    }}
-{% endif %}
+{# O popup usa somente alternativas cadastradas, sem fallback por categoria/tag. #}
+<template data-eora-cart-alternatives="{{ product.id }}">
+    {% if has_related_products_from_app or (source_alternative and source_alternative != 'default') %}
+        {% include 'snipplets/cart-related-products.tpl' with {related_products_list: related_products} %}
+    {% endif %}
+</template>
 
 {# Complementary products #}
 
-{# {% set complementary_section_id = 'complementary-products' %}
+{% set complementary_section_id = 'complementary-products' %}
 
 {% if complementary_products %}
     {{ component(
@@ -123,4 +92,4 @@
             control_prev_svg_id: control_prev_svg_id,
         })
     }}
-{% endif %}  #}
+{% endif %}

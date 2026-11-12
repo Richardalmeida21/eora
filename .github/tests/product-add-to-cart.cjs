@@ -244,12 +244,14 @@ async function state(page) {
             await page.close();
         }
         const recommendations = await fixture(browser, wrapper, {recommendations: true, images: image('data-srcset="/maxi.jpg 480w"')});
+        await recommendations.page.evaluate(() => document.body.insertAdjacentHTML('beforeend', '<template data-eora-cart-alternatives="1528884304"><div class="js-related-products-notification" data-related-amount="6">Alternativos</div></template>'));
         await click(recommendations.page);
-        await recommendations.page.evaluate(() => { window.successCallback('<div class="js-related-products-notification" data-related-amount="6">Recomendacoes</div>', null); window.flushTimers(); });
+        await recommendations.page.evaluate(async () => { await window.successCallback('<div>Complementares nativos</div>', null); window.flushTimers(); });
         const recommendationState = await state(recommendations.page);
         assert(recommendationState.modals.includes('#related-products-notification'));
         assert.equal(recommendationState.recommendationCalls.length, 1);
         assert(!recommendationState.modals.includes('#modal-cart'));
+        assert.equal(await recommendations.page.locator('.js-related-products-notification-container').innerText(), 'Alternativos');
         assert.deepEqual(recommendations.errors, []);
         report.push({scenario: 'recomendacoes preservadas apos adicionar', passed: true});
         await recommendations.page.close();

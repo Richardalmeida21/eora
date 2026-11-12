@@ -14,7 +14,7 @@
 
 {# Related cart products #}
 
-{% set related_section_id = 'related-products-notification' %}
+{% set related_section_id = 'cart-alternative-products' %}
 
 {% set related_products = related_products_list | length > 0 %}
 

@@ -223,15 +223,13 @@
 
     function discoverVariantsFromHtml(html) {
         var parsed = new DOMParser().parseFromString(html, 'text/html');
-        var discovered = rememberVariants(parsed);
         var mainImage = parsed.querySelector('#single-product .product-image-column .js-product-slide-img[data-srcset]');
         if (mainImage) {
             var candidates = mainImage.getAttribute('data-srcset').split(',');
             var imageUrl = candidates[candidates.length - 1].trim().split(/\s+/)[0];
             if (imageUrl) (new Image()).src = imageUrl;
         }
-        renderKnownVariants(document, normalizePath(window.location.href));
-        discovered.forEach(prefetchPage);
+        // Prefetch apenas da imagem: nunca incorporar relacionados de outra pagina.
     }
 
     function prefetchPage(href) {
@@ -324,5 +322,56 @@
 
     window.addEventListener('pageshow', restorePageState);
 
-    if (!isCustomProduct()) bindPrefetches();
+    async function loadModelVariants() {
+        var container = document.querySelector('#single-product [data-eora-model-tag]');
+        if (!container) return;
+        var modelTag = container.getAttribute('data-eora-model-tag');
+        if (!modelTag) return;
+        var url = new URL('/search/', window.location.origin);
+        url.searchParams.set('q', '"' + modelTag + '"');
+        url.searchParams.set('eora_model_feed', '1');
+        var preview = new URL(window.location.href).searchParams.get('preview');
+        if (preview) url.searchParams.set('preview', preview);
+        var visited = {};
+        var entries = {};
+        var current = container.querySelector('a.selected[data-eora-variant-product-id]');
+        if (current) entries[current.getAttribute('data-eora-variant-product-id')] = current.cloneNode(true);
+        try {
+            while (url && !visited[url.href]) {
+                visited[url.href] = true;
+                var response = await fetch(url.href, {credentials: 'same-origin'});
+                if (!response.ok) throw new Error('variant-feed-failed');
+                var parsed = new DOMParser().parseFromString(await response.text(), 'text/html');
+                var feed = parsed.querySelector('template[data-eora-variant-feed]');
+                if (!feed) throw new Error('variant-feed-missing');
+                feed.content.querySelectorAll('a[data-eora-variant-tags]').forEach(function (link) {
+                    var tags = JSON.parse(link.getAttribute('data-eora-variant-tags'));
+                    if (tags.indexOf(modelTag) !== -1) entries[link.getAttribute('data-eora-variant-product-id')] = link.cloneNode(true);
+                });
+                var next = feed.getAttribute('data-next');
+                if (feed.getAttribute('data-last') === '1' || !next) break;
+                url = new URL(next, url);
+                if (url.origin !== window.location.origin) throw new Error('variant-feed-origin');
+                url.searchParams.set('q', '"' + modelTag + '"');
+                url.searchParams.set('eora_model_feed', '1');
+                if (preview) url.searchParams.set('preview', preview);
+            }
+            var fragment = document.createDocumentFragment();
+            Object.keys(entries).map(function (id) { return entries[id]; }).sort(function (a, b) {
+                var keyA = a.getAttribute('data-eora-variant-sort') || a.title + a.getAttribute('data-eora-variant-product-id');
+                var keyB = b.getAttribute('data-eora-variant-sort') || b.title + b.getAttribute('data-eora-variant-product-id');
+                return keyA < keyB ? -1 : keyA > keyB ? 1 : 0;
+            }).forEach(function (link) {
+                link.classList.toggle('selected', normalizePath(link.href) === normalizePath(window.location.href));
+                fragment.appendChild(link);
+            });
+            container.replaceChildren(fragment);
+            bindPrefetches();
+        } catch (error) {
+            // Em falha de rede, manter somente o produto atual, sem misturar familias.
+            console.warn('EORA: nao foi possivel carregar variacoes pela tag.', error);
+        }
+    }
+
+    if (!isCustomProduct()) loadModelVariants();
 })();
