@@ -7,10 +7,13 @@ const root = path.resolve(__dirname, '../..');
 const temp = process.env.MARCELA_VALIDATION_DIR || 'C:/Temp/eora-marcela-validation';
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const live = fs.existsSync(path.join(temp, 'live-products.json')) ? JSON.parse(fs.readFileSync(path.join(temp, 'live-products.json'), 'utf8')) : [];
-const hero = '/fixtures/hero.jpg';
-const lifestyle = '/fixtures/lifestyle.jpg';
-Twig.extendFilter('static_url', value => value === 'campaign_page_04_banner_topo_img.jpg' ? hero : '/static/' + value);
-Twig.extendFilter('has_custom_image', value => value === 'campaign_page_04_banner_topo_img.jpg');
+const hero = 'mf-upload-hero.jpg';
+const lifestyle = 'mf-upload-lifestyle.jpg';
+Twig.extendFilter('static_url', value => {
+    const uploads = {'mf-upload-hero.jpg': '/fixtures/hero.jpg', 'mf-upload-lifestyle.jpg': '/fixtures/lifestyle.jpg', 'mf-upload-original.gif': '/fixtures/source-original.gif', 'campaign_page_04_banner_topo_img.jpg': '/fixtures/hero.jpg', 'campaign_page_04_banner_topo_mobile_img.jpg': '/fixtures/legacy-mobile.jpg'};
+    return uploads[value] || '/static/' + value;
+});
+Twig.extendFilter('has_custom_image', value => ['campaign_page_04_banner_topo_img.jpg', 'campaign_page_04_banner_topo_mobile_img.jpg'].includes(value));
 Twig.extendFilter('settings_image_url', value => value);
 Twig.extendFilter('product_image_url', value => typeof value === 'string' ? value : value.url);
 const templates = new Map();

@@ -18,8 +18,12 @@ const disabled = render(context({categories: 0, looks: 0, founder: 0}));
 assert(!disabled.includes('data-mf-look="'));
 assert(!disabled.includes('class="mf-founder-card"'));
 const gifContext = context();
-gifContext.settings.marcela_founder_1_image = [{image: '/fixtures/source-original.gif'}];
+gifContext.settings.marcela_founder_1_image = [{image: 'mf-upload-original.gif'}];
 assert.match(render(gifContext), /src="\/fixtures\/source-original\.gif"/);
+assert.doesNotMatch(render(gifContext), /src(?:set)?="mf-upload-/);
+const newDesktopOnly = context();
+newDesktopOnly.settings.marcela_hero_image_mobile = [];
+assert.doesNotMatch(render(newDesktopOnly).match(/<section class="mf-hero"[\s\S]*?<\/section>/)[0], /legacy-mobile/, 'new desktop hero must not reuse the old campaign mobile');
 const legacy = render(context({legacy: true}));
 assert(legacy.includes('data-be-product="900009"'), 'legacy campaign product list retained');
 for (const file of ['layouts/layout.tpl', 'static/js/store.js.tpl']) {

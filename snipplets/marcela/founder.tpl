@@ -11,7 +11,7 @@
             {% if attribute(settings, mf_slot ~ '_enabled') and mf_photo.image %}
                 <article class="mf-founder-card" data-mf-order="{{ attribute(settings, mf_slot ~ '_order') | default(i) | escape }}">
                     {% if attribute(settings, mf_slot ~ '_title') %}<h3>{{ attribute(settings, mf_slot ~ '_title') | escape }}</h3>{% endif %}
-                    <picture>{% if mf_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_mobile.image | escape }}">{% endif %}<img src="{{ mf_photo.image | escape }}" alt="{{ attribute(settings, mf_slot ~ '_title') | default('Conteúdo da Marcela') | escape }}" width="1600" height="2400" loading="lazy" decoding="async"></picture>
+                    <picture>{% if mf_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_mobile.image | static_url | escape }}">{% endif %}<img src="{{ mf_photo.image | static_url | escape }}" alt="{{ attribute(settings, mf_slot ~ '_title') | default('Conteúdo da Marcela') | escape }}" width="1600" height="2400" loading="lazy" decoding="async"></picture>
                     {% if attribute(settings, mf_slot ~ '_description') %}<p>{{ attribute(settings, mf_slot ~ '_description') | escape }}</p>{% endif %}
                     {% if attribute(settings, mf_slot ~ '_link') %}<a href="{{ attribute(settings, mf_slot ~ '_link') | escape }}">{{ attribute(settings, mf_slot ~ '_button') | default('Ver mais') | escape }}</a>{% endif %}
                 </article>

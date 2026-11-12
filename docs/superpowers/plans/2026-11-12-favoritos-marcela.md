@@ -46,3 +46,4 @@
 - Ruling: exclude the dedicated route from legacy campaign CSS and slider initialization, following Best Sellers' existing integration.
 - Verified: dedicated browser tests at 1440, 390 and 320 px; Best Sellers at 320, 390, 767, 768, 1440 and 1920 px; paginated category regression; complete editor schema (2194 fields); dependency-staging test.
 - Visual artifacts remain outside the repository in `C:/Temp/eora-marcela-validation`. User-provided PDF changes are preserved separately.
+- Independent final review found two platform integration issues (gallery upload-token resolution and new-desktop/legacy-mobile mixing). Both were reproduced with strengthened fixture assertions, fixed, verified, and rechecked by the reviewer.

@@ -15,7 +15,7 @@
             {% if attribute(settings, mf_prefix ~ '_enabled') and mf_image.image and mf_tag %}
                 {% set mf_title = attribute(settings, mf_prefix ~ '_title') | default(mf_tag) %}
                 <a class="bs-macro" href="{{ attribute(settings, mf_prefix ~ '_link') | default('?bs_category=' ~ i) | escape }}" data-bs-category="{{ i }}" data-bs-tag="{{ mf_tag | escape }}" data-bs-order="{{ attribute(settings, mf_prefix ~ '_order') | default(i) | escape }}" aria-expanded="false" aria-controls="bs-description-{{ i }} bs-mobile-description">
-                    <span class="bs-macro__selection"><picture>{% if mf_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_mobile.image | settings_image_url('original') }}">{% endif %}<img src="{{ mf_image.image | settings_image_url('original') }}" alt="{{ mf_title | escape }}" width="2160" height="960" decoding="async" loading="lazy"></picture></span>
+                    <span class="bs-macro__selection"><picture>{% if mf_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_mobile.image | static_url | settings_image_url('original') }}">{% endif %}<img src="{{ mf_image.image | static_url | settings_image_url('original') }}" alt="{{ mf_title | escape }}" width="2160" height="960" decoding="async" loading="lazy"></picture></span>
                     <span class="bs-macro__title">{{ mf_title | escape }}</span>
                     <span class="bs-macro__description" id="bs-description-{{ i }}" hidden>{{ attribute(settings, mf_prefix ~ '_description') | escape }}</span>
                 </a>

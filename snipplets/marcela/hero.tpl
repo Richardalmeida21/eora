@@ -7,8 +7,8 @@
 <section class="mf-hero" aria-label="{{ settings.marcela_hero_alt | default('Favoritos da Marcela') | escape }}" data-mf-media data-mf-video-desktop="{{ settings.marcela_hero_video | escape }}" data-mf-video-mobile="{{ settings.marcela_hero_video_mobile | escape }}">
     {% if mf_hero.image or (mf_legacy_image | has_custom_image) %}
         <picture>
-            {% if mf_hero_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_hero_mobile.image | settings_image_url('original') }}">{% elseif mf_legacy_mobile | has_custom_image %}<source media="(max-width: 767px)" srcset="{{ mf_legacy_mobile | static_url }}">{% endif %}
-            <img src="{% if mf_hero.image %}{{ mf_hero.image | settings_image_url('original') }}{% else %}{{ mf_legacy_image | static_url }}{% endif %}" alt="{{ settings.marcela_hero_alt | default('Favoritos da Marcela') | escape }}" fetchpriority="high" decoding="async" width="2400" height="960">
+            {% if mf_hero_mobile.image %}<source media="(max-width: 767px)" srcset="{{ mf_hero_mobile.image | static_url | settings_image_url('original') }}">{% elseif not mf_hero.image and (mf_legacy_mobile | has_custom_image) %}<source media="(max-width: 767px)" srcset="{{ mf_legacy_mobile | static_url }}">{% endif %}
+            <img src="{% if mf_hero.image %}{{ mf_hero.image | static_url | settings_image_url('original') }}{% else %}{{ mf_legacy_image | static_url }}{% endif %}" alt="{{ settings.marcela_hero_alt | default('Favoritos da Marcela') | escape }}" fetchpriority="high" decoding="async" width="2400" height="960">
         </picture>
     {% endif %}
     <div class="mf-hero__video" data-mf-video-player></div>
