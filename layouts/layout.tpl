@@ -1,6 +1,6 @@
 {# Consultas internas das campanhas recebem somente o feed de produtos.
    As paginas normais continuam com o layout completo da loja. #}
-{% if (template == 'category' and (params.be_category_feed == '1' or params.oe_category_feed == '1' or params.bs_category_feed == '1')) or (template == 'search' and (params.be_feed == '4' or params.oe_feed == '4')) %}
+{% if (template == 'category' and (params.be_category_feed == '1' or params.oe_category_feed == '1' or params.bs_category_feed == '1')) or (template == 'search' and (params.be_feed == '4' or params.oe_feed == '4' or params.eora_model_feed == '1')) %}
     {% template_content %}
 {% else %}
 {# Slider and video presence for header transparency check #}

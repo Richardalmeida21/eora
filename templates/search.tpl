@@ -4,7 +4,9 @@
 	{% paginate by 48 %}
 {% endif %}
 
-{% if params.eora_preorder == '1' and params.be_feed != '4' and params.oe_feed != '4' %}
+{% if params.eora_model_feed == '1' %}
+    {% include 'snipplets/product/product-variant-feed.tpl' %}
+{% elseif params.eora_preorder == '1' and params.be_feed != '4' and params.oe_feed != '4' %}
     {% include 'snipplets/pre-venda.tpl' %}
 {% elseif params.be_feed != '4' and params.oe_feed != '4' %}
 {% embed "snipplets/page-header.tpl" with { breadcrumbs: false, container_fluid: true } %}

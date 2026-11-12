@@ -130,7 +130,7 @@
 
     {# Product form, includes: Variants, CTA and Shipping calculator #}
 
-    <form id="product_form" class="js-product-form" method="post" action="{{ store.cart_url }}" data-store="product-form-{{ product.id }}">
+    <form data-eora-product-url="{{ product.url | escape }}" id="product_form" class="js-product-form" method="post" action="{{ store.cart_url }}" data-store="product-form-{{ product.id }}">
         <input type="hidden" name="add_to_cart" value="{{product.id}}" />
         {% if template == "product" %}
             {% set show_size_guide = true %}

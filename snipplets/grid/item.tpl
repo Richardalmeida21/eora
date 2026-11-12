@@ -192,7 +192,7 @@
                                 </a>
                             {% else %}
                                 {# If not variants add directly to cart #}
-                                <form class="js-product-form w-100" method="post" action="{{ store.cart_url }}">
+                                <form data-eora-product-url="{{ product.url | escape }}" class="js-product-form w-100" method="post" action="{{ store.cart_url }}">
                                     <input type="hidden" name="add_to_cart" value="{{product.id}}" />
                                     {% set state = store.is_catalog ? 'catalog' : (product.available ? product.display_price ? 'cart' : 'contact' : 'nostock') %}
                                     {% set texts = {'cart': "compre agora", 'contact': "Consultar precio", 'nostock': "Sin stock", 'catalog': "Consultar"} %}
@@ -213,7 +213,7 @@
 
                 {# Hidden product form to update item image and variants: Also this is used for quickshop popup #}
                 <div class="js-item-variants hidden">
-                    <form class="js-product-form" method="post" action="{{ store.cart_url }}">
+                    <form data-eora-product-url="{{ product.url | escape }}" class="js-product-form" method="post" action="{{ store.cart_url }}">
                         <input type="hidden" name="add_to_cart" value="{{product.id}}" />
                         {% if product.variations %}
                             {% include "snipplets/product/product-variants.tpl" with {quickshop: true} %}
@@ -301,7 +301,7 @@
                                     </span>
                                 {% else %}
                                     {# If not variants add directly to cart #}
-                                    <form class="js-product-form" method="post" action="{{ store.cart_url }}">
+                                    <form data-eora-product-url="{{ product.url | escape }}" class="js-product-form" method="post" action="{{ store.cart_url }}">
                                         <input type="hidden" name="add_to_cart" value="{{product.id}}" />
                                         {% set state = store.is_catalog ? 'catalog' : (product.available ? product.display_price ? 'cart' : 'contact' : 'nostock') %}
                                         {% set texts = {'cart': "compre agora", 'contact': "Consultar precio", 'nostock': "Sin stock", 'catalog': "Consultar"} %}

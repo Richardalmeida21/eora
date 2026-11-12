@@ -3237,6 +3237,39 @@ DOMContentLoaded.addEventOrExecute(() => {
         return getCartImageSource(jQueryNuvem(element).closest('.js-quickshop-container'), 'img');
     }
 
+    function getCartAlternatives(form) {
+        var productInput = form.querySelector('[name="add_to_cart"]');
+        var productId = productInput && productInput.value;
+        if (!productId) return Promise.resolve(null);
+        function readAlternatives(root) {
+            var templates = root.querySelectorAll('template[data-eora-cart-alternatives]');
+            for (var i = 0; i < templates.length; i++) {
+                if (templates[i].getAttribute('data-eora-cart-alternatives') === productId) {
+                    return templates[i].content.querySelector('.js-related-products-notification') ? templates[i].innerHTML : null;
+                }
+            }
+            return null;
+        }
+        var localTemplate = document.querySelector('template[data-eora-cart-alternatives="' + productId + '"]');
+        if (localTemplate) return Promise.resolve(readAlternatives(document));
+        var href = form.getAttribute('data-eora-product-url');
+        if (!href) return Promise.resolve(null);
+        var url = new URL(href, window.location.origin);
+        if (url.origin !== window.location.origin) return Promise.resolve(null);
+        var preview = new URL(window.location.href).searchParams.get('preview');
+        if (preview) url.searchParams.set('preview', preview);
+        var controller = new AbortController();
+        var timeout = setTimeout(function () { controller.abort(); }, 8000);
+        return fetch(url.href, {credentials: 'same-origin', signal: controller.signal}).then(function (response) {
+            if (!response.ok) throw new Error('cart-alternatives-failed');
+            return response.text();
+        }).then(function (html) {
+            return readAlternatives(new DOMParser().parseFromString(html, 'text/html'));
+        }).catch(function () {
+            return null;
+        }).finally(function () { clearTimeout(timeout); });
+    }
+
     jQueryNuvem(document).on("click", ".js-addtocart:not(.js-addtocart-placeholder)", function (e) {
 
         {# INP fix: prevent default immediately before any DOM work to minimize input delay #}
@@ -3300,6 +3333,7 @@ DOMContentLoaded.addEventOrExecute(() => {
             {% if settings.ajax_cart %}
                 var productForm = $prod_form.get()[0];
                 if (!productForm || productForm.eoraCartPending) return;
+                var cartAlternativesPromise = {% if settings.add_to_cart_recommendations %}getCartAlternatives(productForm){% else %}Promise.resolve(null){% endif %};
                 productForm.eoraCartPending = true;
             {% endif %}
 
@@ -3321,7 +3355,7 @@ DOMContentLoaded.addEventOrExecute(() => {
 
             {% if settings.ajax_cart %}
 
-                var callback_add_to_cart = function(html_notification_related_products, html_notification_cross_selling) {
+                var callback_add_to_cart = async function(html_notification_related_products, html_notification_cross_selling) {
                     productForm.eoraCartPending = false;
 
                     {# Fill notification info #}
@@ -3395,6 +3429,9 @@ DOMContentLoaded.addEventOrExecute(() => {
                     let notificationWithRelatedProducts = false;
 
                     {% if settings.add_to_cart_recommendations %}
+
+                        // A resposta nativa usa complementares. O popup EORA usa alternativas.
+                        html_notification_related_products = await cartAlternativesPromise;
 
                         {# Show added to cart product related products #}
 
