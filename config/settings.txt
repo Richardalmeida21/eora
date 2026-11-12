@@ -2317,30 +2317,6 @@ Páginas institucionais
 	menu
 		name = menu_institutional_2
 		description = Menu 2
-	collapse
-		title = Página Quem usa
-	i18n_input
-		name = who_uses_page_url
-		description = Página associada
-	title
-		title = Imagens para ser usada na página
-	description
-		description = Em cada imagem pode ser usado o link, título e descrição
-	gallery
-		name = who_uses_page_images
-		gallery_image = Agregar imagen
-		gallery_link = [Opcional] Página web a la que quieres que te lleve la imagen al hacer click
-		gallery_width = 100
-		gallery_height = 100
-		gallery_more_info = true
-	subtitle
-		subtitle = Tamanho para as imagens
-	i18n_input	
-		name = who_uses_page_images_width
-		description = Largura
-	i18n_input	
-		name = who_uses_page_images_height
-		description = Altura
 
 Por trás das lentes
 	meta
@@ -10626,6 +10602,33 @@ Página de campanha 10
 
 
 
+
+Quem usa
+	meta
+		icon = book
+		advanced = true
+	i18n_input
+		name = who_uses_page_url
+		description = Página associada
+	title
+		title = Imagens para ser usada na página
+	description
+		description = Em cada imagem pode ser usado o link, título e descrição
+	gallery
+		name = who_uses_page_images
+		gallery_image = Agregar imagen
+		gallery_link = [Opcional] Página web a la que quieres que te lleve la imagen al hacer click
+		gallery_width = 100
+		gallery_height = 100
+		gallery_more_info = true
+	subtitle
+		subtitle = Tamanho para as imagens
+	i18n_input
+		name = who_uses_page_images_width
+		description = Largura
+	i18n_input
+		name = who_uses_page_images_height
+		description = Altura
 
 Presenteaveis Eora
 	i18n_input
