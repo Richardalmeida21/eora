@@ -282,19 +282,33 @@
                 margin-right: auto !important;
             }
 
+            /* Keep the Selly alert outside the header's blending context. */
+            .eora-selly-alert-slot {
+                position: fixed;
+                inset: 0 0 auto;
+                z-index: 1041;
+                pointer-events: none;
+            }
+            .eora-selly-alert-slot > .announcement-bar { pointer-events: auto; }
+            .head-main::before {
+                content: "";
+                display: block;
+                height: var(--eora-selly-alert-height, 0px);
+            }
+
             /* Enforce body top padding when header is opaque/fixed to prevent content overlap */
             body.head-offset-active {
-                padding-top: 90px !important;
+                padding-top: calc(90px + var(--eora-selly-alert-height, 0px)) !important;
             }
             body.head-offset-active.has-ad-bar {
-                padding-top: 125px !important;
+                padding-top: calc(125px + var(--eora-selly-alert-height, 0px)) !important;
             }
             @media (max-width: 991px) {
                 body.head-offset-active {
-                    padding-top: 70px !important;
+                    padding-top: calc(70px + var(--eora-selly-alert-height, 0px)) !important;
                 }
                 body.head-offset-active.has-ad-bar {
-                    padding-top: 105px !important;
+                    padding-top: calc(105px + var(--eora-selly-alert-height, 0px)) !important;
                 }
             }
         </style>
