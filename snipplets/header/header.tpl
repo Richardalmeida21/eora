@@ -90,6 +90,7 @@
 
 {% set head_transparent_background = settings.head_transparent ? 'head-transparent-only' %}
 
+<div class="eora-selly-alert-slot"></div>
 <header class="js-head-main head-main {{ header_transparent_classes }} {{ head_transparent_color_class }} {{ head_transparent_logo_class }} {{ header_colors_classes }} {{ head_position }} {{ header_md_position }} {{ header_logo_classes }} {{ header_logo_md_classes }} {{ header_logo_left_nav_below_md_classes }} {{ header_nav_inline_md_classes }} {{ header_hamburger_md_classes }} {{ header_search_big_classes }} {{ header_search_big_md_classes }} {{ head_transparent_background }} transition-soft" data-store="head">
     {# Adversiting bar #}
     {% if settings.ad_bar %}
@@ -195,6 +196,25 @@
     {# {% endif %} #}
 
 </header>
+
+<script>
+    (function () {
+        const header = document.querySelector('.js-head-main');
+        const slot = document.querySelector('.eora-selly-alert-slot');
+
+        function moveSellyAlert() {
+            const banner = header.querySelector(':scope > .announcement-bar.top-fixed[id^="banner-alert-"]');
+            // The header blends with the hero. Move the original banner to preserve the app's colors and listeners.
+            if (banner) slot.appendChild(banner);
+        }
+
+        new MutationObserver(moveSellyAlert).observe(header, { childList: true });
+        new ResizeObserver(function ([entry]) {
+            document.body.style.setProperty('--eora-selly-alert-height', entry.contentRect.height + 'px');
+        }).observe(slot);
+        moveSellyAlert();
+    })();
+</script>
 
 {# Follow order notification #}
 

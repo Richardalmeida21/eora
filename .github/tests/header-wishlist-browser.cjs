@@ -19,9 +19,10 @@ Twig.extendFunction('component', name => {
 });
 for (const file of ['snipplets/notification.tpl', 'snipplets/navigation/navigation.tpl', 'snipplets/navigation/navigation-lang.tpl']) Twig.twig({id:file,data:''});
 for (const file of ['snipplets/header/header-utilities.tpl','snipplets/header/header-logo.tpl']) Twig.twig({id:file,data:read(file),allowInlineIncludes:true,rethrow:true});
-const headerSource = read('snipplets/header/header.tpl').split('</header>')[0] + '</header>';
+const headerSource = read('snipplets/header/header.tpl').split('{# Follow order notification #}')[0];
 const header = Twig.twig({data:headerSource.replace(/{% snipplet\s+["']([^"']+)["']\s*%}/g,'{% include "snipplets/$1" %}'),allowInlineIncludes:true,rethrow:true});
 const styles = ['style_above','style-critical','style','style-async'].map(name => sass.compile(path.join(root,'static/css/'+name+'.scss'),{logger:sass.Logger.silent}).css).join('\n') + '\n' + (fs.existsSync(path.join(root,'static/css/eora-header.css')) ? read('static/css/eora-header.css') : '');
+const inlineHeaderStyles = read('layouts/layout.tpl').match(/(?:\/\* Keep the Selly alert|\/\* Enforce body top padding)[^]*?(?=<\/style>)/)[0];
 const nativeStore = read('static/js/store.js.tpl');
 const moveWidget = nativeStore.slice(nativeStore.indexOf('    function moveWishlistWidget()'),nativeStore.indexOf('    // Nested Mega Menu Toggle (Desktop)'));
 const widget = `<div id="selly-wishlist-widget" style="position:fixed;top:calc(5% + 15px);right:calc(3% + 191px);width:50px;height:50px;border:2.5px solid transparent;display:flex;align-items:center;justify-content:center">
@@ -30,7 +31,8 @@ const widget = `<div id="selly-wishlist-widget" style="position:fixed;top:calc(5
 function html(template = 'page', cartCount = 0, options = {}) {
  const settings = {logo_position_mobile:'center',logo_position_desktop:'center',head_fix_desktop:true,ajax_cart:true,head_transparent:true,head_transparent_type:'all',header_colors:true,...options};
  const data = {settings,template,store:{cart_url:'/cart/',customer_login_url:'/account/login/'},cart:{items_count:cartCount},languages:options.languages_header ? [{active:true,country:'BR'},{active:false,country:'US'}] : []};
- return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{--gutter:16px;--gutter-container:16px;--gutter-container-md:30px;--gutter-negative:-16px;--header-background:#fff;--header-foreground:#111;--main-foreground:#111;--main-background:#fff;--font-base:14px;--heading-font:Arial,sans-serif;--main-text-transform:uppercase;--border-solid:1px solid}body{margin:0}</style><style>${styles}</style></head><body class="template-${template}">${header.render(data)}<main style="height:1800px;background:#fff"></main><script>${readJquery()}</script><script>var jQueryNuvem=jQuery;${moveWidget}moveWishlistWidget();</script></body></html>`;
+ const offsetClass = template === 'home' ? 'head-offset-transparent' : 'head-offset-active';
+ return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{--gutter:16px;--gutter-container:16px;--gutter-container-md:30px;--gutter-negative:-16px;--header-background:#fff;--header-foreground:#111;--main-foreground:#111;--main-background:#fff;--font-base:14px;--heading-font:Arial,sans-serif;--main-text-transform:uppercase;--border-solid:1px solid}body{margin:0}</style><style>${styles}\n${inlineHeaderStyles}</style></head><body class="template-${template} ${offsetClass}">${header.render(data)}<main style="height:1800px;background:#fff"></main><script>${readJquery()}</script><script>var jQueryNuvem=jQuery;${moveWidget}moveWishlistWidget();</script></body></html>`;
 }
 function readJquery() { return fs.readFileSync(require.resolve('jquery/dist/jquery.js'),'utf8'); }
 async function boxes(page) {
@@ -53,10 +55,68 @@ function checkLayout(b,width) {
  assert.ok(b.count.x>=b.heart.x && b.count.right<=b.heart.right+1 && b.count.y>=b.heart.y && b.count.bottom<=b.heart.bottom+1,`wishlist count stays with its button at ${width}px`);
  assert.ok(!b.overflow,`no horizontal scrolling at ${width}px`);
 }
+
+async function checkSellyAlert(browser) {
+ const page = await browser.newPage({viewport:{width:1440,height:900}});
+ try {
+  for (const [template, width] of [['home',1440], ['home',320], ['page',390]]) {
+   await page.setViewportSize({width,height:900});
+   await page.setContent(html(template));
+   await page.mouse.move(width - 5, 160);
+   const header = page.locator('.head-main');
+   const initial = await header.boundingBox();
+   const bodyPadding = await page.locator('body').evaluate(body => parseFloat(getComputedStyle(body).paddingTop));
+   const originalBlend = await header.evaluate(el => getComputedStyle(el).mixBlendMode);
+   await header.evaluate(element => {
+    const banner = document.createElement('div');
+    banner.id = 'banner-alert-fixture';
+    banner.className = 'announcement-bar top-fixed';
+    banner.style.cssText = 'display:flex;position:relative;z-index:1000;align-items:center;width:100%;box-sizing:border-box;background:white;color:black;padding:12px 20px;font-size:13px;line-height:18px';
+    banner.innerHTML = '<div class="banner-text-container-selly" style="flex:1;text-align:center">Desconto na compra de duas ou mais peças com o cupom da loja</div><button type="button" aria-label="Fechar" style="color:inherit">×</button>';
+    banner.querySelector('button').addEventListener('click', () => { banner.style.display = 'none'; });
+    element.prepend(banner);
+   });
+   const banner = page.locator('#banner-alert-fixture');
+   await page.waitForFunction(initialHeight => {
+    const header = document.querySelector('.head-main');
+    const bar = document.querySelector('#banner-alert-fixture');
+    return Math.abs(header.getBoundingClientRect().height - initialHeight - bar.getBoundingClientRect().height) < 0.02;
+   }, initial.height);
+   assert.equal(await banner.locator('.banner-text-container-selly').evaluate(text => getComputedStyle(text).color), 'rgb(0, 0, 0)', `${template} at ${width}px preserves the app's text color`);
+   assert.equal(await banner.evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(255, 255, 255)');
+   const bar = await banner.boundingBox();
+   assert.ok(Math.abs((await page.locator('.head-logo-row').boundingBox()).y - bar.height) < 0.02);
+   assert.equal(bar.y, 0);
+   assert.equal(bar.width, width);
+   assert.equal(await header.evaluate(el => getComputedStyle(el).mixBlendMode), originalBlend);
+   if (template === 'home' && width === 1440) {
+    await page.locator('.head-logo-row').hover();
+    assert.equal(await header.evaluate(el => el.matches(':hover')), true);
+    await page.mouse.move(width - 5, 175);
+    assert.equal(await header.evaluate(el => el.matches(':hover')), false);
+    assert.equal(await header.evaluate(el => getComputedStyle(el).mixBlendMode), originalBlend);
+   }
+   if (template === 'page') {
+    assert.ok(Math.abs(await page.locator('body').evaluate(body => parseFloat(getComputedStyle(body).paddingTop)) - bodyPadding - bar.height) < 0.02);
+   }
+   await page.evaluate(() => window.scrollTo(0, 450));
+   await page.waitForFunction(() => window.scrollY > 0);
+   assert.equal((await banner.boundingBox()).y, 0);
+   await banner.getByRole('button',{name:'Fechar'}).click();
+   assert.equal(await banner.isVisible(), false);
+   await page.waitForFunction(height => document.querySelector('.head-main').getBoundingClientRect().height === height, initial.height);
+   assert.equal(await page.locator('body').evaluate(body => parseFloat(getComputedStyle(body).paddingTop)), bodyPadding);
+  }
+ } finally {
+  await page.close();
+ }
+}
+
 (async()=>{
  const engine = process.env.EORA_HEADER_ENGINE === 'webkit' ? webkit : chromium;
  const browser = await engine.launch({headless:true,executablePath:process.env.BE_BROWSER || undefined});
  try {
+  await checkSellyAlert(browser);
   for (const scale of [1,3]) {
    const page = await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:scale,isMobile:true});
    const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -106,6 +166,6 @@ function checkLayout(b,width) {
    assert.deepEqual(errors,[]);
    await page.close();
   }
-  console.log('PASS wishlist header ('+engine.name()+'): 320–1199px, portrait/landscape, DPR 1/3, delayed widget/reinsertion, counts, scroll, click behavior and no overlap.');
+  console.log('PASS Selly alert and wishlist header ('+engine.name()+'): contrast, hover, scroll, dismissal, responsive layout, delayed widgets and no overlap.');
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
