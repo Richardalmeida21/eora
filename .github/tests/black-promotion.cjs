@@ -24,7 +24,7 @@ test('campaign notices follow native product and cart promotion updates', async 
     await page.waitForFunction(() => document.querySelectorAll('.eora-black-notice').length === 3);
     assert(await page.locator('.js-product-description-short').evaluate(el => el.previousElementSibling.classList.contains('js-product-promo-container')));
     assert.equal(await page.locator('.eora-black-notice strong').first().innerText(), 'EORABLACK');
-    assert.equal(await page.locator('.eora-black-notice__deadline').first().innerText(), 'CUPOM DISPONÍVEL ATÉ 23:59');
+    assert.equal(await page.locator('.eora-black-notice__deadline').first().innerText(), 'CUPOM DISPONÍVEL ATÉ 16/11 ÀS 23:59');
     assert(await page.getByText('20% OFF Comprando 3 ou mais').isVisible());
     assert(await page.getByText('Frete grátis').isVisible());
     assert(await page.getByText('-R$399,97').isVisible());
