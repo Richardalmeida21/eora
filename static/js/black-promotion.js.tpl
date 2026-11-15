@@ -4,7 +4,8 @@
     if (window.eoraBlackPromotionInitialized) return;
     window.eoraBlackPromotionInitialized = true;
 
-    var selectors = '.js-product-promo-container, .eora-cart-promotion-label, .js-total-promotions-detail-row';
+    var cartItemSelector = '.js-cart-item[data-store^="cart-item-"]';
+    var selectors = '.js-product-promo-container, .eora-cart-promotion-label, ' + cartItemSelector;
     // Product IDs from all six pages of the Black Friday 2026 storefront category.
     var campaignProductIds = new Set([
         291392635, 291429190, 291429253, 291429281, 291429340, 291437203, 291438131, 291438661, 291439189,
@@ -66,27 +67,48 @@
         });
     }
 
+    function updateCartAnnouncements() {
+        var now = Date.now();
+        document.querySelectorAll(cartItemSelector).forEach(function (item) {
+            var productId = Number(item.getAttribute('data-store').slice('cart-item-'.length));
+            var existing = item.querySelector('[data-eora-black-cart-notice]');
+            var nativeNotice = Array.from(item.querySelectorAll('.eora-cart-promotion-label')).some(function (label) {
+                return label.classList.contains('eora-black-enhanced') || /\bEORABLACK\b/i.test(label.textContent);
+            });
+            var show = now >= campaignStart && now < campaignEnd &&
+                campaignProductIds.has(productId) && !nativeNotice;
+
+            if (!show && existing) existing.remove();
+            if (show && !existing) {
+                var variant = item.querySelector('.short_variant_name');
+                if (variant) variant.insertAdjacentHTML('afterend',
+                    '<div class="col-12" data-eora-black-cart-notice>' + noticeMarkup + '</div>');
+            }
+        });
+    }
+
+    function updateAnnouncements() {
+        updateProductAnnouncement();
+        updateCartAnnouncements();
+    }
+
     function update() {
         document.querySelectorAll('.js-product-promo-container').forEach(function (source) {
             enhance(source, true);
         });
-        updateProductAnnouncement();
         // This is the native label for the configured 10% / 2-item promotion.
         // Free shipping and other discount thresholds retain their original labels.
         document.querySelectorAll('.eora-cart-promotion-label').forEach(function (source) {
             enhance(source, false);
         });
-        document.querySelectorAll('.js-total-promotions-detail-row').forEach(function (row) {
-            var wording = row.querySelector('.col');
-            if (wording) enhance(wording, true);
-        });
+        updateAnnouncements();
     }
 
     function start() {
         update();
         var now = Date.now();
-        if (now < campaignStart) setTimeout(updateProductAnnouncement, campaignStart - now);
-        if (now < campaignEnd) setTimeout(updateProductAnnouncement, campaignEnd - now);
+        if (now < campaignStart) setTimeout(updateAnnouncements, campaignStart - now);
+        if (now < campaignEnd) setTimeout(updateAnnouncements, campaignEnd - now);
         var pending = false;
         new MutationObserver(function (records) {
             var relevant = records.some(function (record) {

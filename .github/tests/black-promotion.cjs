@@ -7,6 +7,7 @@ test('campaign notices follow native product and cart promotion updates', async 
   const browser = await chromium.launch({headless: true, executablePath: process.env.BE_BROWSER || 'C:/Users/rcalmeida/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe'});
   try {
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    await page.clock.setFixedTime(new Date('2026-11-15T12:00:00-03:00'));
     await page.setContent(`<style>body { margin: 28px; font-family: Arial, sans-serif; } .product-infos { max-width: 520px; } .js-ajax-cart-list, .js-total-promotions { max-width: 520px; margin-top: 32px; } .js-product-description-short { color: #888; line-height: 1.7; }</style><div class="product-infos">
       <h2>NOVA</h2><p>R$1.499,90</p><p style="color:#888">10 X DE R$149,99 SEM JUROS</p><p style="color:#315d4d">R$1.424,91 no Pix &nbsp; 5% OFF</p><u>Frete e prazo pelo CEP</u>
       <div class="js-product-promo-container px-0 mb-2 col-md-8" data-store="product-promotion-info" data-promotion-type="quantity-discounts">
@@ -17,7 +18,8 @@ test('campaign notices follow native product and cart promotion updates', async 
       </div>
       <div class="js-product-description-short">Descrição do produto</div>
     </div><div class="js-ajax-cart-list"><article class="js-cart-item"><span class="eora-cart-promotion-label">10% OFF <span>Comprando 2 ou mais</span></span><span>Frete grátis</span></article>
-    <article class="js-cart-item"><span class="eora-cart-promotion-label">20% OFF Comprando 3 ou mais</span></article></div>
+    <article class="js-cart-item" data-store="cart-item-291438661"><div class="short_variant_name">Preto</div></article>
+    <article class="js-cart-item" data-store="cart-item-1"><div class="short_variant_name">Outro</div><span class="eora-cart-promotion-label">20% OFF Comprando 3 ou mais</span></article></div>
     <div class="js-total-promotions"><span class="js-total-promotions-detail-row"><span class="col">10% OFF em Black friday 2026 <span>Comprando 2 ou mais</span>:</span><span class="col-auto">-R$399,97</span></span></div>`);
     await page.addStyleTag({content: fs.readFileSync('static/css/black-promotion.css', 'utf8')});
     await page.addScriptTag({content: fs.readFileSync('static/js/black-promotion.js.tpl', 'utf8')});
@@ -28,6 +30,16 @@ test('campaign notices follow native product and cart promotion updates', async 
     assert(await page.getByText('20% OFF Comprando 3 ou mais').isVisible());
     assert(await page.getByText('Frete grátis').isVisible());
     assert(await page.getByText('-R$399,97').isVisible());
+    const eligibleItem = page.locator('[data-store="cart-item-291438661"]');
+    assert.equal(await eligibleItem.locator('.eora-black-notice:visible').count(), 1);
+    assert.equal(await page.locator('[data-store="cart-item-1"] .eora-black-notice').count(), 0);
+    assert.equal(await page.locator('.js-total-promotions .eora-black-notice').count(), 0);
+    await eligibleItem.evaluate(el => el.insertAdjacentHTML('beforeend', '<span class="eora-cart-promotion-label">10% OFF Comprando 2 ou mais</span>'));
+    await page.waitForFunction(() => document.querySelector('[data-store="cart-item-291438661"] .eora-cart-promotion-label.eora-black-enhanced'));
+    assert.equal(await eligibleItem.locator('.eora-black-notice:visible').count(), 1);
+    await eligibleItem.locator('.eora-cart-promotion-label').evaluate(el => el.remove());
+    await page.waitForFunction(() => document.querySelector('[data-store="cart-item-291438661"] .eora-black-notice'));
+    assert.equal(await eligibleItem.locator('.eora-black-notice:visible').count(), 1);
     assert.equal(await page.locator('.eora-black-notice__deadline').first().evaluate(el => getComputedStyle(el).color), 'rgb(247, 98, 101)');
     assert(await page.locator('.eora-black-notice').evaluateAll(nodes => nodes.every(el => el.getBoundingClientRect().right <= innerWidth)));
     fs.mkdirSync('C:/Temp/eora-black-promotion', {recursive: true});
