@@ -28,7 +28,7 @@
     var noticeMarkup = '<span class="eora-black-notice">' +
         '<span class="eora-black-notice__line">10% OFF comprando 2 ou mais!</span>' +
         '<span class="eora-black-notice__line">Usando o cupom: <strong>EORABLACK</strong></span>' +
-        '<span class="eora-black-notice__deadline">CUPOM DISPONÍVEL ATÉ 16/11 ÀS 23:59</span></span>';
+        '<span class="eora-black-notice__deadline">CUPOM DISPONÍVEL ATÉ 23:59</span></span>';
 
     function enhance(source, requireCampaignName) {
         var native = source.querySelector('.eora-black-native');
