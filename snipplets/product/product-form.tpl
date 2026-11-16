@@ -123,10 +123,6 @@
         accordion_hide_svg_id: 'chevron-down',
     }) }}
 
-    {% if template == 'product' and not home_main_product %}
-        <div data-eora-black-product="{{ product.id }}" hidden></div>
-    {% endif %}
-
     {# Keep the promotion above the short description, as in the campaign artwork. #}
     {% if settings.full_width_description %}
         <div class="js-product-description-short product-description-short mb-3"></div>
