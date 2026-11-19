@@ -2,9 +2,11 @@
 .mf-page { padding: 0 0 80px; }
 .mf-page .mf-content { padding: 0 clamp(12px, 2vw, 32px); }
 .mf-page .mf-hero { position: relative; width: 100%; aspect-ratio: 3 / 1; overflow: hidden; background: #f4f4f4; }
-/* Fotos usam 3:1 (desktop) e 4:5 (mobile). Com video ativo, a altura acompanha a proporcao da midia para nao cortar o enquadramento. */
-.mf-page .mf-hero.mf-hero--video-active { aspect-ratio: var(--mf-video-ratio, 16 / 9); }
+/* O video adapta a altura do banner ao arquivo real. Sem metadados, preserva a faixa desktop 3:1. */
+.mf-page .mf-hero.mf-hero--video-active { aspect-ratio: var(--mf-video-ratio, 3 / 1); }
 .mf-page .mf-hero picture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+/* A imagem de capa nao deve aparecer nas eventuais faixas internas do player incorporado. */
+.mf-page .mf-hero.mf-hero--video-active > picture { visibility: hidden; }
 .mf-page .mf-hero picture img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
 .mf-page .mf-hero__video { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .mf-page .mf-hero__video > video { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
