@@ -44,4 +44,4 @@
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261112-1" defer></script>
-<script src="{{ 'js/marcela.js' | static_url }}?v=20261119-hero-autosize-2" defer></script>
+<script src="{{ 'js/marcela.js' | static_url }}?v=20261119-hero-autosize-3" defer></script>
