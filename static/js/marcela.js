@@ -85,12 +85,43 @@
             var player = hero.querySelector('[data-mf-video-player]');
             var toggle = hero.querySelector('[data-mf-media-toggle]');
             var playing = false;
+            var vimeoSdkPromise = null;
+            var vimeoInstance = null;
+            function loadVimeoPlayer() {
+                if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo.Player);
+                if (!vimeoSdkPromise) {
+                    vimeoSdkPromise = new Promise(function (resolve) {
+                        var script = document.createElement('script');
+                        script.async = true;
+                        script.src = 'https://player.vimeo.com/api/player.js';
+                        script.onload = function () { resolve(window.Vimeo && window.Vimeo.Player || null); };
+                        script.onerror = function () { resolve(null); };
+                        document.head.appendChild(script);
+                    });
+                }
+                return vimeoSdkPromise;
+            }
+            function readVimeoDimensions(frame) {
+                loadVimeoPlayer().then(function (Player) {
+                    if (!Player || !playing || !player.contains(frame)) return;
+                    var instance;
+                    try { instance = new Player(frame); } catch (_) { return; }
+                    vimeoInstance = instance;
+                    return Promise.all([instance.getVideoWidth(), instance.getVideoHeight()]).then(function (size) {
+                        if (!playing || !player.contains(frame)) return;
+                        var width = Number(size[0]), height = Number(size[1]);
+                        if (width > 0 && height > 0 && width / height >= .1 && width / height <= 10) {
+                            hero.style.setProperty('--mf-video-ratio', width + ' / ' + height);
+                        }
+                    }).catch(function () { /* Mantem proporcao configurada ou o fallback panoramico. */ });
+                }).catch(function () {});
+            }
             function source() { return mobile.matches ? hero.dataset.mfVideoMobile || hero.dataset.mfVideoDesktop : hero.dataset.mfVideoDesktop || hero.dataset.mfVideoMobile; }
-            function configuredRatio() {
+            function configuredRatio(media) {
                 var useMobile = mobile.matches ? !!hero.dataset.mfVideoMobile : !hero.dataset.mfVideoDesktop && !!hero.dataset.mfVideoMobile;
                 var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
                 var parts = String(raw || '').match(/^\s*(\d{1,4})\s*[:/]\s*(\d{1,4})\s*$/);
-                if (!parts) return '16 / 9';
+                if (!parts) return media && media.provider === 'vimeo' ? '3 / 1' : '16 / 9';
                 var width = Number(parts[1]);
                 var height = Number(parts[2]);
                 return width && height && width / height >= .1 && width / height <= 10 ? width + ' / ' + height : '16 / 9';
@@ -101,7 +132,7 @@
                     if (!['http:', 'https:'].includes(url.protocol)) return null;
                     if (/\.mp4(?:$|\?)/i.test(url.href)) return {video: url.href};
                     var vimeo = /^(?:www\.)?(?:player\.)?vimeo\.com$/.test(url.hostname) && url.pathname.match(/\/(?:video\/)?(\d+)/);
-                    if (vimeo) return {embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0'};
+                    if (vimeo) return {provider: 'vimeo', embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0'};
                     var youtube = null;
                     if (url.hostname === 'youtu.be') youtube = url.pathname.slice(1);
                     if (/^(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)$/.test(url.hostname)) youtube = url.searchParams.get('v') || url.pathname.split('/').pop();
@@ -110,6 +141,11 @@
                 return null;
             }
             function setPlaying(value) {
+                if (vimeoInstance) {
+                    var previous = vimeoInstance;
+                    vimeoInstance = null;
+                    try { previous.destroy().catch(function () {}); } catch (_) {}
+                }
                 player.replaceChildren();
                 var media = mediaUrl(source());
                 playing = !!value && !!media;
@@ -118,7 +154,7 @@
                 if (playing) {
                     // Em videos incorporados usamos o formato escolhido no editor (padrao 16:9).
                     // Para MP4, a proporcao real substitui esse valor ao carregar os metadados.
-                    hero.style.setProperty('--mf-video-ratio', configuredRatio());
+                    hero.style.setProperty('--mf-video-ratio', configuredRatio(media));
                     if (media.video) {
                         var video = document.createElement('video');
                         video.muted = true; video.autoplay = true; video.loop = true; video.playsInline = true;
@@ -133,6 +169,7 @@
                         var frame = document.createElement('iframe');
                         frame.title = 'Vídeo Favoritos da Marcela'; frame.allow = 'autoplay; fullscreen; picture-in-picture';
                         frame.tabIndex = -1; frame.src = media.embed; player.appendChild(frame);
+                        if (media.provider === 'vimeo') readVimeoDimensions(frame);
                     }
                 }
                 if (toggle) {
