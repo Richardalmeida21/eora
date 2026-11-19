@@ -15,7 +15,7 @@
 {% endif %}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261020-1">
 <link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261029-1">
-<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261119-hero-cover-1">
+<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261119-hero-full-1">
 <main class="be-page bs-page mf-page" data-mf-page data-bs-page data-bs-inline-catalog data-bs-category-url="/favoritosdamarcela/" data-bs-page-size="12" data-bs-mobile-page-size="6" data-bs-macro-visible="3" data-bs-catalog-title="Todos os favoritos da Marcela">
     <h1 class="bs-sr-only">{{ settings.marcela_title | default('Favoritos da Marcela') | escape }}</h1>
     {% include 'snipplets/marcela/hero.tpl' %}
@@ -44,4 +44,4 @@
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261112-1" defer></script>
-<script src="{{ 'js/marcela.js' | static_url }}?v=20261112-1" defer></script>
+<script src="{{ 'js/marcela.js' | static_url }}?v=20261119-hero-full-1" defer></script>
