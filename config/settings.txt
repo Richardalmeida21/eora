@@ -10886,36 +10886,36 @@ Favoritos da Marcela
 	collapse
 		title = Banner principal — foto ou vídeo
 	description
-		description = O banner identifica automaticamente as proporções de MP4 e Vimeo e ajusta a altura sem esticar ou cortar. Não precisa saber as medidas do vídeo. No YouTube, o padrão é 16:9. Só informe a proporção manual se a detecção não funcionar. Fotos devem ter as proporções indicadas; a nitidez depende da qualidade original.
+		description = Fotos: desktop 3:1 e celular 4:5. Só ficam sem cortes se o arquivo tiver a proporção indicada. Vídeos MP4 identificam as dimensões do arquivo; Vimeo tenta consultar o player (se falhar, usa 3:1 ou proporção manual); YouTube usa 16:9 ou proporção manual. O banner adapta a altura sem esticar. Faixas gravadas dentro do vídeo não podem ser removidas sem editar o arquivo. A nitidez depende da resolução original.
 	checkbox
 		name = marcela_hero_enabled
 		description = Mostrar banner principal
 	gallery
 		name = marcela_hero_image
-		gallery_image = Foto desktop — 2400 × 800 px (3:1, sem cortes)
+		gallery_image = Foto desktop — 2400 × 800 px (3:1; exporte nessa proporção para não cortar)
 		gallery_link = Link opcional
 		gallery_width = 2400
 		gallery_height = 800
 		gallery_more_info = true
 	gallery
 		name = marcela_hero_image_mobile
-		gallery_image = Foto mobile — 1600 × 2000 px (4:5, sem cortes; opcional)
+		gallery_image = Foto celular — 1600 × 2000 px (4:5; opcional). Sem ela, a foto desktop pode ser cortada no celular
 		gallery_link = Link opcional
 		gallery_width = 1600
 		gallery_height = 2000
 		gallery_more_info = true
 	text
 		name = marcela_hero_video
-		description = Vídeo desktop MP4, Vimeo ou YouTube — proporção automática para MP4 e Vimeo (não é necessário saber as medidas).
+		description = Vídeo desktop — URL MP4, Vimeo ou YouTube. MP4 detecta o formato; Vimeo tenta detectar. Não precisa informar resolução.
 	text
 		name = marcela_hero_video_mobile
-		description = Vídeo mobile (opcional) — proporção automática para MP4 e Vimeo. Se vazio, reutiliza o vídeo desktop.
+		description = Vídeo celular (opcional) — se vazio, utiliza o vídeo desktop. MP4 e Vimeo tentam detectar a proporção automaticamente.
 	text
 		name = marcela_hero_video_ratio_desktop
-		description = Proporção manual desktop (opcional, ex.: 3:1). Deixe vazio para detecção automática no Vimeo/MP4; YouTube usa 16:9.
+		description = Proporção manual desktop (opcional, ex.: 3:1 ou 16:9) — usada no YouTube ou se o Vimeo não informar dimensões. MP4 ignora.
 	text
 		name = marcela_hero_video_ratio_mobile
-		description = Proporção manual mobile (opcional, ex.: 4:5). Deixe vazio para detecção automática no Vimeo/MP4; YouTube usa 16:9.
+		description = Proporção manual celular (opcional, ex.: 4:5 ou 9:16) — usada no YouTube ou se o Vimeo não informar dimensões. Se reutilizar o vídeo desktop, herda sua proporção. MP4 ignora.
 	i18n_input
 		name = marcela_hero_alt
 		description = Descrição acessível do banner
