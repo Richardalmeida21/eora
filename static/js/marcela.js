@@ -89,7 +89,7 @@
             function configuredRatio() {
                 var useMobile = mobile.matches ? !!hero.dataset.mfVideoMobile : !hero.dataset.mfVideoDesktop && !!hero.dataset.mfVideoMobile;
                 var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
-                var parts = String(raw || '').match(/^\\s*(\\d{1,4})\\s*[:/]\\s*(\\d{1,4})\\s*$/);
+                var parts = String(raw || '').match(/^\s*(\d{1,4})\s*[:/]\s*(\d{1,4})\s*$/);
                 if (!parts) return '16 / 9';
                 var width = Number(parts[1]);
                 var height = Number(parts[2]);
