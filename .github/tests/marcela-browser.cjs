@@ -201,6 +201,13 @@ const app = server(4180);
         await page.locator('[data-mf-media-toggle]').click();
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0);
         assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'visible', 'pause must restore cover photo');
+        // A mobile viewport without a mobile-specific source must keep the desktop configured ratio.
+        await page.route('https://www.youtube-nocookie.com/**', route => route.fulfill({contentType: 'text/html', body: '<html></html>'}));
+        await page.goto(base + '?video=' + encodeURIComponent('https://www.youtube.com/watch?v=dQw4w9WgXcQ'));
+        await page.setViewportSize({width: 390, height: 844});
+        await page.locator('.mf-hero').evaluate(node => { node.dataset.mfVideoRatioDesktop = '21:9'; });
+        await page.locator('[data-mf-media-toggle]').click();
+        assert.equal(await page.locator('.mf-hero').evaluate(node => node.style.getPropertyValue('--mf-video-ratio')), '21 / 9', 'mobile must inherit configured desktop ratio when mobile video is empty');
         await page.goto(base + '?video=' + encodeURIComponent('javascript:alert(1)'));
         assert(await page.locator('[data-mf-media-toggle]').isHidden());
         assert.deepEqual(errors, []);
