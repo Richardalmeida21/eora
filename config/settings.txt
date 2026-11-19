@@ -10886,7 +10886,7 @@ Favoritos da Marcela
 	collapse
 		title = Banner principal — foto ou vídeo
 	description
-		description = Evite cortes e distorções: imagens devem ter as medidas indicadas abaixo. Vídeos MP4 usam a própria proporção e o banner ajusta sua altura. Para YouTube/Vimeo, informe a proporção do vídeo se não for 16:9. A qualidade final depende da resolução do arquivo original.
+		description = O banner identifica automaticamente as proporções de MP4 e Vimeo e ajusta a altura sem esticar ou cortar. Não precisa saber as medidas do vídeo. No YouTube, o padrão é 16:9. Só informe a proporção manual se a detecção não funcionar. Fotos devem ter as proporções indicadas; a nitidez depende da qualidade original.
 	checkbox
 		name = marcela_hero_enabled
 		description = Mostrar banner principal
@@ -10906,16 +10906,16 @@ Favoritos da Marcela
 		gallery_more_info = true
 	text
 		name = marcela_hero_video
-		description = Vídeo desktop MP4, Vimeo ou YouTube — ideal 1920 × 1080 px (16:9). MP4 se ajusta ao tamanho original sem cortar.
+		description = Vídeo desktop MP4, Vimeo ou YouTube — proporção automática para MP4 e Vimeo (não é necessário saber as medidas).
 	text
 		name = marcela_hero_video_mobile
-		description = Vídeo mobile (opcional) — ideal 1080 × 1350 px (4:5) ou 1080 × 1920 px (9:16). Se vazio, reutiliza vídeo desktop.
+		description = Vídeo mobile (opcional) — proporção automática para MP4 e Vimeo. Se vazio, reutiliza o vídeo desktop.
 	text
 		name = marcela_hero_video_ratio_desktop
-		description = Proporção do YouTube/Vimeo desktop (ex.: 16:9, 4:5 ou 3:1). Padrão 16:9. Para MP4 não precisa preencher.
+		description = Proporção manual desktop (opcional, ex.: 3:1). Deixe vazio para detecção automática no Vimeo/MP4; YouTube usa 16:9.
 	text
 		name = marcela_hero_video_ratio_mobile
-		description = Proporção do YouTube/Vimeo mobile, se usar vídeo diferente (ex.: 4:5 ou 9:16). Se vazio, usa 16:9. MP4 é automático.
+		description = Proporção manual mobile (opcional, ex.: 4:5). Deixe vazio para detecção automática no Vimeo/MP4; YouTube usa 16:9.
 	i18n_input
 		name = marcela_hero_alt
 		description = Descrição acessível do banner
