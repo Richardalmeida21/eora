@@ -22,6 +22,7 @@ assert.match(heroTemplate, /width="2400" height="800"/);
 const heroCSS = read('static/css/marcela.css');
 assert.match(heroCSS, /\.mf-hero--video-active\s*\{\s*aspect-ratio:\s*var\(--mf-video-ratio/);
 assert.match(heroCSS, /\.mf-hero__video > video\s*\{[^}]*object-fit:\s*contain/);
+assert.match(heroCSS, /\.mf-hero\.mf-hero--video-active > picture\s*\{\s*visibility:\s*hidden/);
 const disabled = render(context({categories: 0, looks: 0, founder: 0}));
 assert(!disabled.includes('data-mf-look="'));
 assert(!disabled.includes('class="mf-founder-card"'));
@@ -164,6 +165,14 @@ const app = server(4180);
         await page.goto(base + '?legacy&minimal');
         assert.equal(await cards.count(), 6);
         report.push('disabled/empty slots disappear; legacy campaign content survives');
+        // Simulate a Vimeo upload whose real dimensions differ from the old hard-coded 16:9.
+        await page.addInitScript(() => {
+            window.Vimeo = {Player: class {
+                getVideoWidth() { return Promise.resolve(2400); }
+                getVideoHeight() { return Promise.resolve(1000); }
+                destroy() { return Promise.resolve(); }
+            }};
+        });
         await page.route('https://player.vimeo.com/**', route => route.fulfill({contentType: 'text/html', body: '<html></html>'}));
         await page.goto(base + '?video=' + encodeURIComponent('https://vimeo.com/1183849090'));
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0, 'respect reduced motion');
@@ -180,12 +189,18 @@ const app = server(4180);
             const rect = banner.getBoundingClientRect();
             return rect.width / rect.height;
         });
-        assert(Math.abs((await heroAspect()) - 16 / 9) < .015, 'embedded video must retain full 16:9 on mobile');
+        await page.waitForFunction(() => {
+            const banner = document.querySelector('.mf-hero');
+            return banner && Math.abs(banner.getBoundingClientRect().width / banner.getBoundingClientRect().height - 2.4) < .015;
+        });
+        assert(Math.abs((await heroAspect()) - 2.4) < .015, 'Vimeo must use the native video ratio on mobile');
+        assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'hidden', 'background photo must not leak through Vimeo letterboxing');
         await page.setViewportSize({width: 1440, height: 900});
         assert(await iframeCoversBanner(), 'desktop embedded video must cover banner without letterboxing');
-        assert(Math.abs((await heroAspect()) - 16 / 9) < .015, 'embedded video must retain full 16:9 on desktop');
+        assert(Math.abs((await heroAspect()) - 2.4) < .015, 'Vimeo must use native video ratio on desktop');
         await page.locator('[data-mf-media-toggle]').click();
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0);
+        assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'visible', 'pause must restore cover photo');
         await page.goto(base + '?video=' + encodeURIComponent('javascript:alert(1)'));
         assert(await page.locator('[data-mf-media-toggle]').isHidden());
         assert.deepEqual(errors, []);
