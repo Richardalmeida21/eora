@@ -86,6 +86,15 @@
             var toggle = hero.querySelector('[data-mf-media-toggle]');
             var playing = false;
             function source() { return mobile.matches ? hero.dataset.mfVideoMobile || hero.dataset.mfVideoDesktop : hero.dataset.mfVideoDesktop || hero.dataset.mfVideoMobile; }
+            function configuredRatio() {
+                var useMobile = mobile.matches ? !!hero.dataset.mfVideoMobile : !hero.dataset.mfVideoDesktop && !!hero.dataset.mfVideoMobile;
+                var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
+                var parts = String(raw || '').match(/^\\s*(\\d{1,4})\\s*[:/]\\s*(\\d{1,4})\\s*$/);
+                if (!parts) return '16 / 9';
+                var width = Number(parts[1]);
+                var height = Number(parts[2]);
+                return width && height && width / height >= .1 && width / height <= 10 ? width + ' / ' + height : '16 / 9';
+            }
             function mediaUrl(raw) {
                 try {
                     var url = new URL(raw, window.location.origin);
@@ -104,13 +113,22 @@
                 player.replaceChildren();
                 var media = mediaUrl(source());
                 playing = !!value && !!media;
+                hero.classList.toggle('mf-hero--video-active', playing);
+                hero.style.removeProperty('--mf-video-ratio');
                 if (playing) {
+                    // Em videos incorporados usamos o formato escolhido no editor (padrao 16:9).
+                    // Para MP4, a proporcao real substitui esse valor ao carregar os metadados.
+                    hero.style.setProperty('--mf-video-ratio', configuredRatio());
                     if (media.video) {
                         var video = document.createElement('video');
                         video.muted = true; video.autoplay = true; video.loop = true; video.playsInline = true;
                         video.setAttribute('aria-label', 'Vídeo Favoritos da Marcela');
+                        video.addEventListener('loadedmetadata', function () {
+                            if (!playing || !player.contains(video) || !video.videoWidth || !video.videoHeight) return;
+                            hero.style.setProperty('--mf-video-ratio', video.videoWidth + ' / ' + video.videoHeight);
+                        });
                         video.src = media.video; player.appendChild(video);
-                        video.play().catch(function () { setPlaying(false); });
+                        video.play().catch(function () { if (player.contains(video)) setPlaying(false); });
                     } else {
                         var frame = document.createElement('iframe');
                         frame.title = 'Vídeo Favoritos da Marcela'; frame.allow = 'autoplay; fullscreen; picture-in-picture';
