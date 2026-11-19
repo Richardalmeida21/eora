@@ -161,6 +161,15 @@ const app = server(4180);
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0, 'respect reduced motion');
         await page.locator('[data-mf-media-toggle]').click();
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 1);
+        const iframeCoversBanner = () => page.locator('[data-mf-video-player] iframe').evaluate(frame => {
+            const banner = frame.closest('.mf-hero').getBoundingClientRect();
+            const media = frame.getBoundingClientRect();
+            return media.left <= banner.left + 1 && media.right >= banner.right - 1 &&
+                media.top <= banner.top + 1 && media.bottom >= banner.bottom - 1;
+        });
+        assert(await iframeCoversBanner(), 'mobile embedded video must cover banner without letterboxing');
+        await page.setViewportSize({width: 1440, height: 900});
+        assert(await iframeCoversBanner(), 'desktop embedded video must cover banner without letterboxing');
         await page.locator('[data-mf-media-toggle]').click();
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0);
         await page.goto(base + '?video=' + encodeURIComponent('javascript:alert(1)'));
