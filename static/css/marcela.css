@@ -2,11 +2,13 @@
 .mf-page { padding: 0 0 80px; }
 .mf-page .mf-content { padding: 0 clamp(12px, 2vw, 32px); }
 .mf-page .mf-hero { position: relative; width: 100%; aspect-ratio: 3 / 1; overflow: hidden; background: #f4f4f4; }
+/* Fotos usam 3:1 (desktop) e 4:5 (mobile). Com video ativo, a altura acompanha a proporcao da midia para nao cortar o enquadramento. */
+.mf-page .mf-hero.mf-hero--video-active { aspect-ratio: var(--mf-video-ratio, 16 / 9); }
 .mf-page .mf-hero picture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .mf-page .mf-hero picture img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
 .mf-page .mf-hero__video { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.mf-page .mf-hero__video > video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.mf-page .mf-hero__video > iframe { display: block; position: absolute; top: 50%; left: 50%; width: 100%; height: auto; min-height: 100%; aspect-ratio: 16 / 9; max-width: none; border: 0; transform: translate(-50%, -50%); }
+.mf-page .mf-hero__video > video { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+.mf-page .mf-hero__video > iframe { display: block; position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; border: 0; }
 .mf-hero__link { position: absolute; inset: 0; }
 .mf-media-toggle { position: absolute; bottom: 16px; right: 16px; z-index: 1; padding: 10px 14px; border: 1px solid #fff; color: #fff; background: rgba(0,0,0,.65); font-size: 12px; }
 .mf-page .mf-section-title { font-size: 16px; line-height: 1.4; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 20px; }
@@ -52,7 +54,6 @@
     .mf-page { padding-bottom: 64px; }
     .mf-page .mf-content { padding: 0 12px; }
     .mf-page .mf-hero { aspect-ratio: 4 / 5; }
-    .mf-page .mf-hero__video > iframe { width: auto; min-width: 100%; height: 100%; min-height: 100%; }
     .mf-page .mf-section-title { font-size: 13px; margin-bottom: 16px; }
     .mf-page .bs-macros { margin-top: 24px; --be-visible: min(var(--bs-macro-count), 2); --be-card-visible: min(var(--bs-macro-count), 2); }
     .mf-page .bs-macros--overflow { --be-visible: 2; --be-card-visible: 2; }
