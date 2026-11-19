@@ -118,7 +118,7 @@
             }
             function source() { return mobile.matches ? hero.dataset.mfVideoMobile || hero.dataset.mfVideoDesktop : hero.dataset.mfVideoDesktop || hero.dataset.mfVideoMobile; }
             function configuredRatio(media) {
-                var useMobile = mobile.matches ? !!hero.dataset.mfVideoMobile : !hero.dataset.mfVideoDesktop && !!hero.dataset.mfVideoMobile;
+                var useMobile = !!hero.dataset.mfVideoMobile && (mobile.matches || !hero.dataset.mfVideoDesktop);
                 var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
                 var parts = String(raw || '').match(/^\s*(\d{1,4})\s*[:/]\s*(\d{1,4})\s*$/);
                 if (!parts) return media && media.provider === 'vimeo' ? '3 / 1' : '16 / 9';
