@@ -152,8 +152,8 @@
                 hero.classList.toggle('mf-hero--video-active', playing);
                 hero.style.removeProperty('--mf-video-ratio');
                 if (playing) {
-                    // Em videos incorporados usamos o formato escolhido no editor (padrao 16:9).
-                    // Para MP4, a proporcao real substitui esse valor ao carregar os metadados.
+                    // Vimeo busca a proporcao nativa via Player SDK; YouTube usa 16:9 como fallback.
+                    // MP4 detecta a proporcao real nos metadados, sem exigir configuracao do lojista.
                     hero.style.setProperty('--mf-video-ratio', configuredRatio(media));
                     if (media.video) {
                         var video = document.createElement('video');
