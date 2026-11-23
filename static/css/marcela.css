@@ -7,17 +7,17 @@
 .mf-page .mf-hero picture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 /* A imagem de capa nao deve aparecer nas eventuais faixas internas do player incorporado. */
 .mf-page .mf-hero.mf-hero--video-active > picture { visibility: hidden; }
-.mf-page .mf-hero picture img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
+.mf-page .mf-hero picture img { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; object-position: center; }
 .mf-page .mf-hero__video { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .mf-page .mf-hero__video > video { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .mf-page .mf-hero__video > iframe { display: block; position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; border: 0; }
 .mf-hero__link { position: absolute; inset: 0; }
-.mf-media-toggle { position: absolute; bottom: 16px; right: 16px; z-index: 1; padding: 10px 14px; border: 1px solid #fff; color: #fff; background: rgba(0,0,0,.65); font-size: 12px; }
 .mf-page .mf-section-title { font-size: 16px; line-height: 1.4; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 20px; }
 .mf-page .bs-macros { margin: 32px 0 18px; --be-visible: min(var(--bs-macro-count), 3); --be-card-visible: min(var(--bs-macro-count), 3); }
 .mf-page .bs-macros--overflow { --be-visible: 3; --be-card-visible: 3.2; }
 .mf-page .bs-macros__track { --be-gap: 8px; }
 .mf-page .bs-macro__selection { border-width: 2px; }
+.mf-page .bs-macro__selection > picture > img { aspect-ratio: auto; height: auto; object-fit: contain; }
 .mf-page .bs-macro__title { font-size: 12px; font-weight: 500; }
 .mf-page .bs-macro__description { font-size: 12px; text-align: left; }
 .mf-page .bs-toolbar { padding: 20px 0; margin-top: 6px; }
@@ -59,7 +59,6 @@
     .mf-page .mf-section-title { font-size: 13px; margin-bottom: 16px; }
     .mf-page .bs-macros { margin-top: 24px; --be-visible: min(var(--bs-macro-count), 2); --be-card-visible: min(var(--bs-macro-count), 2); }
     .mf-page .bs-macros--overflow { --be-visible: 2; --be-card-visible: 2; }
-    .mf-page .bs-macro__selection > picture > img { aspect-ratio: 3 / 4; }
     .mf-page .bs-catalog .be-product-grid { column-gap: 6px; row-gap: 24px; }
     .mf-page .mf-carousel { margin-top: 36px; --mf-visible: 1 !important; }
     .mf-page .mf-carousel .mf-track > * { flex-basis: 100%; }

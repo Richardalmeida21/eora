@@ -83,7 +83,6 @@
         if (hero) {
             var mobile = window.matchMedia('(max-width: 767px)');
             var player = hero.querySelector('[data-mf-video-player]');
-            var toggle = hero.querySelector('[data-mf-media-toggle]');
             var playing = false;
             var vimeoSdkPromise = null;
             var vimeoInstance = null;
@@ -132,7 +131,7 @@
                     if (!['http:', 'https:'].includes(url.protocol)) return null;
                     if (/\.mp4(?:$|\?)/i.test(url.href)) return {video: url.href};
                     var vimeo = /^(?:www\.)?(?:player\.)?vimeo\.com$/.test(url.hostname) && url.pathname.match(/\/(?:video\/)?(\d+)/);
-                    if (vimeo) return {provider: 'vimeo', embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0'};
+                    if (vimeo) return {provider: 'vimeo', embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?controls=0&autoplay=1&loop=1&muted=1&title=0&byline=0'};
                     var youtube = null;
                     if (url.hostname === 'youtu.be') youtube = url.pathname.slice(1);
                     if (/^(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)$/.test(url.hostname)) youtube = url.searchParams.get('v') || url.pathname.split('/').pop();
@@ -172,13 +171,7 @@
                         if (media.provider === 'vimeo') readVimeoDimensions(frame);
                     }
                 }
-                if (toggle) {
-                    toggle.hidden = !media;
-                    toggle.setAttribute('aria-pressed', String(playing));
-                    toggle.textContent = playing ? 'Pausar vídeo' : 'Reproduzir vídeo';
-                }
             }
-            if (toggle) toggle.addEventListener('click', function () { setPlaying(!playing); });
             mobile.addEventListener('change', function () { setPlaying(playing); });
             reduced.addEventListener('change', function () { setPlaying(!reduced.matches); });
             setPlaying(!reduced.matches);
