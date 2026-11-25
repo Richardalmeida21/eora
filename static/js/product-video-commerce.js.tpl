@@ -78,7 +78,11 @@
                     return function (fn, delay) {
                         if (typeof fn !== 'function') return original.apply(this,arguments);
                         var args = Array.prototype.slice.call(arguments,2);
-                        var id = original.apply(window,[wrap(fn),delay].concat(args));
+                        var callback = wrap(fn);
+                        var id = original.apply(window,[function () {
+                            if (key === 'setTimeout') scope.timers.delete(id);
+                            return callback.apply(this,arguments);
+                        },delay].concat(args));
                         scope.timers.add(id);
                         return id;
                     };
