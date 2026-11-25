@@ -10,6 +10,8 @@
         </picture>
     {% endif %}
     <div class="mf-hero__video" data-mf-video-player></div>
+    {% if settings.marcela_hero_video or settings.marcela_hero_video_mobile %}<button class="mf-hero__toggle" type="button" data-mf-media-toggle hidden>Reproduzir vídeo</button>{% endif %}
     {% if settings.marcela_hero_link %}<a class="mf-hero__link" href="{{ settings.marcela_hero_link | escape }}" aria-label="{{ settings.marcela_hero_alt | default('Conheça os favoritos da Marcela') | escape }}"></a>{% endif %}
 </section>
+{% if settings.marcela_hero_video or settings.marcela_hero_video_mobile %}<script src="{{ 'js/marcela-hero.js' | static_url }}?v=20261125-2" async></script>{% endif %}
 {% endif %}
