@@ -461,6 +461,7 @@
             <script>{% include 'static/js/product-whatsapp.js.tpl' %}</script>
             <script>{% include 'static/js/product-description-image-links.js.tpl' %}</script>
             <script>{% include 'static/js/product-image-quality.js.tpl' %}</script>
+            <script>{% include 'static/js/product-video-commerce.js.tpl' %}</script>
         {% endif %}
 
         <script>{% include 'static/js/product-payment-summary.js.tpl' %}</script>
