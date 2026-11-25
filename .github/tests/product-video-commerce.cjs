@@ -5,7 +5,8 @@ const vm = require('node:vm');
 const {test} = require('node:test');
 const source = fs.readFileSync(path.join(__dirname, '../../static/js/product-video-commerce.js.tpl'), 'utf8');
 function fixture(withLoader = true) {
-    let callback, reloads = 0;
+    let callback, reloads = 0, timerId = 0;
+    const timers = new Map();
     let product = {isConnected:true};
     const old = 'https://www.eoraeyewear.com/produtos/vertice-bordo-mix/';
     const original = 'https://example.test/video-widget.js.php?store=6201247&url=' + encodeURIComponent(old);
@@ -15,6 +16,7 @@ function fixture(withLoader = true) {
     function addWidget() {
         for (const id of ['video-bolinha','video-modal','stories-modal']) nodes.set(id, {
             querySelectorAll(){return [{pause(){}}];},
+            querySelector(){return {getAttribute(){return 'https://cdn.example.test/product.mp4';}};},
             remove(){nodes.delete(id);}
         });
     }
@@ -31,8 +33,8 @@ function fixture(withLoader = true) {
         observe(){}
     }
     vm.runInNewContext(source,{window,document,location,URL,MutationObserver,performance:{getEntriesByType(){return [];}},
-        setTimeout(){return 1;},clearTimeout(){}});
-    return {loads,nodes,location,addWidget,get reloads(){return reloads;},swap(slug){
+        setTimeout(fn,ms){timers.set(++timerId,{fn,ms});return timerId;},clearTimeout(id){timers.delete(id);}});
+    return {loads,nodes,location,addWidget,advance(){const entry=Array.from(timers.entries()).find(([,v])=>v.ms===150); if(entry){timers.delete(entry[0]);entry[1].fn();}},get reloads(){return reloads;},swap(slug){
         product.isConnected=false;
         product={isConnected:true};
         location.href='https://www.eoraeyewear.com/produtos/'+slug+'/';
@@ -77,5 +79,13 @@ test('native navigation fallback on script network failure',()=>{
     const f=fixture();
     f.swap('vertice-preto-prata');
     f.loads[0].onerror();
+    assert.equal(f.reloads,1);
+});
+
+test('successful script download without video mount triggers recovery',()=>{
+    const f=fixture();
+    f.swap('vertice-preto-prata');
+    f.loads[0].onload();
+    for(let i=0;i<20;i++) f.advance();
     assert.equal(f.reloads,1);
 });
