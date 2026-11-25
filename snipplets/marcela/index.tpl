@@ -13,9 +13,10 @@
         {% set marcela_products = marcela_products | merge(attribute(sections, marcela_legacy ~ suffix).products | default([])) %}
     {% endfor %}
 {% endif %}
+{% if (settings.marcela_hero_enabled is not defined or settings.marcela_hero_enabled) and (settings.marcela_hero_video or settings.marcela_hero_video_mobile) %}<link rel="preload" as="script" href="{{ 'js/marcela-hero.js' | static_url }}?v=20261125-2">{% endif %}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261020-1">
 <link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261029-1">
-<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261125-1">
+<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261125-2">
 <main class="be-page bs-page mf-page" data-mf-page data-bs-page data-bs-inline-catalog data-bs-category-url="/favoritosdamarcela/" data-bs-page-size="12" data-bs-mobile-page-size="6" data-bs-macro-visible="3" data-bs-catalog-title="Todos os favoritos da Marcela">
     <h1 class="bs-sr-only">{{ settings.marcela_title | default('Favoritos da Marcela') | escape }}</h1>
     {% include 'snipplets/marcela/hero.tpl' %}
@@ -41,7 +42,7 @@
     </div>
     {% include 'snipplets/best-sellers/filters.tpl' with {bs_all_label: 'Todos os favoritos da Marcela'} %}
 </main>
-<script src="{{ 'js/marcela.js' | static_url }}?v=20261125-1" defer></script>
+<script src="{{ 'js/marcela.js' | static_url }}?v=20261125-2" defer></script>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261112-1" defer></script>
