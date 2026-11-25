@@ -5,7 +5,7 @@
     var product = document.getElementById('single-product');
     if (!product) return;
     var previousUrl = location.href;
-    var pending = null, running = false, loader = null;
+    var pending = null, running = false, loader = null, loaderPage = previousUrl;
     var widgetIds = ['video-bolinha', 'video-modal', 'stories-modal'];
     function widgetPresent() { return !!document.getElementById('video-bolinha'); }
     function clearWidget() {
@@ -63,7 +63,7 @@
             if (job.hadWidget) fallback(job);
             return;
         }
-        var next = targetLoader(source, job.from, job.to);
+        var next = targetLoader(source, loaderPage, job.to);
         if (!next) { if (job.hadWidget) fallback(job); return; }
         running = true;
         clearWidget();
@@ -78,7 +78,7 @@
             window.removeEventListener('error', onError);
             script.remove();
             running = false;
-            if (ok) loader = next;
+            if (ok) { loader = next; loaderPage = job.to; }
             if (pending) { clearWidget(); run(); }
             else if (!ok && job.hadWidget) fallback(job);
         }
@@ -101,10 +101,10 @@
         product = nextProduct;
         var nextUrl = location.href;
         if (productPath(previousUrl) === productPath(nextUrl)) return;
-        var hadWidget = widgetPresent() || !!(pending && pending.hadWidget);
-        var from = pending ? pending.from : previousUrl;
+        var hadWidget = widgetPresent() || !!(pending && pending.hadWidget) || running;
+        var from = previousUrl;
         previousUrl = nextUrl;
-        loader = loader || findLoader();
+        if (!loader) { loader = findLoader(); loaderPage = from; }
         if (!loader && !hadWidget && !running) return;
         clearWidget();
         pending = {from: from, to: nextUrl, hadWidget: hadWidget};
