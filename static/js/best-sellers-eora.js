@@ -68,7 +68,7 @@
             return url;
         }
         function appendProducts(feed) {
-            all('[data-be-product]', feed.content).forEach(function (card) {
+            all('[data-be-product]', feed.content || feed).forEach(function (card) {
                 if (seen.has(card.dataset.beProduct)) return;
                 seen.add(card.dataset.beProduct);
                 var tags;
@@ -423,6 +423,7 @@
         }
         window.addEventListener('popstate', readUrl);
         if (inlineCatalog) {
+            if (root.hasAttribute('data-bs-server-cards')) appendProducts(grid);
             if (initialProducts) appendProducts(initialProducts);
             discoverModels();
             root.dataset.bsCatalogReady = '1';
