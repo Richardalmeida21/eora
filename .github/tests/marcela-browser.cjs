@@ -7,7 +7,7 @@ const {context, render, server} = require('./marcela-harness.cjs');
 const temp = process.env.MARCELA_VALIDATION_DIR || 'C:/Temp/eora-marcela-validation';
 const base = 'http://127.0.0.1:4180/favoritosdamarcela/';
 const read = f => fs.readFileSync(f, 'utf8');
-for (const file of ['static/js/marcela.js', 'static/js/best-sellers-eora.js']) new vm.Script(read(file));
+for (const file of ['static/js/marcela-hero.js', 'static/js/marcela.js', 'static/js/best-sellers-eora.js']) new vm.Script(read(file));
 const schema = read('config/settings.txt');
 const names = [...schema.matchAll(/^\s*name\s*=\s*(\S+)/gm)].map(m => m[1]);
 assert.equal(new Set(names).size, names.length, 'no duplicate editor fields');
@@ -22,7 +22,7 @@ assert.match(heroTemplate, /width="2400" height="800"/);
 const heroCSS = read('static/css/marcela.css');
 assert.match(heroCSS, /\.mf-hero--video-active\s*\{\s*aspect-ratio:\s*var\(--mf-video-ratio/);
 assert.match(heroCSS, /\.mf-hero__video > video\s*\{[^}]*object-fit:\s*contain/);
-assert.match(heroCSS, /\.mf-hero\.mf-hero--video-active > picture\s*\{\s*visibility:\s*hidden/);
+assert.match(heroCSS, /\.mf-hero\.mf-hero--video-ready > picture\s*\{\s*visibility:\s*hidden/);
 const disabled = render(context({categories: 0, looks: 0, founder: 0}));
 assert(!disabled.includes('data-mf-look="'));
 assert(!disabled.includes('class="mf-founder-card"'));
@@ -168,6 +168,7 @@ const app = server(4180);
         // Simulate a Vimeo upload whose real dimensions differ from the old hard-coded 16:9.
         await page.addInitScript(() => {
             window.Vimeo = {Player: class {
+                on(event, callback) { if (event === 'playing') window.mfTestPlaying = callback; }
                 getVideoWidth() { return Promise.resolve(2400); }
                 getVideoHeight() { return Promise.resolve(1000); }
                 destroy() { return Promise.resolve(); }
@@ -194,7 +195,9 @@ const app = server(4180);
             return banner && Math.abs(banner.getBoundingClientRect().width / banner.getBoundingClientRect().height - 2.4) < .015;
         });
         assert(Math.abs((await heroAspect()) - 2.4) < .015, 'Vimeo must use the native video ratio on mobile');
-        assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'hidden', 'background photo must not leak through Vimeo letterboxing');
+        assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'visible', 'cover remains visible before playback');
+        await page.evaluate(() => window.mfTestPlaying());
+        assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'hidden', 'background photo must not leak through Vimeo letterboxing after playback');
         await page.setViewportSize({width: 1440, height: 900});
         assert(await iframeCoversBanner(), 'desktop embedded video must cover banner without letterboxing');
         assert(Math.abs((await heroAspect()) - 2.4) < .015, 'Vimeo must use native video ratio on desktop');
