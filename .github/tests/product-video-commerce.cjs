@@ -1,0 +1,81 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const {test} = require('node:test');
+const source = fs.readFileSync(path.join(__dirname, '../../static/js/product-video-commerce.js.tpl'), 'utf8');
+function fixture(withLoader = true) {
+    let callback, reloads = 0;
+    let product = {isConnected:true};
+    const old = 'https://www.eoraeyewear.com/produtos/vertice-bordo-mix/';
+    const original = 'https://example.test/video-widget.js.php?store=6201247&url=' + encodeURIComponent(old);
+    const location = {href:old, reload(){ reloads++; }};
+    const nodes = new Map();
+    const loads = [];
+    function addWidget() {
+        for (const id of ['video-bolinha','video-modal','stories-modal']) nodes.set(id, {
+            querySelectorAll(){return [{pause(){}}];},
+            remove(){nodes.delete(id);}
+        });
+    }
+    addWidget();
+    const document = {
+        getElementById(id){return id === 'single-product' ? product : nodes.get(id);},
+        querySelectorAll(){return withLoader ? [{src:original}] : [];},
+        createElement(){return {remove(){}};},
+        body:{appendChild(node){loads.push(node);}}
+    };
+    const window = {addEventListener(){},removeEventListener(){}};
+    class MutationObserver {
+        constructor(fn){callback=fn;}
+        observe(){}
+    }
+    vm.runInNewContext(source,{window,document,location,URL,MutationObserver,performance:{getEntriesByType(){return [];}},
+        setTimeout(){return 1;},clearTimeout(){}});
+    return {loads,nodes,location,addWidget,get reloads(){return reloads;},swap(slug){
+        product.isConnected=false;
+        product={isConnected:true};
+        location.href='https://www.eoraeyewear.com/produtos/'+slug+'/';
+        callback();
+    },mutate(){callback();}};
+}
+test('updates only the widget and preserves store identifiers',()=>{
+    const f=fixture();
+    f.swap('vertice-preto-prata');
+    assert.equal(f.loads.length,1);
+    assert.equal(f.nodes.has('video-bolinha'),false);
+    const next=new URL(f.loads[0].src);
+    assert.equal(next.searchParams.get('store'),'6201247');
+    assert.equal(next.searchParams.get('url'),f.location.href);
+    f.addWidget();
+    f.loads[0].onload();
+    f.mutate();
+    assert.equal(f.loads.length,1);
+    assert.equal(f.reloads,0);
+});
+test('serializes rapid changes and targets the latest reference',()=>{
+    const f=fixture();
+    f.swap('vertice-preto-prata');
+    f.swap('vertice-bordo-prata');
+    f.swap('vertice-preto-dourado');
+    assert.equal(f.loads.length,1);
+    f.addWidget();
+    f.loads[0].onload();
+    assert.equal(f.nodes.has('video-bolinha'),false);
+    assert.equal(f.loads.length,2);
+    assert.equal(new URL(f.loads[1].src).searchParams.get('url'),f.location.href);
+    f.loads[1].onload();
+    assert.equal(f.reloads,0);
+});
+test('native navigation fallback if the installed widget script cannot be identified',()=>{
+    const f=fixture(false);
+    f.swap('vertice-preto-prata');
+    assert.equal(f.reloads,1);
+    assert.equal(f.loads.length,0);
+});
+test('native navigation fallback on script network failure',()=>{
+    const f=fixture();
+    f.swap('vertice-preto-prata');
+    f.loads[0].onerror();
+    assert.equal(f.reloads,1);
+});
