@@ -5,6 +5,123 @@
         if (!root || root.dataset.mfReady) return;
         root.dataset.mfReady = '1';
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var hero = root.querySelector('[data-mf-media]');
+        if (hero) {
+            var mobile = window.matchMedia('(max-width: 767px)');
+            var player = hero.querySelector('[data-mf-video-player]');
+            var playing = false;
+            var vimeoSdkPromise = null;
+            var vimeoInstance = null;
+            var timer = null;
+            function reveal(node) {
+                if (!playing || !player.contains(node)) return;
+                clearTimeout(timer);
+                hero.classList.add('mf-hero--video-ready');
+            }
+            function loadVimeoPlayer() {
+                if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo.Player);
+                if (!vimeoSdkPromise) {
+                    vimeoSdkPromise = new Promise(function (resolve) {
+                        var script = document.createElement('script');
+                        script.async = true;
+                        script.src = 'https://player.vimeo.com/api/player.js';
+                        script.onload = function () { resolve(window.Vimeo && window.Vimeo.Player || null); };
+                        script.onerror = function () { resolve(null); };
+                        document.head.appendChild(script);
+                    });
+                }
+                return vimeoSdkPromise;
+            }
+            function readVimeoDimensions(frame) {
+                loadVimeoPlayer().then(function (Player) {
+                    if (!Player || !playing || !player.contains(frame)) return;
+                    var instance;
+                    try { instance = new Player(frame); } catch (_) { return; }
+                    vimeoInstance = instance;
+                    instance.on('playing', function () { reveal(frame); });
+                    instance.on('timeupdate', function () { reveal(frame); });
+                    instance.on('error', function () { if (player.contains(frame)) setPlaying(false); });
+                    return Promise.all([instance.getVideoWidth(), instance.getVideoHeight()]).then(function (size) {
+                        if (!playing || !player.contains(frame)) return;
+                        var width = Number(size[0]), height = Number(size[1]);
+                        if (width > 0 && height > 0 && width / height >= .1 && width / height <= 10) {
+                            hero.style.setProperty('--mf-video-ratio', width + ' / ' + height);
+                        }
+                    }).catch(function () { /* Mantem proporcao configurada ou o fallback panoramico. */ });
+                }).catch(function () {});
+            }
+            function source() { return mobile.matches ? hero.dataset.mfVideoMobile || hero.dataset.mfVideoDesktop : hero.dataset.mfVideoDesktop || hero.dataset.mfVideoMobile; }
+            function configuredRatio(media) {
+                var useMobile = !!hero.dataset.mfVideoMobile && (mobile.matches || !hero.dataset.mfVideoDesktop);
+                var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
+                var parts = String(raw || '').match(/^\s*(\d{1,4})\s*[:/]\s*(\d{1,4})\s*$/);
+                if (!parts) return media && media.provider === 'vimeo' ? '3 / 1' : '16 / 9';
+                var width = Number(parts[1]);
+                var height = Number(parts[2]);
+                return width && height && width / height >= .1 && width / height <= 10 ? width + ' / ' + height : '16 / 9';
+            }
+            function mediaUrl(raw) {
+                try {
+                    var url = new URL(raw, window.location.origin);
+                    if (!['http:', 'https:'].includes(url.protocol)) return null;
+                    if (/\.mp4(?:$|\?)/i.test(url.href)) return {video: url.href};
+                    var vimeo = /^(?:www\.)?(?:player\.)?vimeo\.com$/.test(url.hostname) && url.pathname.match(/\/(?:video\/)?(\d+)/);
+                    if (vimeo) return {provider: 'vimeo', embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?controls=0&autoplay=1&loop=1&muted=1&title=0&byline=0'};
+                    var youtube = null;
+                    if (url.hostname === 'youtu.be') youtube = url.pathname.slice(1);
+                    if (/^(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)$/.test(url.hostname)) youtube = url.searchParams.get('v') || url.pathname.split('/').pop();
+                    if (youtube && /^[\w-]{11}$/.test(youtube)) return {embed: 'https://www.youtube-nocookie.com/embed/' + youtube + '?autoplay=1&mute=1&loop=1&playlist=' + youtube + '&controls=0&playsinline=1'};
+                } catch (_) {}
+                return null;
+            }
+            function setPlaying(value) {
+                clearTimeout(timer);
+                hero.classList.remove('mf-hero--video-ready');
+                if (vimeoInstance) {
+                    var previous = vimeoInstance;
+                    vimeoInstance = null;
+                    try { previous.destroy().catch(function () {}); } catch (_) {}
+                }
+                player.replaceChildren();
+                var media = mediaUrl(source());
+                playing = !!value && !!media;
+                hero.classList.toggle('mf-hero--video-active', playing);
+                hero.style.removeProperty('--mf-video-ratio');
+                if (playing) {
+                    timer = setTimeout(function () { if (!hero.classList.contains('mf-hero--video-ready') && hero.querySelector('picture')) setPlaying(false); }, 15000);
+                    // Vimeo busca a proporcao nativa via Player SDK; YouTube usa 16:9 como fallback.
+                    // MP4 detecta a proporcao real nos metadados, sem exigir configuracao do lojista.
+                    hero.style.setProperty('--mf-video-ratio', configuredRatio(media));
+                    if (media.video) {
+                        var video = document.createElement('video');
+                        video.preload = 'auto';
+                        video.addEventListener('playing', function () { reveal(video); });
+                        video.addEventListener('error', function () { if (player.contains(video)) setPlaying(false); });
+                        video.muted = true; video.autoplay = true; video.loop = true; video.playsInline = true;
+                        video.setAttribute('aria-label', 'Vídeo Favoritos da Marcela');
+                        video.addEventListener('loadedmetadata', function () {
+                            if (!playing || !player.contains(video) || !video.videoWidth || !video.videoHeight) return;
+                            hero.style.setProperty('--mf-video-ratio', video.videoWidth + ' / ' + video.videoHeight);
+                        });
+                        video.src = media.video; player.appendChild(video);
+                        video.play().catch(function () { if (player.contains(video)) setPlaying(false); });
+                    } else {
+                        var frame = document.createElement('iframe');
+                        frame.title = 'Vídeo Favoritos da Marcela'; frame.allow = 'autoplay; fullscreen; picture-in-picture';
+                        frame.tabIndex = -1;
+                        frame.loading = 'eager';
+                        frame.addEventListener('load', function () {
+                            if (media.provider !== 'vimeo' || !hero.querySelector('picture')) reveal(frame);
+                        });
+                        frame.src = media.embed; player.appendChild(frame);
+                        if (media.provider === 'vimeo') readVimeoDimensions(frame);
+                    }
+                }
+            }
+            mobile.addEventListener('change', function () { setPlaying(playing); });
+            reduced.addEventListener('change', function () { setPlaying(!reduced.matches); });
+            setPlaying(!reduced.matches);
+        }
         root.querySelectorAll('[data-mf-carousel]').forEach(function (section) {
             var track = section.querySelector('[data-mf-track]');
             Array.from(track.children).sort(function (a, b) { return Number(a.dataset.mfOrder) - Number(b.dataset.mfOrder); }).forEach(function (item) { track.appendChild(item); });
@@ -79,103 +196,7 @@
             });
         }
 
-        var hero = root.querySelector('[data-mf-media]');
-        if (hero) {
-            var mobile = window.matchMedia('(max-width: 767px)');
-            var player = hero.querySelector('[data-mf-video-player]');
-            var playing = false;
-            var vimeoSdkPromise = null;
-            var vimeoInstance = null;
-            function loadVimeoPlayer() {
-                if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo.Player);
-                if (!vimeoSdkPromise) {
-                    vimeoSdkPromise = new Promise(function (resolve) {
-                        var script = document.createElement('script');
-                        script.async = true;
-                        script.src = 'https://player.vimeo.com/api/player.js';
-                        script.onload = function () { resolve(window.Vimeo && window.Vimeo.Player || null); };
-                        script.onerror = function () { resolve(null); };
-                        document.head.appendChild(script);
-                    });
-                }
-                return vimeoSdkPromise;
-            }
-            function readVimeoDimensions(frame) {
-                loadVimeoPlayer().then(function (Player) {
-                    if (!Player || !playing || !player.contains(frame)) return;
-                    var instance;
-                    try { instance = new Player(frame); } catch (_) { return; }
-                    vimeoInstance = instance;
-                    return Promise.all([instance.getVideoWidth(), instance.getVideoHeight()]).then(function (size) {
-                        if (!playing || !player.contains(frame)) return;
-                        var width = Number(size[0]), height = Number(size[1]);
-                        if (width > 0 && height > 0 && width / height >= .1 && width / height <= 10) {
-                            hero.style.setProperty('--mf-video-ratio', width + ' / ' + height);
-                        }
-                    }).catch(function () { /* Mantem proporcao configurada ou o fallback panoramico. */ });
-                }).catch(function () {});
-            }
-            function source() { return mobile.matches ? hero.dataset.mfVideoMobile || hero.dataset.mfVideoDesktop : hero.dataset.mfVideoDesktop || hero.dataset.mfVideoMobile; }
-            function configuredRatio(media) {
-                var useMobile = !!hero.dataset.mfVideoMobile && (mobile.matches || !hero.dataset.mfVideoDesktop);
-                var raw = useMobile ? hero.dataset.mfVideoRatioMobile : hero.dataset.mfVideoRatioDesktop;
-                var parts = String(raw || '').match(/^\s*(\d{1,4})\s*[:/]\s*(\d{1,4})\s*$/);
-                if (!parts) return media && media.provider === 'vimeo' ? '3 / 1' : '16 / 9';
-                var width = Number(parts[1]);
-                var height = Number(parts[2]);
-                return width && height && width / height >= .1 && width / height <= 10 ? width + ' / ' + height : '16 / 9';
-            }
-            function mediaUrl(raw) {
-                try {
-                    var url = new URL(raw, window.location.origin);
-                    if (!['http:', 'https:'].includes(url.protocol)) return null;
-                    if (/\.mp4(?:$|\?)/i.test(url.href)) return {video: url.href};
-                    var vimeo = /^(?:www\.)?(?:player\.)?vimeo\.com$/.test(url.hostname) && url.pathname.match(/\/(?:video\/)?(\d+)/);
-                    if (vimeo) return {provider: 'vimeo', embed: 'https://player.vimeo.com/video/' + vimeo[1] + '?controls=0&autoplay=1&loop=1&muted=1&title=0&byline=0'};
-                    var youtube = null;
-                    if (url.hostname === 'youtu.be') youtube = url.pathname.slice(1);
-                    if (/^(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)$/.test(url.hostname)) youtube = url.searchParams.get('v') || url.pathname.split('/').pop();
-                    if (youtube && /^[\w-]{11}$/.test(youtube)) return {embed: 'https://www.youtube-nocookie.com/embed/' + youtube + '?autoplay=1&mute=1&loop=1&playlist=' + youtube + '&controls=0&playsinline=1'};
-                } catch (_) {}
-                return null;
-            }
-            function setPlaying(value) {
-                if (vimeoInstance) {
-                    var previous = vimeoInstance;
-                    vimeoInstance = null;
-                    try { previous.destroy().catch(function () {}); } catch (_) {}
-                }
-                player.replaceChildren();
-                var media = mediaUrl(source());
-                playing = !!value && !!media;
-                hero.classList.toggle('mf-hero--video-active', playing);
-                hero.style.removeProperty('--mf-video-ratio');
-                if (playing) {
-                    // Vimeo busca a proporcao nativa via Player SDK; YouTube usa 16:9 como fallback.
-                    // MP4 detecta a proporcao real nos metadados, sem exigir configuracao do lojista.
-                    hero.style.setProperty('--mf-video-ratio', configuredRatio(media));
-                    if (media.video) {
-                        var video = document.createElement('video');
-                        video.muted = true; video.autoplay = true; video.loop = true; video.playsInline = true;
-                        video.setAttribute('aria-label', 'Vídeo Favoritos da Marcela');
-                        video.addEventListener('loadedmetadata', function () {
-                            if (!playing || !player.contains(video) || !video.videoWidth || !video.videoHeight) return;
-                            hero.style.setProperty('--mf-video-ratio', video.videoWidth + ' / ' + video.videoHeight);
-                        });
-                        video.src = media.video; player.appendChild(video);
-                        video.play().catch(function () { if (player.contains(video)) setPlaying(false); });
-                    } else {
-                        var frame = document.createElement('iframe');
-                        frame.title = 'Vídeo Favoritos da Marcela'; frame.allow = 'autoplay; fullscreen; picture-in-picture';
-                        frame.tabIndex = -1; frame.src = media.embed; player.appendChild(frame);
-                        if (media.provider === 'vimeo') readVimeoDimensions(frame);
-                    }
-                }
-            }
-            mobile.addEventListener('change', function () { setPlaying(playing); });
-            reduced.addEventListener('change', function () { setPlaying(!reduced.matches); });
-            setPlaying(!reduced.matches);
-        }
+
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once: true}); else init();
 }());
