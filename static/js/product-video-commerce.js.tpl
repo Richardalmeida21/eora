@@ -70,11 +70,42 @@
         var script = document.createElement('script');
         script.async = true;
         script.src = next.href;
-        var settled = false, timeout;
+        var settled = false, timeout, checkTimer;
+        var lifecycle = [];
+        // Replay only readiness listeners registered by this exact vendor script.
+        // Do not dispatch DOMContentLoaded globally or restart the theme.
+        var restore = [];
+        function capture(target, type) {
+            var original = target.addEventListener;
+            var own = Object.prototype.hasOwnProperty.call(target, 'addEventListener');
+            var wrapped = function (name, listener, options) {
+                if (name === type && document.currentScript === script && document.readyState === 'complete' && listener) {
+                    lifecycle.push(function () {
+                        var event = new Event(type);
+                        if (typeof listener === 'function') listener.call(target, event);
+                        else if (typeof listener.handleEvent === 'function') listener.handleEvent(event);
+                    });
+                    return;
+                }
+                return original.call(this, name, listener, options);
+            };
+            if (typeof original !== 'function') return;
+            target.addEventListener = wrapped;
+            restore.push(function () {
+                if (target.addEventListener !== wrapped) return;
+                if (own) target.addEventListener = original;
+                else delete target.addEventListener;
+            });
+        }
+        function restoreListeners() { restore.splice(0).forEach(function (fn) { fn(); }); }
+        capture(document, 'DOMContentLoaded');
+        capture(window, 'load');
         function finish(ok) {
             if (settled) return;
             settled = true;
             clearTimeout(timeout);
+            clearTimeout(checkTimer);
+            restoreListeners();
             window.removeEventListener('error', onError);
             script.remove();
             running = false;
@@ -86,7 +117,24 @@
             if (event.filename && asLoader(event.filename)) finish(false);
         }
         window.addEventListener('error', onError);
-        script.onload = function () { finish(true); };
+        script.onload = function () {
+            restoreListeners();
+            try { lifecycle.splice(0).forEach(function (fn) { fn(); }); }
+            catch (_) { finish(false); return; }
+            // A loaded script is not proof that it actually initialized the widget.
+            // Allow asynchronous vendor initialization, then fall back only if needed.
+            var attempts = 0;
+            function verify() {
+                if (settled) return;
+                if (pending) { finish(true); return; }
+                var bubble = document.getElementById('video-bolinha');
+                var video = bubble && bubble.querySelector && bubble.querySelector('video');
+                if (video && (video.getAttribute('src') || video.currentSrc || video.querySelector('source[src]'))) { finish(true); return; }
+                if (++attempts >= 20) { finish(false); return; }
+                checkTimer = setTimeout(verify, 150);
+            }
+            verify();
+        };
         script.onerror = function () { finish(false); };
         timeout = setTimeout(function () { finish(false); }, 8000);
         document.body.appendChild(script);
