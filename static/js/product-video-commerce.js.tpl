@@ -34,9 +34,22 @@
         var next = new URL(source.href);
         var oldPage = new URL(from), newPage = new URL(to);
         var matched = false;
+        var oldSlug = productPath(oldPage.href).split('/').pop();
+        var newSlug = productPath(newPage.href).split('/').pop();
         // Preserve all vendor/store identifiers; change only the page reference
         // actually present in the installed application's request.
         source.searchParams.forEach(function (value, key) {
+            // Some installations send the product slug rather than its full URL.
+            if (oldSlug && value === oldSlug) {
+                next.searchParams.set(key, newSlug);
+                matched = true;
+                return;
+            }
+            if (value === productPath(oldPage.href).slice(1) || value === productPath(oldPage.href).slice(1) + '/') {
+                next.searchParams.set(key, productPath(newPage.href).slice(1) + (value.endsWith('/') ? '/' : ''));
+                matched = true;
+                return;
+            }
             var candidate;
             try { candidate = new URL(value, oldPage.origin); } catch (_) { return; }
             if (candidate.hostname.replace(/^www\./, '') !== oldPage.hostname.replace(/^www\./, '') ||
@@ -53,7 +66,12 @@
         return next;
     }
     function fallback(job) {
-        if (!pending && location.href === job.to) location.reload();
+        // Never reload the storefront for a third-party video failure.
+        // Leave the previous widget cleared rather than showing a wrong product.
+        if (!pending && location.href === job.to) {
+            clearWidget();
+            console.warn('EORA: Video Commerce did not initialize for the selected reference.');
+        }
     }
     function run() {
         if (running || !pending) return;
@@ -79,7 +97,7 @@
             var original = target.addEventListener;
             var own = Object.prototype.hasOwnProperty.call(target, 'addEventListener');
             var wrapped = function (name, listener, options) {
-                if (name === type && document.currentScript === script && document.readyState === 'complete' && listener) {
+                if (name === type && document.currentScript === script && (type === 'DOMContentLoaded' ? document.readyState !== 'loading' : document.readyState === 'complete') && listener) {
                     lifecycle.push(function () {
                         var event = new Event(type);
                         if (typeof listener === 'function') listener.call(target, event);
@@ -122,7 +140,7 @@
             try { lifecycle.splice(0).forEach(function (fn) { fn(); }); }
             catch (_) { finish(false); return; }
             // A loaded script is not proof that it actually initialized the widget.
-            // Allow asynchronous vendor initialization, then fall back only if needed.
+            // Allow asynchronous vendor initialization without navigating the storefront.
             var attempts = 0;
             function verify() {
                 if (settled) return;
