@@ -16,6 +16,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://opengraphprotocol.org/schema/" lang="{% for language in languages %}{% if language.active %}{{ language.lang }}{% endif %}{% endfor %}">
     <head>
+        {% if template == 'product' %}<script>{% include 'static/js/product-video-commerce.js.tpl' %}</script>{% endif %}
         {% if template == 'page' and (page.handle == 'favoritosdamarcela' and not settings.marcela_launch_ready) %}<meta name="robots" content="noindex, nofollow">{% endif %}
         <link rel="preconnect" href="{{ store_resource_hints }}" />
         <link rel="dns-prefetch" href="{{ store_resource_hints }}" />
@@ -461,7 +462,6 @@
             <script>{% include 'static/js/product-whatsapp.js.tpl' %}</script>
             <script>{% include 'static/js/product-description-image-links.js.tpl' %}</script>
             <script>{% include 'static/js/product-image-quality.js.tpl' %}</script>
-            <script>{% include 'static/js/product-video-commerce.js.tpl' %}</script>
         {% endif %}
 
         <script>{% include 'static/js/product-payment-summary.js.tpl' %}</script>
