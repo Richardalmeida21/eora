@@ -205,7 +205,11 @@ const app = server(4180);
         await page.setViewportSize({width: 1440, height: 900});
         assert(await iframeCoversBanner(), 'desktop embedded video must cover banner without letterboxing');
         assert(Math.abs((await heroAspect()) - 2.4) < .015, 'Vimeo must use native video ratio on desktop');
-        await page.locator('[data-mf-media-toggle]').click();
+        const pause = page.locator('[data-mf-media-toggle]');
+        await page.locator('body').click({position: {x: 2, y: 2}});
+        assert.equal(await pause.evaluate(node => getComputedStyle(node).clipPath), 'inset(50%)', 'no visible pause overlay during autoplay');
+        await pause.focus();
+        await pause.press('Enter');
         assert.equal(await page.locator('[data-mf-video-player] iframe').count(), 0);
         assert.equal(await page.locator('.mf-hero picture').evaluate(node => getComputedStyle(node).visibility), 'visible', 'pause must restore cover photo');
         // A mobile viewport without a mobile-specific source must keep the desktop configured ratio.
