@@ -83,3 +83,10 @@
 @media (max-width: 767px) {
     .mf-page[data-bs-server-cards]:not([data-bs-catalog-ready]) [data-bs-grid] > :nth-child(n+7) { display: none; }
 }
+
+/* Autoplay banner: no visible pause overlay during normal browsing.
+   Keep keyboard access and visible recovery controls for failed autoplay. */
+.mf-page .mf-hero--video-ready .mf-hero__toggle:not(:focus-visible) {
+    width: 1px; height: 1px; padding: 0; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; pointer-events: none;
+}
