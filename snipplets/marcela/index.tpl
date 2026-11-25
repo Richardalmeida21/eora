@@ -14,10 +14,19 @@
     {% endfor %}
 {% endif %}
 {% if (settings.marcela_hero_enabled is not defined or settings.marcela_hero_enabled) and (settings.marcela_hero_video or settings.marcela_hero_video_mobile) %}<link rel="preload" as="script" href="{{ 'js/marcela-hero.js' | static_url }}?v=20261125-2">{% endif %}
+{# Deduplicate before rendering, preserving the curated order. #}
+{% set mf_unique_products = [] %}
+{% set mf_seen_ids = [] %}
+{% for product in marcela_products %}
+    {% if product.id not in mf_seen_ids %}
+        {% set mf_unique_products = mf_unique_products | merge([product]) %}
+        {% set mf_seen_ids = mf_seen_ids | merge([product.id]) %}
+    {% endif %}
+{% endfor %}
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261020-1">
 <link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261029-1">
-<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261125-2">
-<main class="be-page bs-page mf-page" data-mf-page data-bs-page data-bs-inline-catalog data-bs-category-url="/favoritosdamarcela/" data-bs-page-size="12" data-bs-mobile-page-size="6" data-bs-macro-visible="3" data-bs-catalog-title="Todos os favoritos da Marcela">
+<link rel="stylesheet" href="{{ 'css/marcela.css' | static_url }}?v=20261125-3">
+<main class="be-page bs-page mf-page" data-mf-page data-bs-page data-bs-inline-catalog data-bs-server-cards data-bs-category-url="/favoritosdamarcela/" data-bs-page-size="12" data-bs-mobile-page-size="6" data-bs-macro-visible="3" data-bs-catalog-title="Todos os favoritos da Marcela">
     <h1 class="bs-sr-only">{{ settings.marcela_title | default('Favoritos da Marcela') | escape }}</h1>
     {% include 'snipplets/marcela/hero.tpl' %}
     <div class="mf-content">
@@ -30,11 +39,13 @@
             <h2 class="bs-sr-only" data-bs-result-title>Todos os favoritos da Marcela</h2>
             <p class="be-status" data-bs-status role="status" aria-live="polite"></p>
             <button class="be-button" type="button" data-bs-retry hidden>Tentar novamente</button>
-            <div class="be-product-grid" data-bs-grid></div>
+            <div class="be-product-grid" data-bs-grid>
+                {% for product in mf_unique_products | take(12) %}{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 3, be_product_variants_enabled: true, be_product_high_quality: true} %}{% endfor %}
+            </div>
             <button class="be-button be-results__more" type="button" data-bs-more hidden>Mostrar mais produtos</button>
         </section>
         <template data-bs-initial-products>
-            {% for product in marcela_products %}{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 3, be_product_variants_enabled: true, be_product_high_quality: false} %}{% endfor %}
+            {% for product in mf_unique_products %}{% if loop.index > 12 %}{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 3, be_product_variants_enabled: true, be_product_high_quality: true} %}{% endif %}{% endfor %}
         </template>
         <noscript><style>.mf-page .bs-toolbar,.mf-page .bs-catalog,.mf-page .be-filter-button{display:none!important}</style><div class="be-product-grid">{% for product in marcela_products %}{% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 1} %}{% endfor %}</div></noscript>
         {% include 'snipplets/marcela/looks.tpl' %}
@@ -42,7 +53,7 @@
     </div>
     {% include 'snipplets/best-sellers/filters.tpl' with {bs_all_label: 'Todos os favoritos da Marcela'} %}
 </main>
-<script src="{{ 'js/marcela.js' | static_url }}?v=20261125-2" defer></script>
+<script src="{{ 'js/marcela.js' | static_url }}?v=20261125-3" defer></script>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261112-1" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261125-3" defer></script>
