@@ -9,7 +9,7 @@
     {# Product name #}
     <h2 class="js-product-name mb-3">{{ oe_product_name | escape }}</h2>
     {# Preserve legacy variation-name layouts embedded in product descriptions. #}
-    {% if template == 'product' and not home_main_product and 'eora-nome-variacao' not in (product.description | default('')) %}
+    {% if not home_main_product and 'eora-nome-variacao' not in (product.description | default('')) %}
         <script data-eora-variation-tags="[{% for tag in product.tags %}{{ tag.tag | default(tag) | json_encode | escape }}{% if not loop.last %},{% endif %}{% endfor %}]">
         (function (script) {
             var tags;
