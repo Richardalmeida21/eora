@@ -17,6 +17,54 @@
         </div>
     </div>
 </div>
+<script>
+(function () {
+    if (window.eoraTagVariationController) return;
+    window.eoraTagVariationController = true;
+    var scheduled = false;
+    var hiddenLabels = new WeakMap();
+    function render() {
+        scheduled = false;
+        var root = document.querySelector('#single-product');
+        var source = root && root.querySelector('template[data-eora-product-image-sources]');
+        var data;
+        try { data = JSON.parse(source.content.textContent); } catch (error) { return; }
+        var tags = Array.isArray(data.tags) ? data.tags : [];
+        var raw = tags.find(function (tag) { return typeof tag === 'string' && /^variacao:/i.test(tag) && tag.slice(9).trim(); });
+        var text = raw ? raw.slice(9) : '';
+        var custom = document.querySelector('.eora-product-info');
+        var scope = custom || root;
+        if (!scope) return;
+        var label = scope.querySelector('.eora-tag-variation-name');
+        if (!text) {
+            if (label) label.remove();
+            var previous = scope.querySelector('.eora-nome-variacao');
+            if (previous && hiddenLabels.has(previous)) { previous.style.display = hiddenLabels.get(previous); hiddenLabels.delete(previous); }
+            return;
+        }
+        var title = scope.querySelector('.eora-product-name, .js-product-name');
+        if (!title) return;
+        var old = scope.querySelector('.eora-nome-variacao');
+        if (old && old.style.display !== 'none') {
+            if (!hiddenLabels.has(old)) hiddenLabels.set(old, old.style.display);
+            old.style.display = 'none';
+        }
+        if (!label) {
+            label = document.createElement('div');
+            label.className = 'eora-tag-variation-name';
+            label.style.cssText = 'margin-top:-8px;margin-bottom:16px;font-size:12px;color:#666;white-space:pre-wrap;overflow-wrap:anywhere';
+        }
+        if (label.textContent !== text) label.textContent = text;
+        if (title.nextElementSibling !== label) title.parentNode.insertBefore(label, title.nextSibling);
+    }
+    function schedule() { if (!scheduled) { scheduled = true; requestAnimationFrame(render); } }
+    var observer = new MutationObserver(schedule);
+    observer.observe(document.documentElement, {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:['style']});
+    document.addEventListener('DOMContentLoaded', schedule);
+    window.addEventListener('popstate', schedule);
+    schedule();
+})();
+</script>
 
 {# {% set item_img_spacing = 150 %}
 
