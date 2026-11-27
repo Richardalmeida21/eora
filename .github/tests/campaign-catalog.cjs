@@ -48,3 +48,13 @@ test('filtra somente produtos da categoria e permite voltar para todos',async()=
 });
 test('sem categoria busca somente as duas tags da campanha',async()=>{const b=await setup('');try{await until(()=>b.calls.length===2&&b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);assert.ok(b.calls.every(u=>new URL(u).pathname==='/search/'));assert.deepEqual(b.errors,[]);}finally{b.close();}});
 test('erro de catálogo oferece nova tentativa',async()=>{const b=await setup('/verao-produtos/',true);try{await until(()=>!b.d.querySelector('[data-bs-retry]').hidden);b.d.querySelector('[data-bs-retry]').click();await until(()=>b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);}finally{b.close();}});
+
+test('verificacao temporaria da loja publicada',async()=>{
+const response=await fetch('https://www.eoraeyewear.com/verao',{signal:AbortSignal.timeout(20000)});const html=await response.text();const dom=new JSDOM(html);const d=dom.window.document;
+console.log('EORA_FINAL',JSON.stringify({status:response.status,source:d.querySelector('[data-bs-page]')?.dataset.bsCategoryUrl,fallback:d.querySelector('[data-bs-page]')?.hasAttribute('data-bs-search-tags')}));
+for(const img of d.querySelectorAll('.bs-macro img')){
+const raw=img.getAttribute('data-original-src');if(raw){const r=await fetch(new URL(raw,response.url),{signal:AbortSignal.timeout(15000)});console.log('EORA_RAW',JSON.stringify({url:r.url,status:r.status,type:r.headers.get('content-type')}));r.body?.cancel();}
+}
+for(const tag of ['bolsasverao','oculosverao']){const url=new URL('/search/',response.url);url.searchParams.set('q','"'+tag+'"');url.searchParams.set('campaign10_feed','1');const r=await fetch(url,{signal:AbortSignal.timeout(20000)});const s=await r.text();const dd=new JSDOM(s).window.document;const feed=dd.querySelector('template[data-bs-category-feed]');console.log('EORA_FEED',JSON.stringify({tag,status:r.status,exists:!!feed,count:feed?feed.content.querySelectorAll('[data-be-product]').length:0}));}
+dom.window.close();
+});
