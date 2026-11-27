@@ -11,6 +11,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install --prefix "$RUNNER_TEMP/eora-tests" --no-audit --no-fund twig@1.17.1 jsdom@26.1.0
-      - run: node --test .github/tests/campaign-catalog.cjs
+      - run: |
+          node --test .github/tests/campaign-catalog.cjs
+          node .github/tests/theme-editor-settings.cjs
         env:
           NODE_PATH: ${{ runner.temp }}/eora-tests/node_modules

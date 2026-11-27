@@ -30,6 +30,8 @@ w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
 w.HTMLDialogElement.prototype.close=function(){this.open=false;};
 let calls=[];
 w.fetch=async url=>{calls.push(String(url));if(fail){fail=false;throw Error('offline');}return {ok:true,url:String(url),text:async()=>'<template data-bs-category-feed data-last="1">'+card(1,'Bolsa Vértice',['bolsa','vertice'],20000)+card(2,'Óculos Luma',['oculos','luma'],10000)+'</template>'};};
+w.eval(read('static/js/bolsas-eora-filters.js'));
+w.eval(read('static/js/oculos-eora-filters.js'));
 w.eval(read('static/js/best-sellers-eora.js'));
 w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
 await new Promise(r=>setTimeout(r,40));
