@@ -53,3 +53,11 @@ test('carrega a segunda pagina nativa antes de filtrar os oculos',async()=>{
 const b=await setup('/categoria-configurada/',false,true);
 try{await until(()=>b.d.querySelector('[data-bs-page]').dataset.bsCatalogReady==='1');assert.ok(b.calls.some(u=>new URL(u).pathname==='/search/page/2/'));b.d.querySelector('[data-bs-category="2"]').click();assert.equal(b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length,2);assert.deepEqual(b.errors,[]);}finally{b.close();}
 });
+
+test('diagnostico temporario da loja',async()=>{
+const r=await fetch('https://www.eoraeyewear.com/verao');const html=await r.text();const dom=new JSDOM(html,{url:r.url,runScripts:'outside-only',pretendToBeVisual:true});const w=dom.window,d=w.document;
+w.matchMedia=()=>({matches:true,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollTo=function(){};w.fetch=async u=>{const r=await fetch(u);const h=await r.text();const feed=new JSDOM(h).window.document.querySelector('template[data-bs-category-feed]');console.log('DIAG_FETCH',JSON.stringify({u:String(u),status:r.status,final:r.url,next:feed?.dataset.next,last:feed?.dataset.last}));return {ok:r.ok,url:r.url,text:async()=>h}};
+for(const p of ['bolsas-eora-filters.js','oculos-eora-filters.js','best-sellers-eora.js'])w.eval(read('static/js/'+p).replace('} catch (_) { catalogError = true; }','} catch (e) { console.log("DIAG_ERROR",e.stack); catalogError = true; }'));
+d.dispatchEvent(new w.Event('DOMContentLoaded'));for(let i=0;i<2000&&d.querySelector('[data-bs-page]').dataset.bsCatalogReady!=='1';i++)await new Promise(r=>setTimeout(r,10));
+console.log('DIAG_DONE',JSON.stringify({ready:d.querySelector('[data-bs-page]').dataset.bsCatalogReady,status:d.querySelector('[data-bs-status]').textContent,count:d.querySelectorAll('[data-bs-grid] [data-be-product]').length,script:[...d.querySelectorAll('script[src]')].map(x=>x.src).filter(x=>x.includes('best-sellers-eora'))}));dom.window.close();
+});
