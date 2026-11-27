@@ -32,7 +32,7 @@
                 {% set model_title = model.title | default(model_tag) | trim %}
                 <a class="bs-macro" href="?bs_category={{ loop.index }}" data-bs-category="{{ loop.index }}" data-bs-tag="{{ model_tag | escape }}" data-bs-order="{{ loop.index }}" aria-expanded="false">
                     <span class="bs-macro__selection"><picture>
-                        <img src="{{ model.image | static_url | settings_image_url('1080p') }}" srcset="{{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w, {{ model.image | static_url | settings_image_url('original') }} 1024w, {{ model.image | static_url | settings_image_url('xlarge') }} 1400w, {{ model.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 50vw, 50vw" alt="{{ model_title | escape }}" width="2160" height="960" decoding="async">
+                        <img src="{{ model.image | static_url | settings_image_url('1080p') }}" srcset="{{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w, {{ model.image | static_url | settings_image_url('original') }} 1024w, {{ model.image | static_url | settings_image_url('xlarge') }} 1400w, {{ model.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 50vw, 50vw" data-original-src="{{ model.image | static_url }}" data-image-key="{{ model.image | escape }}" alt="{{ model_title | escape }}" width="2160" height="960" decoding="async">
                     </picture></span>
                     <span class="bs-macro__title">{{ model_title | escape }}</span>
                 </a>
