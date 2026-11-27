@@ -30,7 +30,7 @@
         var products = [];
         var categoryBase = new URL(root.dataset.bsCategoryUrl, window.location.href);
         var configuredSource = root.dataset.bsCategoryUrl;
-        var tagSource = !configuredSource && root.hasAttribute('data-bs-search-tags');
+        var tagSource = root.hasAttribute('data-bs-search-tags') && (!configuredSource || root.getAttribute('data-bs-search-tags') === 'always');
         var sourceTags = tagSource ? macros.map(function (m) { return normalize(m.dataset.bsTag); }) : [];
         function tagUrl(tag) { var u = new URL(root.dataset.bsSearchUrl || '/search/', window.location.href); u.searchParams.set('q', '"' + tag + '"'); u.searchParams.set('campaign10_feed', '1'); return u; }
         var tagQueue = sourceTags.map(tagUrl);

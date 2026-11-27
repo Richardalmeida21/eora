@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ 'css/bolsas-eora.css' | static_url }}?v=20261127-2">
 <link rel="stylesheet" href="{{ 'css/best-sellers-eora.css' | static_url }}?v=20261029-1">
 <style>.campaign10-page .campaign10-hero{margin: -28px calc(-1 * clamp(12px, 3vw, 48px)) 28px}.campaign10-page .campaign10-hero img{width:100%;height:auto;display:block}@media(max-width:767px){.campaign10-page .campaign10-hero{margin-top:-20px}}</style>
-<main class="be-page bs-page campaign10-page" data-bs-page data-bs-search-tags data-bs-search-url="{{ store.search_url | escape }}" data-bs-catalog-title="Todos os produtos" data-bs-loading-label="Carregando produtos da coleção…" data-bs-error-label="Não foi possível carregar os produtos da coleção. Tente novamente." data-bs-category-url="{{ campaign_page_10_category_url | escape }}">
+<main class="be-page bs-page campaign10-page" data-bs-page data-bs-search-tags="always" data-bs-search-url="{{ store.search_url | escape }}" data-bs-catalog-title="Todos os produtos" data-bs-loading-label="Carregando produtos da coleção…" data-bs-error-label="Não foi possível carregar os produtos da coleção. Tente novamente." data-bs-category-url="{{ campaign_page_10_category_url | escape }}">
     {% if settings.campaign_page_10_catalog_banner_enabled %}
         {% for banner in settings.campaign_page_10_catalog_banner | slice(0,1) %}
             {% if banner.image %}
@@ -32,7 +32,7 @@
                 {% set model_title = model.title | default(model_tag) | trim %}
                 <a class="bs-macro" href="?bs_category={{ loop.index }}" data-bs-category="{{ loop.index }}" data-bs-tag="{{ model_tag | escape }}" data-bs-order="{{ loop.index }}" aria-expanded="false">
                     <span class="bs-macro__selection"><picture>
-                        <img src="{{ model.image | static_url | settings_image_url('1080p') }}" srcset="{{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w, {{ model.image | static_url | settings_image_url('original') }} 1024w, {{ model.image | static_url | settings_image_url('xlarge') }} 1400w, {{ model.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 50vw, 50vw" onerror="if(!this.dataset.originalTried){this.dataset.originalTried='1';this.removeAttribute('srcset');this.src=this.dataset.originalSrc;}" data-original-src="{{ model.image | static_url }}" data-image-key="{{ model.image | escape }}" alt="{{ model_title | escape }}" width="2160" height="960" decoding="async">
+                        <img src="{{ model.image | static_url | settings_image_url('1080p') }}" srcset="{{ model.image | static_url | settings_image_url('large') }} 480w, {{ model.image | static_url | settings_image_url('huge') }} 640w, {{ model.image | static_url | settings_image_url('original') }} 1024w, {{ model.image | static_url | settings_image_url('xlarge') }} 1400w, {{ model.image | static_url | settings_image_url('1080p') }} 1920w" sizes="(max-width: 767px) 50vw, 50vw" onerror="this.removeAttribute('srcset');if(!this.dataset.originalTried){this.dataset.originalTried='1';this.src=this.dataset.originalSrc;}else if(this.dataset.recoverySrc){this.onerror=null;this.src=this.dataset.recoverySrc;}" data-recovery-src="{% if model_tag | lower == 'oculosverao' %}{{ 'images/campaign10-oculos-verao.jpg' | static_url }}{% endif %}" data-original-src="{{ model.image | static_url }}" data-image-key="{{ model.image | escape }}" alt="{{ model_title | escape }}" width="2160" height="960" decoding="async">
                     </picture></span>
                     <span class="bs-macro__title">{{ model_title | escape }}</span>
                 </a>
@@ -66,4 +66,4 @@
 </main>
 <script src="{{ 'js/bolsas-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
 <script src="{{ 'js/oculos-eora-filters.js' | static_url }}?v=20260930-1" defer></script>
-<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261127-c10" defer></script>
+<script src="{{ 'js/best-sellers-eora.js' | static_url }}?v=20261127-c10-2" defer></script>
