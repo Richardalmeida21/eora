@@ -48,3 +48,14 @@ test('filtra somente produtos da categoria e permite voltar para todos',async()=
 });
 test('sem categoria não busca produtos fora da coleção',async()=>{const b=await setup('');try{await new Promise(r=>setTimeout(r,50));assert.equal(b.calls.length,0);}finally{b.close();}});
 test('erro de catálogo oferece nova tentativa',async()=>{const b=await setup('/verao-produtos/',true);try{await until(()=>!b.d.querySelector('[data-bs-retry]').hidden);b.d.querySelector('[data-bs-retry]').click();await until(()=>b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);}finally{b.close();}});
+
+test('diagnostico temporario da campanha publicada',async()=>{
+ const response=await fetch('https://www.eoraeyewear.com/verao',{signal:AbortSignal.timeout(20000)});
+ const html=await response.text(); const dom=new JSDOM(html);const d=dom.window.document;
+ const root=d.querySelector('[data-bs-page]');
+ console.log('EORA_DIAG',JSON.stringify({status:response.status,source:root&&root.dataset.bsCategoryUrl,images:[...d.querySelectorAll('.bs-macro img')].map(x=>({src:x.src,srcset:x.srcset}))}));
+ const category=root&&root.dataset.bsCategoryUrl;
+ if(category){try{const u=new URL(category,response.url);u.searchParams.set('bs_category_feed','1');const r=await fetch(u,{signal:AbortSignal.timeout(20000)});const text=await r.text();console.log('EORA_CATEGORY',JSON.stringify({url:r.url,status:r.status,feed:text.includes('data-bs-category-feed'),title:text.match(/<title>(.*?)<\/title>/s)?.[1]}));}catch(e){console.log('EORA_CATEGORY_ERROR',e.message)}}
+ for(const x of d.querySelectorAll('.bs-macro img')){for(const url of [x.src,...x.srcset.split(',').map(v=>v.trim().split(' ')[0])]){if(!url)continue;try{const r=await fetch(url,{signal:AbortSignal.timeout(12000)});console.log('EORA_IMAGE',JSON.stringify({url,status:r.status,type:r.headers.get('content-type')}));r.body?.cancel();}catch(e){console.log('EORA_IMAGE_ERROR',url,e.message)}}}
+ dom.window.close();
+});
