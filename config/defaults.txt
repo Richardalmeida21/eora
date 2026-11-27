@@ -268,3 +268,11 @@ campaign_page_10_catalog_sort = user
 campaign_page_10_catalog_columns = 4
 campaign_page_10_catalog_mobile_columns = 2
 campaign_page_10_catalog_page_size = 24
+
+campaign_page_10_filters_enabled = 1
+campaign_page_10_best_enabled = 1
+campaign_page_10_best_title_pt = Best sellers
+campaign_page_10_community_enabled = 1
+campaign_page_10_community_title_pt = Quem usa Eora
+campaign_page_10_community_subtitle_pt = Nossa comunidade
+campaign_page_10_categories_enabled = 1

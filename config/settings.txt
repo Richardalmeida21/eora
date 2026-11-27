@@ -9810,24 +9810,16 @@ Página de campanha 9
 
 Página de campanha 10 com filtros
 	meta
-		icon = box
+		icon = shopping-bag
 		advanced = true
 	i18n_input
 		name = campaign_page_10_url
 		description = Página associada (somente o caminho, sem barras)
 	collapse
-		title = Coleção com filtros
-	description
-		description = Use uma categoria da Nuvemshop contendo SOMENTE os produtos da campanha (óculos e bolsas). Cole abaixo o caminho da categoria, por exemplo /colecao-verao/. A página associada acima é a página de conteúdo onde este modelo aparece. Crie essa página em Páginas caso ainda não exista. Os filtros nunca buscam produtos fora da categoria escolhida.
-	text
-		name = campaign_page_10_catalog_url
-		description = Caminho da categoria da coleção (ex.: /colecao-verao-produtos/)
+		title = Banner de introdução da campanha
 	i18n_input
 		name = campaign_page_10_catalog_title
 		description = Título da coleção
-	i18n_input
-		name = campaign_page_10_catalog_description
-		description = Texto de apresentação
 	checkbox
 		name = campaign_page_10_catalog_banner_enabled
 		description = Mostrar banner de introdução
@@ -9845,59 +9837,91 @@ Página de campanha 10 com filtros
 		gallery_image = Adicionar banner para celular
 		gallery_width = 750
 		gallery_height = 900
-	checkbox
-		name = campaign_page_10_catalog_types_enabled
-		description = Mostrar seleção de Óculos e Bolsas
-	i18n_input
-		name = campaign_page_10_catalog_eyewear_label
-		description = Nome do filtro Óculos
-	i18n_input
-		name = campaign_page_10_catalog_bags_label
-		description = Nome do filtro Bolsas
-	i18n_input
-		name = campaign_page_10_catalog_all_label
-		description = Texto do botão Ver todos
-	checkbox
-		name = campaign_page_10_catalog_filters_enabled
-		description = Ativar filtros de modelo, características, lançamentos e preço
-	gallery
-		name = campaign_page_10_catalog_models
-		gallery_image = Adicionar modelo extra da campanha
-		gallery_link = Tag exata do modelo (ex.: luma)
-		gallery_width = 200
-		gallery_height = 200
-		gallery_more_info = true
+	collapse
+		title = Filtros por modelo — imagem, título e tag
 	description
-		description = Os modelos das páginas Bolsas e Óculos são aproveitados automaticamente. Para modelos extras, preencha título e tag no campo Link; a imagem é opcional e não aparece na campanha. Só aparecem no filtro os modelos presentes na coleção. As características vêm das tags dos produtos, como nas páginas atuais.
-	dropdown
-		name = campaign_page_10_catalog_sort
-		description = Ordenação inicial
-		values
-			user = Ordem da categoria
-			created-descending = Mais novos
-			price-ascending = Menor preço
-			price-descending = Maior preço
-			alpha-ascending = Nome A–Z
-	dropdown
-		name = campaign_page_10_catalog_columns
-		description = Produtos por linha no computador
-		values
-			2 = 2
-			3 = 3
-			4 = 4
-	dropdown
-		name = campaign_page_10_catalog_mobile_columns
-		description = Produtos por linha no celular
-		values
-			1 = 1
-			2 = 2
-	dropdown
-		name = campaign_page_10_catalog_page_size
-		description = Produtos exibidos por lote
-		values
-			12 = 12
-			24 = 24
-			48 = 48
+		description = Adicione e ordene as imagens dos modelos de óculos e bolsas da coleção. No campo Título, informe o nome exibido. No campo Tag, use a tag cadastrada nos produtos, por exemplo iris. Uma tag por imagem; sem URL, barras ou aspas.
+	gallery
+		name = campaign_page_10_models
+		gallery_image = Adicionar imagem do modelo
+		gallery_title = Título exibido no filtro
+		gallery_link = Tag do produto (ex.: iris)
+		gallery_width = 400
+		gallery_height = 400
+		gallery_more_info = true
+	checkbox
+		name = campaign_page_10_filters_enabled
+		description = Mostrar botão flutuante de filtros
+	description
+		description = As facetas usam as tags reais: formato:aviador, estilo:classico, cor-armacao:preta, cor-lente:cinza, tipo-lente:solar, material-armacao:acetato e tamanho:medio. Preto e preta aparecem juntos como Preta. No Luar, cor da armação, cor da lente e Fotocromática usam as variações do campo Metal/Lente; mantenha as tags comuns no produto. Também são aceitos prefixos como material da armação e tipo da lente. Nas bolsas, use as mesmas tags da página Bolsas Eora: cor, tamanho, textura, ferragem, ocasiao e cabe. O preço usa os filtros da loja.
+	collapse
+		title = Categoria de Todos os produtos
+	text
+		name = campaign_page_10_catalog_url
+		description = Link da categoria que contém os óculos e bolsas da campanha
+	description
+		description = O filtro Todos usa esta categoria como fonte única e preserva a ordem manual definida em Organizar produtos. Selecione a categoria exclusiva da campanha. Mesmo ao filtrar por modelo, os produtos ficam limitados a essa categoria. Sem categoria, nenhum produto é buscado fora da coleção.
+	collapse
+		title = Banners
+	description
+		description = No campo Link, informe o destino do clique. No campo Descrição, informe a tag do modelo, por exemplo iris. Para mostrar também em Todos, use iris,todos. Título, Botão e Cor ficam livres para o conteúdo visual.
+	gallery
+		name = campaign_page_10_banners
+		gallery_image = Adicionar banner
+		gallery_link = Link ao clicar no banner (opcional)
+		gallery_width = 2000
+		gallery_height = 2600
+		gallery_more_info = true
+	collapse
+		title = Best sellers
+	checkbox
+		name = campaign_page_10_best_enabled
+		description = Mostrar best sellers
+	i18n_input
+		name = campaign_page_10_best_title
+		description = Título
+	description
+		description = Selecione e ordene os produtos em Campanha 10 — Best sellers, na organização dos produtos em destaque. São 4 produtos visíveis no computador e 2 no celular.
+	collapse
+		title = Quem usa — galeria
+	checkbox
+		name = campaign_page_10_community_enabled
+		description = Mostrar Quem usa
+	i18n_input
+		name = campaign_page_10_community_title
+		description = Título
+	i18n_input
+		name = campaign_page_10_community_subtitle
+		description = Subtítulo
+	text
+		name = campaign_page_10_community_link
+		description = Link da página Quem usa (também usado nas fotos sem link próprio)
+	description
+		description = Adicione, exclua e arraste as fotos para ordenar. Cada foto pode ter seu próprio link. São 5 imagens visíveis no computador e 2 no celular.
+	gallery
+		name = campaign_page_10_community
+		gallery_image = Adicionar foto
+		gallery_link = Link da foto
+		gallery_width = 600
+		gallery_height = 800
+		gallery_more_info = true
+	collapse
+		title = Banners de categorias — Campanha 10
+	checkbox
+		name = campaign_page_10_categories_enabled
+		description = Mostrar banners de categorias
+	i18n_input
+		name = campaign_page_10_categories_title
+		description = Título da seção (opcional)
+	description
+		description = Adicione e ordene os banners. Edite título, descrição, botão e link em cada imagem. São 4 banners visíveis no computador e 1 no celular.
+	gallery
+		name = campaign_page_10_categories
+		gallery_image = Adicionar banner de categoria
+		gallery_link = Link da categoria
+		gallery_width = 750
+		gallery_height = 1000
+		gallery_more_info = true
 
 
 Quem usa

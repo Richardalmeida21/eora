@@ -177,3 +177,6 @@
     .be-page .be-filter-dialog footer .be-button, .be-page .be-filter-dialog footer .be-text-button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .be-page *, .be-page *::before, .be-page *::after { scroll-behavior: auto !important; transition: none !important; } }
+
+.be-page .be-campaign-intro { margin-bottom:42px; }
+.be-page .be-campaign-intro picture,.be-page .be-campaign-intro img { display:block;width:100%;height:auto; }

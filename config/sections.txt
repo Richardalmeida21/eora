@@ -223,3 +223,7 @@ marcela_look_9
 marcela_look_10
 	name = Favoritos da Marcela — Look 10
 	description = Selecione e ordene até 2 produtos do look 10.
+
+campaign_page_10_best
+	name = Campanha 10 — Best sellers
+	description = Selecione e ordene os produtos da coleção. Mesmo layout de Óculos Eora: 4 produtos no computador e 2 no celular.

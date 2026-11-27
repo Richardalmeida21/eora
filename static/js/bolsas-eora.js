@@ -5,6 +5,7 @@
         var root = document.querySelector('[data-be-page]');
         if (!root || root.dataset.beReady) return;
         root.dataset.beReady = '1';
+        var categoryOnly = root.hasAttribute('data-be-category-only');
         var filterPrefix = root.dataset.beFilterPrefix || 'be';
         var filterEngineName = root.dataset.beFilterGlobal || 'EoraBagFilters';
         var categoryFeedTag = root.dataset.beCategoryFeedTag || '__bolsas_eora_category__';
@@ -496,7 +497,7 @@
                         all('[data-be-product]', feed.content).forEach(function (card) {
                             var id = card.dataset.beProduct;
                             var tags = tagsFor(card);
-                            if (!current.ids.has(id) && (search.tag === categoryFeedTag || tags.indexOf(normalize(search.tag)) !== -1) && (!bagFilters || bagFilters.matches(card, current.filters, tags))) {
+                            if (!current.ids.has(id) && (search.tag === categoryFeedTag || tags.indexOf(normalize(search.tag)) !== -1) && (!categoryOnly || !current.model || tags.indexOf(normalize(current.model)) !== -1) && (!bagFilters || bagFilters.matches(card, current.filters, tags))) {
                                 current.ids.add(id);
                                 search.buffer.push(card);
                             }
@@ -537,7 +538,7 @@
             if (bagFilters && bagFilters.normalizeFilters) filters = bagFilters.normalizeFilters(filters);
             sort = sort || 'user';
             var active = Boolean(model || Object.keys(filters).length || sort !== 'user');
-            var tags = model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
+            var tags = categoryOnly ? (categoryBase ? [categoryFeedTag] : []) : model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
             state = {model: model, filters: filters, sort: sort, initialLoad: true, searches: tags.map(function (tag) {
                 return {tag: tag, next: tag === categoryFeedTag ? makeCategoryUrl(filters, sort).href : makeSearchUrl(tag, filters, sort).href, buffer: []};
             }), cursor: 0, ids: new Set(), visited: new Set(), loading: false};
@@ -596,7 +597,7 @@
         one('[data-be-sort]').addEventListener('change', function (event) { activate(state.model, state.filters, event.target.value, true); });
         window.addEventListener('popstate', fromLocation);
 
-        if (dialog && typeof dialog.showModal === 'function' && models.length && bagFilters) {
+        if (dialog && typeof dialog.showModal === 'function' && (models.length || (categoryOnly && categoryBase)) && bagFilters) {
             var opener = one('[data-be-open-filters]');
             var facetStatus = one('[data-be-facet-status]');
             var facets = one('[data-be-facets]');
@@ -613,7 +614,7 @@
                 facets.replaceChildren();
                 pendingSelection = selected;
                 submit.disabled = false;
-                var sources = model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
+                var sources = categoryOnly ? (categoryBase ? [categoryFeedTag] : []) : model ? [model] : categoryBase ? [categoryFeedTag] : modelTags;
                 var pending = sources.filter(function (tag) { return getFacet(tag).next; });
                 var failed = false;
                 function renderAvailable() {
@@ -621,7 +622,7 @@
                     var available = new Set();
                     sources.forEach(function (tag) { getFacet(tag).tags.forEach(function (value) { available.add(value); }); });
                     // Atualiza sem recriar campos: preserva marcacoes e foco durante a carga.
-                    bagFilters.render(facets, selected, Array.from(available), true);
+                    bagFilters.render(facets, selected, Array.from(available), true, model);
                 }
                 facetStatus.textContent = pending.length ? 'Carregando mais opções… Você já pode aplicar os filtros disponíveis.' : '';
                 renderAvailable();
