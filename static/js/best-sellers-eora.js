@@ -70,7 +70,10 @@
             if (tagSource) {
                 var base = new URL(root.dataset.bsSearchUrl || '/search/', window.location.href);
                 var tag = (url.searchParams.get('q') || '').replace(/^"|"$/g, '');
-                if (url.origin !== base.origin || url.pathname !== base.pathname || sourceTags.indexOf(normalize(tag)) === -1) throw new Error('Invalid campaign tag URL');
+                var basePath = base.pathname.replace(/\/+$/, '');
+                var searchPath = url.pathname.replace(/\/+$/, '');
+                var isPage = searchPath.indexOf(basePath + '/page/') === 0 && /^[1-9]\d*$/.test(searchPath.slice((basePath + '/page/').length));
+                if (url.origin !== base.origin || (searchPath !== basePath && !isPage) || sourceTags.indexOf(normalize(tag)) === -1) throw new Error('Invalid campaign tag URL');
                 url.searchParams.set('campaign10_feed', '1'); return url;
             }
             var basePath = categoryBase.pathname.replace(/\/+$/, '');
