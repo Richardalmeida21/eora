@@ -48,3 +48,13 @@ test('filtra as tags mesmo com categoria configurada e permite voltar para todos
 });
 test('sem categoria busca somente as duas tags da campanha',async()=>{const b=await setup('');try{await until(()=>b.calls.length===2&&b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);assert.ok(b.calls.every(u=>new URL(u).pathname==='/search/'));assert.deepEqual(b.errors,[]);}finally{b.close();}});
 test('erro de catálogo oferece nova tentativa',async()=>{const b=await setup('/verao-produtos/',true);try{await until(()=>!b.d.querySelector('[data-bs-retry]').hidden);b.d.querySelector('[data-bs-retry]').click();await until(()=>b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);}finally{b.close();}});
+
+test('confirma produtos e imagem na campanha publicada',async()=>{
+const response=await fetch('https://www.eoraeyewear.com/verao');const html=await response.text();const dom=new JSDOM(html,{url:response.url,runScripts:'outside-only',pretendToBeVisual:true});const w=dom.window,d=w.document;
+w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollTo=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};w.fetch=async u=>{const r=await fetch(u);return {ok:r.ok,url:r.url,text:()=>r.text()}};
+for(const p of ['bolsas-eora-filters.js','oculos-eora-filters.js','best-sellers-eora.js'])w.eval(read('static/js/'+p));d.dispatchEvent(new w.Event('DOMContentLoaded'));
+await until(()=>d.querySelector('[data-bs-page]').dataset.bsCatalogReady==='1');
+for(const a of d.querySelectorAll('.bs-macro')){a.click();const cards=[...d.querySelectorAll('[data-bs-grid] [data-be-product]')];console.log('VERIFIED_CLICK',a.dataset.bsTag,cards.length);assert.ok(cards.length>0);assert.ok(cards.every(c=>JSON.parse(c.dataset.beTags).includes(a.dataset.bsTag)));}
+d.querySelector('[data-bs-reset]').click();console.log('VERIFIED_ALL',d.querySelectorAll('[data-bs-grid] [data-be-product]').length);
+const recovery=d.querySelector('[data-bs-tag="oculosverao"] img').getAttribute('data-recovery-src');assert.ok(recovery);const image=await fetch(new URL(recovery,response.url));console.log('VERIFIED_IMAGE',image.status,image.headers.get('content-type'));assert.equal(image.status,200);assert.match(image.headers.get('content-type'),/^image\//);image.body?.cancel();dom.window.close();
+});
