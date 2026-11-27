@@ -46,3 +46,17 @@
 
 {% include 'snipplets/bolsas-eora/search-feed.tpl' %}
 {% include 'snipplets/oculos-eora/search-feed.tpl' %}
+
+{% if params.campaign10_feed == '1' %}
+    {% set campaign10_match = false %}
+    {% for model in settings.campaign_page_10_models | default(settings.campaign_page_10_catalog_models) | slice(0, 2) %}
+        {% if query == '"' ~ (model.link | trim) ~ '"' %}{% set campaign10_match = true %}{% endif %}
+    {% endfor %}
+    {% if campaign10_match %}
+    <template data-bs-category-feed data-last="{{ not products or pages.is_last ? '1' : '0' }}" data-next="{{ pages.next | escape }}">
+        {% for product in products %}
+            {% include 'snipplets/bolsas-eora/product-card.tpl' with {be_product_image_limit: 3, be_product_variants_enabled: true, be_product_high_quality: true} %}
+        {% endfor %}
+    </template>
+    {% endif %}
+{% endif %}

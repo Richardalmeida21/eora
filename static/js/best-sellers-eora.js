@@ -30,7 +30,12 @@
         var products = [];
         var categoryBase = new URL(root.dataset.bsCategoryUrl, window.location.href);
         var configuredSource = root.dataset.bsCategoryUrl;
-        var nextUrl = configuredSource && categoryBase.origin === window.location.origin ? new URL(categoryBase) : null;
+        var tagSource = !configuredSource && root.hasAttribute('data-bs-search-tags');
+        var sourceTags = tagSource ? macros.map(function (m) { return normalize(m.dataset.bsTag); }) : [];
+        function tagUrl(tag) { var u = new URL(root.dataset.bsSearchUrl || '/search/', window.location.href); u.searchParams.set('q', '"' + tag + '"'); u.searchParams.set('campaign10_feed', '1'); return u; }
+        var tagQueue = sourceTags.map(tagUrl);
+        if (tagSource && tagQueue.length) configuredSource = tagQueue[0].href;
+        var nextUrl = tagSource ? (tagQueue.shift() || null) : configuredSource && categoryBase.origin === window.location.origin ? new URL(categoryBase) : null;
         var initialProducts = one('template[data-bs-initial-products]');
         var inlineCatalog = root.hasAttribute('data-bs-inline-catalog');
         if (inlineCatalog) nextUrl = null;
@@ -62,6 +67,12 @@
         }
         function checkedCategoryUrl(value) {
             var url = new URL(value, categoryBase);
+            if (tagSource) {
+                var base = new URL(root.dataset.bsSearchUrl || '/search/', window.location.href);
+                var tag = (url.searchParams.get('q') || '').replace(/^"|"$/g, '');
+                if (url.origin !== base.origin || url.pathname !== base.pathname || sourceTags.indexOf(normalize(tag)) === -1) throw new Error('Invalid campaign tag URL');
+                url.searchParams.set('campaign10_feed', '1'); return url;
+            }
             var basePath = categoryBase.pathname.replace(/\/+$/, '');
             var path = url.pathname.replace(/\/+$/, '');
             if (url.origin !== categoryBase.origin || (path !== basePath && !(path.indexOf(basePath + '/page/') === 0 && /^[1-9]\d*$/.test(path.slice((basePath + '/page/').length))))) throw new Error('Invalid Best Sellers category URL');
@@ -75,6 +86,7 @@
                 seen.add(card.dataset.beProduct);
                 var tags;
                 try { tags = JSON.parse(card.dataset.beTags); } catch (_) { tags = []; }
+                if (tagSource && (!Array.isArray(tags) || !tags.some(function (tag) { return sourceTags.indexOf(normalize(tag)) !== -1; }))) return;
                 products.push({card: card, tags: Array.isArray(tags) ? tags.map(normalize) : [], price: Number(card.dataset.bePrice), order: products.length});
             });
         }
@@ -118,6 +130,7 @@
                         following = checkedCategoryUrl(feed.dataset.next);
                         if (following.href === url.href || visited.has(following.href)) throw new Error('Repeated category page');
                     }
+                    if (!following && tagSource && tagQueue.length) following = checkedCategoryUrl(tagQueue.shift());
                     // Começa a próxima requisição antes de montar os cards atuais.
                     pending = following ? requestCategoryPage(following) : null;
                     appendProducts(feed);
