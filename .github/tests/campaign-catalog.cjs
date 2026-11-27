@@ -48,3 +48,14 @@ test('filtra somente produtos da categoria e permite voltar para todos',async()=
 });
 test('sem categoria busca somente as duas tags da campanha',async()=>{const b=await setup('');try{await until(()=>b.calls.length===2&&b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);assert.ok(b.calls.every(u=>new URL(u).pathname==='/search/'));assert.deepEqual(b.errors,[]);}finally{b.close();}});
 test('erro de catálogo oferece nova tentativa',async()=>{const b=await setup('/verao-produtos/',true);try{await until(()=>!b.d.querySelector('[data-bs-retry]').hidden);b.d.querySelector('[data-bs-retry]').click();await until(()=>b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length===2);}finally{b.close();}});
+
+test('diagnostico real dos cliques da campanha',async()=>{
+ const response=await fetch('https://www.eoraeyewear.com/verao');const html=await response.text();const dom=new JSDOM(html,{url:response.url,runScripts:'outside-only',pretendToBeVisual:true});const w=dom.window,d=w.document;
+ w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollTo=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};w.fetch=async value=>{const r=await fetch(value);const text=await r.text();const dd=new JSDOM(text).window.document;const feed=dd.querySelector('template[data-bs-category-feed]');console.log('LIVE_FEED',JSON.stringify({url:String(value),status:r.status,first:feed?.content.querySelector('[data-be-product]')?.outerHTML.slice(0,1800)}));return {ok:r.ok,url:r.url,text:async()=>text};};
+ for(const p of ['bolsas-eora-filters.js','oculos-eora-filters.js','best-sellers-eora.js'])w.eval(read('static/js/'+p));
+ d.dispatchEvent(new w.Event('DOMContentLoaded'));
+ await until(()=>d.querySelector('.bs-catalog').getAttribute('aria-busy')==='false'&&d.querySelector('[data-bs-page]').dataset.bsCatalogReady);
+ console.log('LIVE_ALL',d.querySelectorAll('[data-bs-grid] [data-be-product]').length);
+ for(const link of d.querySelectorAll('.bs-macro')){link.click();await new Promise(r=>setTimeout(r,100));console.log('LIVE_CLICK',JSON.stringify({tag:link.dataset.bsTag,count:d.querySelectorAll('[data-bs-grid] [data-be-product]').length,status:d.querySelector('[data-bs-status]').textContent}));}
+ dom.window.close();
+});
