@@ -98,10 +98,25 @@
             var timeout = setTimeout(function () { controller.abort(); }, 20000);
             var promise = (async function () {
                 try {
-                    var response = await fetch(url, {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
-                    if (!response.ok) throw new Error('Category HTTP ' + response.status);
-                    checkedCategoryUrl(response.url || url);
-                    return await response.text();
+                    var lastError;
+                    for (var attempt = 0; attempt < 3; attempt++) {
+                        try {
+                            var response = await fetch(url, {credentials: 'same-origin', signal: controller.signal, headers: {'Accept': 'text/html'}});
+                            if (!response.ok) {
+                                var error = new Error('Category HTTP ' + response.status);
+                                if (response.status < 500 && response.status !== 429) throw error;
+                                lastError = error;
+                            } else {
+                                checkedCategoryUrl(response.url || url);
+                                return await response.text();
+                            }
+                        } catch (error) {
+                            if (controller.signal.aborted || /^Category HTTP 4(?!29)/.test(error.message) || /^Invalid /.test(error.message)) throw error;
+                            lastError = error;
+                        }
+                        if (attempt < 2) await new Promise(function (resolve) { setTimeout(resolve, (attempt + 1) * 400); });
+                    }
+                    throw lastError || new Error('Category request failed');
                 } finally { clearTimeout(timeout); }
             }());
             // A próxima resposta pode falhar enquanto a página atual é exibida.
