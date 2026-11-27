@@ -9838,16 +9838,16 @@ Página de campanha 10 com filtros
 		gallery_width = 750
 		gallery_height = 900
 	collapse
-		title = Filtros por modelo — imagem, título e tag
+		title = Filtros da coleção — duas imagens, títulos e tags
 	description
-		description = Adicione e ordene as imagens dos modelos de óculos e bolsas da coleção. No campo Título, informe o nome exibido. No campo Tag, use a tag cadastrada nos produtos, por exemplo iris. Uma tag por imagem; sem URL, barras ou aspas.
+		description = Adicione até duas imagens horizontais de 2160 x 960 px. Informe o título e a tag de cada filtro, como bolsasverao ou oculosverao. Inclua os produtos na categoria escolhida abaixo.
 	gallery
 		name = campaign_page_10_models
-		gallery_image = Adicionar imagem do modelo
+		gallery_image = Adicionar imagem da categoria
 		gallery_title = Título exibido no filtro
-		gallery_link = Tag do produto (ex.: iris)
-		gallery_width = 400
-		gallery_height = 400
+		gallery_link = Tag dos produtos da categoria
+		gallery_width = 2160
+		gallery_height = 960
 		gallery_more_info = true
 	checkbox
 		name = campaign_page_10_filters_enabled
