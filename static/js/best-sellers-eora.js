@@ -29,7 +29,8 @@
         var seen = new Set();
         var products = [];
         var categoryBase = new URL(root.dataset.bsCategoryUrl, window.location.href);
-        var nextUrl = new URL(categoryBase);
+        var configuredSource = root.dataset.bsCategoryUrl;
+        var nextUrl = configuredSource && categoryBase.origin === window.location.origin ? new URL(categoryBase) : null;
         var initialProducts = one('template[data-bs-initial-products]');
         var inlineCatalog = root.hasAttribute('data-bs-inline-catalog');
         if (inlineCatalog) nextUrl = null;
@@ -41,7 +42,8 @@
         var catalogError = false;
         var category = 'all';
         var filters = {};
-        var sorting = 'user';
+        var defaultSort = root.dataset.bsDefaultSort || 'user';
+        var sorting = defaultSort;
         var mobileCatalog = window.matchMedia('(max-width: 767px)');
         function catalogPageSize() { return Number(mobileCatalog.matches ? root.dataset.bsMobilePageSize : root.dataset.bsPageSize) || 24; }
         var pageSize = catalogPageSize();
@@ -237,7 +239,9 @@
         }
         function categoryProducts(id) {
             var macro = byId.get(id);
-            return macro ? products.filter(function (product) { return product.tags.indexOf(normalize(macro.dataset.bsTag)) !== -1; }) : products;
+            return macro ? products.filter(function (product) {
+                return macro.dataset.bsType ? productType(product) === macro.dataset.bsType : product.tags.indexOf(normalize(macro.dataset.bsTag)) !== -1;
+            }) : products;
         }
         function productType(product) {
             if (product.tags.indexOf('bolsa') !== -1 || /^bolsa\b/i.test(product.card.dataset.beName)) return 'bag';
@@ -318,7 +322,7 @@
                 if (document.activeElement === more) grid.children[pendingMoreIndex].querySelector('h3 a').focus({preventScroll: true});
                 pendingMoreIndex = null;
             }
-            status.textContent = catalogLoading ? (list.length ? '' : 'Carregando produtos da categoria Best Sellers…') : catalogError ? 'Não foi possível carregar todos os produtos de Best Sellers. Tente novamente.' : !list.length ? 'Nenhum produto encontrado. Experimente outra categoria ou limpe os filtros.' : filterKeys.length ? list.length + (list.length === 1 ? ' produto encontrado' : ' produtos encontrados') : '';
+            status.textContent = catalogLoading ? (list.length ? '' : (root.dataset.bsLoadingLabel || 'Carregando produtos da categoria Best Sellers…')) : catalogError ? (root.dataset.bsErrorLabel || 'Não foi possível carregar todos os produtos de Best Sellers. Tente novamente.') : !list.length ? (!configuredSource ? 'Em breve.' : 'Nenhum produto encontrado. Experimente outra categoria ou limpe os filtros.') : filterKeys.length ? list.length + (list.length === 1 ? ' produto encontrado' : ' produtos encontrados') : '';
             one('.bs-catalog').setAttribute('aria-busy', String(catalogLoading));
             one('[data-bs-retry]').hidden = !catalogError;
             sort.disabled = !!nextUrl;
@@ -344,7 +348,7 @@
         function readUrl() {
             var params = new URL(window.location.href).searchParams;
             category = byId.has(params.get('bs_category')) ? params.get('bs_category') : 'all';
-            sorting = Array.from(sort.options).some(function (option) { return option.value === params.get('bs_sort'); }) ? params.get('bs_sort') : 'user';
+            sorting = Array.from(sort.options).some(function (option) { return option.value === params.get('bs_sort'); }) ? params.get('bs_sort') : defaultSort;
             filters = {};
             try {
                 var value = JSON.parse(params.get('bs_filters') || '{}');

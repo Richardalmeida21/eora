@@ -1,0 +1,14 @@
+/* Campanha com filtros: herda o catálogo EORA e mantém os ajustes locais. */
+.cc-page .cc-banner { margin-bottom:32px; }
+.cc-page .cc-banner picture,.cc-page .cc-banner img { display:block;width:100%; }
+.cc-page .cc-banner img { height:auto; }
+.cc-page .cc-heading p { max-width:760px;line-height:1.6;white-space:normal; }
+.cc-page .cc-types__track { display:flex;gap:12px;flex-wrap:wrap; }
+.cc-page .cc-types .bs-macro { border:1px solid #ccc;padding:0 18px;min-height:44px; }
+.cc-page .cc-types .bs-macro[aria-current="true"] { border-color:#111;background:#111;color:#fff; }
+.cc-page .bs-catalog .be-product-grid { grid-template-columns:repeat(var(--cc-columns,4),minmax(0,1fr)); }
+.cc-page [hidden] { display:none!important; }
+@media(max-width:767px) {
+.cc-page .cc-banner { margin-bottom:24px; }
+.cc-page .bs-catalog .be-product-grid { grid-template-columns:repeat(var(--cc-mobile-columns,2),minmax(0,1fr)); }
+}

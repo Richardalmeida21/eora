@@ -16,7 +16,7 @@
 {% set page_current_07 = settings.campaign_page_07_url %}
 {% set page_current_08 = settings.campaign_page_08_url %}
 {% set page_current_09 = settings.campaign_page_09_url %}
-{% set page_current_10 = settings.campaign_page_10_url %}
+{% set page_current_10 = settings.campaign_page_10_url | default('colecao-verao') | trim('/') %}
 
 {% set is_campaign_01 = page.handle == page_current_01 %}
 {% set is_campaign_02 = page.handle == page_current_02 %}
@@ -68,6 +68,8 @@
     <main>
         {% include 'snipplets/gift-guide-banners.tpl' %}
     </main>
+{% elseif is_campaign_10 %}
+    {% include 'snipplets/campaign/catalog.tpl' %}
 {% elseif is_on_page %}
 	<main>
 		{% include 'snipplets/campaign/index.tpl' with {current_settings_name: settings_name } %}

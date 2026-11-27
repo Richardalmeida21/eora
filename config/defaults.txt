@@ -255,3 +255,16 @@ marcela_hero_enabled = 1
 marcela_categories_title_pt = Favoritos da Marcela
 marcela_looks_title_pt = Shop the look
 marcela_founder_title_pt = Conteúdos da Marcela
+
+campaign_page_10_url = colecao-verao
+campaign_page_10_catalog_title_pt = Coleção de verão
+campaign_page_10_catalog_banner_enabled = 1
+campaign_page_10_catalog_types_enabled = 1
+campaign_page_10_catalog_filters_enabled = 1
+campaign_page_10_catalog_eyewear_label_pt = Óculos
+campaign_page_10_catalog_bags_label_pt = Bolsas
+campaign_page_10_catalog_all_label_pt = Ver todos
+campaign_page_10_catalog_sort = user
+campaign_page_10_catalog_columns = 4
+campaign_page_10_catalog_mobile_columns = 2
+campaign_page_10_catalog_page_size = 24

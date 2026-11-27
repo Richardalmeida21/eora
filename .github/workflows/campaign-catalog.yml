@@ -1,0 +1,16 @@
+name: Validate campaign catalog
+on:
+  push:
+    branches: [codex/campaign-10-filters]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --prefix "$RUNNER_TEMP/eora-tests" --no-audit --no-fund twig@1.17.1 jsdom@26.1.0
+      - run: node --test .github/tests/campaign-catalog.cjs
+        env:
+          NODE_PATH: ${{ runner.temp }}/eora-tests/node_modules

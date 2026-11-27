@@ -14,6 +14,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate collection catalog before publishing
+        env:
+          NODE_PATH: ${{ runner.temp }}/eora-tests/node_modules
+        run: |
+          npm install --prefix "$RUNNER_TEMP/eora-tests" --no-audit --no-fund twig@1.17.1 jsdom@26.1.0
+          node --test .github/tests/campaign-catalog.cjs
+          node .github/tests/theme-editor-settings.cjs
+
       - name: Prepare and verify theme dependencies
         env:
           NODE_PATH: ${{ runner.temp }}/eora-deploy-deps/node_modules
