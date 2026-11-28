@@ -6,9 +6,9 @@
 
 {% if params.eora_model_feed == '1' %}
     {% include 'snipplets/product/product-variant-feed.tpl' %}
-{% elseif params.eora_preorder == '1' and params.be_feed != '4' and params.oe_feed != '4' %}
+{% elseif params.eora_preorder == '1' and params.be_feed != '4' and params.oe_feed != '4' and params.campaign10_feed != '1' %}
     {% include 'snipplets/pre-venda.tpl' %}
-{% elseif params.be_feed != '4' and params.oe_feed != '4' %}
+{% elseif params.be_feed != '4' and params.oe_feed != '4' and params.campaign10_feed != '1' %}
 {% embed "snipplets/page-header.tpl" with { breadcrumbs: false, container_fluid: true } %}
 	{% block page_header_text %}
 		{% if products %}

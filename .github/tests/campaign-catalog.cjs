@@ -5,6 +5,24 @@ const Twig=require('twig');
 const {JSDOM,VirtualConsole}=require('jsdom');
 const fixture=require('./best-sellers-harness.cjs');
 const read=p=>fs.readFileSync(p,'utf8');
+test('busca interna da campanha dispensa o layout completo como bolsas e oculos',()=>{
+ const condition=read('layouts/layout.tpl').match(/{% if [^\n]+%}/)[0];
+ const route=Twig.twig({data:condition+'feed{% else %}loja inteira{% endif %}',rethrow:true});
+ for(const params of [{campaign10_feed:'1'},{be_feed:'4'},{oe_feed:'4'}]) {
+  assert.equal(route.render({template:'search',params}),'feed');
+ }
+ assert.equal(route.render({template:'search',params:{}}),'loja inteira');
+});
+test('resposta interna da campanha nao inclui a grade normal da busca',()=>{
+ const header=Twig.twig({id:'snipplets/page-header.tpl',data:'<header>Busca normal</header>',allowInlineIncludes:true});
+ Twig.twig({id:'snipplets/product_grid.tpl',data:'GRADE NORMAL'});
+ Twig.twig({id:'snipplets/grid/pagination.tpl',data:'PAGINACAO NORMAL'});
+ const search=Twig.twig({data:read('templates/search.tpl').replace(/{% paginate by \d+ %}/g,''),allowInlineIncludes:true,rethrow:true});
+ const data=fixture.context({noCommunity:true});
+ const html=search.render({...data,params:{campaign10_feed:'1'},query:'"bolsasverao"',products:data.category_products.slice(0,1),pages:{is_last:true},settings:{...data.settings,campaign_page_10_models:[{image:'/a.jpg',link:'bolsasverao'}]}});
+ assert.match(html,/data-bs-category-feed/);
+ assert.doesNotMatch(html,/js-product-table|GRADE NORMAL|Busca normal/);
+});
 Twig.twig({id:'snipplets/campaign/catalog.tpl',data:read('snipplets/campaign/catalog.tpl'),allowInlineIncludes:true,rethrow:true});
 const models=[{image:'/a.jpg',link:'bolsasverao',title:'Bolsas'},{image:'/b.jpg',link:'oculosverao',title:'Óculos'},{image:'/c.jpg',link:'extra',title:'Extra'}];
 function render(overrides={}) {
