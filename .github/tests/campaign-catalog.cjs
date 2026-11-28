@@ -73,3 +73,15 @@ try{await until(()=>b.d.querySelector('[data-bs-page]').dataset.bsCatalogReady==
 });
 
 test('falha temporaria recupera automaticamente sem perder produtos',async()=>{const b=await setup('/verao-produtos/',1);try{await until(()=>b.d.querySelector('[data-bs-page]').dataset.bsCatalogReady==='1');assert.equal(b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length,2);assert.equal(b.d.querySelector('[data-bs-retry]').hidden,true);}finally{b.close();}});
+
+test('paginacao por tags usa o dominio da busca quando categoria tem www',async()=>{
+ const b=await setup('https://www.eora.test/verao-produtos/',false,true);
+ try {
+  await until(()=>b.d.querySelector('[data-bs-page]').dataset.bsCatalogReady==='1'||!b.d.querySelector('[data-bs-retry]').hidden);
+  assert.equal(b.d.querySelector('[data-bs-retry]').hidden,true,b.d.querySelector('[data-bs-page]').dataset.bsCatalogError);
+  assert.ok(b.calls.some(u=>new URL(u).pathname==='/search/page/2/'));
+  assert.ok(b.calls.every(u=>new URL(u).origin==='https://eora.test'));
+  b.d.querySelector('[data-bs-category="2"]').click();
+  assert.equal(b.d.querySelectorAll('[data-bs-grid] [data-be-product]').length,2);
+ } finally {b.close();}
+});

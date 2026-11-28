@@ -66,7 +66,9 @@
             });
         }
         function checkedCategoryUrl(value) {
-            var url = new URL(value, categoryBase);
+            // A paginacao das tags pertence a busca na origem atual, mesmo que
+            // o link de categoria configurado use outro host (por exemplo www).
+            var url = new URL(value, tagSource ? new URL(root.dataset.bsSearchUrl || '/search/', window.location.href) : categoryBase);
             if (tagSource) {
                 var base = new URL(root.dataset.bsSearchUrl || '/search/', window.location.href);
                 var tag = (url.searchParams.get('q') || '').replace(/^"|"$/g, '');
@@ -126,7 +128,7 @@
         }
         async function loadCatalog() {
             if (catalogLoading || !nextUrl) return;
-            catalogLoading = true; catalogError = false; render();
+            catalogLoading = true; catalogError = false; delete root.dataset.bsCatalogError; render();
             var pending;
             try {
                 pending = requestCategoryPage(checkedCategoryUrl(nextUrl));
@@ -157,7 +159,7 @@
                 }
                 discoverModels();
                 root.dataset.bsCatalogReady = '1';
-            } catch (_) { catalogError = true; }
+            } catch (error) { catalogError = true; root.dataset.bsCatalogError = error.message; }
             finally {
                 if (pending) pending.controller.abort();
                 catalogLoading = false; render();
